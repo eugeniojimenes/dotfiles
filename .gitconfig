@@ -1,0 +1,11 @@
+[color]
+	ui = true
+[user]
+	name = Eugenio Augusto Jimenes
+	email = eugeniojimenes@gmail.com
+[core]
+	editor = vim
+[pull]
+	rebase = false
+[init]
+	defaultBranch = development
