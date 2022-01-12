@@ -2,9 +2,16 @@
 
 [![License](https://img.shields.io/badge/License-MIT-lightgray)](/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-lightblue)](/code_of_conduct.md)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![love](https://img.shields.io/badge/Build%20With-%F0%9F%96%A4-lightgreen)](https://callmarx.github.io)
 
 Finalmente eu "organizei" isso aqui!
+
+## Git
+O arquivo [.gitconfig](./.gitconfig) é bem pessoal e o meu não tem nada demais: habilito as cores
+para comandos como o `$ git log`, defino a branch `develop` como a principal e uso um template de
+mensagem commit descrito pelo [.gitmessage](./.gitmessage), inspirado no
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## Nerd Fonts
 Pacote de fontes que utilizo no Tilix e no Neovim. Para instalar ou ver mais sobre acesse:

@@ -8,6 +8,6 @@
 [pull]
 	rebase = false
 [init]
-	defaultBranch = development
+	defaultBranch = develop
 [commit]
 	template = ~/.gitmessage
