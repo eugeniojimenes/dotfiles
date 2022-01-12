@@ -114,6 +114,7 @@ Plug 'tpope/vim-rails'
 
 call plug#end()
 
+source ~/.config/nvim/plugins/json.vim
 source ~/.config/nvim/plugins/markdown.vim
 source ~/.config/nvim/plugins/airline.vim
 source ~/.config/nvim/plugins/coc.vim

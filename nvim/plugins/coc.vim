@@ -15,7 +15,6 @@ let g:coc_global_extensions = [
     \ 'https://github.com/rodrigore/coc-tailwind-intellisense',
     \ 'coc-tsserver',
     \ 'coc-solargraph',
-    \ '@yaegassy/coc-volar',
 \ ]
 " Add CoC Prettier if prettier is installed
 if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
