@@ -9,3 +9,5 @@
 	rebase = false
 [init]
 	defaultBranch = development
+[commit]
+	template = ~/.gitmessage
