@@ -75,7 +75,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'gabrielelana/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 
-" Plug 'pangloss/vim-javascript'
+Plug 'pangloss/vim-javascript'
 " Plug 'junegunn/fzf.vim'
 " Plug 'gabesoft/vim-ags'
 

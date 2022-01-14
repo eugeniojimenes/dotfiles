@@ -7,6 +7,18 @@
 
 Finalmente eu "organizei" isso aqui!
 
+```txt
+          888d                888d       ~/dotfile 888d   888d
+          888d                888d       888d"     888d   888d
+          888d                888d      888d              888d
+          888d                888d      888d       888d   888d
+    ~/dotfiles   ~/dotfiles  ~/dotfiles ~/dotfiles 888d   888d   ~/dotfiles   ~/dotfiles
+   888d"  888d  888d"  "888d  888d      888d       888d   888d  888d   888d   888d
+  888d    888d  888d    888d  888d      888d       888d   888d  ~/.dotfiles   ~/dotfiles
+   888d"  888d  888d"  "888d  888d"     888d       888d   888d  888d                888d
+    ~/dotfiles   ~/dotfiles    888d"    888d       888d   888d   ~/.dotfiles  ~/dotfiles
+```
+
 ## Git
 O arquivo [.gitconfig](./.gitconfig) é bem pessoal e o meu não tem nada demais: habilito as cores
 para comandos como o `$ git log`, defino a branch `develop` como a principal e uso um template de
