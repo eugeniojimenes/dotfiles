@@ -1,7 +1,7 @@
 # Dotfiles
 
 [![License](https://img.shields.io/badge/License-MIT-lightgray)](/LICENSE)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-lightblue)](/code_of_conduct.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-lightblue)](/code_of_conduct.pt-br.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![en](https://img.shields.io/badge/lang-en-red.svg)](/README.md)
 [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](/README.pt-br.md)

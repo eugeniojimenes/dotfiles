@@ -72,12 +72,11 @@ autocmd BufWritePre * :call TrimWhitespace()
 call plug#begin('~/.vim/plugged')
 
 " Plug 'elixir-editors/vim-elixir'
-Plug 'gabrielelana/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 
 Plug 'pangloss/vim-javascript'
 " Plug 'junegunn/fzf.vim'
-" Plug 'gabesoft/vim-ags'
+Plug 'gabesoft/vim-ags'
 
 " Plug 'alvan/vim-closetag'
 "" Closetag:
@@ -85,6 +84,7 @@ Plug 'pangloss/vim-javascript'
 
 Plug 'elzr/vim-json'                  " source ~/.config/nvim/plugins/json.vim
 
+Plug 'gabrielelana/vim-markdown'      " source ~/.config/nvim/plugins/markdown.vim
 Plug 'iamcco/markdown-preview.nvim', {'for': 'markdown', 'do': 'yarn install'} " source ~/.config/nvim/plugins/markdown.vim
 
 Plug 'vim-airline/vim-airline'        " source ~/.config/nvim/plugins/airline.vim
