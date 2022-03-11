@@ -18,15 +18,12 @@ vim.g.maplocalleader = " "
 --   term_mode = "t",
 --   command_mode = "c",
 
--- Normal --
+-- -- NORMAL MODE SHORTCUTS -- --
 keymap("n", "<C-L>", ":nohls<CR><C-L>", opts) -- Clear highlighted search.
-
--- -- Better window navigation
--- keymap("n", "<C-h>", "<C-w>h", opts)
--- keymap("n", "<C-j>", "<C-w>j", opts)
--- keymap("n", "<C-k>", "<C-w>k", opts)
--- keymap("n", "<C-l>", "<C-w>l", opts)
-
+-- Telescope
+keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.99,height=0.99}})<cr>", opts)
+keymap("n", "<leader>tg", ":lua require('telescope.builtin').live_grep({layout_config={width=0.99,height=0.99}})<cr>", opts)
+-- Lexplore
 keymap("n", "<leader>e", ":Lex 30<cr>", opts)
 
 -- Resize with arrows
@@ -43,11 +40,9 @@ keymap("n", "<S-h>", ":bprevious<CR>", opts)
 keymap("n", "<A-j>", "<Esc>:m .+1<CR>==gi", opts)
 keymap("n", "<A-k>", "<Esc>:m .-2<CR>==gi", opts)
 
--- Insert --
--- Press jk fast to enter
-keymap("i", "jk", "<ESC>", opts)
+-- -- INSERT MODE SHORTCUTS -- --
 
--- Visual --
+-- -- VISUAL MODE SHORTCUTS -- --
 -- Stay in indent mode
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
