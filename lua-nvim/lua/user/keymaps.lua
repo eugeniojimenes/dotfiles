@@ -21,6 +21,7 @@ vim.g.maplocalleader = " "
 -- -- NORMAL MODE SHORTCUTS -- --
 keymap("n", "<C-L>", ":nohls<CR><C-L>", opts) -- Clear highlighted search.
 keymap("n", "<leader>q", ":bp<cr>:bd #<cr>", opts) -- Close the buffer without closing the window (doesn't close your :split).
+keymap("n", "<leader>f", ":Format<cr>", opts) -- Calls formatter
 
 -- Telescope
 keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.99,height=0.99}})<cr>", opts)
