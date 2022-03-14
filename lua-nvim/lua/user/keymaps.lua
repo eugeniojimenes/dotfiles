@@ -20,12 +20,15 @@ vim.g.maplocalleader = " "
 
 -- -- NORMAL MODE SHORTCUTS -- --
 keymap("n", "<C-L>", ":nohls<CR><C-L>", opts) -- Clear highlighted search.
+keymap("n", "<leader>q", ":bp<cr>:bd #<cr>", opts) -- Close the buffer without closing the window (doesn't close your :split).
+keymap("n", "<leader>f", ":Format<cr>", opts) -- Calls formatter
+
 -- Telescope
 keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.99,height=0.99}})<cr>", opts)
 keymap("n", "<leader>tg", ":lua require('telescope.builtin').live_grep({layout_config={width=0.99,height=0.99}})<cr>", opts)
 keymap("n", "<leader>tm", ":lua require('telescope').extensions.media_files.media_files({layout_config={width=0.99,height=0.99}})<cr>", opts)
--- Lexplore
-keymap("n", "<leader>e", ":Lex 30<cr>", opts)
+-- Nvimtree
+keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
 
 -- Resize with arrows
 keymap("n", "<C-Up>", ":resize -2<CR>", opts)
