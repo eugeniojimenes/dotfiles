@@ -52,6 +52,7 @@ return packer.startup(function(use)
       vim.g.NERDSpaceDelims = 1
     end
   }
+  use "gabesoft/vim-ags" -- :Ags commands
 
   -- Nvim Tree
   use "kyazdani42/nvim-web-devicons"

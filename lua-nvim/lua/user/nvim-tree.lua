@@ -42,7 +42,6 @@ nvim_tree.setup {
     "dashboard",
     "alpha",
   },
-  auto_close = true,
   auto_reload_on_write = true,
   open_on_tab = false,
   hijack_cursor = false,
@@ -67,7 +66,7 @@ nvim_tree.setup {
   },
   git = {
     enable = true,
-    ignore = true,
+    ignore = false,
     timeout = 500,
   },
   view = {
@@ -79,8 +78,8 @@ nvim_tree.setup {
     mappings = {
       custom_only = false,
       list = {
-        { key = { "l", "<CR>", "o" }, cb = tree_cb "edit" },
-        { key = "h", cb = tree_cb "close_node" },
+        { key = { "l", "<CR>" }, cb = tree_cb "edit" },
+        { key = {"h", "x"}, cb = tree_cb "close_node" },
         { key = "v", cb = tree_cb "vsplit" },
       },
     },

@@ -1,4 +1,3 @@
-
 # Pacto de Código de Conduta para Colaboradores
 
 ## O nosso comprometimento
