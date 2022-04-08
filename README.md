@@ -23,12 +23,12 @@ Finally I "organized" it!
 
 ## Git
 The [.gitconfig](./.gitconfig) files is kind a personal and mine isn't a big deal: it enables the
-colors for commands like `$ git log`, I also define the `develop` branch as the main and I use a
+colors for commands like `$ git log`, I also defined the `develop` branch as the main and I use a
 commit message template defined in [.gitmessage](./.gitmessage), which was inspired in
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## Nerd Fonts
-A Font package that I use in Tilix and Neovim. To install or read more about access:
+A Font package that I use in Tilix and Neovim. To install or read more about see:
 <https://github.com/ryanoasis/nerd-fonts>.
 
 ## Oh My Zsh
@@ -38,7 +38,7 @@ have it installed in your linux and if it is defined as default shell, use:
 # Check if is installed
 $ zsh --version
 
-# Check if it is the default shell. You should recive 'bin/szh'
+# Check if it is the default shell. You should receive 'bin/szh'
 $ echo $SHELL
 ```
 
@@ -48,8 +48,8 @@ plugins. To install it, execute:
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-I also use the [Powerlevel10k](https://github.com/romkatv/powerlevel10k#oh-my-zsh) theme (**should
-have *NerdFonts* installed!**). To add in your *Oh My Zsh*, execute:
+I also use the [Powerlevel10k](https://github.com/romkatv/powerlevel10k#oh-my-zsh) theme (**it
+should have *NerdFonts* installed!**). To add in your *Oh My Zsh*, execute:
 ```bash
 $ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
@@ -57,7 +57,7 @@ Also add `ZSH_THEME="powerlevel10k/powerlevel10k"` in your `~/.zshrc`.
 
 
 ## Tilix Terminal Emulator
-To import my setup (**should have *Nerd Fonts* installed!**) execute:
+To import my setup (**it should have *Nerd Fonts* installed!**) execute:
 ```bash
 $ dconf dump /com/gexperts/Tilix/ < tilix.dconf
 ```
@@ -67,7 +67,7 @@ Set of plugins and settings that I use in Neovim. To organized it (and don't let
 single file) I spred my setup in other files as you can see in [nvim/lua/user](./nvim/lua/user),
 keeping [init.lua](./nvim/init.lua) simple, only to load the other configuration files.
 
-Copy, change and use at will. Suggestions and (polite) criticism are welcome 🤓.
+Copy, change and use it at will. Suggestions and (polite) criticism are welcome 🤓.
 
 **NOTE**: To use the [vim-devicons](https://github.com/ryanoasis/vim-devicons) icons you need to
 install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator profile or if
