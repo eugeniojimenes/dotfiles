@@ -60,9 +60,10 @@ $ dconf dump /com/gexperts/Tilix/ < tilix.dconf
 ```
 
 ## Meu Neovim como IDE
-Conjunto de plugins e configurações que utilizo no Neovim. Para organizar (e não deixar o arquivo
-principal gigante) eu coloco as configurações e atalhos de cada plugin (ou conjunto de plugins)
-em arquivos separados, em [nvim/plugins](./nvim/plugins).
+Conjunto de plugins e configurações que utilizo no Neovim. Para organizar (e não deixar com um
+único arquivo gigante) eu espalho minhas configurações em outros arquivos como pode ser visto em
+[nvim/lua/user](./nvim/lua/user), mantendo o [init.lua](./nvim/init.lua) simples, apenas para
+carregar os demais arquivos.
 
 Copie, altere e utilize á vontade. Sugestões e criticas (educadas) são bem vindas 🤓.
 
@@ -74,5 +75,5 @@ terminal ou se for o Tilix pode usar minhas configurações como expliquei antes
 Licenciado sob MIT, consulte o arquivo [LICENSE](/LICENSE).
 
 ## Código de Conduta
-Espera-se que todos que interagem nas bases de código deste projeto - lista de problemas/sugestões,
-forum, email etc - sigam o [código de conduta](/code_of_conduct.md).
+Estou empenhado em fornecer um ambiente amigável, seguro e acolhedor para todos. Por favor, leia e
+respeite o [código de conduta](/code_of_conduct.pt-br.md).
