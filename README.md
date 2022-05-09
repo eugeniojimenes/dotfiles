@@ -22,8 +22,8 @@ Finally I "organized" it!
 ```
 
 ## Git
-The [.gitconfig](./.gitconfig) files is kind a personal and mine isn't a big deal: it enables the
-colors for commands like `$ git log`, I also defined the `develop` branch as the main and I use a
+The [.gitconfig](./.gitconfig) files is kind of personal and mine isn't a big deal: it enables the
+colors for commands like `$ git log`. I also defined the `develop` branch as the main and I use a
 commit message template defined in [.gitmessage](./.gitmessage), which was inspired in
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
@@ -64,7 +64,7 @@ $ dconf dump /com/gexperts/Tilix/ < tilix.dconf
 
 ## My Neovim like an IDE
 Set of plugins and settings that I use in Neovim. To organized it (and don't let it as a giant
-single file) I spred my setup in other files as you can see in [nvim/lua/user](./nvim/lua/user),
+single file) I spread my setup in other files as you can see in [nvim/lua/user](./nvim/lua/user),
 keeping [init.lua](./nvim/init.lua) simple, only to load the other configuration files.
 
 Copy, change and use it at will. Suggestions and (polite) criticism are welcome 🤓.
