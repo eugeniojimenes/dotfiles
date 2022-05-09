@@ -24,6 +24,7 @@ keymap("n", "<leader>q", ":bp<cr>:bd #<cr>", opts) -- Close the buffer without c
 keymap("n", "<leader>f", ":Format<cr>", opts) -- Calls formatter
 
 -- Telescope
+--- live grep requires ripgrep: sudo pacman -S ripgrep
 keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.99,height=0.99}})<cr>", opts)
 keymap("n", "<leader>tg", ":lua require('telescope.builtin').live_grep({layout_config={width=0.99,height=0.99}})<cr>", opts)
 keymap("n", "<leader>tm", ":lua require('telescope').extensions.media_files.media_files({layout_config={width=0.99,height=0.99}})<cr>", opts)
