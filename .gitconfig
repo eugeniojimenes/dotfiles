@@ -10,4 +10,4 @@
 [init]
 	defaultBranch = develop
 [commit]
-	template = ~/.gitmessage
+	template = ~/dotfiles/.gitmessage

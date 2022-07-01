@@ -31,6 +31,8 @@ commit message template defined in [.gitmessage](./.gitmessage), which was inspi
 A Font package that I use in Tilix and Neovim. To install or read more about see:
 <https://github.com/ryanoasis/nerd-fonts>.
 
+For Arch Linux you can use this [AUR package](https://aur.archlinux.org/packages/nerd-fonts-complete).
+
 ## Oh My Zsh
 I use `zsh` shell with [*Oh My Zsh*](https://github.com/ohmyzsh/ohmyzsh) manager. To check if you
 have it installed in your linux and if it is defined as default shell, use:
@@ -53,8 +55,10 @@ should have *NerdFonts* installed!**). To add in your *Oh My Zsh*, execute:
 ```bash
 $ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 ```
-Also add `ZSH_THEME="powerlevel10k/powerlevel10k"` in your `~/.zshrc`.
+Also add `ZSH_THEME="powerlevel10k/powerlevel10k"` in your `~/.zshrc` (in my already has it).
 
+For the plugins, install [rvm](https://rvm.io/) and
+[nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ## Tilix Terminal Emulator
 To import my setup (**it should have *Nerd Fonts* installed!**) execute:
@@ -67,11 +71,26 @@ Set of plugins and settings that I use in Neovim. To organized it (and don't let
 single file) I spread my setup in other files as you can see in [nvim/lua/user](./nvim/lua/user),
 keeping [init.lua](./nvim/init.lua) simple, only to load the other configuration files.
 
+Packages that I usually need to install for a good `:checkhealth`:
+```sh
+sudo pacman -S wget fd ripgrep xclip
+npm install -g neovim
+gem install neovim
+```
+
 Copy, change and use it at will. Suggestions and (polite) criticism are welcome 🤓.
 
 **NOTE**: To use the [vim-devicons](https://github.com/ryanoasis/vim-devicons) icons you need to
 install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator profile or if
 you use Tilix you can use my settings as I explained before.
+
+## My symbolic links
+
+```sh
+ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+ln -s ~/dotfiles/.zshrc ~/.zshrc
+ln -s ~/dotfiles/nvim ~/.config/nvim
+```
 
 ## Licence
 Licensed under MIT, see [LICENSE](/LICENSE).
