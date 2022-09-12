@@ -10,7 +10,8 @@ end
 configs.setup {
   ensure_installed = {
     "lua", "bash", "make", "dockerfile", "regex",
-    "html", "css", "scss", "json", "markdown", "yaml", "embedded_template",
+    "html", "css", "scss", "json", "yaml",
+    "markdown", "markdown_inline", "embedded_template",
     "ruby", "python", "javascript", "typescript",
   }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)

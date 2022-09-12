@@ -40,11 +40,11 @@ local options = {
   writebackup = false,                     -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
 }
 
-vim.opt.shortmess:append "c"
-
-for k, v in pairs(options) do
-  vim.opt[k] = v
+for key, value in pairs(options) do
+  vim.opt[key] = value
 end
 
+vim.opt.shortmess:append "c"               -- Don't pass messages to |ins-completion-menu|.
+
 vim.cmd "set whichwrap+=<,>,[,],h,l"
-vim.cmd [[set iskeyword+=-]]
+vim.cmd [[set iskeyword+=-]]               -- consider '+', '=' and '-' as part of a word
