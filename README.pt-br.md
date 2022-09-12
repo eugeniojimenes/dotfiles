@@ -31,6 +31,10 @@ mensagem commit descrito pelo [.gitmessage](./.gitmessage), inspirado no
 Pacote de fontes que utilizo no Tilix e no Neovim. Para instalar ou ver mais sobre acesse:
 <https://github.com/ryanoasis/nerd-fonts>.
 
+Para Arch Linux você pode usar este [pacote AUR](https://aur.archlinux.org/packages/nerd-fonts-complete).
+
+Atualmente estou usando o **FireCode Nerd Font Regular** deste pacote AUR.
+
 ## Oh My Zsh
 Utilizo o *shell* `zsh` com gerenciador [*Oh My Zsh*](https://github.com/ohmyzsh/ohmyzsh). Para
 utiliza-lo verifique se vc tem o `zsh` instalado no seu linux com:
@@ -52,6 +56,8 @@ $ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:
 E adicione `ZSH_THEME="powerlevel10k/powerlevel10k"` no seu `~/.zshrc` (já consta no que esta neste
 repositório).
 
+Para os plugins, instale [rvm](https://rvm.io/) e
+[nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ## Terminal Tilix
 Para importar as configurações (**precisa do *Nerd Fonts* instalado!**) execute:
@@ -65,11 +71,26 @@ Conjunto de plugins e configurações que utilizo no Neovim. Para organizar (e n
 [nvim/lua/user](./nvim/lua/user), mantendo o [init.lua](./nvim/init.lua) simples, apenas para
 carregar os demais arquivos.
 
+Pacotes que normalmente preciso instalar para obter um "bom" `:checkhealth`:
+```sh
+sudo pacman -S wget fd ripgrep xclip
+npm install -g neovim
+gem install neovim
+```
+
 Copie, altere e utilize á vontade. Sugestões e criticas (educadas) são bem vindas 🤓.
 
 **OBS**: Para utilizar os ícones do [vim-devicons](https://github.com/ryanoasis/vim-devicons) é
 preciso instalar o [Nerd Fonts](https://www.nerdfonts.com) e habilita-lo no *profile* do seu
 terminal ou se for o Tilix pode usar minhas configurações como expliquei antes.
+
+## Meus *symbolic links*
+
+```sh
+ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+ln -s ~/dotfiles/.zshrc ~/.zshrc
+ln -s ~/dotfiles/nvim ~/.config/nvim
+```
 
 ## Licença
 Licenciado sob MIT, consulte o arquivo [LICENSE](/LICENSE).
