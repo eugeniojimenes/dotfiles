@@ -14,10 +14,10 @@ null_ls.setup {
     formatting.prettier.with { extra_args = { "--single-quote", "--jsx-single-quote" } }, -- Prettier is an opinionated code formatter for javascript, javascriptreact , typescript , typescriptreact , vue, css, scss , less, html, json, jsonc , yaml, markdown, graphql, handlebars
     formatting.black.with { extra_args = { "--fast" } }, -- The uncompromising Python code formatter
     formatting.stylua, -- An opinionated code formatter for Lua
-    formatting.rubocop, -- Ruby static code analyzer and formatter, based on the community Ruby style guide
+    -- formatting.rubocop, -- Ruby static code analyzer and formatter, based on the community Ruby style guide
   },
   on_attach = function(client)
-    if client.resolved_capabilities.document_formatting then
+    if client.server_capabilities.document_formatting then
       vim.cmd([[
       augroup LspFormatting
         autocmd! * <buffer>
