@@ -5,7 +5,6 @@ if not status_ok then
 end
 
 local lualine_scheme = "darkplus_dark"
--- local lualine_scheme = "onedarker_alt"
 
 local status_theme_ok, theme = pcall(require, "lualine.themes." .. lualine_scheme)
 if not status_theme_ok then
@@ -36,7 +35,6 @@ local yellow_orange = "#D7BA7D"
 local purple = "#C586C0"
 
 if lualine_scheme == "darkplus_dark" then
-  -- gray = "#3e3e3e"
   gray = "#303030"
   dark_gray = "#303030"
   red = "#bf616a"
@@ -140,9 +138,7 @@ local right_pad_alt = {
 local mode = {
   -- mode component
   function()
-    -- return "▊"
     return " "
-    -- return "  "
   end,
   color = function()
     -- auto change color according to neovims mode
@@ -163,15 +159,13 @@ local hide_in_width_100 = function()
   return vim.o.columns > 100
 end
 
-local icons = require "user.icons"
-
 local diagnostics = {
   "diagnostics",
   sources = { "nvim_diagnostic" },
   sections = { "error", "warn" },
   symbols = {
-    error = "%#SLError#" .. icons.diagnostics.Error .. "%*" .. " ",
-    warn = "%#SLWarning#" .. icons.diagnostics.Warning .. "%*" .. " ",
+    error = "%#SLError# %* ",
+    warn = "%#SLWarning# %* ",
   },
   colored = false,
   update_in_insert = false,
@@ -182,7 +176,11 @@ local diagnostics = {
 local diff = {
   "diff",
   colored = false,
-  symbols = { added = icons.git.Add .. " ", modified = icons.git.Mod .. " ", removed = icons.git.Remove .. " " }, -- changes diff symbols
+  symbols = {
+    added = " ",
+    modified = " ",
+    removed =" "
+  }, -- changes diff symbols
   cond = hide_in_width_60,
   separator = "%#SLSeparator#" .. "│ " .. "%*",
 }
@@ -210,7 +208,7 @@ local filetype = {
     end
 
     if str == "TelescopePrompt" then
-      return return_val(icons.ui.Telescope)
+      return return_val(" ")
     end
 
     local function get_term_num()
@@ -222,9 +220,7 @@ local filetype = {
     end
 
     if str == "toggleterm" then
-      -- 
       local term = "%#SLTermIcon#" .. " " .. "%*" .. "%#SLFT#" .. get_term_num() .. "%*"
-
       return return_val(term)
     end
 
@@ -368,17 +364,6 @@ local lanuage_server = {
 
     local clients = vim.lsp.buf_get_clients()
     local client_names = {}
-    local copilot_active = false
-
-    -- add client
-    for _, client in pairs(clients) do
-      if client.name ~= "copilot" and client.name ~= "null-ls" then
-        table.insert(client_names, client.name)
-      end
-      if client.name == "copilot" then
-        copilot_active = true
-      end
-    end
 
     -- add formatter
     local s = require "null-ls.sources"
@@ -409,11 +394,8 @@ local lanuage_server = {
     if client_names_str_len ~= 0 then
       language_servers = hl_str("", "SLSep") .. hl_str(client_names_str, "SLSeparator") .. hl_str("", "SLSep")
     end
-    if copilot_active then
-      language_servers = language_servers .. "%#SLCopilot#" .. " " .. icons.git.Octoface .. "%*"
-    end
 
-    if client_names_str_len == 0 and not copilot_active then
+    if client_names_str_len == 0 then
       return ""
     else
       M.language_servers = language_servers

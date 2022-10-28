@@ -58,8 +58,8 @@ return packer.startup(function(use)
   -- Pretty Icons (it requeres nerd-font!)
   use "kyazdani42/nvim-web-devicons"
 
-  -- -- Startup
-  -- use "goolord/alpha-nvim"
+  -- Startup
+  use "goolord/alpha-nvim"
   
   -- Comment
   use "numToStr/Comment.nvim"

@@ -81,7 +81,7 @@ keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
 keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.9,height=0.9}})<cr>", opts)
 keymap("n", "<leader>tg", ":lua require('telescope.builtin').live_grep({layout_config={width=0.9,height=0.9}})<cr>", opts)
 -- keymap("n", "<leader>tm", ":lua require('telescope').extensions.media_files.media_files({layout_config={width=0.9,height=0.9}})<cr>", opts)
-keymap("n", "<leader>tp", ":Telescope projects<cr>", opts)
+keymap("n", "<leader>tp", ":lua require('telescope').extensions.projects.projects({layout_config={width=0.8,height=0.8}})<cr>", opts)
 keymap("n", "<leader>tb", ":lua require('telescope.builtin').buffers({layout_config={width=0.9,height=0.9}})<cr>", opts)
 
 -- -- Fugitive (NORMAL MODE) --
