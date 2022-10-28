@@ -5,13 +5,11 @@ end
 
 bufferline.setup {
   options = {
-    mode = "buffers", -- set to "tabs" to only show tabpages instead
     numbers = "none", -- | "ordinal" | "buffer_id" | "both" | function({ ordinal, id, lower, raise }): string,
-    -- number_style = "superscript" | "subscript" | "" | { "none", "subscript" }, -- buffer_id at index 1, ordinal at index 2
-    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
-    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
-    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
-    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
+    close_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
+    right_mouse_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
+    left_mouse_command = "buffer %d", -- can be a string | function, see "Mouse actions"
+    middle_mouse_command = nil, -- can be a string | function, see "Mouse actions"
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
@@ -38,13 +36,13 @@ bufferline.setup {
     max_name_length = 30,
     max_prefix_length = 30, -- prefix used when a buffer is de-duplicated
     tab_size = 21,
-    diagnostics = "nvim_lsp", -- | false | "coc",
+    diagnostics = false, -- | "nvim_lsp" | "coc",
     diagnostics_update_in_insert = false,
     -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
     --   return "("..count..")"
     -- end,
-    -- -- NOTE: this will be called a lot so don't do any heavy processing here
-    -- custom_filter = function(buf_number, buf_numbers)
+    -- NOTE: this will be called a lot so don't do any heavy processing here
+    -- custom_filter = function(buf_number)
     --   -- filter out filetypes you don't want to see
     --   if vim.bo[buf_number].filetype ~= "<i-dont-want-to-see-this>" then
     --     return true
@@ -58,13 +56,9 @@ bufferline.setup {
     --   if vim.fn.getcwd() == "<work-repo>" and vim.bo[buf_number].filetype ~= "wiki" then
     --     return true
     --   end
-    --   -- filter out by it's index number in list (don't show first buffer)
-    --   if buf_numbers[1] ~= buf_number then
-    --     return true
-    --   end
     -- end,
-    offsets = { { filetype = "NvimTree", text = "File Explorer", padding = 1 } },
-    show_buffer_icons = true, -- disable filetype icons for buffers
+    offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+    show_buffer_icons = true,
     show_buffer_close_icons = true,
     show_close_icon = true,
     show_tab_indicators = true,

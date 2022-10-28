@@ -48,3 +48,4 @@ vim.opt.shortmess:append "c"               -- Don't pass messages to |ins-comple
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
 vim.cmd [[set iskeyword+=-]]               -- consider '+', '=' and '-' as part of a word
+

@@ -450,4 +450,4 @@ lualine.setup {
   },
   tabline = {},
   extensions = {},
-}
+} 
