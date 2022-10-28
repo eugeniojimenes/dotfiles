@@ -40,29 +40,38 @@ packer.init {
 
 -- Install your plugins here
 return packer.startup(function(use)
-  -- My plugins here
-  use "wbthomason/packer.nvim" -- Have packer manage itself
-  use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
-  use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
-  use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
-  use { -- I still prefer this plugin for commenting :)
-    "preservim/nerdcommenter",
-    config = function()
-      vim.g.NERDDefaultAlign = "left"
-      vim.g.NERDSpaceDelims = 1
-    end
-  }
-  use "gabesoft/vim-ags" -- :Ags commands
+  -- Basics
+  use "wbthomason/packer.nvim"        -- Have packer manage itself
+  use "nvim-lua/popup.nvim"           -- An implementation of the Popup API from vim in Neovim
+  use "nvim-lua/plenary.nvim"         -- Useful lua functions used ny lots of plugins
+  use "windwp/nvim-autopairs"         -- Autopairs, integrates with both cmp and treesitter
+  -- use {                               -- I still prefer this plugin for commenting :)
+  --   "preservim/nerdcommenter",
+  --   config = function()
+  --     vim.g.NERDDefaultAlign = "left"
+  --     vim.g.NERDSpaceDelims = 1
+  --   end
+  -- }
+  use "gabesoft/vim-ags"              -- :Ags commands
+  use "lewis6991/impatient.nvim"      -- Optimisations
 
-  -- Nvim Tree
+  -- Pretty Icons (it requeres nerd-font!)
   use "kyazdani42/nvim-web-devicons"
+
+  -- -- Startup
+  -- use "goolord/alpha-nvim"
+  
+  -- Comment
+  use "numToStr/Comment.nvim"
+
+  -- File Explorer
   use "kyazdani42/nvim-tree.lua"
 
   -- Buffer Line
-  use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
+  use { 'akinsho/bufferline.nvim', tag = "v3.*" }
   use "moll/vim-bbye"
 
-  -- Lua Line
+  -- Statusline
   use "nvim-lualine/lualine.nvim"
 
   -- Colorschemes
@@ -72,46 +81,61 @@ return packer.startup(function(use)
   -- use "lunarvim/colorschemes"
   -- use "rebelot/kanagawa.nvim"
 
-  -- cmp plugins
-  use "hrsh7th/nvim-cmp" -- The completion plugin
-  use "hrsh7th/cmp-buffer" -- buffer completions
-  use "hrsh7th/cmp-path" -- path completions
-  use "hrsh7th/cmp-cmdline" -- cmdline completions
-  use "saadparwaiz1/cmp_luasnip" -- snippet completions
+  -- Terminals (persist and toggle multiple terminals)
+  use "akinsho/toggleterm.nvim"
+
+  -- Indentation guides (all lines including empty lines)
+  use "lukas-reineke/indent-blankline.nvim"
+
+  -- Project Management
+  use "ahmedkhalf/project.nvim"
+
+  -- Completions (CMP)
+  use "hrsh7th/nvim-cmp"             -- The completion plugin
+  use "hrsh7th/cmp-buffer"           -- buffer completions
+  use "hrsh7th/cmp-path"             -- path completions
+  use "hrsh7th/cmp-cmdline"          -- cmdline completions
+  use "saadparwaiz1/cmp_luasnip"     -- snippet completions
   use "hrsh7th/cmp-nvim-lsp"
   use "hrsh7th/cmp-nvim-lua"
 
   -- snippets
-  use "L3MON4D3/LuaSnip" --snippet engine
+  use "L3MON4D3/LuaSnip"             --snippet engine
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
 
   -- LSP
-  use "neovim/nvim-lspconfig" -- enable LSP
+  use "neovim/nvim-lspconfig"        -- enable LSP
   use "williamboman/nvim-lsp-installer" -- simple to use language server installer
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
+  use "RRethy/vim-illuminate"        -- highlighting other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching.
 
-  -- Telescope
+  -- Fuzzy Finder/Telescope
   use "nvim-telescope/telescope.nvim"
-  use 'nvim-telescope/telescope-media-files.nvim'
+  -- use 'nvim-telescope/telescope-media-files.nvim'
 
   -- Treesitter
   use {
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
   }
-  use "JoosepAlviste/nvim-ts-context-commentstring"
+  -- use "windwp/nvim-ts-autotag"
+  -- use "JoosepAlviste/nvim-ts-context-commentstring"
 
   -- Git
   use "lewis6991/gitsigns.nvim"
-  use "tpope/vim-fugitive"
+  -- use "tpope/vim-fugitive"
+
+  -- Debugging
+  use "mfussenegger/nvim-dap"
+  use "rcarriga/nvim-dap-ui"
 
   -- Markdown
-  use {
-    "preservim/vim-markdown",
-    config = function()
-      vim.g.vim_markdown_folding_disabled = 1
-    end
-  }
+  -- use {
+  --   "preservim/vim-markdown",
+  --   config = function()
+  --     vim.g.vim_markdown_folding_disabled = 1
+  --   end
+  -- }
   -- use {
   --   "gabrielelana/vim-markdown",
   --   config = function()

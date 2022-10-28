@@ -11,9 +11,10 @@ configs.setup {
   ensure_installed = {
     "lua", "bash", "make", "dockerfile", "regex",
     "html", "css", "scss", "json", "yaml",
-    "markdown", "markdown_inline", "embedded_template",
+    "markdown", "markdown_inline",
     "ruby", "python", "javascript", "typescript",
   }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+     -- NOTE: "embedded_template" is freezing in .html.erb files!!!
   sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
   ignore_install = { "" }, -- List of parsers to ignore installing
   autopairs = {
