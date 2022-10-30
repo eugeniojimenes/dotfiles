@@ -54,6 +54,7 @@ return packer.startup(function(use)
   -- }
   use "gabesoft/vim-ags"              -- :Ags commands
   use "lewis6991/impatient.nvim"      -- Optimisations
+  use "christianchiarulli/lua-dev.nvim"
 
   -- Pretty Icons (it requeres nerd-font!)
   use "kyazdani42/nvim-web-devicons"
@@ -105,9 +106,14 @@ return packer.startup(function(use)
 
   -- LSP
   use "neovim/nvim-lspconfig"        -- enable LSP
-  use "williamboman/nvim-lsp-installer" -- simple to use language server installer
+  -- use "williamboman/nvim-lsp-installer" -- simple to use language server installer
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
   use "RRethy/vim-illuminate"        -- highlighting other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching.
+  use "williamboman/mason.nvim"
+  use "williamboman/mason-lspconfig.nvim"
+  use "SmiteshP/nvim-navic"
+  use "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
+  use "ray-x/lsp_signature.nvim"
 
   -- Fuzzy Finder/Telescope
   use "nvim-telescope/telescope.nvim"

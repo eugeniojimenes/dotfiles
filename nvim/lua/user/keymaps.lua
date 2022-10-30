@@ -37,8 +37,6 @@ keymap("n", "<S-Tab>", ":bprevious<CR>", opts)
 keymap("n", "<A-k>", "<Esc>:m .-2<CR>==gi", opts)
 keymap("n", "<A-j>", "<Esc>:m .+1<CR>==gi", opts)
 
--- -- INSERT MODE SHORTCUTS -- --
-
 -- Stay in indent mode (VISUAL MODE) --
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
@@ -122,4 +120,6 @@ keymap("n", "<leader>tb", ":lua require('telescope.builtin').buffers({layout_con
 -- -- against older versions of the file.
 -- keymap("n", "<leader>gD", ":tab Gvdiffsplit<CR>", opts)
 
+keymap("n", "<M-h>", ":echo 'foiiii!!!!!'<CR>", opts)
+keymap("n", "<leader>hh", ":echo 'foiiii!!!!!'<CR>", opts)
 
