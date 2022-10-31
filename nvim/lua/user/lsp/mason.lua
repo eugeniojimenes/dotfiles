@@ -9,19 +9,20 @@ if not status_ok_1 then
 end
 
 local servers = {
+  "bashls",
+  "clangd",
   "cssls",
   "cssmodules_ls",
   "emmet_ls",
   "html",
   "jsonls",
+  "lemminx",
+  "pyright",
+  "solargraph",
   "sumneko_lua",
   "tsserver",
-  "pyright",
   "yamlls",
-  "bashls",
-  "clangd",
-  "zk@v0.10.1", -- Search for!!!
-  "lemminx"
+  "zk@v0.10.1" -- Search for!!!
 }
 
 local settings = {
@@ -58,10 +59,10 @@ for _, server in pairs(servers) do
 
   server = vim.split(server, "@")[1]
 
-  -- if server == "jsonls" then
-  --   local jsonls_opts = require "user.lsp.settings.jsonls"
-  --   opts = vim.tbl_deep_extend("force", jsonls_opts, opts)
-  -- end
+  if server == "jsonls" then
+    local jsonls_opts = require "user.lsp.settings.jsonls"
+    opts = vim.tbl_deep_extend("force", jsonls_opts, opts)
+  end
 
   if server == "yamlls" then
     local yamlls_opts = require "user.lsp.settings.yamlls"
@@ -102,6 +103,11 @@ for _, server in pairs(servers) do
   if server == "emmet_ls" then
     local emmet_ls_opts = require "user.lsp.settings.emmet_ls"
     opts = vim.tbl_deep_extend("force", emmet_ls_opts, opts)
+  end
+
+  if server == "solargraph" then
+    local solargraph_opts = require "user.lsp.settings.solargraph"
+    opts = vim.tbl_deep_extend("force", solargraph_opts, opts)
   end
 
   if server == "zk" then

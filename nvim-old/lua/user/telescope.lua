@@ -8,57 +8,9 @@ local actions = require "telescope.actions"
 telescope.setup {
   defaults = {
 
-    prompt_prefix = " ",
+    prompt_prefix = " ",
     selection_caret = " ",
-    path_display = { "truncate" },
-    file_ignore_patterns = {
-      ".git/",
-      "target/",
-      "docs/",
-      "vendor/*",
-      "%.lock",
-      "__pycache__/*",
-      "%.sqlite3",
-      "%.ipynb",
-      "node_modules/*",
-      "%.otf",
-      "%.ttf",
-      "%.webp",
-      ".dart_tool/",
-      ".github/",
-      ".gradle/",
-      ".idea/",
-      ".vscode/",
-      "__pycache__/",
-      "build/",
-      "env/",
-      "gradle/",
-      "node_modules/",
-      "%.pdb",
-      "%.dll",
-      "%.class",
-      "%.exe",
-      "%.cache",
-      "%.ico",
-      "%.pdf",
-      "%.dylib",
-      "%.jar",
-      "%.docx",
-      "%.met",
-      "smalljre_*/*",
-      ".vale/",
-      "%.burp",
-      "%.mp4",
-      "%.mkv",
-      "%.rar",
-      "%.zip",
-      "%.7z",
-      "%.tar",
-      "%.bz2",
-      "%.epub",
-      "%.flac",
-      "%.tar.gz",
-    },
+    path_display = { "smart" },
 
     mappings = {
       i = {
@@ -68,35 +20,28 @@ telescope.setup {
         ["<C-j>"] = actions.move_selection_next,
         ["<C-k>"] = actions.move_selection_previous,
 
-        ["<C-b>"] = actions.results_scrolling_up,
-        ["<C-f>"] = actions.results_scrolling_down,
-
         ["<C-c>"] = actions.close,
 
         ["<Down>"] = actions.move_selection_next,
         ["<Up>"] = actions.move_selection_previous,
 
         ["<CR>"] = actions.select_default,
-        ["<C-s>"] = actions.select_horizontal,
+        ["<C-x>"] = actions.select_horizontal,
         ["<C-v>"] = actions.select_vertical,
         ["<C-t>"] = actions.select_tab,
 
-        ["<c-d>"] = require("telescope.actions").delete_buffer,
-
         ["<C-u>"] = actions.preview_scrolling_up,
         ["<C-d>"] = actions.preview_scrolling_down,
+
         ["<PageUp>"] = actions.results_scrolling_up,
         ["<PageDown>"] = actions.results_scrolling_down,
 
-        -- ["<Tab>"] = actions.close,
-        -- ["<S-Tab>"] = actions.close,
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
         ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
         ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
         ["<C-l>"] = actions.complete_tag,
-        ["<C-h>"] = actions.which_key, -- keys from pressing <C-h>
-        ["<esc>"] = actions.close,
+        ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
       },
 
       n = {
@@ -105,11 +50,7 @@ telescope.setup {
         ["<C-x>"] = actions.select_horizontal,
         ["<C-v>"] = actions.select_vertical,
         ["<C-t>"] = actions.select_tab,
-        ["<C-b>"] = actions.results_scrolling_up,
-        ["<C-f>"] = actions.results_scrolling_down,
 
-        -- ["<Tab>"] = actions.close,
-        -- ["<S-Tab>"] = actions.close,
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
         ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
@@ -120,11 +61,6 @@ telescope.setup {
         ["H"] = actions.move_to_top,
         ["M"] = actions.move_to_middle,
         ["L"] = actions.move_to_bottom,
-        ["q"] = actions.close,
-        ["dd"] = require("telescope.actions").delete_buffer,
-        ["s"] = actions.select_horizontal,
-        ["v"] = actions.select_vertical,
-        ["t"] = actions.select_tab,
 
         ["<Down>"] = actions.move_selection_next,
         ["<Up>"] = actions.move_selection_previous,
@@ -142,13 +78,27 @@ telescope.setup {
     },
   },
   pickers = {
+    -- Default configuration for builtin pickers goes here:
+    -- picker_name = {
+    --   picker_config_key = value,
+    --   ...
+    -- }
+    -- Now the picker_config_key will be applied every time you call this
+    -- builtin picker
   },
-  -- extensions = {
-  --   media_files = {
-  --     -- filetypes whitelist
-  --     -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
-  --     filetypes = { "png", "webp", "jpg", "jpeg" },
-  --     find_cmd = "rg", -- find command (defaults to `fd`)
-  --   },
-  -- },
+  extensions = {
+    media_files = {
+        -- filetypes whitelist
+        -- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
+        filetypes = {"png", "webp", "jpg", "jpeg"},
+        find_cmd = "rg" -- find command (defaults to `fd`)
+      }
+    -- Your extension configuration goes here:
+    -- extension_name = {
+    --   extension_config_key = value,
+    -- }
+    -- please take a look at the readme of the extension you want to configure
+  },
 }
+
+telescope.load_extension('media_files')
