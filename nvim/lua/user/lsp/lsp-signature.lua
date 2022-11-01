@@ -1,3 +1,6 @@
+-- Source: https://github.com/ray-x/lsp_signature.nvim
+-- "Show function signature when you type"
+
 local status_ok, signature = pcall(require, "lsp_signature")
 if not status_ok then
   return

@@ -109,11 +109,11 @@ return packer.startup(function(use)
   -- use "williamboman/nvim-lsp-installer" -- simple to use language server installer
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
   use "RRethy/vim-illuminate"        -- highlighting other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching.
-  use "williamboman/mason.nvim"
-  use "williamboman/mason-lspconfig.nvim"
+  use "williamboman/mason.nvim"      -- Easily install and manage LSP servers, DAP servers, linters, and formatters
+  use "williamboman/mason-lspconfig.nvim" -- work together with lspconfig
   use "SmiteshP/nvim-navic"
   use "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
-  use "ray-x/lsp_signature.nvim"
+  use "ray-x/lsp_signature.nvim"    -- Show function signature when you type
   use "b0o/SchemaStore.nvim"
 
   -- Fuzzy Finder/Telescope

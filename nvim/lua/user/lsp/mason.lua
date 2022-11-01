@@ -1,3 +1,6 @@
+-- Source: https://github.com/williamboman/mason.nvim
+-- "Easily install and manage LSP servers, DAP servers, linters, and formatters."
+
 local status_ok, mason = pcall(require, "mason")
 if not status_ok then
   return
@@ -20,6 +23,7 @@ local servers = {
   "pyright",
   "solargraph",
   "sumneko_lua",
+  "tailwindcss",
   "tsserver",
   "yamlls",
   "zk@v0.10.1" -- Search for!!!
@@ -74,16 +78,10 @@ for _, server in pairs(servers) do
     if not l_status_ok then
       return
     end
-    -- local sumneko_opts = require "user.lsp.settings.sumneko_lua"
-    -- opts = vim.tbl_deep_extend("force", sumneko_opts, opts)
-    -- opts = vim.tbl_deep_extend("force", require("lua-dev").setup(), opts)
     local luadev = lua_dev.setup {
-      --   -- add any options here, or leave empty to use the default settings
-      -- lspconfig = opts,
       lspconfig = {
         on_attach = opts.on_attach,
         capabilities = opts.capabilities,
-        --   -- settings = opts.settings,
       },
     }
     lspconfig.sumneko_lua.setup(luadev)
@@ -118,6 +116,3 @@ for _, server in pairs(servers) do
   lspconfig[server].setup(opts)
   ::continue::
 end
-
--- TODO: add something to installer later
--- require("lspconfig").motoko.setup {}
