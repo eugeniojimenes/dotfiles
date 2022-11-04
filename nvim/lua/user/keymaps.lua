@@ -9,7 +9,7 @@ local keymap = vim.keymap.set
 keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
- 
+
 -- Modes:
 --   normal_mode = "n",
 --   insert_mode = "i",
@@ -20,8 +20,7 @@ vim.g.maplocalleader = " "
 
 -- Clear and Close (NORMAL MODE) --
 keymap("n", "<C-L>", ":nohls<CR><C-L>", opts) -- Clear highlighted search.
-keymap("n", "<leader>q", ":Bdelete!<cr>", opts) -- Close the buffer without closing the window (doesn't close your :split).
--- keymap("n", "<leader>f", ":Format<cr>", opts) -- Calls formatter
+-- keymap("n", "<leader>q", ":Bdelete!<cr>", opts) -- Close the buffer without closing the window (doesn't close your :split).
 
 -- Resize with arrows (NORMAL MODE) --
 keymap("n", "<C-Up>", ":resize -2<CR>", opts)
@@ -60,7 +59,7 @@ keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
 keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
 
 -- Nvimtree (NORMAL MODE) --
-keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
+-- keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
 
 -- Comment Plugin --
 -- (NORMAL MODE) --
@@ -76,11 +75,10 @@ keymap("n", "<leader>e", ":NvimTreeToggle<cr>", opts)
 
 -- Telescope (NORMAL MODE) --
 --- NOTE: live grep requires ripgrep: sudo pacman -S ripgrep
-keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.9,height=0.9}})<cr>", opts)
-keymap("n", "<leader>tg", ":lua require('telescope.builtin').live_grep({layout_config={width=0.9,height=0.9}})<cr>", opts)
--- keymap("n", "<leader>tm", ":lua require('telescope').extensions.media_files.media_files({layout_config={width=0.9,height=0.9}})<cr>", opts)
-keymap("n", "<leader>tp", ":lua require('telescope').extensions.projects.projects({layout_config={width=0.8,height=0.8}})<cr>", opts)
-keymap("n", "<leader>tb", ":lua require('telescope.builtin').buffers({layout_config={width=0.9,height=0.9}})<cr>", opts)
+-- keymap("n", "<leader>tf", ":lua require('telescope.builtin').find_files({layout_config={width=0.9,height=0.9}})<cr>", opts)
+-- keymap("n", "<leader>tg", ":lua require('telescope.builtin').live_grep({layout_config={width=0.9,height=0.9}})<cr>", opts)
+-- keymap("n", "<leader>tp", ":lua require('telescope').extensions.projects.projects({layout_config={width=0.8,height=0.8}})<cr>", opts)
+-- keymap("n", "<leader>tb", ":lua require('telescope.builtin').buffers({layout_config={width=0.9,height=0.9}})<cr>", opts)
 
 -- -- Fugitive (NORMAL MODE) --
 -- -- NOTE: I only use tab-pages for fugitive plugin
@@ -119,7 +117,3 @@ keymap("n", "<leader>tb", ":lua require('telescope.builtin').buffers({layout_con
 -- -- that buffer to stage the changes. You can also give an arbitrary ':Gedit' argument to diff
 -- -- against older versions of the file.
 -- keymap("n", "<leader>gD", ":tab Gvdiffsplit<CR>", opts)
-
-keymap("n", "<M-h>", ":echo 'foiiii!!!!!'<CR>", opts)
-keymap("n", "<leader>hh", ":echo 'foiiii!!!!!'<CR>", opts)
-

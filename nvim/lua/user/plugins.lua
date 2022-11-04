@@ -59,6 +59,9 @@ return packer.startup(function(use)
   -- Pretty Icons (it requeres nerd-font!)
   use "kyazdani42/nvim-web-devicons"
 
+  -- Keybinding
+  use "folke/which-key.nvim"
+
   -- Startup
   use "goolord/alpha-nvim"
 
@@ -107,6 +110,7 @@ return packer.startup(function(use)
   -- LSP
   use "neovim/nvim-lspconfig"        -- enable LSP
   -- use "williamboman/nvim-lsp-installer" -- simple to use language server installer
+  -- use "folke/trouble.nvim"  -- showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
   use "RRethy/vim-illuminate"        -- highlighting other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching.
   use "williamboman/mason.nvim"      -- Easily install and manage LSP servers, DAP servers, linters, and formatters
@@ -115,6 +119,10 @@ return packer.startup(function(use)
   use "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
   use "ray-x/lsp_signature.nvim"    -- Show function signature when you type
   use "b0o/SchemaStore.nvim"
+  use "simrat39/symbols-outline.nvim"
+  use "j-hui/fidget.nvim"
+  use "lvimuser/lsp-inlayhints.nvim"
+  -- use "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
 
   -- Fuzzy Finder/Telescope
   use "nvim-telescope/telescope.nvim"
@@ -130,6 +138,10 @@ return packer.startup(function(use)
 
   -- Git
   use "lewis6991/gitsigns.nvim"
+  use "f-person/git-blame.nvim"
+  use "ruifm/gitlinker.nvim"
+  use "mattn/vim-gist"
+  use "mattn/webapi-vim"
   -- use "tpope/vim-fugitive"
 
   -- Debugging
