@@ -1,3 +1,6 @@
+-- Source: https://github.com/folke/which-key.nvim
+-- displays a popup with possible key bindings of the command you started typing
+
 local status_ok, which_key = pcall(require, "which-key")
 if not status_ok then
   return
@@ -223,7 +226,7 @@ local mappings = {
     name = "LSP",
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
     c = { "<cmd>lua require('user.lsp').server_capabilities()<cr>", "Get Capabilities" },
-    d = { "<cmd>TroubleToggle<cr>", "Diagnostics" },
+    d = { "<cmd>lua vim.diagnostic.open_float()<cr>", "Line Diagnostic" },
     w = { "<cmd>Telescope lsp_workspace_diagnostics layout_config={width=0.9,height=0.9}<cr>", "Workspace Diagnostics" },
     f = { "<cmd>lua vim.lsp.buf.format({ async = true })<cr>", "Format" },
     F = { "<cmd>LspToggleAutoFormat<cr>", "Toggle Autoformat" },

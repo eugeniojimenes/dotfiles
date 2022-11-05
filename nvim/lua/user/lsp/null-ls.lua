@@ -21,10 +21,13 @@ null_ls.setup {
     formatting.rustywind.with { -- CLI for organizing Tailwind CSS classes
       filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "html", "eruby" }
     },
-    formatting.rubocop,   -- Ruby static code analyzer and formatter, based on the community Ruby style guide.
+    formatting.rubocop.with({   -- Ruby static code analyzer and formatter, based on the community Ruby style guide.
+      -- NOTE: Using 'extra_args' doesn't work here because we need to replace the '-a' flag for '-A'
+      args = { "-A", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" },
+    }),
     diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
-    -- formatting.erb_lint,  -- Lint your ERB or HTML files
-    -- diagnostics.erb_lint, -- Lint your ERB or HTML files
+    formatting.erb_lint,  -- Lint your ERB or HTML files
+    diagnostics.erb_lint, -- Lint your ERB or HTML files
   },
 }
 

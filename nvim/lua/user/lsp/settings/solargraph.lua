@@ -1,7 +1,10 @@
 return {
+  cmd = {'solargraph', 'stdio'},
+  filetypes = { "ruby", "eruby" },
   settings = {
-    Solargraph = {
-      root_dir = require("lspconfig").util.root_pattern("Gemfile", ".git")(fname) or vim.fn.getcwd()
+    solargraph = {
+      diagnostics = false,
+      formatting = false,
     },
   },
 }
