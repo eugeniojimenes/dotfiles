@@ -1,6 +1,6 @@
 return {
   cmd = {'solargraph', 'stdio'},
-  filetypes = { "ruby", "eruby" },
+  -- filetypes = { "ruby", "eruby" },
   settings = {
     solargraph = {
       diagnostics = false,

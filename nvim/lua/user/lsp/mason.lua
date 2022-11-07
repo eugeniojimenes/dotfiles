@@ -21,6 +21,7 @@ local servers = {
   "jsonls",
   "lemminx",
   "pyright",
+  "sorbet", -- Search for!!!
   "solargraph",
   "sumneko_lua",
   "tailwindcss",

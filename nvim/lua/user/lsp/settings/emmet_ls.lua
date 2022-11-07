@@ -1,5 +1,6 @@
--- https://github.com/pedro757/emmet
--- npm i -g ls_emmet
+-- Source: https://github.com/aca/emmet-ls
+-- "Emmet support based on LSP."
+
 return {
   cmd = { "ls_emmet", "--stdio" },
   filetypes = {

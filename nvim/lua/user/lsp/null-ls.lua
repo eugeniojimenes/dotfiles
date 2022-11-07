@@ -26,8 +26,8 @@ null_ls.setup {
       args = { "-A", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" },
     }),
     diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
-    formatting.erb_lint,  -- Lint your ERB or HTML files
-    diagnostics.erb_lint, -- Lint your ERB or HTML files
+    -- formatting.erb_lint,  -- Lint your ERB or HTML files
+    -- diagnostics.erb_lint, -- Lint your ERB or HTML files
   },
 }
 
