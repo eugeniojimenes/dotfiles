@@ -142,11 +142,7 @@ return packer.startup(function(use)
   use "ruifm/gitlinker.nvim"
   use "mattn/vim-gist"
   use "mattn/webapi-vim"
-  -- use "tpope/vim-fugitive"
-
-  -- Debugging
-  use "mfussenegger/nvim-dap"
-  use "rcarriga/nvim-dap-ui"
+  use "tpope/vim-fugitive"
 
   -- Markdown
   -- use {

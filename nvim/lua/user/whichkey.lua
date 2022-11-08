@@ -6,6 +6,19 @@ if not status_ok then
   return
 end
 
+-- Fugitive
+-- NOTE: I only use tab-pages for fugitive plugin
+vim.cmd[[
+function! CleanNoNameEmptyBuffers()
+  let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && empty(bufname(v:val)) && bufwinnr(v:val) < 0 && (getbufline(v:val, 1, "$") == [""])')
+  if !empty(buffers)
+    exe 'bd '.join(buffers, ' ')
+  else
+    echo 'No buffer deleted'
+  endif
+endfunction
+]]
+
 local setup = {
   plugins = {
     marks = true, -- shows a list of your marks on ' and `
@@ -119,7 +132,9 @@ local mappings = {
   h = { "<cmd>split<cr>", "split" },
   w = { "<cmd>w<CR>", "Write" },
   q = { "<cmd>Bdelete!<CR>", "Close Buffer" },
-  -- q = { '<cmd>lua require("user.functions").smart_quit()<CR>', "Quit" },
+  -- Closes current tab-page (and delete eventual unnamed empty buffers)
+  -- NOTE: This command is more like a 'exit' to the fugitive features.
+  ["cc"] = { "<cmd>tabclose<cr><cmd>call CleanNoNameEmptyBuffers()<cr>", "Close Buffer" },
   ["/"] = { '<cmd>lua require("Comment.api").toggle.linewise.current()<CR>', "Comment" },
   ["gy"] = "Link",
 
@@ -160,25 +175,6 @@ local mappings = {
     f = { "<cmd>lua require('spectre').open_file_search()<cr>", "Replace Buffer" },
   },
 
-  d = {
-    name = "Debug",
-    b = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Breakpoint" },
-    c = { "<cmd>lua require'dap'.continue()<cr>", "Continue" },
-    i = { "<cmd>lua require'dap'.step_into()<cr>", "Into" },
-    o = { "<cmd>lua require'dap'.step_over()<cr>", "Over" },
-    O = { "<cmd>lua require'dap'.step_out()<cr>", "Out" },
-    r = { "<cmd>lua require'dap'.repl.toggle()<cr>", "Repl" },
-    l = { "<cmd>lua require'dap'.run_last()<cr>", "Last" },
-    u = { "<cmd>lua require'dapui'.toggle()<cr>", "UI" },
-    x = { "<cmd>lua require'dap'.terminate()<cr>", "Exit" },
-  },
-
-  -- nnoremap <silent> <leader>B :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
-  -- nnoremap <silent> <leader>lp :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
-  -- require("dapui").open()
-  -- require("dapui").close()
-  -- require("dapui").toggle()
-
   f = {
     name = "Find",
     c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
@@ -210,6 +206,21 @@ local mappings = {
     B = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
     S = { "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", "Stage Hunk" },
     U = { "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>", "Undo Stage Hunk" },
+    f = {
+      name = "Git Fugitive",
+      a = { "<cmd>Git add -A<cr>", "git add -A" },
+      c = { "<cmd>tab Git commit --verbose<cr>", "Commit with editor" },
+      h = { "<cmd>Git push<cr>", "git push" },
+      l = { "<cmd>Git pull<cr>", "git pull" },
+      -- Open a temporary buffer with uncommitted files that each can be expand
+      -- with '=' to show details (toggling).
+      g = { "<cmd>tab Git<cr>", "uncommitted files details" },
+      L = { "<cmd>tabnew<cr><cmd>Gclog<cr>", "detailed commit history" },
+      -- Open a temporary buffer with maps for additional triage. Press enter
+      -- on a line to view the commit where the line changed, or 'g?' to see other available maps. Omit
+      -- the filename argument will be blame the currently edited file in a vertical split.
+      b = { "<cmd>tab Git blame<cr>", "Blame triage" },
+    },
     G = {
       name = "Gist",
       a = { "<cmd>Gist -b -a<cr>", "Create Anon" },
@@ -246,16 +257,6 @@ local mappings = {
     t = { '<cmd>lua require("user.functions").toggle_diagnostics()<cr>', "Toggle Diagnostics" },
     u = { "<cmd>LuaSnipUnlinkCurrent<cr>", "Unlink Snippet" },
   },
-
-  -- s = {
-  --   name = "Surround",
-  --   ["."] = { "<cmd>lua require('surround').repeat_last()<cr>", "Repeat" },
-  --   a = { "<cmd>lua require('surround').surround_add(true)<cr>", "Add" },
-  --   d = { "<cmd>lua require('surround').surround_delete()<cr>", "Delete" },
-  --   r = { "<cmd>lua require('surround').surround_replace()<cr>", "Replace" },
-  --   q = { "<cmd>lua require('surround').toggle_quotes()<cr>", "Quotes" },
-  --   b = { "<cmd>lua require('surround').toggle_brackets()<cr>", "Brackets" },
-  -- },
 
   S = {
     name = "SnipRun",
