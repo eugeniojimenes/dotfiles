@@ -5,13 +5,13 @@ end
 
 toggleterm.setup {
   -- size = 20,
-  -- size = function(term)
-  --   if term.direction == "horizontal" then
-  --     return 15
-  --   elseif term.direction == "vertical" then
-  --     return vim.o.columns * 0.4
-  --   end
-  -- end,
+  size = function(term)
+    if term.direction == "horizontal" then
+      return 15
+    elseif term.direction == "vertical" then
+      return vim.o.columns * 0.5
+    end
+  end,
   open_mapping = [[<c-t>]],
   hide_numbers = true,
   shade_filetypes = {},
@@ -45,6 +45,7 @@ end
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
 local Terminal = require("toggleterm.terminal").Terminal
+
 local lazygit = Terminal:new {
   cmd = "lazygit",
   hidden = true,
@@ -63,44 +64,42 @@ local lazygit = Terminal:new {
   end,
   count = 99,
 }
-
 function _LAZYGIT_TOGGLE()
   lazygit:toggle()
 end
 
 local node = Terminal:new { cmd = "node", hidden = true }
-
 function _NODE_TOGGLE()
   node:toggle()
 end
 
 local htop = Terminal:new { cmd = "htop", hidden = true }
-
 function _HTOP_TOGGLE()
   htop:toggle()
 end
 
 local python = Terminal:new { cmd = "python", hidden = true }
-
 function _PYTHON_TOGGLE()
   python:toggle()
+end
+
+local rails = Terminal:new { cmd = "rails c" }
+function _RAILS_TOGGLE()
+  rails:toggle()
 end
 
 local float_term = Terminal:new {
   direction = "float",
   count = 1,
 }
-
 function _FLOAT_TERM()
   float_term:toggle()
 end
 
 local vertical_term = Terminal:new {
   direction = "vertical",
-  size = 100,
   count = 2,
 }
-
 function _VERTICAL_TERM()
   vertical_term:toggle()
 end
@@ -109,7 +108,6 @@ local horizontal_term = Terminal:new {
   direction = "horizontal",
   count = 3,
 }
-
 function _HORIZONTAL_TERM()
   horizontal_term:toggle()
 end

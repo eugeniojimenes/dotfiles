@@ -159,15 +159,6 @@ local mappings = {
 
   },
 
-  -- s = {
-  --   name = "Session",
-  --   s = { "<cmd>SaveSession<cr>", "Save" },
-  --   r = { "<cmd>RestoreSession<cr>", "Restore" },
-  --   x = { "<cmd>DeleteSession<cr>", "Delete" },
-  --   f = { "<cmd>Autosession search<cr>", "Find" },
-  --   d = { "<cmd>Autosession delete<cr>", "Find Delete" },
-  -- },
-
   r = {
     name = "Replace",
     r = { "<cmd>lua require('spectre').open()<cr>", "Replace" },
@@ -255,18 +246,6 @@ local mappings = {
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
     t = { '<cmd>lua require("user.functions").toggle_diagnostics()<cr>', "Toggle Diagnostics" },
-    u = { "<cmd>LuaSnipUnlinkCurrent<cr>", "Unlink Snippet" },
-  },
-
-  S = {
-    name = "SnipRun",
-    c = { "<cmd>SnipClose<cr>", "Close" },
-    f = { "<cmd>%SnipRun<cr>", "Run File" },
-    i = { "<cmd>SnipInfo<cr>", "Info" },
-    m = { "<cmd>SnipReplMemoryClean<cr>", "Mem Clean" },
-    r = { "<cmd>SnipReset<cr>", "Reset" },
-    t = { "<cmd>SnipRunToggle<cr>", "Toggle" },
-    x = { "<cmd>SnipTerminate<cr>", "Terminate" },
   },
 
   t = {
@@ -279,9 +258,10 @@ local mappings = {
     u = { "<cmd>lua _NCDU_TOGGLE()<cr>", "NCDU" },
     t = { "<cmd>lua _HTOP_TOGGLE()<cr>", "Htop" },
     p = { "<cmd>lua _PYTHON_TOGGLE()<cr>", "Python" },
-    f = { "<cmd>ToggleTerm direction=float<cr>", "Float" },
-    h = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", "Horizontal" },
-    v = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", "Vertical" },
+    r = { "<cmd>lua _RAILS_TOGGLE()<cr>", "Rails Consoles" },
+    f = { "<cmd>lua _FLOAT_TERM()<cr>", "Float" },
+    h = { "<cmd>lua _HORIZONTAL_TERM()<cr>", "Horizontal" },
+    v = { "<cmd>lua _VERTICAL_TERM()<cr>", "Vertical" },
   },
 
   T = {
@@ -302,8 +282,6 @@ local vopts = {
 }
 local vmappings = {
   ["/"] = { '<ESC><CMD>lua require("Comment.api").toggle.linewise(vim.fn.visualmode())<CR>', "Comment" },
-  s = { "<esc><cmd>'<,'>SnipRun<cr>", "Run range" },
-  -- z = { "<cmd>TZNarrow<cr>", "Narrow" },
 }
 
 which_key.setup(setup)
