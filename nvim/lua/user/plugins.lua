@@ -102,6 +102,7 @@ return packer.startup(function(use)
   use "saadparwaiz1/cmp_luasnip"     -- snippet completions
   use "hrsh7th/cmp-nvim-lsp"
   use "hrsh7th/cmp-nvim-lua"
+  use { 'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp' }
 
   -- snippets
   use "L3MON4D3/LuaSnip"             --snippet engine
@@ -143,6 +144,10 @@ return packer.startup(function(use)
   use "mattn/vim-gist"
   use "mattn/webapi-vim"
   use "tpope/vim-fugitive"
+
+  -- Ruby/Rails
+  use "tpope/vim-rails"
+  use "tpope/vim-bundler"
 
   -- Markdown
   -- use {
