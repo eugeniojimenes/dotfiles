@@ -159,13 +159,6 @@ local mappings = {
 
   },
 
-  r = {
-    name = "Replace",
-    r = { "<cmd>lua require('spectre').open()<cr>", "Replace" },
-    w = { "<cmd>lua require('spectre').open_visual({select_word=true})<cr>", "Replace Word" },
-    f = { "<cmd>lua require('spectre').open_file_search()<cr>", "Replace Buffer" },
-  },
-
   f = {
     name = "Find",
     c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
@@ -233,7 +226,6 @@ local mappings = {
     F = { "<cmd>LspToggleAutoFormat<cr>", "Toggle Autoformat" },
     i = { "<cmd>LspInfo<cr>", "Info" },
     h = { "<cmd>lua require('lsp-inlayhints').toggle()<cr>", "Toggle Hints" },
-    H = { "<cmd>IlluminationToggle<cr>", "Toggle Doc HL" },
     I = { "<cmd>LspInstallInfo<cr>", "Installer Info" },
     j = { "<cmd>lua vim.diagnostic.goto_next({buffer=0})<CR>", "Next Diagnostic" },
     k = { "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", "Prev Diagnostic" },

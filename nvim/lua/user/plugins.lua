@@ -73,7 +73,7 @@ return packer.startup(function(use)
 
   -- Buffer Line
   use { 'akinsho/bufferline.nvim', tag = "v3.*" }
-  use "moll/vim-bbye"
+  use "moll/vim-bbye" -- delete buffers without closing your windows or messing up your layout
 
   -- Statusline
   use "nvim-lualine/lualine.nvim"
