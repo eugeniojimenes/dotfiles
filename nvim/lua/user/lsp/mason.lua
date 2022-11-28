@@ -20,6 +20,7 @@ local servers = {
   "html",
   "jsonls",
   "lemminx",
+  "ltex",
   "pyright",
   -- "sorbet", -- Search for!!!
   "solargraph",
@@ -27,7 +28,7 @@ local servers = {
   "tailwindcss",
   "tsserver",
   "yamlls",
-  "zk@v0.10.1" -- Search for!!!
+  "zk" -- Search for!!!
 }
 
 local settings = {
@@ -64,56 +65,12 @@ for _, server in pairs(servers) do
 
   server = vim.split(server, "@")[1]
 
-  if server == "jsonls" then
-    local jsonls_opts = require "user.lsp.settings.jsonls"
-    opts = vim.tbl_deep_extend("force", jsonls_opts, opts)
-  end
-
-  if server == "yamlls" then
-    local yamlls_opts = require "user.lsp.settings.yamlls"
-    opts = vim.tbl_deep_extend("force", yamlls_opts, opts)
-  end
-
-  if server == "sumneko_lua" then
-    local l_status_ok, lua_dev = pcall(require, "lua-dev")
-    if not l_status_ok then
-      return
-    end
-    local luadev = lua_dev.setup {
-      lspconfig = {
-        on_attach = opts.on_attach,
-        capabilities = opts.capabilities,
-      },
-    }
-    lspconfig.sumneko_lua.setup(luadev)
-    goto continue
-  end
-
-  if server == "tsserver" then
-    local tsserver_opts = require "user.lsp.settings.tsserver"
-    opts = vim.tbl_deep_extend("force", tsserver_opts, opts)
-  end
-
-  if server == "pyright" then
-    local pyright_opts = require "user.lsp.settings.pyright"
-    opts = vim.tbl_deep_extend("force", pyright_opts, opts)
-  end
-
-  if server == "emmet_ls" then
-    local emmet_ls_opts = require "user.lsp.settings.emmet_ls"
-    opts = vim.tbl_deep_extend("force", emmet_ls_opts, opts)
-  end
-
-  if server == "solargraph" then
-    local solargraph_opts = require "user.lsp.settings.solargraph"
-    opts = vim.tbl_deep_extend("force", solargraph_opts, opts)
-  end
-
-  if server == "zk" then
-    local zk_opts = require "user.lsp.settings.zk"
-    opts = vim.tbl_deep_extend("force", zk_opts, opts)
-  end
+  -- Apply custom settings if there are any for the server in user/lsp/settings folder
+  -- IMPORTANT: The filename must be exactly the same of the server name!!!
+	local has_custom_opts, server_custom_opts = pcall(require, "user.lsp.settings." .. server)
+	if has_custom_opts then
+		opts = vim.tbl_deep_extend("force", server_custom_opts, opts)
+	end
 
   lspconfig[server].setup(opts)
-  ::continue::
 end
