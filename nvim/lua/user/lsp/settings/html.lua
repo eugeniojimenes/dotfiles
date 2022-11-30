@@ -1,0 +1,7 @@
+
+return {
+  filetypes = {
+    "eruby",
+    "html",
+  },
+}

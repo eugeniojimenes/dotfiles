@@ -4,8 +4,6 @@
 return {
   cmd = { "ls_emmet", "--stdio" },
   filetypes = {
-    "erb",
-    "ruby",
     "html",
     "css",
     "scss",
@@ -24,5 +22,6 @@ return {
     "sss",
     "hbs",
     "handlebars",
+    "eruby",
   },
 }

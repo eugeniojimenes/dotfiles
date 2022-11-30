@@ -150,19 +150,19 @@ return packer.startup(function(use)
   use "tpope/vim-bundler"
 
   -- Markdown
-  -- use {
-  --   "preservim/vim-markdown",
-  --   config = function()
-  --     vim.g.vim_markdown_folding_disabled = 1
-  --   end
-  -- }
-  -- use {
-  --   "gabrielelana/vim-markdown",
-  --   config = function()
-  --     vim.g.markdown_enable_mappings = 0
-  --     vim.g.markdown_enable_insert_mode_mappings = 0
-  --   end
-  -- }
+  use {
+    "iamcco/markdown-preview.nvim",
+    run = "cd app && npm install",
+    ft = "markdown",
+  }
+  use {
+    "gabrielelana/vim-markdown",
+    config = function()
+      vim.g.markdown_enable_mappings = 0
+      vim.g.markdown_enable_insert_mode_mappings = 0
+      vim.g.markdown_enable_conceal = 1
+    end
+  }
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

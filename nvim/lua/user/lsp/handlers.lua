@@ -64,38 +64,24 @@ local function attach_navic(client, bufnr)
   navic.attach(client, bufnr)
 end
 
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", ":lua vim.lsp.buf.declaration()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", ":lua vim.lsp.buf.definition()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "K", ":lua vim.lsp.buf.hover()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", ":lua vim.lsp.buf.implementation()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", ":lua vim.lsp.buf.signature_help()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rr", ":lua vim.lsp.buf.rename()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", ":lua vim.lsp.buf.references()<CR>", opts)
-  -- -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ca", ":lua vim.lsp.buf.code_action()<CR>", opts)
-  -- -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", ":lua vim.diagnostic.open_float()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "[d", ':lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "gl", ':lua vim.diagnostic.open_float(0, {scope="line"})<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "]d", ':lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "gs", ":lua vim.diagnostic.setloclist()<CR>", opts)
-  -- vim.cmd [[ command! Format execute 'lua vim.lsp.buf.formatting()' ]]
-
 local function lsp_keymaps(bufnr)
   local opts = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<cmd>Telescope lsp_declarations<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", ":lua vim.lsp.buf.signature_help()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rr", ":lua vim.lsp.buf.rename()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "ll", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "lf", "<cmd>Format<cr>", opts)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "la", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "[d", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "]d", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
-  -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
+  local keymap = vim.api.nvim_buf_set_keymap
+  keymap(bufnr, "n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+  keymap(bufnr, "n", "gD", "<cmd>Telescope lsp_declarations<CR>", opts)
+  keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
+  keymap(bufnr, "n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
+  keymap(bufnr, "n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
+  keymap(bufnr, "n", "<C-k>", ":lua vim.lsp.buf.signature_help()<CR>", opts)
+  keymap(bufnr, "n", "ll", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+  keymap(bufnr, "n", "lf", "<cmd>Format<cr>", opts)
+  keymap(bufnr, "n", "la", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+  -- keymap(bufnr, "n", "<leader>rr", ":lua vim.lsp.buf.rename()<CR>", opts)
+  -- keymap(bufnr, "n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+  -- keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+  -- keymap(bufnr, "n", "[d", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
+  -- keymap(bufnr, "n", "]d", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
+  -- keymap(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
   vim.cmd [[ command! Format execute 'lua vim.lsp.buf.format({ async = true })' ]]
 end
 
@@ -105,6 +91,24 @@ M.on_attach = function(client, bufnr)
 
   if client.name == "tsserver" then
     require("lsp-inlayhints").on_attach(client, bufnr)
+  end
+
+  if client.server_capabilities.documentRangeFormattingProvider then
+    local map = function(mode, key, expr, opts)
+      opts = vim.tbl_extend("keep", { noremap = true, silent = true, buffer = bufnr }, opts)
+      return vim.keymap.set(mode, key, expr, opts)
+    end
+    vim.api.nvim_buf_set_option(bufnr, "formatexpr", "v:lua.vim.lsp.formatexpr(#{timeout_ms:250})")
+    map("x", "lf", function()
+        vim.lsp.buf.format({ bufnr = bufnr, async = false })
+    end, { desc = "LSP range format" })
+    vim.api.nvim_buf_create_user_command(bufnr, "LspRangeFormat", function(args)
+        vim.lsp.buf.format({
+            bufnr = bufnr,
+            async = false,
+            range = { start = { args.line1, 0 }, ["end"] = { args.line2, 0 } },
+        })
+    end, { range = true, desc = "LSP range format" })
   end
 
 end

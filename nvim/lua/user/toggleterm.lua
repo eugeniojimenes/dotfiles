@@ -73,7 +73,7 @@ function _NODE_TOGGLE()
   node:toggle()
 end
 
-local htop = Terminal:new { cmd = "htop", hidden = true }
+local htop = Terminal:new { cmd = "htop" }
 function _HTOP_TOGGLE()
   htop:toggle()
 end
