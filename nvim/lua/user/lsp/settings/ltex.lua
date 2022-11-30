@@ -5,6 +5,6 @@
 
 return {
 	cmd = { "ltex-ls" },
-	filetypes = { "markdown", "text" },
+	filetypes = { "markdown", "text", "gitcommit" },
 	flags = { debounce_text_changes = 300 },
 }
