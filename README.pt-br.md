@@ -75,7 +75,7 @@ Pacotes que normalmente preciso instalar para obter um "bom" `:checkhealth`:
 ```sh
 sudo pacman -S wget fd ripgrep xclip
 npm install -g neovim
-gem install neovim
+gem install neovim rubocop rubocop-packaging rubocop-performance rubocop-rails rubocop-rspec
 ```
 
 Copie, altere e utilize á vontade. Sugestões e criticas (educadas) são bem vindas 🤓.
@@ -84,16 +84,35 @@ Copie, altere e utilize á vontade. Sugestões e criticas (educadas) são bem vi
 preciso instalar o [Nerd Fonts](https://www.nerdfonts.com) e habilita-lo no *profile* do seu
 terminal ou se for o Tilix pode usar minhas configurações como expliquei antes.
 
+## My Zettelkasten notes
+Depois de ler sobre esse método percebi que fiquei completamente desorganizado com minhas anotações
+de trabalho e encontrei uma solução incrível para usar esse método com o Neovim graças ao
+[Mickaël Menu](https://github.com/mickael-menu). Você pode ler mais sobre isso aqui:
+<https://github.com/mickael-menu/zk>.
+
+Esta também é uma boa desculpa para praticar meu inglês escrevendo algum tipo de diário pessoal,
+como minha rotina diária, e este assistente de anotações pode ser configurado para esta finalidade
+também, conforme descrito em sua documentação:
+<https://github.com/ mickael-menu/zk/blob/main/docs/daily-journal.md>.
+
+Isso também é pessoal, eu uso uma coleção de grupos no meu
+[arquivo de configuração do zk](./zk/config.toml) que atendem às minhas necessidades, por exemplo.
+Eu recomendo fortemente que você assista a este vídeo <https://youtu.be/UzhZb7e4l4Y>, que foi um
+bom guia para mim, além da
+[documentação do zk](https://github.com/mickael-menu/zk/blob/main/docs/getting-started.md), é claro.
+
 ## Meus *symbolic links*
 
 ```sh
 ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/dotfiles/.zshrc ~/.zshrc
+ln -s ~/dotfiles/.zshenv ~/.zshenv
 ln -s ~/dotfiles/nvim ~/.config/nvim
+ln -s ~/dotfiles/zk ~/my-zk/.zk
 ```
 
 ## Licença
-Licenciado sob MIT, consulte o arquivo [LICENSE](/LICENSE).
+Este *dotfiles* está disponível como código aberto sob o MIT, consulte o arquivo [LICENSE](/LICENSE).
 
 ## Código de Conduta
 Estou empenhado em fornecer um ambiente amigável, seguro e acolhedor para todos. Por favor, leia e

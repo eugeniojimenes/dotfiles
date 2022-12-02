@@ -7,7 +7,7 @@
 [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](/README.pt-br.md)
 [![love](https://img.shields.io/badge/Build%20With-%F0%9F%96%A4-lightgreen)](https://callmarx.github.io)
 
-Finally I "organized" it!
+Finally, I "organized" it!
 
 ```txt
           888d                888d       ~/dotfile 888d   888d
@@ -77,7 +77,7 @@ Packages that I usually need to install for a good `:checkhealth`:
 ```sh
 sudo pacman -S wget fd ripgrep xclip
 npm install -g neovim
-gem install neovim
+gem install neovim rubocop rubocop-packaging rubocop-performance rubocop-rails rubocop-rspec
 ```
 
 Copy, change and use it at will. Suggestions and (polite) criticism are welcome 🤓.
@@ -86,16 +86,34 @@ Copy, change and use it at will. Suggestions and (polite) criticism are welcome 
 install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator profile or if
 you use Tilix you can use my settings as I explained before.
 
+## My Zettelkasten notes
+After reading about this method I realized that I got completely disorganized with my work
+annotations and I found an amazing solution for use this method with Neovim thanks to
+[Mickaël Menu](https://github.com/mickael-menu). You can read more about this here:
+<https://github.com/mickael-menu/zk>.
+
+This is also a good excuse to practice my English writing some kind of personal journal, like my
+daily routine, and this note-talking assistant can be configured for this propose too as they
+describe in their documentation: <https://github.com/mickael-menu/zk/blob/main/docs/daily-journal.md>.
+
+This also is a personal stuff, I use a collection of groups in my [zk config file](./zk/config.toml)
+that attend my needs, for example. I strongly recommend you to watch this video <https://youtu.be/UzhZb7e4l4Y>,
+which was a good guide for me, be sides
+[the documentation of zk](https://github.com/mickael-menu/zk/blob/main/docs/getting-started.md),
+of course.
+
 ## My symbolic links
 
 ```sh
 ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/dotfiles/.zshrc ~/.zshrc
+ln -s ~/dotfiles/.zshenv ~/.zshenv
 ln -s ~/dotfiles/nvim ~/.config/nvim
+ln -s ~/dotfiles/zk ~/my-zk/.zk
 ```
 
-## Licence
-Licensed under MIT, see [LICENSE](/LICENSE).
+## License
+This dotfiles is available as open source under MIT, see [LICENSE](/LICENSE).
 
 ## Code of conduct
 I'm committed to providing a friendly, safe, and welcoming environment for all. Please read and

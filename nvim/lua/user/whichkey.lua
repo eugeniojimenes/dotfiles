@@ -240,6 +240,11 @@ local mappings = {
     t = { '<cmd>lua require("user.functions").toggle_diagnostics()<cr>', "Toggle Diagnostics" },
   },
 
+  m = {
+    name = "Markdown Preview",
+    p = { "<cmd>MarkdownPreviewToggle<CR>", "Toggle preview" },
+  },
+
   t = {
     name = "Terminal",
     ["1"] = { ":1ToggleTerm<cr>", "1" },

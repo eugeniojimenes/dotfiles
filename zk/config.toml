@@ -1,0 +1,160 @@
+# NOTE SETTINGS
+[note]
+
+# Language used when writing notes.
+# This is used to generate slugs or with date formats.
+language = "en"
+
+# The default title used for new note, if no `--title` flag is provided.
+default-title = "Untitled"
+
+# Template used to generate a note's filename, without extension.
+filename = "{{id}}"
+
+# The file extension used for the notes.
+extension = "md"
+
+# Template used to generate a note's content.
+# If not an absolute path, it is relative to .zk/templates/
+template = "default.md"
+
+# Configure random ID generation.
+
+# The charset used for random IDs.
+id-charset = "alphanum"
+
+# Length of the generated IDs.
+id-length = 5
+
+# Letter case for the random IDs.
+id-case = "lower"
+
+
+# EXTRA VARIABLES
+[extra]
+author = "Eugenio A. Jimenes"
+
+
+# GROUP OVERRIDES
+[group.daily]
+paths = ["journal/dailies"]
+
+[group.daily.note]
+filename = "{{date now '%Y-%m-%d'}}"
+# extension = "md"
+template = "daily.md"
+
+[group.weekly]
+paths = ["journal/weeklies"]
+
+[group.weekly.note]
+filename = "weekly-{{date now '%Y-%m-%d'}}"
+template = "weekly.md"
+
+[group.til]
+paths = ["IT/tils"]
+
+[group.til.note]
+template = "til.md"
+
+[group.english]
+
+[group.english.note]
+template = "english.md"
+
+
+# MARKDOWN SETTINGS
+[format.markdown]
+# Enable support for #hashtags
+hashtags = true
+# Enable support for :colon:separated:tags:
+colon-tags = true
+
+
+# EXTERNAL TOOLS
+[tool]
+
+# Default editor used to open notes.
+editor = "nvim"
+
+# Pager used to scroll through long output.
+pager = "less -FIRX"
+
+# Command used to preview a note during interactive fzf mode.
+fzf-preview = "bat -p --color always {-1}"
+
+# NAMED FILTERS
+[filter]
+recents = "--sort created- --created-after 'last two weeks'"
+
+# COMMAND ALIASES
+[alias]
+
+# Edit the last modified note.
+edlast = "zk edit --limit 1 --sort modified- $@"
+
+# Edit the notes selected interactively among the notes created the last two weeks.
+recent = "zk edit --sort created- --created-after 'last two weeks' --interactive"
+
+# Show a random note.
+lucky = "zk list --quiet --format full --sort random --limit 1"
+
+# Search notes by tags
+tag = "zk edit --interactive --tag $argv"
+
+# Edit zk config file
+config = 'nvim "$HOME/.dotfiles/zk/config.toml"'
+
+# new general note (not related with IT)
+ngi = 'zk new --no-input "$ZK_NOTEBOOK_DIR/ideas" --title $argv'
+
+# new english note (not related with IT)
+ne = 'zk new --no-input "$ZK_NOTEBOOK_DIR/ideas" --group english --title $argv'
+
+# new IT note
+ni = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/ideas" --title $argv'
+
+# new daily journal entry
+nd = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/dailies" --group daily'
+
+# new weekly journal entry
+nw = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/weeklies" --group weekly'
+
+# new til note
+ntil = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/tils" --group til --title $argv'
+
+# Edit all dailies interactively.
+dailies = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal/dailies --interactive"
+
+# Edit all weeklies interactively.
+weeklies = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal/weeklies --interactive"
+
+# Edit all journal interactively.
+journal = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal --interactive"
+
+# Edit all it (til and ideas) interactively.
+it = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT --interactive"
+
+# Edit all it ideas interactively.
+ideas = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT/ideas --interactive"
+
+# Edit all general ideas (not related with IT) interactively.
+gideas = "zk edit --sort created- $ZK_NOTEBOOK_DIR/ideas --interactive"
+
+# update zk notes
+update = "cd $ZK_NOTEBOOK_DIR; git add -A; git commit -am 'updating'; git push; cd -"
+
+# remove a files
+rm = "zk list --interactive --quiet --format path --delimiter0 $argv | xargs -0 rm -vf --"
+
+# open last zk in slides
+slides = "zk list --interactive --quiet --format path --delimiter0 $argv | xargs -0 slides"
+
+# LSP (EDITOR INTEGRATION)
+[lsp]
+
+[lsp.diagnostics]
+# Report titles of wiki-links as hints.
+wiki-title = "hint"
+# Warn for dead links between notes.
+dead-link = "error"
