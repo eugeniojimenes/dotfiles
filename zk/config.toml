@@ -105,44 +105,65 @@ tag = "zk edit --interactive --tag $argv"
 # Edit zk config file
 config = 'nvim "$HOME/.dotfiles/zk/config.toml"'
 
-# new general note (not related with IT)
-ngi = 'zk new --no-input "$ZK_NOTEBOOK_DIR/ideas" --title $argv'
+## new general note (not related with IT)
+ngi = 'zk new --no-input "$ZK_NOTEBOOK_DIR/general" --title $argv'
+# zk-nvim command: "<cmd>ZkNew { dir = 'IT/general', title = vim.fn.input('Title: ') }<cr>"
 
-# new english note (not related with IT)
-ne = 'zk new --no-input "$ZK_NOTEBOOK_DIR/ideas" --group english --title $argv'
+## new english note (not related with IT)
+ne = 'zk new --no-input "$ZK_NOTEBOOK_DIR/general" --group english --title $argv'
+# zk-nvim command: "<cmd>ZkNew { dir = 'general', group = 'english', title = vim.fn.input('Title: ') }<cr>"
 
-# new IT note
+## new IT note
 ni = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/ideas" --title $argv'
+# zk-nvim command: "<cmd>ZkNew { dir='IT/ideas', title = vim.fn.input('Title: ') }<cr>"
 
-# new daily journal entry
+## new daily journal entry
 nd = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/dailies" --group daily'
+# zk-nvim command: "<cmd>ZkNew { dir = 'journal/dailies', group = 'daily' }<cr>"
 
-# new weekly journal entry
+## new weekly journal entry
 nw = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/weeklies" --group weekly'
+# zk-nvim command: "<cmd>ZkNew { dir = 'journal/weeklies', group = 'weekly' }<cr>"
 
-# new til note
+## new til note
 ntil = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/tils" --group til --title $argv'
+# zk-nvim command: "<cmd>ZkNew { dir = 'IT/tils', group = 'til', title = vim.fn.input('Title: ') }<cr>"
 
-# Edit all dailies interactively.
+## Edit all dailies interactively.
 dailies = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal/dailies --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'journal/dailies' } }<cr>"
 
-# Edit all weeklies interactively.
+## Edit all weeklies interactively.
 weeklies = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal/weeklies --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'journal/weeklies' } }<cr>"
 
-# Edit all journal interactively.
+## Edit all journal interactively (both dailies and weeklies).
 journal = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'journal' } }<cr>"
 
-# Edit all it (til and ideas) interactively.
-it = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT --interactive"
-
-# Edit all it ideas interactively.
+## Edit all it ideas interactively.
 ideas = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT/ideas --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT/ideas' } }<cr>"
 
-# Edit all general ideas (not related with IT) interactively.
-gideas = "zk edit --sort created- $ZK_NOTEBOOK_DIR/ideas --interactive"
+## Edit all tils interactively.
+tils = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT/tils --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT/tils' } }<cr>"
+
+## Edit all it interactively (til and ideas).
+it = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT' } }<cr>"
+
+## Edit all general notes interactively.
+general = "zk edit --sort created- $ZK_NOTEBOOK_DIR/general --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'general' } }<cr>"
+
+## Edit all english notes interactively.
+english = "zk edit --sort created- $ZK_NOTEBOOK_DIR/general --tag english --interactive"
+# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'general' }, tags = { 'english' } }<cr>" 
 
 # update zk notes
 update = "cd $ZK_NOTEBOOK_DIR; git add -A; git commit -am 'updating'; git push; cd -"
+# zk-nvim command: 
 
 # remove a files
 rm = "zk list --interactive --quiet --format path --delimiter0 $argv | xargs -0 rm -vf --"

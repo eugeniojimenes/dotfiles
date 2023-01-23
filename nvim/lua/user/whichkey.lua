@@ -267,6 +267,30 @@ local mappings = {
     p = { "<cmd>TSPlaygroundToggle<cr>", "Playground" },
     r = { "<cmd>TSToggle rainbow<cr>", "Rainbow" },
   },
+
+  z = {
+    name = "ZK note-taking",
+    n = {
+      name = "New note",
+      i = { "<cmd>ZkNew { dir = 'IT/ideas', title = vim.fn.input('Title: ') }<cr>", "IT idea note | title required" },
+      t = { "<cmd>ZkNew { dir = 'IT/tils', group = 'til', title = vim.fn.input('Title: ') }<cr>", "IT (Today I learned) note | title required" },
+      g = { "<cmd>ZkNew { dir = 'general', title = vim.fn.input('Title: ') }<cr>", "General note | title required" },
+      e = { "<cmd>ZkNew { dir = 'general', group = 'english', title = vim.fn.input('Title: ') }<cr>", "English note | title required" },
+      d = { "<cmd>ZkNew { dir = 'journal/dailies', group = 'daily' }<cr>", "daily journal note" },
+      w = { "<cmd>ZkNew { dir = 'journal/weeklies', group = 'weekly' }<cr>", "weekly journal note" },
+    },
+    l = {
+      name = "List notes",
+      d = { "<cmd>ZkNotes { sort = { 'created' } , hrefs = { 'journal/dailies' } }<cr>", "Dailies" },
+      w = { "<cmd>ZkNotes { sort = { 'created' } , hrefs = { 'journal/weeklies' } }<cr>", "Weeklies" },
+      j = { "<cmd>ZkNotes { sort = { 'created' } , hrefs = { 'journal' } }<cr>", "journal | both dailies and weeklies" },
+      i = { "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT/ideas' } }<cr>", "IT ideas" },
+      t = { "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT/tils' } }<cr>", "IT Tils (Today I learned) notes" },
+      I = { "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT' } }<cr>", "All about IT | Both ideas and Tils" },
+      g = { "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'general' } }<cr>", "General notes" },
+      e = { "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'general' }, tags = { 'english' } }<cr>", "English notes" },
+    },
+  }
 }
 
 local vopts = {
