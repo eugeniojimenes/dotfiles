@@ -40,7 +40,7 @@ author = "Eugenio A. Jimenes"
 paths = ["journal/dailies"]
 
 [group.daily.note]
-filename = "{{date now '%Y-%m-%d'}}"
+filename = "{{format-date now '%Y-%m-%d'}}"
 # extension = "md"
 template = "daily.md"
 
@@ -48,7 +48,7 @@ template = "daily.md"
 paths = ["journal/weeklies"]
 
 [group.weekly.note]
-filename = "weekly-{{date now '%Y-%m-%d'}}"
+filename = "weekly-{{format-date now '%Y-%m-%d'}}"
 template = "weekly.md"
 
 [group.til]

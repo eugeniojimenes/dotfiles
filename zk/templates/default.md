@@ -1,5 +1,5 @@
 ---
 title: {{title}}
-date: {{date now "long"}}
+date: {{format-date now "long"}}
 tags: []
 ---

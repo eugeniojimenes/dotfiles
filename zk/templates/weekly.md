@@ -1,4 +1,4 @@
-# This week - {{date now "long"}}
+# This week - {{format-date now "long"}}
 ---
 ## What do I expect for this week?
 
@@ -8,19 +8,19 @@
 ## Schedule
 
 - **Monday**
-  $\Rightarrow$ 
+   
 
 - **Tuesday**
-  $\Rightarrow$ 
+   
 
 - **Wednesday**
-  $\Rightarrow$ 
+   
 
 - **Thursday**
-  $\Rightarrow$ 
+   
 
 - **Friday**
-  $\Rightarrow$ 
+   
 
 
 ---

@@ -268,6 +268,7 @@ local mappings = {
     r = { "<cmd>TSToggle rainbow<cr>", "Rainbow" },
   },
 
+  -- Some bugs are happening, like new daily and weekly don't receive date.
   z = {
     name = "ZK note-taking",
     n = {
@@ -281,6 +282,7 @@ local mappings = {
     },
     l = {
       name = "List notes",
+      a = { "<cmd>ZkNotes { sort = { 'created' } }<cr>", "ALL" },
       d = { "<cmd>ZkNotes { sort = { 'created' } , hrefs = { 'journal/dailies' } }<cr>", "Dailies" },
       w = { "<cmd>ZkNotes { sort = { 'created' } , hrefs = { 'journal/weeklies' } }<cr>", "Weeklies" },
       j = { "<cmd>ZkNotes { sort = { 'created' } , hrefs = { 'journal' } }<cr>", "journal | both dailies and weeklies" },
