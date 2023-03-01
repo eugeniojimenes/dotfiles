@@ -24,7 +24,7 @@ local servers = {
   "pyright",
   -- "sorbet", -- Search for!!!
   "solargraph",
-  "sumneko_lua",
+  "lua_ls",
   "tailwindcss",
   "tsserver",
   "yamlls",
