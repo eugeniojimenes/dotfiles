@@ -156,6 +156,14 @@ return packer.startup(function(use)
     ft = "markdown",
   }
   -- use {
+  --   'cnshsliu/smp.nvim',
+  --   run="cd app && npm install",   -- yes, we should have node & npm installed.
+  --   requires = {
+  --     "nvim-telescope/telescope.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  -- }
+  -- use {
   --   "gabrielelana/vim-markdown",
   --   config = function()
   --     vim.g.markdown_enable_mappings = 0

@@ -21,3 +21,11 @@ let g:mkdp_preview_options = {
   \ 'toc': {}
   \ }
 ]]
+
+-- local status_ok, markdown_preview = pcall(require, "smp")
+-- if not status_ok then
+--   return
+-- end
+-- markdown_preview.setup {
+--   home = vim.fn.expand("~/my-zk"),
+-- }

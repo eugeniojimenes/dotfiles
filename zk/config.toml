@@ -79,9 +79,12 @@ editor = "nvim"
 
 # Pager used to scroll through long output.
 pager = "less -FIRX"
+## TIP:
+# - <SHIFT> + <arrow down> or <arrow up> scrolls the selected document.
+# - It also works with the scroll mouse button
 
 # Command used to preview a note during interactive fzf mode.
-fzf-preview = "bat -p --color always {-1}"
+fzf-preview = "bat -p --color=always --theme=Dracula {-1}"
 
 # NAMED FILTERS
 [filter]
@@ -103,7 +106,7 @@ lucky = "zk list --quiet --format full --sort random --limit 1"
 tag = "zk edit --interactive --tag $argv"
 
 # Edit zk config file
-config = 'nvim "$HOME/.dotfiles/zk/config.toml"'
+config = 'nvim "$HOME/dotfiles/zk/config.toml"'
 
 ## new general note (not related with IT)
 ngi = 'zk new --no-input "$ZK_NOTEBOOK_DIR/general" --title $argv'
@@ -114,7 +117,7 @@ ne = 'zk new --no-input "$ZK_NOTEBOOK_DIR/general" --group english --title $argv
 # zk-nvim command: "<cmd>ZkNew { dir = 'general', group = 'english', title = vim.fn.input('Title: ') }<cr>"
 
 ## new IT note
-ni = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/ideas" --title $argv'
+nit = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/ideas" --title $argv'
 # zk-nvim command: "<cmd>ZkNew { dir='IT/ideas', title = vim.fn.input('Title: ') }<cr>"
 
 ## new daily journal entry
