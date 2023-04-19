@@ -6,7 +6,23 @@ local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if not status_cmp_ok then
   return
 end
-M.capabilities.textDocument.completion.completionItem.snippetSupport = true
+M.capabilities.textDocument.completion.completionItem = {
+  documentationFormat = { "markdown", "plaintext" },
+  snippetSupport = true,
+  preselectSupport = true,
+  insertReplaceSupport = true,
+  labelDetailsSupport = true,
+  deprecatedSupport = true,
+  commitCharactersSupport = true,
+  tagSupport = { valueSet = { 1 } },
+  resolveSupport = {
+    properties = {
+      "documentation",
+      "detail",
+      "additionalTextEdits",
+    },
+  },
+}
 M.capabilities = cmp_nvim_lsp.default_capabilities(M.capabilities)
 
 M.setup = function()
@@ -33,14 +49,14 @@ M.setup = function()
     update_in_insert = true,
     underline = true,
     severity_sort = true,
-    float = {
-      focusable = true,
-      style = "minimal",
-      border = "rounded",
-      source = "if_many", -- Or "always"
-      header = "",
-      prefix = "",
-    },
+    -- float = {
+    --   focusable = true,
+    --   style = "minimal",
+    --   border = "rounded",
+    --   source = "if_many", -- Or "always"
+    --   header = "",
+    --   prefix = "",
+    -- },
   }
 
   vim.diagnostic.config(config)

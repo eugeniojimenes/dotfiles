@@ -3,7 +3,7 @@ return {
   -- filetypes = { "ruby", "eruby" },
   settings = {
     solargraph = {
-      diagnostics = false,
+      -- diagnostics = false,
       formatting = false,
     },
   },

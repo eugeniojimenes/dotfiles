@@ -21,16 +21,17 @@ null_ls.setup {
     formatting.rustywind.with { -- CLI for organizing Tailwind CSS classes
       filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "svelte", "html", "eruby" }
     },
+    -- diagnostics.yamllint, -- A linter for YAML files.
     formatting.rubocop.with({   -- Ruby static code analyzer and formatter, based on the community Ruby style guide.
       -- NOTE: Using 'extra_args' doesn't work here because we need to replace the '-a' flag for '-A'
       args = { "-A", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" },
     }),
-    diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
+    diagnostics.erb_lint.with { -- Lint your ERB files
+      args ={ "--format", "json", "--stdin", "$FILENAME" },
+    },
+    -- diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
     -- formatting.erb_lint.with {  -- Lint your ERB files
     --   args ={ "--autocorrect", "--stdin", "$FILENAME" },
-    -- },
-    -- diagnostics.erb_lint.with { -- Lint your ERB files
-    --   args ={ "--format", "json", "--stdin", "$FILENAME" },
     -- },
   },
 }
@@ -38,3 +39,5 @@ null_ls.setup {
 -- NOTES: It requires to install:
 --   gem install rubocop rubocop-packaging rubocop-performance rubocop-rails rubocop-rspec erb_lint
 --   npm install -g rustywind
+--   pip install --user yamllint
+

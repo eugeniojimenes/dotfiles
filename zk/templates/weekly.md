@@ -1,4 +1,4 @@
-# This week - {{format-date now "long"}}
+# {{format-date now "long"}} - This week
 ---
 ## What do I expect for this week?
 

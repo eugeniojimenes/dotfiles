@@ -41,10 +41,10 @@ packer.init {
 -- Install your plugins here
 return packer.startup(function(use)
   -- Basics
-  use "wbthomason/packer.nvim"        -- Have packer manage itself
-  use "nvim-lua/popup.nvim"           -- An implementation of the Popup API from vim in Neovim
-  use "nvim-lua/plenary.nvim"         -- Useful lua functions used ny lots of plugins
-  use "windwp/nvim-autopairs"         -- Autopairs, integrates with both cmp and treesitter
+  use "wbthomason/packer.nvim" -- Have packer manage itself
+  use "nvim-lua/popup.nvim" -- An implementation of the Popup API from vim in Neovim
+  use "nvim-lua/plenary.nvim" -- Useful lua functions used ny lots of plugins
+  use "windwp/nvim-autopairs" -- Autopairs, integrates with both cmp and treesitter
   -- use {                               -- I still prefer this plugin for commenting :)
   --   "preservim/nerdcommenter",
   --   config = function()
@@ -52,8 +52,8 @@ return packer.startup(function(use)
   --     vim.g.NERDSpaceDelims = 1
   --   end
   -- }
-  use "gabesoft/vim-ags"              -- :Ags commands
-  use "lewis6991/impatient.nvim"      -- Optimisations
+  use "gabesoft/vim-ags" -- :Ags commands
+  use "lewis6991/impatient.nvim" -- Optimisations
   use "christianchiarulli/lua-dev.nvim"
 
   -- Pretty Icons (it requeres nerd-font!)
@@ -79,11 +79,12 @@ return packer.startup(function(use)
   use "nvim-lualine/lualine.nvim"
 
   -- Colorschemes
-  use "lunarvim/onedarker.nvim"
   use "lunarvim/darkplus.nvim"
-  use "folke/tokyonight.nvim"
-  -- use "lunarvim/colorschemes"
+  -- use "lunarvim/onedarker.nvim"
+  -- use "folke/tokyonight.nvim"
+  -- use { "catppuccin/nvim", as = "catppuccin" }
   -- use "rebelot/kanagawa.nvim"
+  -- use { "rose-pine/neovim", as = "rose-pine" }
 
   -- Terminals (persist and toggle multiple terminals)
   use "akinsho/toggleterm.nvim"
@@ -95,30 +96,30 @@ return packer.startup(function(use)
   use "ahmedkhalf/project.nvim"
 
   -- Completions (CMP)
-  use "hrsh7th/nvim-cmp"             -- The completion plugin
-  use "hrsh7th/cmp-buffer"           -- buffer completions
-  use "hrsh7th/cmp-path"             -- path completions
-  use "hrsh7th/cmp-cmdline"          -- cmdline completions
-  use "saadparwaiz1/cmp_luasnip"     -- snippet completions
+  use "hrsh7th/nvim-cmp" -- The completion plugin
+  use "hrsh7th/cmp-buffer" -- buffer completions
+  use "hrsh7th/cmp-path" -- path completions
+  use "hrsh7th/cmp-cmdline" -- cmdline completions
+  use "saadparwaiz1/cmp_luasnip" -- snippet completions
   use "hrsh7th/cmp-nvim-lsp"
   use "hrsh7th/cmp-nvim-lua"
-  use { 'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp' }
+  use { 'tzachar/cmp-tabnine', run = './install.sh', requires = 'hrsh7th/nvim-cmp' }
 
   -- snippets
-  use "L3MON4D3/LuaSnip"             --snippet engine
+  use "L3MON4D3/LuaSnip" --snippet engine
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
 
   -- LSP
-  use "neovim/nvim-lspconfig"        -- enable LSP
+  use "neovim/nvim-lspconfig" -- enable LSP
   -- use "williamboman/nvim-lsp-installer" -- simple to use language server installer
   -- use "folke/trouble.nvim"  -- showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
-  use "RRethy/vim-illuminate"        -- highlighting other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching.
-  use "williamboman/mason.nvim"      -- Easily install and manage LSP servers, DAP servers, linters, and formatters
+  use "RRethy/vim-illuminate" -- highlighting other uses of the word under the cursor using either LSP, Tree-sitter, or regex matching.
+  use "williamboman/mason.nvim" -- Easily install and manage LSP servers, DAP servers, linters, and formatters
   use "williamboman/mason-lspconfig.nvim" -- work together with lspconfig
   use "SmiteshP/nvim-navic"
   use "https://git.sr.ht/~whynothugo/lsp_lines.nvim"
-  use "ray-x/lsp_signature.nvim"    -- Show function signature when you type
+  use "ray-x/lsp_signature.nvim" -- Show function signature when you type
   use "b0o/SchemaStore.nvim"
   use "simrat39/symbols-outline.nvim"
   use "j-hui/fidget.nvim"
