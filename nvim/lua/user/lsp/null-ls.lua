@@ -26,9 +26,9 @@ null_ls.setup {
       -- NOTE: Using 'extra_args' doesn't work here because we need to replace the '-a' flag for '-A'
       args = { "-A", "-f", "quiet", "--stderr", "--stdin", "$FILENAME" },
     }),
-    diagnostics.erb_lint.with { -- Lint your ERB files
-      args ={ "--format", "json", "--stdin", "$FILENAME" },
-    },
+    -- diagnostics.erb_lint.with { -- Lint your ERB files
+    --   args ={ "--format", "json", "--stdin", "$FILENAME" },
+    -- },
     -- diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
     -- formatting.erb_lint.with {  -- Lint your ERB files
     --   args ={ "--autocorrect", "--stdin", "$FILENAME" },

@@ -90,7 +90,7 @@ return packer.startup(function(use)
   use "akinsho/toggleterm.nvim"
 
   -- Indentation guides (all lines including empty lines)
-  use "lukas-reineke/indent-blankline.nvim"
+  -- use "lukas-reineke/indent-blankline.nvim"
 
   -- Project Management
   use "ahmedkhalf/project.nvim"

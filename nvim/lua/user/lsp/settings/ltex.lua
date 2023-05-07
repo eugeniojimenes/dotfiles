@@ -4,7 +4,12 @@
 -- checked with LanguageTool."
 
 return {
-	cmd = { "ltex-ls" },
-	filetypes = { "markdown", "text", "gitcommit" },
-	flags = { debounce_text_changes = 300 },
+  cmd = { "ltex-ls" },
+  filetypes = { "markdown", "text", "gitcommit" },
+  flags = { debounce_text_changes = 300 },
+  -- settings = {
+  --   ltex = {
+  --     language = "pt-BR"
+  --   }
+  -- }
 }
