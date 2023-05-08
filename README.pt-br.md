@@ -31,9 +31,10 @@ mensagem commit descrito pelo [.gitmessage](./.gitmessage), inspirado no
 Pacote de fontes que utilizo no Tilix e no Neovim. Para instalar ou ver mais sobre acesse:
 <https://github.com/ryanoasis/nerd-fonts>.
 
-Para Arch Linux você pode usar este [pacote AUR](https://aur.archlinux.org/packages/nerd-fonts-complete).
+Para Arch Linux você pode usar este [pacote](https://aur.archlinux.org/packages/nerd-fonts-complete).
 
-Atualmente estou usando o **FireCode Nerd Font Regular** deste pacote AUR.
+Atualmente estou usando o **FireCode Nerd Font Regular** e para Arch Linux é este
+[pacote](https://archlinux.org/packages/community/any/ttf-firacode-nerd/).
 
 ## Oh My Zsh
 Utilizo o *shell* `zsh` com gerenciador [*Oh My Zsh*](https://github.com/ohmyzsh/ohmyzsh). Para

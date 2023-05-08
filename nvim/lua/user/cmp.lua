@@ -44,31 +44,31 @@ local check_backspace = function()
 end
 
 local kind_icons = {
-  Text = "",
+  Text = "󰉿",
   Method = "m",
-  Function = "",
+  Function = "󰊕",
   Constructor = "",
   Field = "",
   Variable = "",
-  Class = "",
+  Class = "󰌗",
   Interface = "",
-  Module = "",
+  Module = "󰅩",
   Property = "",
   Unit = "",
-  Value = "",
+  Value = "󰎠",
   Enum = "",
-  Keyword = "",
+  Keyword = "󱕵",
   Snippet = "",
-  Color = "",
-  File = "",
+  Color = "󰏘",
+  File = "󰷈",
   Reference = "",
-  Folder = "",
+  Folder = "󰉋",
   EnumMember = "",
-  Constant = "",
+  Constant = "󰇽",
   Struct = "",
   Event = "",
-  Operator = "",
-  TypeParameter = "",
+  Operator = "󰆕",
+  TypeParameter = "󰊄",
 }
 
 vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
@@ -163,7 +163,7 @@ cmp.setup {
       vim_item.kind = kind_icons[vim_item.kind]
 
       if entry.source.name == "cmp_tabnine" then
-        vim_item.kind = "ﮧ"
+        vim_item.kind = "󰚩"
         vim_item.kind_hl_group = "CmpItemKindTabnine"
       end
       if entry.source.name == "copilot" then
@@ -260,7 +260,7 @@ cmp.setup {
       winhighlight = "NormalFloat:Pmenu,NormalFloat:Pmenu,CursorLine:PmenuSel,Search:None",
     },
   },
-  experimental = {
-    ghost_text = true,
-  },
+  -- experimental = {
+  --   ghost_text = true,
+  -- },
 }

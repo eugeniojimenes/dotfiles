@@ -135,6 +135,7 @@ return packer.startup(function(use)
     "nvim-treesitter/nvim-treesitter",
     run = ":TSUpdate",
   }
+  use "https://github.com/RRethy/nvim-treesitter-endwise"
   -- use "windwp/nvim-ts-autotag"
   -- use "JoosepAlviste/nvim-ts-context-commentstring"
 

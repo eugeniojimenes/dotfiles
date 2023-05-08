@@ -31,9 +31,8 @@ commit message template defined in [.gitmessage](./.gitmessage), which was inspi
 A Font package that I use in Tilix and Neovim. To install or read more about see:
 <https://github.com/ryanoasis/nerd-fonts>.
 
-For Arch Linux you can use this [AUR package](https://aur.archlinux.org/packages/nerd-fonts-complete).
-
-I'm using **FireCode Nerd Font Regular** from this AUR package.
+I'm using **FireCode Nerd Font Regular** and for Arch Linux system is this
+[package](https://archlinux.org/packages/community/any/ttf-firacode-nerd/).
 
 ## Oh My Zsh
 I use `zsh` shell with [*Oh My Zsh*](https://github.com/ohmyzsh/ohmyzsh) manager. To check if you

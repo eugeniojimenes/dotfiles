@@ -21,7 +21,7 @@ configs.setup {
     "lua", "bash", "make", "dockerfile", "regex",
     "html", "css", "scss", "json", "yaml",
     "markdown", "markdown_inline",
-    "python", "javascript", "typescript", -- TO-FIX: "ruby" has a indent bug
+    "python", "javascript", "typescript", "ruby"
   }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
      -- NOTE: "embedded_template" is freezing in .html.erb files!!!
   sync_install = false,       -- install languages synchronously (only applied to `ensure_installed`)
@@ -47,4 +47,9 @@ configs.setup {
     },
     disable = { "html" },
   },
+  endwise = {
+    enable = true,
+  },
 }
+
+vim.cmd('autocmd FileType ruby setlocal indentkeys-=.')
