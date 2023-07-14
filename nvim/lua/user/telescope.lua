@@ -14,7 +14,6 @@ telescope.setup {
     file_ignore_patterns = {
       ".git/",
       "target/",
-      "docs/",
       "vendor/*",
       "%.lock",
       "__pycache__/*",
@@ -31,7 +30,6 @@ telescope.setup {
       ".vscode/",
       "__pycache__/",
       "build/",
-      "env/",
       "gradle/",
       "node_modules/",
       "%.pdb",
@@ -40,24 +38,12 @@ telescope.setup {
       "%.exe",
       "%.cache",
       "%.ico",
-      "%.pdf",
       "%.dylib",
       "%.jar",
-      "%.docx",
       "%.met",
       "smalljre_*/*",
       ".vale/",
       "%.burp",
-      "%.mp4",
-      "%.mkv",
-      "%.rar",
-      "%.zip",
-      "%.7z",
-      "%.tar",
-      "%.bz2",
-      "%.epub",
-      "%.flac",
-      "%.tar.gz",
     },
 
     mappings = {
@@ -141,7 +127,12 @@ telescope.setup {
       },
     },
   },
-  pickers = {
+  pickers = { -- without this "Find Text" doesn't look into hidden folders
+    live_grep = {
+      additional_args = function(opts)
+        return {"--hidden"}
+      end
+    },
   },
   -- extensions = {
   --   media_files = {

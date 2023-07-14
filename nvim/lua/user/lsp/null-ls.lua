@@ -29,7 +29,7 @@ null_ls.setup {
     -- diagnostics.erb_lint.with { -- Lint your ERB files
     --   args ={ "--format", "json", "--stdin", "$FILENAME" },
     -- },
-    diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
+    -- diagnostics.rubocop,  -- The Ruby Linter/Formatter that Serves and Protects.
     -- formatting.erb_lint.with {  -- Lint your ERB files
     --   args ={ "--autocorrect", "--stdin", "$FILENAME" },
     -- },

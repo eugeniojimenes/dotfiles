@@ -21,7 +21,7 @@ configs.setup {
     "lua", "bash", "make", "dockerfile", "regex",
     "html", "css", "scss", "json", "yaml",
     "markdown", "markdown_inline",
-    "python", "javascript", "typescript", "ruby"
+    "python", "javascript", "typescript",  -- disabled "ruby", it has a strange behavior
   }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
      -- NOTE: "embedded_template" is freezing in .html.erb files!!!
   sync_install = false,       -- install languages synchronously (only applied to `ensure_installed`)
