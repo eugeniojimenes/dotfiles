@@ -112,6 +112,32 @@ ln -s ~/dotfiles/nvim ~/.config/nvim
 ln -s ~/dotfiles/zk ~/my-zk/.zk
 ```
 
+# asdf
+
+```sh
+# Ruby
+asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+asdf install ruby 2.7.1
+asdf global ruby 2.7.1
+# Python
+asdf plugin add python
+asdf install python 3.10.8
+asdf global python 3.10.8
+# Nodejs
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf install nodejs latest
+asdf global nodejs latest
+# Golang
+asdf plugin-add golang https://github.com/kennyp/asdf-golang.git
+asdf install golang latest
+asdf global golang latest
+```
+
+## Limpar instalação do nvim (plugins)
+```sh
+rm -rf ~/.local/share/nvim/*
+```
+
 ## Licença
 Este *dotfiles* está disponível como código aberto sob o MIT, consulte o arquivo [LICENSE](/LICENSE).
 

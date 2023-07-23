@@ -19,7 +19,7 @@ end
 configs.setup {
   ensure_installed = {
     "lua", "bash", "make", "dockerfile", "regex",
-    "html", "css", "scss", "json", "yaml",
+    "html", "css", "scss", "json", "jsonc", "yaml",
     "markdown", "markdown_inline",
     "python", "javascript", "typescript",  -- disabled "ruby", it has a strange behavior
   }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages

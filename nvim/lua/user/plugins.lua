@@ -139,6 +139,12 @@ return packer.startup(function(use)
   -- use "windwp/nvim-ts-autotag"
   -- use "JoosepAlviste/nvim-ts-context-commentstring"
 
+  -- Docker
+  use {
+    'https://codeberg.org/esensar/nvim-dev-container',
+    requires = { 'nvim-treesitter/nvim-treesitter' }
+  }
+
   -- Git
   use "lewis6991/gitsigns.nvim"
   use "f-person/git-blame.nvim"

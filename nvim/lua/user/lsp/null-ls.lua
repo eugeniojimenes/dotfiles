@@ -38,6 +38,8 @@ null_ls.setup {
 
 -- NOTES: It requires to install:
 --   gem install rubocop rubocop-packaging rubocop-performance rubocop-rails rubocop-rspec erb_lint
---   npm install -g rustywind
+--   npm install -g rustywind @johnnymorganz/stylua-bin prettier
+--   pip install git+https://github.com/psf/black
 --   pip install --user yamllint
+--   go install mvdan.cc/sh/v3/cmd/shfmt@latest
 
