@@ -8,6 +8,7 @@ lualine.setup({
     theme = "codedark",
   },
   sections = {
+    lualine_b = { 'branch', 'diff', 'diagnostics', 'swenv' },
     lualine_c = {
       {
         'filename',

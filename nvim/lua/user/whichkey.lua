@@ -268,6 +268,7 @@ local mappings = {
     r = { "<cmd>TSToggle rainbow<cr>", "Rainbow" },
   },
 
+  x = { "<cmd>lua require('swenv.api').pick_venv()<cr>", "Choose Python Env" },
   -- Some bugs are happening, like new daily and weekly don't receive date.
   z = {
     name = "ZK note-taking",

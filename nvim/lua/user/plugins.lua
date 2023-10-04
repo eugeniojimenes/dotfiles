@@ -157,6 +157,10 @@ return packer.startup(function(use)
   use "tpope/vim-rails"
   use "tpope/vim-bundler"
 
+  -- Python
+  use "AckslD/swenv.nvim"
+  use "stevearc/dressing.nvim"
+
   -- Markdown
   use {
     "iamcco/markdown-preview.nvim",
