@@ -1,3 +1,7 @@
+# # NOTEBOOK SETTINGS
+# [notebook]
+# dir = "~/my-zk/"
+
 # NOTE SETTINGS
 [note]
 
@@ -44,13 +48,6 @@ filename = "{{format-date now '%Y-%m-%d'}}"
 # extension = "md"
 template = "daily.md"
 
-[group.weekly]
-paths = ["journal/weeklies"]
-
-[group.weekly.note]
-filename = "weekly-{{format-date now '%Y-%m-%d'}}"
-template = "weekly.md"
-
 [group.til]
 paths = ["IT/tils"]
 
@@ -75,7 +72,7 @@ colon-tags = true
 [tool]
 
 # Default editor used to open notes.
-editor = "nvim"
+editor = "lvim"
 
 # Pager used to scroll through long output.
 pager = "less -FIRX"
@@ -94,74 +91,62 @@ recents = "--sort created- --created-after 'last two weeks'"
 [alias]
 
 # Edit the last modified note.
-edlast = "zk edit --limit 1 --sort modified- $@"
+edlast = "zk -W $ZK_NOTEBOOK_DIR edit --limit 1 --sort modified- $@"
 
 # Edit the notes selected interactively among the notes created the last two weeks.
-recent = "zk edit --sort created- --created-after 'last two weeks' --interactive"
+recent = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- --created-after 'last two weeks' --interactive"
 
 # Show a random note.
-lucky = "zk list --quiet --format full --sort random --limit 1"
+lucky = "zk -W $ZK_NOTEBOOK_DIR list --quiet --format full --sort random --limit 1"
 
 # Search notes by tags
-tag = "zk edit --interactive --tag $argv"
+tag = "zk -W $ZK_NOTEBOOK_DIR edit --interactive --tag $argv"
 
 # Edit zk config file
-config = 'nvim "$HOME/dotfiles/zk/config.toml"'
+config = 'lvim "$HOME/dotfiles/zk/config.toml"'
 
 ## new general note (not related with IT)
-ngi = 'zk new --no-input "$ZK_NOTEBOOK_DIR/general" --title $argv'
+ngi = 'zk -W $ZK_NOTEBOOK_DIR new --no-input "$ZK_NOTEBOOK_DIR/general" --title $argv'
 # zk-nvim command: "<cmd>ZkNew { dir = 'IT/general', title = vim.fn.input('Title: ') }<cr>"
 
 ## new english note (not related with IT)
-ne = 'zk new --no-input "$ZK_NOTEBOOK_DIR/general" --group english --title $argv'
+ne = 'zk -W $ZK_NOTEBOOK_DIR new --no-input "$ZK_NOTEBOOK_DIR/general" --group english --title $argv'
 # zk-nvim command: "<cmd>ZkNew { dir = 'general', group = 'english', title = vim.fn.input('Title: ') }<cr>"
 
 ## new IT note
-nit = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/ideas" --title $argv'
+nit = 'zk -W $ZK_NOTEBOOK_DIR new --no-input "$ZK_NOTEBOOK_DIR/IT/ideas" --title $argv'
 # zk-nvim command: "<cmd>ZkNew { dir='IT/ideas', title = vim.fn.input('Title: ') }<cr>"
 
 ## new daily journal entry
-nd = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/dailies" --group daily'
+nd = 'zk -W $ZK_NOTEBOOK_DIR new --no-input "$ZK_NOTEBOOK_DIR/journal/dailies" --group daily'
 # zk-nvim command: "<cmd>ZkNew { dir = 'journal/dailies', group = 'daily' }<cr>"
 
-## new weekly journal entry
-nw = 'zk new --no-input "$ZK_NOTEBOOK_DIR/journal/weeklies" --group weekly'
-# zk-nvim command: "<cmd>ZkNew { dir = 'journal/weeklies', group = 'weekly' }<cr>"
-
 ## new til note
-ntil = 'zk new --no-input "$ZK_NOTEBOOK_DIR/IT/tils" --group til --title $argv'
+ntil = 'zk -W $ZK_NOTEBOOK_DIR new --no-input "$ZK_NOTEBOOK_DIR/IT/tils" --group til --title $argv'
 # zk-nvim command: "<cmd>ZkNew { dir = 'IT/tils', group = 'til', title = vim.fn.input('Title: ') }<cr>"
 
-## Edit all dailies interactively.
-dailies = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal/dailies --interactive"
-# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'journal/dailies' } }<cr>"
-
-## Edit all weeklies interactively.
-weeklies = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal/weeklies --interactive"
-# zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'journal/weeklies' } }<cr>"
-
-## Edit all journal interactively (both dailies and weeklies).
-journal = "zk edit --sort created- $ZK_NOTEBOOK_DIR/journal --interactive"
+## Edit all journal interactively.
+journal = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- $ZK_NOTEBOOK_DIR/journal --interactive"
 # zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'journal' } }<cr>"
 
 ## Edit all it ideas interactively.
-ideas = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT/ideas --interactive"
+ideas = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- $ZK_NOTEBOOK_DIR/IT/ideas --interactive"
 # zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT/ideas' } }<cr>"
 
 ## Edit all tils interactively.
-tils = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT/tils --interactive"
+tils = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- $ZK_NOTEBOOK_DIR/IT/tils --interactive"
 # zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT/tils' } }<cr>"
 
 ## Edit all it interactively (til and ideas).
-it = "zk edit --sort created- $ZK_NOTEBOOK_DIR/IT --interactive"
+it = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- $ZK_NOTEBOOK_DIR/IT --interactive"
 # zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'IT' } }<cr>"
 
 ## Edit all general notes interactively.
-general = "zk edit --sort created- $ZK_NOTEBOOK_DIR/general --interactive"
+general = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- $ZK_NOTEBOOK_DIR/general --interactive"
 # zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'general' } }<cr>"
 
 ## Edit all english notes interactively.
-english = "zk edit --sort created- $ZK_NOTEBOOK_DIR/general --tag english --interactive"
+english = "zk -W $ZK_NOTEBOOK_DIR edit --sort created- $ZK_NOTEBOOK_DIR/general --tag english --interactive"
 # zk-nvim command: "<cmd>ZkNotes { sort = { 'modified' } , hrefs = { 'general' }, tags = { 'english' } }<cr>" 
 
 # update zk notes
@@ -169,10 +154,10 @@ update = "cd $ZK_NOTEBOOK_DIR; git add -A; git commit -am 'updating'; git push; 
 # zk-nvim command: 
 
 # remove a files
-rm = "zk list --interactive --quiet --format path --delimiter0 $argv | xargs -0 rm -vf --"
+rm = "zk -W $ZK_NOTEBOOK_DIR list --interactive --quiet --format path --delimiter0 $argv | xargs -0 rm -vf --"
 
 # open last zk in slides
-slides = "zk list --interactive --quiet --format path --delimiter0 $argv | xargs -0 slides"
+slides = "zk -W $ZK_NOTEBOOK_DIR list --interactive --quiet --format path --delimiter0 $argv | xargs -0 slides"
 
 # LSP (EDITOR INTEGRATION)
 [lsp]

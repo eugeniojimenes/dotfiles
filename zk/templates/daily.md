@@ -1,15 +1,23 @@
 # {{format-date now "long"}}
 ---
-## Goal of the Day
+## Today's Focus
 
 
 
----
-## Gratitude:
+## Goals
 
 1.
 2.
 3.
 
 ---
+## Gratitude:
+
+
+
+---
 ## Thoughts
+
+
+
+---

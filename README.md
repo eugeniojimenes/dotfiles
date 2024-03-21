@@ -101,6 +101,21 @@ which was a good guide for me, be sides
 [the documentation of zk](https://github.com/mickael-menu/zk/blob/main/docs/getting-started.md),
 of course.
 
+On Arch Linux the following packages are required:
+```sh
+sudo pacman -S zk fzf bat
+```
+
+## Clipboard on Windows WSL
+
+To able clipboard on Windows WSL you need [win32yank](https://github.com/equalsraf/win32yank). Download the
+.exe file and do the following:
+
+```sh
+sudo cp ~/Downloads/win32yank.exe /usr/local/bin
+sudo chmod +x /usr/local/bin/win32yank.exe
+```
+
 ## My symbolic links
 
 ```sh
@@ -109,6 +124,7 @@ ln -s ~/dotfiles/.zshrc ~/.zshrc
 ln -s ~/dotfiles/.zshenv ~/.zshenv
 ln -s ~/dotfiles/nvim ~/.config/nvim
 ln -s ~/dotfiles/zk ~/my-zk/.zk
+ln -s ~/dotfiles/zk ~/.config/zk
 ```
 
 # asdf

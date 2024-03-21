@@ -25,3 +25,5 @@ require "user.toggleterm"
 require "user.treesitter"
 require "user.whichkey"
 require "user.zk"
+
+require'nvim-tree'.setup()
