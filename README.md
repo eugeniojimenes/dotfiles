@@ -108,12 +108,20 @@ sudo pacman -S zk fzf bat
 
 ## Clipboard on Windows WSL
 
-To able clipboard on Windows WSL you need [win32yank](https://github.com/equalsraf/win32yank). Download the
+To be able clipboard on Windows WSL you need [win32yank](https://github.com/equalsraf/win32yank). Download the
 .exe file and do the following:
 
 ```sh
 sudo cp ~/Downloads/win32yank.exe /usr/local/bin
 sudo chmod +x /usr/local/bin/win32yank.exe
+```
+
+## Spell Check and cohesion
+
+To write my markdowns, specially for my zk'notes, I use the ltex-ls LSP but for that you need to install java
+
+```sh
+sudo pacman -S openjdk-src
 ```
 
 ## My symbolic links
@@ -129,6 +137,13 @@ ln -s ~/dotfiles/zk ~/.config/zk
 
 # asdf
 
+**NOTE:** You're going to need this packages as `ruby-build`'s requirements:
+
+```sh
+pacman -S --needed base-devel rust libffi libyaml openssl zlib
+```
+
+Download and install these languages:
 ```sh
 # Ruby
 asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
