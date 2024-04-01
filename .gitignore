@@ -2,3 +2,5 @@
 **/backupdir/**
 **/plugin/packer_compiled.lua
 **/notebook.db
+
+**/lazy-lock.json
