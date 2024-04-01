@@ -106,16 +106,6 @@ On Arch Linux the following packages are required:
 sudo pacman -S zk fzf bat
 ```
 
-## Clipboard on Windows WSL
-
-To be able clipboard on Windows WSL you need [win32yank](https://github.com/equalsraf/win32yank). Download the
-.exe file and do the following:
-
-```sh
-sudo cp ~/Downloads/win32yank.exe /usr/local/bin
-sudo chmod +x /usr/local/bin/win32yank.exe
-```
-
 ## Spell Check and cohesion
 
 To write my markdowns, specially for my zk'notes, I use the ltex-ls LSP but for that you need to install java
@@ -133,11 +123,12 @@ ln -s ~/dotfiles/.zshenv ~/.zshenv
 ln -s ~/dotfiles/nvim ~/.config/nvim
 ln -s ~/dotfiles/zk ~/my-zk/.zk
 ln -s ~/dotfiles/zk ~/.config/zk
+ln -s ~/dotfiles/lvim ~/.config/lvim
 ```
 
-# asdf
+## asdf
 
-**NOTE:** You're going to need this packages as `ruby-build`'s requirements:
+**NOTE:** For ruby you're going to need this packages as `ruby-build`'s requirements:
 
 ```sh
 pacman -S --needed base-devel rust libffi libyaml openssl zlib
