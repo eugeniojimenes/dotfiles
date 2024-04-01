@@ -20,6 +20,8 @@ Finally, I "organized" it!
    888d"  888d  888d"  "888d  888d"     888d       888d   888d  888d                888d
     ~/dotfiles   ~/dotfiles    888d"    888d       888d   888d   ~/.dotfiles  ~/dotfiles
 ```
+## WSL
+I'm using WSL2 with Arch linux, please see this [Readme](./WSL/README.md).
 
 ## Git
 The [.gitconfig](./.gitconfig) files is kind of personal and mine isn't a big deal: it enables the

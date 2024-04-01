@@ -12,7 +12,13 @@ vim.opt.mouse = ""
 -- Plugins
 lvim.plugins = {
   { "lunarvim/darkplus.nvim" },
-  { "tpope/vim-fugitive" }
+  { "tpope/vim-fugitive" },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+  }
 }
 
 -- Colorscheme
@@ -63,6 +69,7 @@ lvim.builtin.which_key.mappings["T"] = {
 -- Window splits
 lvim.builtin.which_key.mappings["v"] = { "<cmd>vsplit<cr>", "vsplit" }
 lvim.builtin.which_key.mappings["h"] = { "<cmd>split<cr>", "split" }
+lvim.builtin.which_key.mappings["P"] = { "<cmd>MarkdownPreviewToggle<CR>", "Markdown Toggle preview" }
 
 -- set .erb files as html syntax
 lvim.autocommands = {
