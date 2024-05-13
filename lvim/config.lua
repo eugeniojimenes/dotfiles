@@ -6,6 +6,22 @@
 -- Options
 vim.opt.wrap = true
 vim.opt.clipboard = "unnamedplus"
+vim.opt.colorcolumn = "120"
+vim.g.clipboard = {
+  name = 'WslClipboard',
+  copy = {
+    ["+"] = "clip.exe",
+    ["*"] = "clip.exe",
+  },
+  paste = {
+    ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  },
+  cache_enabled = 0,
+}
+-- vim.opt.listchars = { eol = "󱞥", trail = "󱁐", tab = ">-", nbsp = "~" }
+vim.opt.list = true
+vim.opt.listchars = { eol = "󱞥", trail = "", tab = ">-", nbsp = "~" }
 vim.opt.relativenumber = true
 vim.opt.mouse = ""
 
@@ -18,7 +34,7 @@ lvim.plugins = {
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
     build = function() vim.fn["mkdp#util#install"]() end,
-  }
+  },
 }
 
 -- Colorscheme
@@ -71,13 +87,27 @@ lvim.builtin.which_key.mappings["v"] = { "<cmd>vsplit<cr>", "vsplit" }
 lvim.builtin.which_key.mappings["h"] = { "<cmd>split<cr>", "split" }
 lvim.builtin.which_key.mappings["P"] = { "<cmd>MarkdownPreviewToggle<CR>", "Markdown Toggle preview" }
 
--- set .erb files as html syntax
+-- set .erb files as html syntax and json.jbuilder files as ruby syntax
 lvim.autocommands = {
+  {
+    "BufEnter",
     {
-        "BufEnter",
-        {
-            pattern = { "*.erb", "*.eruby" },
-            command = "set syntax=html",
-        }
-    },
+      pattern = { "*.erb", "*.eruby" },
+      command = "set syntax=html",
+    }
+  },
+  {
+    "BufEnter",
+    {
+      pattern = { "*.json.jbuilder", "*.jbuilder", "*.rake" },
+      command = "set ft=ruby",
+    }
+  },
+  {
+    "FileType",
+    {
+      pattern = { "*ruby" },
+      command = "setlocal indentkeys-=.",
+    }
+  }
 }
