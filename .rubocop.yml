@@ -1091,143 +1091,173 @@ Lint/UselessTimes:
 Lint/Void:
   Enabled: true
 
-# 
+# Checks that the ABC size of methods is not higher than the configured maximum. The ABC size is based on assignments,
+# branches (method calls), and conditions.
+# See more on http://c2.com/cgi/wiki?AbcMetric and on https://en.wikipedia.org/wiki/ABC_Software_Metric.
 Metrics/AbcSize:
   Enabled: true
 
-# 
+# Checks if the length of a block exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
 Metrics/BlockLength:
   Enabled: true
 
-# 
+# Checks for excessive nesting of conditional and looping constructs.
 Metrics/BlockNesting:
   Enabled: true
 
-# 
+# Checks if the length of a class exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
 Metrics/ClassLength:
   Enabled: true
+  Max: 100
 
-# 
+# Checks for literals with extremely many entries. This is indicative of configuration or data that may be better
+# extracted somewhere else, like a database, fetched from an API, or read from a non-code file (CSV, JSON, YAML, etc.).
 Metrics/CollectionLiteralLength:
   Enabled: true
+  LengthThreshold: 250
 
-# 
+# Checks that the cyclomatic complexity of methods. The cyclomatic complexity is the number of linearly independent
+# paths through a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
+  Max: 7
 
-# 
+# Checks if the length of a method exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
 Metrics/MethodLength:
   Enabled: true
+  CountAsOne: [ array, hash, heredoc, method_call ]
+  Max: 15
 
-# 
+# Checks if the length of a module exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
 Metrics/ModuleLength:
   Enabled: true
+  Max: 100
 
-# 
+# Checks for methods with too many parameters.
 Metrics/ParameterLists:
   Enabled: true
+  Max: 5
 
-# 
+# Tries to produce a complexity score that’s a measure of the complexity the reader experiences when looking at a
+# method.
 Metrics/PerceivedComplexity:
   Enabled: true
+  Max: 8
 
-# 
+# Makes sure that accessor methods are named properly. Applies to both instance and class methods.
 Naming/AccessorMethodName:
   Enabled: true
 
-# 
+# Checks for non-ascii characters in identifier and constant names.
 Naming/AsciiIdentifiers:
   Enabled: true
 
-# 
+# Makes sure that certain binary operator methods have their sole parameter named `other`.
 Naming/BinaryOperatorParameterName:
   Enabled: true
 
-# 
-Naming/BlockForwarding:
-  Enabled: true
+## DISABLED
+# # This cop identifies places where `do_something(&block)` can be replaced by `do_something(&)`.
+# # NOTE: In Ruby 3.1, anonymous block forwarding has been added.
+# Naming/BlockForwarding:
+#   Enabled: true
 
-# 
+# Checks block parameter names for how descriptive they are. It is highly configurable.
 Naming/BlockParameterName:
   Enabled: true
+  MinNameLength: 1
+  AllowNamesEndingInNumbers: true
 
-# 
+# Checks for class and module names with an underscore in them.
 Naming/ClassAndModuleCamelCase:
   Enabled: true
 
-# 
+# Checks whether constant names are written using SCREAMING_SNAKE_CASE.
 Naming/ConstantName:
   Enabled: true
 
-# 
+# Makes sure that Ruby source files have snake_case names.
+# NOTE: Ruby scripts (i.e. source files with a shebang in the first line) are ignored.
 Naming/FileName:
   Enabled: true
 
-# 
+# Checks that your heredocs are using the configured case.
+# NOTE: By default it is configured to enforce uppercase heredocs.
 Naming/HeredocDelimiterCase:
   Enabled: true
 
-# 
+# Checks that your heredocs are using meaningful delimiters.
 Naming/HeredocDelimiterNaming:
   Enabled: true
 
-# 
+# Recommends the use of inclusive language instead of problematic terms.
 Naming/InclusiveLanguage:
   Enabled: true
 
-# 
+# Checks for memoized methods whose instance variable name does not match the method name.
 Naming/MemoizedInstanceVariableName:
   Enabled: true
 
-# 
+# Makes sure that all methods use the configured style (snake_case).
 Naming/MethodName:
   Enabled: true
 
-# 
+# Checks method parameter names for how descriptive they are.  It is highly configurable.
 Naming/MethodParameterName:
   Enabled: true
+  MinNameLength: 3
+  AllowNamesEndingInNumbers: true
 
-# 
+# Checks that predicate methods names end with a question mark and do not start with a forbidden prefix.
 Naming/PredicateName:
   Enabled: true
 
-# 
+# Makes sure that rescued exceptions variables are named as expected.
 Naming/RescuedExceptionsVariableName:
   Enabled: true
 
-# 
+# Makes sure that all variables use the configured style (snake_case).
 Naming/VariableName:
   Enabled: true
 
-# 
+# Makes sure that all numbered variables use the configured style (normalcase).
 Naming/VariableNumber:
   Enabled: true
 
-# 
+# Checks for implementations of the hash method which combine values using custom logic instead of delegating to
+# `Array#hash`.
 Security/CompoundHash:
   Enabled: true
 
-# 
+# Checks for the use of `Kernel#eval` and `Binding#eval`.
 Security/Eval:
   Enabled: true
 
-# 
+# Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`, `IO.foreach`, and `IO.readlines`.
 Security/IoMethods:
   Enabled: true
 
-# 
+# Checks for the use of JSON class methods which have potential security issues.
 Security/JSONLoad:
   Enabled: true
 
-# 
+# Checks for the use of `Marshal` class methods which have potential security issues leading to remote code execution
+# when loading from an untrusted source.
 Security/MarshalLoad:
   Enabled: true
 
-# 
+# Checks for the use of `Kernel#open` and `URI.open` with dynamic data.
+# NOTE: `open` and `URI.open` with literal strings are not flagged by this cop.
 Security/Open:
   Enabled: true
 
-# 
+# Checks for the use of YAML class methods which have potential security issues leading to remote code execution when
+# loading from an untrusted source.
+# NOTE: Ruby 3.1+ (Psych 4) uses `Psych.load` as `Psych.safe_load` by default.
 Security/YAMLLoad:
   Enabled: true
 
