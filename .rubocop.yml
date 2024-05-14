@@ -1261,15 +1261,15 @@ Security/Open:
 Security/YAMLLoad:
   Enabled: true
 
-# 
+# Access modifiers should be declared to apply to a group of methods.
 Style/AccessModifierDeclarations:
   Enabled: true
 
-# 
+# Checks for grouping of accessors in class and module bodies.
 Style/AccessorGrouping:
   Enabled: true
 
-# 
+# Enforces the use of `#alias`.
 Style/Alias:
   Enabled: true
 
@@ -1277,9 +1277,10 @@ Style/Alias:
 Style/AndOr:
   Enabled: true
 
-# 
-Style/ArgumentsForwarding:
-  Enabled: true
+## DISABLED
+# # This cop identifies places where `do_something(*args, &block)` can be replaced by `do_something(...)`.
+# Style/ArgumentsForwarding:
+#   Enabled: true
 
 ## DISABLED
 # # Enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
@@ -1292,11 +1293,12 @@ Style/ArgumentsForwarding:
 Style/ArrayFirstLast:
   Enabled: true
 
-# 
+# This cop identifies places where `(array1 & array2).any?` can be replaced by `array1.intersect?(array2)`.
+# NOTE: In Ruby 3.1, Array#intersect? has been added.
 Style/ArrayIntersect:
   Enabled: true
 
-# 
+# Use `%w(foo bar baz).join(",")` instead of `%w(foo bar baz) * ","`.
 Style/ArrayJoin:
   Enabled: true
 
@@ -1305,7 +1307,7 @@ Style/ArrayJoin:
 # Style/AsciiComments:
 #   Enabled: false
 
-# 
+# Checks for uses of `Module#attr`. Use `attr_accessor`/`attr_reader` instead.
 Style/Attr:
   Enabled: true
 
@@ -1314,51 +1316,52 @@ Style/Attr:
 # Style/AutoResourceCleanup:
 #   Enabled: false
 
-# 
+# Checks if usage of %() or %{}
 Style/BarePercentLiterals:
   Enabled: true
 
-# 
+# Checks for BEGIN blocks.
 Style/BeginBlock:
   Enabled: true
 
-# 
+# Checks for places where `attr_reader` and `attr_writer` for the same method can be combined into single
+# `attr_accessor`.
 Style/BisectedAttrAccessor:
   Enabled: true
 
-# 
+# Looks for uses of block comments (`=begin... =end`).
 Style/BlockComments:
   Enabled: true
 
-# 
+# Check for uses of braces or `do`/`end` around single line or multi-line blocks.
 Style/BlockDelimiters:
   Enabled: true
 
-# 
+# Use `(1..100).include?(7)` instead of `(1..100) === 7`.
 Style/CaseEquality:
   Enabled: true
 
-# 
+# Identifies places where if-elsif constructions can be replaced with case-when.
 Style/CaseLikeIf:
   Enabled: true
 
-# 
+# Use `"x"` instead of `?x`.
 Style/CharacterLiteral:
   Enabled: true
 
-# 
+# Checks the style of children definitions at classes and modules.
 Style/ClassAndModuleChildren:
   Enabled: true
 
-# 
+# Enforces consistent use of `Object#is_a?`.
 Style/ClassCheck:
   Enabled: true
 
-# 
+# Enforces the use of `Object#instance_of?` instead of class comparison for equality. `==`, `equal?`, and `eql?`.
 Style/ClassEqualityComparison:
   Enabled: true
 
-# 
+# Checks for uses of the class/module name instead of self, when defining class/module methods.
 Style/ClassMethods:
   Enabled: true
 
@@ -1367,52 +1370,56 @@ Style/ClassMethodsDefinitions:
   Enabled: true
   EnforcedStyle: self_class
 
-# 
+# Checks for uses of class variables.
 Style/ClassVars:
   Enabled: true
 
-# 
+# Checks for places where custom logic on rejection nils from arrays and hashes can be replaced with
+# `{Array,Hash}#{compact,compact!}`.
 Style/CollectionCompact:
   Enabled: true
 
 ## DISABLED
-# # Enforces the use of consistent method names from the Enumerable module
+# # Enforces the use of consistent method names from the Enumerable module.
 # Style/CollectionMethods:
 #   Enabled: false
 
-# Prefer Foo.method over Foo::method
+# Use `Foo.method` instead of `Foo::method`.
 Style/ColonMethodCall:
   Enabled: true
 
-# 
+# Use `def self.method... end` instead of `def self::method... end`.
 Style/ColonMethodDefinition:
   Enabled: true
 
-# 
+# Checks for places where multiple consecutive loops over the same data can be combined into a single loop.
 Style/CombinableLoops:
   Enabled: true
 
-# 
+# Enforces using `` or %x around command literals.
 Style/CommandLiteral:
   Enabled: true
 
-# 
+# Checks that comment annotation keywords are written according to guidelines.
 Style/CommentAnnotation:
   Enabled: true
 
-# 
+# Checks for comments put on the same line as some keywords. These keywords are: `class`, `module`, `def`, `begin`,
+# `end`.
 Style/CommentedKeyword:
   Enabled: true
 
-# 
-Style/ComparableClamp:
-  Enabled: true
+## DISABLED
+# # Enforces the use of `Comparable#clamp` instead of comparison by minimum and maximum.
+# Style/ComparableClamp:
+#   Enabled: true
 
-# 
+# Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.
 Style/ConcatArrayLiterals:
   Enabled: true
 
-# 
+# Check for `if` and `case` statements where each branch is used for both the assignment and comparison of the same
+# variable when using the return of the condition can be used instead.
 Style/ConditionalAssignment:
   Enabled: true
 
@@ -1426,9 +1433,10 @@ Style/ConditionalAssignment:
 # Style/Copyright:
 #   Enabled: false
 
-# 
-Style/DataInheritance:
-  Enabled: true
+## DISABLED
+# # Checks for inheritance from `Data.define` to avoid creating the anonymous parent class.
+# Style/DataInheritance:
+#   Enabled: true
 
 ## DISABLED
 # # Checks for consistent usage of the DateTime class over the Time class.
@@ -1437,15 +1445,17 @@ Style/DataInheritance:
 # Style/DateTime:
 #   Enabled: false
 
-# 
+# Checks for parentheses in the definition of a method, that does not take any arguments.
+# Both instance and class/singleton methods are checked.
 Style/DefWithParentheses:
   Enabled: true
 
-# 
+# Checks for places where the `#__dir__` method can replace more complex constructs to retrieve a canonicalized
+# absolute path to the current file.
 Style/Dir:
   Enabled: true
 
-# 
+# Prefer to use `Dir.empty?("path/to/dir")` when checking if a directory is empty.
 Style/DirEmpty:
   Enabled: true
 
@@ -1478,191 +1488,207 @@ Style/DirEmpty:
 # Style/DoubleCopDisableDirective:
 #   Enabled: false
 
-# 
+# Checks for uses of double negation (!!) to convert something to a boolean value.
 Style/DoubleNegation:
   Enabled: true
 
-# 
+# Checks for loops which iterate a constant number of times, using a Range literal and `#each`. This can be done more
+# readably using `Integer#times`.
 Style/EachForSimpleLoop:
   Enabled: true
 
-# 
+# Looks for `inject`/`reduce` calls where the passed in object is returned at the end and so could be replaced by
+# `each_with_object` without the need to return the object at the end.
 Style/EachWithObject:
   Enabled: true
 
-# 
+# Checks for pipes for empty block parameters.
+# NOTE: Pipes for empty block parameters do not cause syntax errors, but they are redundant.
 Style/EmptyBlockParameter:
   Enabled: true
 
-# 
+# Checks for case statements with an empty condition.
 Style/EmptyCaseCondition:
   Enabled: true
 
-# 
+# Checks for empty else-clauses, possibly including comments and/or an explicit `nil`.
 Style/EmptyElse:
   Enabled: true
 
-# 
+# Checks for using empty heredoc to reduce redundancy.
 Style/EmptyHeredoc:
   Enabled: true
 
-# 
+# Checks for parentheses for empty lambda parameters.
+# NOTE: Parentheses for empty lambda parameters do not cause syntax errors, but they are redundant.
 Style/EmptyLambdaParameter:
   Enabled: true
 
-# 
+# Checks for the use of a method, the result of which would be a literal, like an empty array, hash, or string.
 Style/EmptyLiteral:
   Enabled: true
 
-# 
+# Checks for the formatting of empty method definitions.
+# NOTE: A method definition is not considered empty if it contains comments.
 Style/EmptyMethod:
   Enabled: true
 
-# 
+# Checks ensures source files have no utf-8 encoding comments.
 Style/Encoding:
   Enabled: true
 
-# 
+# Checks for END blocks.
 Style/EndBlock:
   Enabled: true
 
-# 
+# Checks for endless methods.
 Style/EndlessMethod:
   Enabled: true
 
-# 
+# Checks for consistent usage of `ENV["HOME"]`. If `nil` is used as the second argument of `ENV.fetch`, it is treated
+# as a bad case like `ENV[]`.
 Style/EnvHome:
   Enabled: true
 
-# 
+# Ensures that eval methods (`eval`, `instance_eval`, `class_eval` and `module_eval`) are given filename and line
+# number values (`__FILE__` and `__LINE__`).
 Style/EvalWithLocation:
   Enabled: true
   Exclude:
     - spec/**/*
 
-# 
+# Checks for places where `Integer#even?` or `Integer#odd?` can be used.
 Style/EvenOdd:
   Enabled: true
 
-# 
+# Checks for exact regexp match inside Regexp literals.
 Style/ExactRegexpMatch:
   Enabled: true
 
-# 
+# Checks for use of the File.expand_path arguments.
 Style/ExpandPathArguments:
   Enabled: true
 
-# 
+# Enforces the use of explicit block argument to avoid writing block literal that just passes its arguments to another
+# block.
 Style/ExplicitBlockArgument:
   Enabled: true
 
-# 
+# Enforces consistency when using exponential notation for numbers in the code (eg `1.2e4`).
 Style/ExponentialNotation:
   Enabled: true
 
-# 
+# Suggests `ENV.fetch` for the replacement of `ENV[]`.
 Style/FetchEnvVar:
   Enabled: true
 
-# 
+# Prefer to use `File.empty?("path/to/file")` when checking if a file is empty.
 Style/FileEmpty:
   Enabled: true
 
-# 
+# Favor `File.(bin)read` convenience methods.
 Style/FileRead:
   Enabled: true
 
-# 
+# Favor `File.(bin)write` convenience methods.
 Style/FileWrite:
   Enabled: true
 
-# 
+# Checks for division with integers coerced to floats.
 Style/FloatDivision:
   Enabled: true
 
-# 
+# Looks for uses of the `for` keyword.
 Style/For:
   Enabled: true
 
-# 
+# Enforces the use of a single string formatting utility.
 Style/FormatString:
   Enabled: true
 
-# 
+# Use a consistent style for named format string tokens.
 Style/FormatStringToken:
   Enabled: true
 
-# 
+# Helps you transition from mutable string literals to frozen string literals.
+# It will add the `# frozen_string_literal: true` magic comment to the top of files to enable frozen string literals.
 Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always
 
-# 
+# Enforces the use of `$stdout`/`$stderr`/`$stdin` instead of `STDOUT`/`STDERR`/`STDIN`.
 Style/GlobalStdStream:
   Enabled: true
 
-# 
+# Looks for uses of global variables.
 Style/GlobalVars:
   Enabled: true
 
-# 
+# Use a guard clause instead of wrapping the code inside a conditional expression
 Style/GuardClause:
   Enabled: true
 
-# 
+# Checks for presence of braces around hash literal as a last array item.
+# Use `[1, 2, { one: 1, two: 2 }]` instead of `[1, 2, one: 1, two: 2]`
 Style/HashAsLastArrayItem:
   Enabled: true
 
-# 
+# Checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and sequences of values to hashes.
 Style/HashConversion:
   Enabled: true
 
-# 
+# Checks for uses of `each_key` and `each_value` Hash methods.
 Style/HashEachMethods:
   Enabled: true
 
-# 
+# Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods that can be replaced with
+# `Hash#except` method.
 Style/HashExcept:
   Enabled: true
 
-# 
+# Checks for places where case-when represents a simple 1:1 mapping and can be replaced with a hash lookup.
 Style/HashLikeCase:
   Enabled: true
 
+# Checks hash literal syntax.
 # Use Ruby >= 1.9 syntax for hashes. Prefer { a: :b } over { :a => :b }.
 Style/HashSyntax:
   Enabled: true
   EnforcedShorthandSyntax: either
 
-# 
+# Looks for uses of `_.each_with_object({}) {...}`, `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+# transforming the keys of a hash, and tries to use a simpler & faster call to `transform_keys` instead.
 Style/HashTransformKeys:
   Enabled: true
 
 # 
+# Looks for uses of `_.each_with_object({}) {...}`, `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+# transforming the values of a hash, and tries to use a simpler & faster call to `transform_values` instead.
 Style/HashTransformValues:
   Enabled: true
 
-# 
+# Checks for identical expressions at the beginning or end of each branch of a conditional expression.
 Style/IdenticalConditionalBranches:
   Enabled: true
 
-# 
+# If the `else` branch of a conditional consists solely of an `if` node, it can be combined with the `else` to become
+# an `elsif`.
 Style/IfInsideElse:
   Enabled: true
 
-# 
+# Checks for `if` and `unless` statements that would fit on one line
 Style/IfUnlessModifier:
   Enabled: true
 
-# 
+# Checks for `if` and `unless` statements used as modifiers of other `if` or `unless` statements.
 Style/IfUnlessModifierOfIfUnless:
   Enabled: true
 
-# 
+# Checks for redundant `if` with boolean literal branches.
 Style/IfWithBooleanLiteralBranches:
   Enabled: true
 
-# 
+# Checks for uses of semicolon in if statements.
 Style/IfWithSemicolon:
   Enabled: true
 
@@ -1670,11 +1696,11 @@ Style/IfWithSemicolon:
 Style/ImplicitRuntimeError:
   Enabled: true
 
-# 
+# Checks for `in ...;` uses in case expressions.
 Style/InPatternThen:
   Enabled: true
 
-# 
+# Use `Kernel#loop` for infinite loops.
 Style/InfiniteLoop:
   Enabled: true
 
@@ -1683,7 +1709,7 @@ Style/InfiniteLoop:
 # Style/InlineComment:
 #   Enabled: false
 
-# 
+# Check for usages of `not` or `!` called on a method when an inverse of that method can be used instead.
 Style/InverseMethods:
   Enabled: true
 
@@ -1697,39 +1723,39 @@ Style/InverseMethods:
 Style/IpAddresses:
   Enabled: true
 
-# 
+# Enforces that optional keyword parameters are placed at the end of the parameters list.
 Style/KeywordParametersOrder:
   Enabled: true
 
-# 
+# Checks for uses of the lambda literal syntax for single line lambdas, and the method call syntax for multiline lambdas.
 Style/Lambda:
   Enabled: true
 
-# 
+# Checks for use of the `lambda.(args)` syntax.
 Style/LambdaCall:
   Enabled: true
 
-# 
+# Checks for string literal concatenation at the end of a line.
 Style/LineEndConcatenation:
   Enabled: true
 
-# 
+# Ensures magic comments are written consistently throughout your code base
 Style/MagicCommentFormat:
   Enabled: true
 
-# 
+# Prefer `select` or `reject` over `map { ... }.compact`.
 Style/MapCompactWithConditionalBlock:
   Enabled: true
 
-# 
+# Checks for usages of each with `<<`, `push`, or `append` which can be replaced by `map`.
 Style/MapIntoArray:
   Enabled: true
 
-# 
+# Looks for uses of `map.to_h` or `collect.to_h` that could be written with just `to_h`.
 Style/MapToHash:
   Enabled: true
 
-# 
+# Looks for uses of `map.to_set` or `collect.to_set` that could be written with just `to_set`.
 Style/MapToSet:
   Enabled: true
 
@@ -1739,7 +1765,7 @@ Style/MethodCallWithArgsParentheses:
   Exclude:
     - spec/**/*
 
-# 
+# Checks for unwanted parentheses in parameterless method calls.
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
 
@@ -1754,11 +1780,11 @@ Style/MethodCalledOnDoEndBlock:
 Style/MethodDefParentheses:
   Enabled: true
 
-# 
+# Checks for potential uses of `Enumerable#minmax`.
 Style/MinMax:
   Enabled: true
 
-# 
+# Enforces the use of `max` or `min` instead of comparison for greater or less.
 Style/MinMaxComparison:
   Enabled: true
 
@@ -1767,39 +1793,40 @@ Style/MinMaxComparison:
 # Style/MissingElse:
 #   Enabled: false
 
-# 
+# Checks for the presence of `method_missing` without also defining `respond_to_missing?`.
 Style/MissingRespondToMissing:
   Enabled: true
 
-# 
+# Checks for grouping of mixins in class and module bodies.
 Style/MixinGrouping:
   Enabled: true
 
-# 
+# Checks that `include`, `extend` and `prepend` statements appear inside classes and modules, not at the top level,
+# so as to not affect the behavior of `Object`.
 Style/MixinUsage:
   Enabled: true
 
-# 
+# Checks for use of `extend self` or `module_function` in a module.
 Style/ModuleFunction:
   Enabled: true
 
-# 
+# Checks for chaining of a block after another block that spans multiple lines.
 Style/MultilineBlockChain:
   Enabled: true
 
-# 
+# Checks for uses of if/unless modifiers with multiple-lines bodies.
 Style/MultilineIfModifier:
   Enabled: true
 
-# 
+# Checks for uses of the `then` keyword in multi-line `if` statements.
 Style/MultilineIfThen:
   Enabled: true
 
-# 
+# Checks for uses of the `then` keyword in multi-line `in` statement.
 Style/MultilineInPatternThen:
   Enabled: true
 
-# 
+# Checks expressions wrapping styles for multiline memoization.
 Style/MultilineMemoization:
   Enabled: true
 
@@ -1808,107 +1835,116 @@ Style/MultilineMemoization:
 # Style/MultilineMethodSignature:
 #   Enabled: false
 
-# 
+# Checks for multi-line ternary op expressions.
 Style/MultilineTernaryOperator:
   Enabled: true
 
-# 
+# Checks for uses of the `then` keyword in multi-line `when` statements.
 Style/MultilineWhenThen:
   Enabled: true
 
-# 
+# Checks against comparing a variable with multiple items, where `Array#include?`, `Set#include?` or a `case` could be
+# used instead to avoid code repetition.
 Style/MultipleComparison:
   Enabled: true
 
-# 
+# Checks whether some constant value isn’t a mutable literal (e.g. array or hash).
 Style/MutableConstant:
   Enabled: true
 
-# 
+# Checks for uses of `if` with a negated condition. Only ifs without else are considered.
 Style/NegatedIf:
   Enabled: true
 
-# 
+# Checks for uses of if-else and ternary operators with a negated condition which can be simplified by inverting
+# condition and swapping branches.
 Style/NegatedIfElseCondition:
   Enabled: true
 
-# 
+# Checks for uses of `unless` with a negated condition. Only unless without else are considered.
 Style/NegatedUnless:
   Enabled: true
 
-# 
+# Checks for uses of `while` with a negated condition.
 Style/NegatedWhile:
   Enabled: true
 
-# 
+# Checks for nested `File.dirname`.
+# NOTE: It replaces nested File.dirname with the level argument introduced in Ruby 3.1.
 Style/NestedFileDirname:
   Enabled: true
 
-# 
+# Checks for nested use of `if`, `unless`, `while` and `until` in their modifier form.
 Style/NestedModifier:
   Enabled: true
 
-# 
+# Checks for unparenthesized method calls in the argument list of a parenthesized method call.
+# Use `method1(method2(arg))` instead of `method1(method2 arg)`.
 Style/NestedParenthesizedCalls:
   Enabled: true
 
-# 
+# Checks for nested ternary op expressions.
 Style/NestedTernaryOperator:
   Enabled: true
 
-# 
+# Use `next` to skip iteration instead of a condition at the end.
 Style/Next:
   Enabled: true
 
-# 
+# Checks for comparison of something with nil using `==`. Prefer `nil?`
 Style/NilComparison:
   Enabled: true
 
-# 
+# Checks for lambdas and procs that always return nil, which can be replaced with an empty lambda or proc instead.
 Style/NilLambda:
   Enabled: true
 
-# 
+# Checks for non-nil checks, which are usually redundant.
+# Use `if x ... end` instead of `if x != nil ... end`
 Style/NonNilCheck:
   Enabled: true
 
-# 
+# Checks for uses of the keyword `not` instead of `!`.
 Style/Not:
   Enabled: true
 
-# 
+# Checks for numbered parameters.
 Style/NumberedParameters:
   Enabled: true
 
-# 
+# Detects use of an excessive amount of numbered parameters in a single block.
 Style/NumberedParametersLimit:
   Enabled: true
 
-# 
+# Checks for octal, hex, binary, and decimal literals using uppercase prefixes and corrects them to lowercase prefix
+# or no prefix (in case of decimals).
 Style/NumericLiteralPrefix:
   Enabled: true
 
-# 
+# Checks for big numeric literals without _ between groups of digits in them.
+# Use `1_000_000` instead of `1000000`.
 Style/NumericLiterals:
   Enabled: true
 
-# 
+# Checks for usage of comparison operators (`==`, `>`, `<`) to test numbers as zero, positive, or negative.
+# Use `zero?`, `positive?` or `negative?` instead.
 Style/NumericPredicate:
   Enabled: true
 
-# 
+# Enforces the use of consistent method names`Object#then`.
 Style/ObjectThen:
   Enabled: true
 
-# 
+# Checks for uses of `if`/`then`/`else`/`end` constructs on a single line.
 Style/OneLineConditional:
   Enabled: true
 
-# 
+# Flags uses of OpenStruct, as it is now officially discouraged to be used for performance, version compatibility,
+# and potential security issues. Use `Struct` class instead.
 Style/OpenStructUse:
   Enabled: true
 
-# 
+# Checks for redundant dot before operator method call.
 Style/OperatorMethodCall:
   Enabled: true
 
