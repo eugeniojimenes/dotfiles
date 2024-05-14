@@ -1953,139 +1953,165 @@ Style/OperatorMethodCall:
 Style/OptionHash:
   Enabled: true
 
-# 
+# Checks for optional arguments to methods that do not come at the end of the argument list.
+# Use `def baz(a, b, c = 1) ... end` instead of `def foo(a = 1, b, c) ... end`.
 Style/OptionalArguments:
   Enabled: true
 
-# 
+# Checks for places where keyword arguments can be used instead of boolean arguments when defining methods.
+# NOTE: `respond_to_missing?` method is allowed by default
 Style/OptionalBooleanParameter:
   Enabled: true
 
-# 
+# Checks for potential usage of the `||=` operator.
+# Use `name ||= "Bozhidar"`  instead of `name = name ? name : "Bozhidar"`.
 Style/OrAssignment:
   Enabled: true
 
-# 
+# Checks for simple usages of parallel assignment.
+# NOTE: This will only complain when the number of variables being assigned matched the number of assigning variables.
 Style/ParallelAssignment:
   Enabled: true
 
-# 
+# Checks for the presence of superfluous parentheses around the condition of `if`/`unless`/`while`/`until`.
 Style/ParenthesesAroundCondition:
   Enabled: true
 
-# 
+# Enforces the consistent usage of %-literal delimiters.
 Style/PercentLiteralDelimiters:
   Enabled: true
 
-# 
+# Checks for usage of the %Q() syntax when %q() would do.
 Style/PercentQLiterals:
   Enabled: true
 
-# 
+# Looks for uses of Perl-style regexp match backreferences and their English versions like $1, $2, $&, &+, $MATCH,
+# $PREMATCH, etc.
 Style/PerlBackrefs:
   Enabled: true
 
-# 
+# Checks for uses of methods `Hash#has_key?` and `Hash#has_value?`, and suggests using `Hash#key?` and `Hash#value?`
+# instead.
 Style/PreferredHashMethods:
   Enabled: true
 
-# 
+# Checks for uses of Proc.new where Kernel#proc would be more appropriate.
 Style/Proc:
   Enabled: true
 
-# 
+# Checks if the quotes used for quoted symbols match the configured defaults
 Style/QuotedSymbols:
   Enabled: true
 
-# 
+# Checks the args passed to fail and raise.
+# Use `raise StandardError, "message"` instead of `raise StandardError.new("message")`.
 Style/RaiseArgs:
   Enabled: true
 
-# 
+# Checks for the use of randomly generated numbers, added/subtracted with integer literals, as well as those with
+# `Integer#succ` and `Integer#pred methods`.
 Style/RandomWithOffset:
   Enabled: true
 
-# 
+# Checks for a redundant argument passed to certain methods.
+# NOTE: This cop is limited to methods with single parameter.
 Style/RedundantArgument:
   Enabled: true
 
-# 
+# Checks for the instantiation of array using redundant Array constructor.
+# Autocorrect replaces to array literal which is the simplest and fastest.
 Style/RedundantArrayConstructor:
   Enabled: true
 
-# 
+# Checks for redundant assignment before returning.
 Style/RedundantAssignment:
   Enabled: true
 
-# 
+# Checks for redundant `begin` blocks.
 Style/RedundantBegin:
   Enabled: true
 
-# 
+# Checks for usage of the %W() syntax when %w() would do.
 Style/RedundantCapitalW:
   Enabled: true
 
-# Prefer a = b || c over a = b ? b : c
+# Checks for unnecessary conditional expressions.
+# Use `a = b || c` instead of `a = b ? b : c`.
 Style/RedundantCondition:
   Enabled: true
 
-# 
+# Checks for redundant returning of true/false in conditionals.
+# Use `x == y` instead of `x == y ? true : false`.
 Style/RedundantConditional:
   Enabled: true
 
-# 
+# Avoid redundant `::` prefix on constant.
+# Use `Const` instead of `::Const`.
 Style/RedundantConstantBase:
   Enabled: true
 
-# 
+# Checks for uses a redundant current directory in path.
+# Use `require_relative "path/to/feature"` instead of `require_relative "./path/to/feature"`.
 Style/RedundantCurrentDirectoryInPath:
   Enabled: true
 
-# 
+# Checks for redundant uses of double splat hash braces.
+# Use `do_something(foo: bar, baz: qux, **options)` instead of `do_something(**{foo: bar, baz: qux}.merge(options))`.
 Style/RedundantDoubleSplatHashBraces:
   Enabled: true
 
-# 
+# Checks for redundant `each`.
+# Use `array.each_with_index { |v, i| do_something(v, i) }` instead of
+#     `array.each.each_with_index { |v, i| do_something(v, i) }`.
 Style/RedundantEach:
   Enabled: true
 
-# 
+# Checks for RuntimeError as the argument of `raise`/`fail`.
+# Use `raise "message"` instead of `raise RuntimeError, "message"`.
 Style/RedundantException:
   Enabled: true
 
-# 
+# Identifies places where `fetch(key) { value }` can be replaced by `fetch(key, value)`.
+# NOTE: The block string "value" in `hash.fetch(:key) { "value" }` is detected when frozen string literal magic comment
+#       is enabled (i.e. # frozen_string_literal: true), but not when disabled.
 Style/RedundantFetchBlock:
   Enabled: true
 
-# 
+# Checks for the presence of superfluous ".rb" extension in the filename provided to require and `require_relative`.
 Style/RedundantFileExtensionInRequire:
   Enabled: true
 
-# 
+# Identifies usages of `any?`, `empty?` or `none?` predicate methods chained to `select`/`filter`/`find_all` and
+# change them to use predicate method instead.
+# Use `arr.any? { |x| x > 1 }` instead of `arr.select { |x| x > 1 }.any?`.
 Style/RedundantFilterChain:
   Enabled: true
 
-# 
+# Check for uses of `Object#freeze` on immutable objects.
+# NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+# NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated string literals when
+#       `# frozen-string-literal: true` is used.
 Style/RedundantFreeze:
   Enabled: true
 
-# 
+# Checks for redundant heredoc delimiter quotes.
 Style/RedundantHeredocDelimiterQuotes:
   Enabled: true
 
-# 
+# Checks for initialize methods that are redundant.
+# NOTE: If an initializer argument has a default value, RuboCop assumes it to not be redundant.
 Style/RedundantInitialize:
   Enabled: true
 
-# 
+# Checks for strings that are just an interpolated expression.
 Style/RedundantInterpolation:
   Enabled: true
 
-# 
+# Check for redundant line continuation.
 Style/RedundantLineContinuation:
   Enabled: true
 
-# 
+# Checks for redundant parentheses.
 Style/RedundantParentheses:
   Enabled: true
 
@@ -2093,52 +2119,58 @@ Style/RedundantParentheses:
 Style/RedundantPercentQ:
   Enabled: true
 
-# 
+# Identifies places where argument can be replaced from a deterministic regexp to a string.
 Style/RedundantRegexpArgument:
   Enabled: true
 
-# 
+# Checks for unnecessary single-element Regexp character classes.
+# Use `r = /x/` instead of `r = /[x]/`.
 Style/RedundantRegexpCharacterClass:
   Enabled: true
 
-# 
+# Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`. Autocorrect replaces to
+# regexp literal which is the simplest and fastest.
+# Use `Regexp.new("regexp")` instead of `Regexp.new(/regexp/)`.
 Style/RedundantRegexpConstructor:
   Enabled: true
 
-# 
+# Checks for redundant escapes inside Regexp literals.
 Style/RedundantRegexpEscape:
   Enabled: true
 
-# 
+# Checks for redundant `return` expressions.
 Style/RedundantReturn:
   Enabled: true
   AllowMultipleReturnValues: true
 
-# 
+# Checks for redundant uses of `self`.
 Style/RedundantSelf:
   Enabled: true
 
-# 
+# Checks for places where redundant assignments are made for in place modification methods.
+# Use `args.concat(foo)` instead of `args = args.concat(ary)`.
 Style/RedundantSelfAssignment:
   Enabled: true
 
-# 
+# Checks for places where conditional branch makes redundant self-assignment.
+# Use `foo = bar if condition` instead of `foo = condition ? bar : foo`.
 Style/RedundantSelfAssignmentBranch:
   Enabled: true
 
-# 
+# Identifies instances of sorting and then taking only the first or last element.
+# Use `[2, 1, 3].min` instead of `[2, 1, 3].sort.first`.
 Style/RedundantSort:
   Enabled: true
 
-# 
+# Identifies places where `sort_by { ... }` can be replaced by `sort`.
 Style/RedundantSortBy:
   Enabled: true
 
-# 
+# Checks for redundant escapes in string literals.
 Style/RedundantStringEscape:
   Enabled: true
 
-# 
+# Enforces using // around regular expressions.
 Style/RegexpLiteral:
   Enabled: true
 
@@ -2146,11 +2178,11 @@ Style/RegexpLiteral:
 Style/RequireOrder:
   Enabled: true
 
-# 
+# Checks for uses of `rescue` in its modifier form is added.
 Style/RescueModifier:
   Enabled: true
 
-# 
+# Checks for rescuing StandardError.
 Style/RescueStandardError:
   Enabled: true
 
@@ -2160,27 +2192,32 @@ Style/RescueStandardError:
 # Style/ReturnNil:
 #   Enabled: false
 
-# 
+# Checks if `return` or `return nil` is used in predicate method definitions.
 Style/ReturnNilInPredicateMethodDefinition:
   Enabled: true
 
-# 
+# Transforms usages of a method call safeguarded by a non nil check for the variable whose method is being called to
+# safe navigation (`&.`).
+# Use `foo&.bar` instead of `foo.bar if foo`.
 Style/SafeNavigation:
   Enabled: true
 
-# 
+# Identifies usages of `shuffle.first`, `shuffle.last`, and `shuffle[some_index]` and change them to use sample instead.
 Style/Sample:
   Enabled: true
 
-# 
+# Looks for places where an subset of an Enumerable (array, range, set, etc.) is calculated based on a Regexp
+# match, and suggests `grep` or `grep_v` instead.
+# Use `array.grep(regexp)` instead of `array.select { |x| x.match? /regexp/ }`.
 Style/SelectByRegexp:
   Enabled: true
 
-# 
+# Enforces the use the shorthand for self-assignment.
+# Use `x += 1` instead of `x = x + 1`.
 Style/SelfAssignment:
   Enabled: true
 
-# 
+# Checks for multiple expressions placed on the same line. It also checks for lines terminated with a semicolon.
 Style/Semicolon:
   Enabled: true
   AllowAsExpressionSeparator: true
@@ -2190,11 +2227,12 @@ Style/Semicolon:
 # Style/Send:
 #   Enabled: false
 
-# 
+# Checks for uses of `fail` and `raise`.
 Style/SignalException:
   Enabled: true
 
-# 
+# Sometimes using `dig` method ends up with just a single argument. In such cases, `dig` should be replaced with `[]`.
+# Use `{ key: "value" }[:key]` instead of `{ key: "value" }.dig(:key)`.
 Style/SingleArgumentDig:
   Enabled: true
 
@@ -2203,27 +2241,34 @@ Style/SingleArgumentDig:
 # Style/SingleLineBlockParams:
 #   Enabled: false
 
-# 
+# Checks for single-line `do ... end` block.
 Style/SingleLineDoEndBlock:
   Enabled: true
 
-# 
+# Checks for single-line method definitions that contain a body. It will accept single-line methods with no body.
 Style/SingleLineMethods:
   Enabled: true
 
-# 
+# Checks that arrays are not sliced with the redundant `ary[0..-1]`, replacing it with `ary`, and ensures arrays are
+# sliced with endless ranges instead of `ary[start..-1]`.
+# Use `items[1..]` instead of `items[1..-1]`.
+# Use `items[..42]` instead of `items[nil..42]`.
 Style/SlicingWithRange:
   Enabled: true
 
-# 
+# If the branch of a conditional consists solely of a conditional node, its conditions can be combined with the
+# conditions of the outer branch. This helps to keep the nesting level from getting too deep.
 Style/SoleNestedConditional:
   Enabled: true
 
-# 
-Style/SpecialGlobalVars:
-  Enabled: true
+## DISABLED
+# # Looks for uses of Perl-style global variables. Correcting to global variables in the 'English' library will add a
+# # require statement to the top of the file if enabled by RequireEnglish config.
+# Style/SpecialGlobalVars:
+#   Enabled: true
 
-# 
+# Check for parentheses around stabby lambda arguments.
+# Use `->(a,b,c) { a + b + c}` instead of `->a,b,c { a + b + c }`.
 Style/StabbyLambdaParentheses:
   Enabled: true
 
@@ -2232,15 +2277,17 @@ Style/StabbyLambdaParentheses:
 # Style/StaticClass:
 #   Enabled: false
 
-# 
+# Identifies places where `$stderr.puts` can be replaced by `warn`.
 Style/StderrPuts:
   Enabled: true
 
-# 
+# Checks for uses of String#split with empty string or regexp literal argument.
+# Use `string.chars` instead of `string.split(//)`.
 Style/StringChars:
   Enabled: true
 
-# 
+# Checks for places where string concatenation can be replaced with string interpolation.
+# Use `email_with_name = "#{user.name} <#{user.email}>"` instead of `email_with_name = user.name + " <" + user.email + ">"`.
 Style/StringConcatenation:
   Enabled: true
 
@@ -2255,9 +2302,10 @@ Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
 
-# 
+# Checks that quotes inside string, symbol, and regexp interpolations match the configured preference.
 Style/StringLiteralsInInterpolation:
   Enabled: true
+  EnforcedStyle: double_quotes
 
 # Enforces the use of consistent method names from the String class. 
 Style/StringMethods:
@@ -2267,31 +2315,38 @@ Style/StringMethods:
 Style/Strip:
   Enabled: true
 
-# 
+# Checks for inheritance from `Struct.new`.
+# Use `Person = Struct.new(:first_name, :last_name) do ...` instead of
+#     `class Person < Struct.new(:first_name, :last_name) ...`
 Style/StructInheritance:
   Enabled: true
 
-# 
+# Enforces the presence of parentheses in `super` containing arguments.
 Style/SuperWithArgsParentheses:
   Enabled: true
 
-# 
+# Enforces the use of shorthand-style swapping of 2 variables.
+# Use `x, y = y, x` instead of a temporary variable.
 Style/SwapValues:
   Enabled: true
 
-# 
+# Checks for array literals made up of symbols that are not using the %i() syntax.
+# Use `%i[foo bar baz]` instead of `[:foo, :bar, :baz]`.
 Style/SymbolArray:
   Enabled: true
 
-# 
+# Checks symbol literal syntax.
+# Use `:symbol` instead of `:"symbol"`.
 Style/SymbolLiteral:
   Enabled: true
 
-# 
+# Use symbols as procs when possible.
+# Use `something.map(&:upcase)` instead of `something.map { |s| s.upcase }`.
 Style/SymbolProc:
   Enabled: true
 
-# 
+# Checks for the presence of parentheses around ternary conditions.
+# Use `foo = bar? ? a : b` instead of `foo = (bar?) ? a : b`.
 Style/TernaryParentheses:
   Enabled: true
 
@@ -2300,23 +2355,25 @@ Style/TernaryParentheses:
 Style/TopLevelMethodDefinition:
   Enabled: true
 
-# 
+# Checks for trailing code after the class definition.
 Style/TrailingBodyOnClass:
   Enabled: true
 
-# 
+# Checks for trailing code after the method definition.
 Style/TrailingBodyOnMethodDefinition:
   Enabled: true
 
-# 
+# Checks for trailing code after the module definition.
 Style/TrailingBodyOnModule:
   Enabled: true
 
-# 
+# Checks for trailing comma in argument lists.
+# Use `method(1, 2)` instead of `method(1, 2,)`.
 Style/TrailingCommaInArguments:
   Enabled: true
 
-# 
+# Checks for trailing comma in array literals.
+# Use `a = [1, 2]` instead of `a = [1, 2,]`.
 Style/TrailingCommaInArrayLiteral:
   Enabled: true
 
@@ -2325,23 +2382,26 @@ Style/TrailingCommaInArrayLiteral:
 # Style/TrailingCommaInBlockArgs:
 #   Enabled: false
 
-# 
+# Checks for trailing comma in hash literals.
+# Use `a = { foo: 1, bar: 2 }` instead of `a = { foo: 1, bar: 2, }`.
 Style/TrailingCommaInHashLiteral:
   Enabled: true
 
-# 
+# Checks for trailing code after the method definition.
 Style/TrailingMethodEndStatement:
   Enabled: true
 
-# 
+# Checks for extra underscores in variable assignment.
+# Use `a, b, = foo()` instead of `a, b, _ = foo()`.
 Style/TrailingUnderscoreVariable:
   Enabled: true
 
-# 
+# Looks for trivial reader/writer methods, that could have been created with the `attr_*` family of functions
+# automatically.
 Style/TrivialAccessors:
   Enabled: true
 
-# 
+# Looks for unless expressions with else clauses.
 Style/UnlessElse:
   Enabled: true
 
@@ -2350,52 +2410,147 @@ Style/UnlessElse:
 Style/UnlessLogicalOperators:
   Enabled: true
 
-# 
+# Checks for accessing the first element of `String#unpack` which can be replaced with the shorter method `unpack1`.
 Style/UnpackFirst:
   Enabled: true
 
-# 
+# Checks for variable interpolation (like `{#@ivar}`).
 Style/VariableInterpolation:
   Enabled: true
 
-# 
+# Checks for `when ... ; ...` uses in `case` expressions. Prefer `when ... then ...`
 Style/WhenThen:
   Enabled: true
 
-# 
+# Checks for uses of `do` in multi-line `while`/`until` statements.
 Style/WhileUntilDo:
   Enabled: true
 
-# 
+# Checks for `while` and `until` statements that would fit on one line if written as a modifier `while`/`until`.
 Style/WhileUntilModifier:
   Enabled: true
 
-# 
+# Checks for array literals made up of word-like strings, that are not using the %w() syntax.
+# Use `%w[foo bar baz]` instead of `["foo", "bar", "baz"]`.
 Style/WordArray:
   Enabled: true
 
-# 
+# Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with `File.read` argument.
+# NOTE: `YAML.safe_load_file` was introduced in Ruby 3.0.
 Style/YAMLFileRead:
   Enabled: true
 
-# 
+# Enforces or forbids Yoda conditions, i.e. comparison operations where the order of expression is reversed.
+# Use `x == 5`  instead of `5 == x`.
 Style/YodaCondition:
   Enabled: true
 
 ## DISABLED
 # # Forbids Yoda expressions, i.e. binary operations (using *, +, &, |, and ^ operators) where the order of expression
 # # is reversed, eg. `1 + x`.
-# # This cop is disabled by default to respect user intentions such as:
-# # `config.server_port = 9000 + ENV["TEST_ENV_NUMBER"].to_i`
+# # NOTE: This cop is disabled by default to respect user intentions such as:
+# #       `config.server_port = 9000 + ENV["TEST_ENV_NUMBER"].to_i`
 # Style/YodaExpression:
 #   Enabled: false
 
-# 
+# Checks for numeric comparisons that can be replaced by a predicate method, such as `receiver.length == 0`,
+# `receiver.length > 0`, and `receiver.length != 0`, `receiver.length < 1` and `receiver.size == 0` that can be
+# replaced by `receiver.empty?` and `!receiver.empty?`.
 Style/ZeroLengthPredicate:
   Enabled: true
 
-# 
+# Identifies usages of `ancestors.include?` and change them to use `⇐` instead.
+Performance/AncestorsInclude:
+  Enabled: true
+
+# Identifies places where slicing arrays with semi-infinite ranges can be replaced by `Array#take` and `Array#drop`.
+# Use `array.take(3)` instead of `array[..2]` or `array[...3]`.
+# NOTE: This cop was created due to a mistake in microbenchmark and hence is disabled by default.
+#       Refer https://github.com/rubocop/rubocop-performance/pull/175#issuecomment-731892717
+Performance/ArraySemiInfiniteRangeSlice:
+  Enabled: true
+
+# Identifies places where numeric argument to `BigDecimal` should be converted to string.
+Performance/BigDecimalWithNumericArgument:
+  Enabled: true
+
+# Identifies places where `bind(obj).call(args, ...)` can be replaced by `bind_call(obj, args, ...)`.
 Performance/BindCall:
+  Enabled: true
+
+# Identifies unnecessary use of a `block_given?` where explicit check of `block` argument would suffice.
+Performance/BlockGivenWithExplicitBlock:
+  Enabled: true
+
+# Identifies places where `caller[n]` can be replaced by `caller(n..n).first`.
+Performance/Caller:
+  Enabled: true
+
+# Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
+Performance/CaseWhenSplat:
+  Enabled: true
+
+## DISABLED
+# # Identifies places where a case-insensitive string comparison can better be implemented using `casecmp`.
+# # NOTE: This cop is disabled by default because String#casecmp only works with ASCII characters.
+# Performance/Casecmp:
+#   Enabled: false
+
+# Identifies usages of `array.compact.flatten.map { |x| x.downcase }`. Each of these methods (`compact`, `flatten`,
+# `map`) will generate a new intermediate array that is promptly thrown away. Instead it is faster to mutate when we
+# know it’s safe.
+Performance/ChainArrayAllocation:
+  Enabled: true
+
+# Identifies places where Array and Hash literals are used within loops. It is better to extract them into a local
+# variable or constant to avoid unnecessary allocations on each iteration.
+Performance/CollectionLiteralInLoop:
+  Enabled: true
+
+# Identifies places where `sort { |a, b| a.foo <⇒ b.foo }` can be replaced by `sort_by(&:foo)`.
+Performance/CompareWithBlock:
+  Enabled: true
+
+# Identifies places where `Concurrent.monotonic_time` can be replaced by
+# `Process.clock_gettime(Process::CLOCK_MONOTONIC)`.
+Performance/ConcurrentMonotonicTime:
+  Enabled: true
+
+# Finds regular expressions with dynamic components that are all constants.
+Performance/ConstantRegexp:
+  Enabled: true
+
+# Identifies usages of `count` on an Enumerable that follow calls to `select`, `find_all`, `filter` or `reject`.
+# Use `[1, 2, 3].count { |e| e > 2 }` instead of `[1, 2, 3].select { |e| e > 2 }.size`.
+Performance/Count:
+  Enabled: true
+
+# This cop identifies places where `gsub(/\Aprefix/, "")` and `sub(/\Aprefix/, "")` can be replaced by
+# `delete_prefix("prefix")`.
+Performance/DeletePrefix:
+  Enabled: true
+
+# This cop identifies places where `gsub(/suffix\z/, "")` and `sub(/suffix\z/, "")` can be replaced by
+# `delete_suffix("suffix")`.
+Performance/DeleteSuffix:
+  Enabled: true
+
+# Identifies usages of `first`, `last`, `[0]` or `[-1]` chained to `select`, `find_all` or `filter` and change them to
+# use `detect` instead.
+Performance/Detect:
+  Enabled: true
+
+# Checks for double `#start_with?` or `#end_with?` calls separated by `||`. In some cases such calls can be replaced
+# with an single `#start_with?`/`#end_with?` call.
+Performance/DoubleStartEndWith:
+  Enabled: true
+
+# Identifies unnecessary use of a regex where `String#end_with?` would suffice.
+Performance/EndWith:
+  Enabled: true
+
+# 
+Performance/FixedSize:
   Enabled: true
 
 # 
@@ -2403,11 +2558,43 @@ Performance/FlatMap:
   Enabled: true
 
 # 
+Performance/InefficientHashSearch:
+  Enabled: true
+
+# 
+Performance/IoReadlines:
+  Enabled: true
+
+# 
 Performance/MapCompact:
   Enabled: true
 
 # 
-Performance/SelectMap:
+Performance/MapMethodChain:
+  Enabled: true
+
+# 
+Performance/MethodObjectAsBlock:
+  Enabled: true
+
+# 
+Performance/OpenStruct:
+  Enabled: true
+
+# 
+Performance/RangeInclude:
+  Enabled: true
+
+# 
+Performance/RedundantBlockCall:
+  Enabled: true
+
+# 
+Performance/RedundantEqualityComparisonBlock:
+  Enabled: true
+
+# 
+Performance/RedundantMatch:
   Enabled: true
 
 # 
@@ -2415,11 +2602,15 @@ Performance/RedundantMerge:
   Enabled: true
 
 # 
-Performance/StartWith:
+Performance/RedundantSortBlock:
   Enabled: true
 
 # 
-Performance/EndWith:
+Performance/RedundantSplitRegexpArgument:
+  Enabled: true
+
+# 
+Performance/RedundantStringChars:
   Enabled: true
 
 # 
@@ -2431,29 +2622,53 @@ Performance/ReverseEach:
   Enabled: true
 
 # 
-Performance/StringReplacement:
+Performance/ReverseFirst:
   Enabled: true
 
 # 
-Performance/DeletePrefix:
+Performance/SelectMap:
   Enabled: true
 
 # 
-Performance/DeleteSuffix:
+Performance/Size:
   Enabled: true
 
 # 
-Performance/InefficientHashSearch:
+Performance/SortReverse:
   Enabled: true
 
 # 
-Performance/ConstantRegexp:
+Performance/Squeeze:
   Enabled: true
 
 # 
-Performance/RedundantStringChars:
+Performance/StartWith:
+  Enabled: true
+
+# 
+Performance/StringIdentifierArgument:
   Enabled: true
 
 # 
 Performance/StringInclude:
+  Enabled: true
+
+# 
+Performance/StringReplacement:
+  Enabled: true
+
+# 
+Performance/Sum:
+  Enabled: true
+
+# 
+Performance/TimesMap:
+  Enabled: true
+
+# 
+Performance/UnfreezeString:
+  Enabled: true
+
+# 
+Performance/UriDefaultParser:
   Enabled: true
