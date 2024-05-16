@@ -1,0 +1,605 @@
+# Using `flash` assignment before `render` in Rails controllers will persist the message for too long.
+# Check https://guides.rubyonrails.org/action_controller_overview.html#flash-now
+Rails/ActionControllerFlashBeforeRender:
+  Enabled: true
+
+## DISABLED
+# # Using `ActionController::TestCase` is discouraged and should be replaced by `ActionDispatch::IntegrationTest`.
+# # Controller tests are too close to the internals of a controller whereas integration tests mimic the browser/user.
+# # NOTE: This is for tests with Minitest.
+# Rails/ActionControllerTestCase:
+#   Enabled: true
+
+## DISABLED
+# # The cop is configurable and can enforce the use of the older `something_filter` methods or the newer
+# # `something_action` methods.
+# # NOTE: This cop is deprecated. Because the `*_filter` methods were removed in Rails 4.2, and that Rails version is no
+# #       longer supported by RuboCop Rails. This cop will be removed in RuboCop Rails 3.0.
+# Rails/ActionFilter:
+#   Enabled: false
+
+# Enforces consistent ordering of the standard Rails RESTful controller actions.
+Rails/ActionOrder:
+  Enabled: true
+
+# Checks that ActiveRecord aliases are not used. The direct method names are more clear and easier to read.
+Rails/ActiveRecordAliases:
+  Enabled: true
+
+# Checks that Active Record callbacks are declared in the order in which they will be executed.
+# See https://rails.rubystyle.guide/#callbacks-order.
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+
+# Checks for overriding built-in Active Record methods instead of using callbacks.
+Rails/ActiveRecordOverride:
+  Enabled: true
+
+# Checks that ActiveSupport aliases to core ruby methods are not used.
+Rails/ActiveSupportAliases:
+  Enabled: true
+
+# Checks for Rails framework classes that are patched directly instead of using Active Support load hooks.
+# Direct patching forcibly loads the framework referenced, using hooks defers loading until it’s actually needed.
+Rails/ActiveSupportOnLoad:
+  Enabled: true
+
+# Checks for migrations using `add_column` that have an index key. `add_column` does not accept `index`, but also does
+# not raise an error for extra keys, so it is possible to mistakenly add the key without realizing it will not actually
+# add an index.
+Rails/AddColumnIndex:
+  Enabled: true
+
+# Enforces that there is only one call to `after_commit` (and its aliases - `after_create_commit`,
+# `after_update_commit`, and `after_destroy_commit`) with the same callback name per model.
+Rails/AfterCommitOverride:
+  Enabled: true
+
+# Checks that controllers subclass `ApplicationController`.
+Rails/ApplicationController:
+  Enabled: true
+
+# Checks that jobs subclass `ApplicationJob`.
+Rails/ApplicationJob:
+  Enabled: true
+
+# Checks that mailers subclass `ApplicationMailer`.
+Rails/ApplicationMailer:
+  Enabled: true
+
+# Checks that models subclass `ApplicationRecord`.
+Rails/ApplicationRecord:
+  Enabled: true
+
+# Prevents usage of "*" on an Arel::Table column reference.
+Rails/ArelStar:
+  Enabled: true
+
+# Use `assert_not` instead of `assert !`.
+Rails/AssertNot:
+  Enabled: true
+
+# Looks for attribute class methods that specify a `:default` option which value is an array, string literal or method
+# call without a block. It will accept all other values, such as string, symbol, integer and float literals as well as
+# constants.
+Rails/AttributeDefaultBlockValue:
+  Enabled: true
+
+## DISABLED
+# # Looks for `belongs_to` associations where we control whether the association is required via the deprecated
+# # `required` option instead.
+# # NOTE: Since Rails 5, `belongs_to` associations are required by default and this can be controlled through the use of
+# # `optional: true`.
+# Rails/BelongsTo:
+#   Enabled: true
+
+# Checks for code that can be written with simpler conditionals using `Object#blank?` defined by Active Support.
+# Use `foo.blank?` instead of `foo.nil? || foo.empty?`.
+Rails/Blank:
+  Enabled: true
+
+# Checks whether alter queries are combinable. If combinable queries are detected, it suggests to you to use
+# `change_table` with `bulk: true` instead. This option causes the migration to generate a single `ALTER TABLE`
+# statement combining multiple column alterations.
+# NOTE: The `bulk` option is only supported on the MySQL and the PostgreSQL (5.2 later) adapter
+Rails/BulkChangeTable:
+  Enabled: true
+
+# Checks if collection can be blank-compacted with `compact_blank`.
+# Use `collection.compact_blank` instead of `collection.reject(&:blank?)`.
+Rails/CompactBlank:
+  Enabled: true
+
+# Checks legacy syntax usage of `tag`.
+Rails/ContentTag:
+  Enabled: true
+
+# Checks the migration for which timestamps are not included when creating a new table.
+# In many cases, timestamps are useful information and should be added.
+Rails/CreateTableWithTimestamps:
+  Enabled: true
+
+# Avoid dangerous column names.
+Rails/DangerousColumnNames:
+  Enabled: true
+
+# Checks for the correct use of `Date` methods, such as `Date.today`, `Date.current` etc.
+Rails/Date:
+  Enabled: true
+
+# Looks for uses of `default_scope`.
+# NOTE: This cop is disabled by default.
+Rails/DefaultScope:
+  Enabled: true
+
+# Looks for delegations that could have been created automatically with the `delegate` method.
+Rails/Delegate:
+  Enabled: true
+
+# Looks for delegations that pass `:allow_blank` as an option instead of `:allow_nil`.
+# `:allow_blank` is not a valid option to pass to `ActiveSupport#delegate`.
+Rails/DelegateAllowBlank:
+  Enabled: true
+
+# Checks direct manipulation of `ActiveModel#errors` as hash.
+# NOTE: These operations are deprecated in Rails 6.1 and will not work in Rails 7.
+Rails/DeprecatedActiveModelErrorsMethods:
+  Enabled: true
+
+# Enforces the use of dot-separated locale keys instead of specifying the `:scope` option with an array or a single
+# symbol in `I18n` translation methods.
+Rails/DotSeparatedKeys:
+  Enabled: true
+
+# Looks for associations that have been defined multiple times in the same file.
+# NOTE: When an association is defined multiple times on a model, Active Record overrides the previously defined
+# association with the new one.
+Rails/DuplicateAssociation:
+  Enabled: true
+
+# Checks for multiple scopes in a model that have the same `where` clause. This often means you copy/pasted a scope,
+# updated the name, and forgot to change the condition.
+Rails/DuplicateScope:
+  Enabled: true
+
+# Checks if a duration is added to or subtracted from `Time.current`.
+# Use `1.minute.ago` instead of `Time.current - 1.minute`.
+Rails/DurationArithmetic:
+  Enabled: true
+
+# Checks dynamic `find_by_*` methods. Use `find_by` instead of dynamic method.
+# See. https://rails.rubystyle.guide#find_by
+Rails/DynamicFindBy:
+  Enabled: true
+
+# Checks that blocks are used for interpolated strings passed to `Rails.logger.debug`.
+Rails/EagerEvaluationLogMessage:
+  Enabled: true
+
+# Looks for enums written with array syntax.
+# Use `enum status: { active: 0, archived: 1 }` instead of `enum status: [:active, :archived]`.
+Rails/EnumHash:
+  Enabled: true
+
+# Looks for duplicate values in enum declarations.
+Rails/EnumUniqueness:
+  Enabled: true
+
+# Checks for usage of `Rails.env.development? || Rails.env.test?` which can be replaced with `Rails.env.local?`
+# introduced in Rails 7.1.
+# Use `Rails.env.local?` instead of `Rails.env.development? || Rails.env.test?`.
+Rails/EnvLocal:
+  Enabled: true
+
+# Checks that `Rails.env` is compared using `.production?-like` methods instead of equality against a string or symbol.
+# Use `Rails.env.production?` instead of `Rails.env == "production"`.
+Rails/EnvironmentComparison:
+  Enabled: true
+
+## DISABLED
+# # Looks for direct access to environment variables through the `ENV` variable within the application code.
+# Rails/EnvironmentVariableAccess:
+#   Enabled: false
+
+# Enforces that exit calls are not used within a rails app. Valid options are instead to `raise` an error, `break`,
+# `return`, or some other form of stopping execution of current request.
+Rails/Exit:
+  Enabled: true
+
+# Checks for expanded date range. It only compatible `..` range is targeted. Incompatible `...` range is ignored.
+# See https://rails.rubystyle.guide/#date-time-range.
+Rails/ExpandedDateRange:
+  Enabled: true
+
+# Identifies usages of file path joining process to use `Rails.root.join` clause.
+# It is used to add uniformity when joining paths.
+Rails/FilePath:
+  Enabled: true
+
+# Identifies usages of `where.take` and change them to use `find_by` instead.
+# See https://rails.rubystyle.guide#find_by.
+Rails/FindBy:
+  Enabled: true
+
+# Enforces that `ActiveRecord#find` is used instead of `where.take!`, `find_by!`, and `find_by_id!` to retrieve a
+# single record by primary key when you expect it to be found.
+Rails/FindById:
+  Enabled: true
+
+# Identifies usages of `all.each` and change them to use `all.find_each` instead.
+Rails/FindEach:
+  Enabled: true
+
+# Identifies usages of `travel_to` with an argument of the current time and change them to use `freeze_time` instead.
+# See https://rails.rubystyle.guide/#freeze-time.
+Rails/FreezeTime:
+  Enabled: true
+
+# Checks for the use of the `has_and_belongs_to_many` macro..
+# See https://rails.rubystyle.guide#has-many-through.
+Rails/HasAndBelongsToMany:
+  Enabled: true
+
+# Looks for `has_many` or `has_one` associations that don’t specify a `:dependent` option.
+# See https://rails.rubystyle.guide#has_many-has_one-dependent-option.
+Rails/HasManyOrHasOneDependent:
+  Enabled: true
+
+# Checks for use of the helper methods which reference instance variables.
+Rails/HelperInstanceVariable:
+  Enabled: true
+
+# Identifies usages of http methods like `get`, `post`, `put`, `patch` without the usage of keyword arguments in your
+# tests and change them to use keyword args.
+Rails/HttpPositionalArguments:
+  Enabled: true
+
+# Enforces use of symbolic or numeric value to define HTTP status.
+Rails/HttpStatus:
+  Enabled: true
+
+# Checks for places where `I18n` "lazy" lookup can be used.
+Rails/I18nLazyLookup:
+  Enabled: true
+
+# Checks for the use of `I18n.locale=` method.
+Rails/I18nLocaleAssignment:
+  Enabled: true
+
+# Enforces use of I18n and locale files instead of locale specific strings.
+Rails/I18nLocaleTexts:
+  Enabled: true
+
+# Looks for assignments of `ignored_columns` that may override previous assignments.
+# See https://rails.rubystyle.guide/#append-ignored-columns.
+Rails/IgnoredColumnsAssignment:
+  Enabled: true
+
+# Checks that `if` and `only` (or `except`) are not used together as options of `skip_*` action filter.
+# The `if` option will be ignored when `if` and `only` are used together. Similarly, the `except` option will be
+# ignored when `if` and `except` are used together.
+Rails/IgnoredSkipActionFilterOption:
+  Enabled: true
+
+# Looks for uses of `each_with_object({}) { ... }`, `map { ... }.to_h`, and `Hash[map { .. }]` that are transforming
+# an enumerable into a hash where the values are the original elements. Rails provides the `index_by` method for this
+# purpose.
+Rails/IndexBy:
+  Enabled: true
+
+# Looks for uses of `each_with_object({}) { ... }`, `map { ... }.to_h`, and `Hash[map { ... }]` that are transforming
+# an enumerable into a hash where the keys are the original elements. Rails provides the `index_with` method for this
+# purpose.
+Rails/IndexWith:
+  Enabled: true
+
+# Checks that Active Support’s `inquiry` method is not used.
+Rails/Inquiry:
+  Enabled: true
+
+# Looks for `has_(one|many)` and `belongs_to` associations where Active Record can’t automatically determine the
+# inverse association because of a scope or the options used.
+# See https://guides.rubyonrails.org/association_basics.html#bi-directional-associations
+Rails/InverseOf:
+  Enabled: true
+
+# Checks that methods specified in the filter’s `only` or `except` options are defined within the same class or module.
+Rails/LexicallyScopedActionFilter:
+  Enabled: true
+
+# Checks for calls to `link_to` that contain a `target: "_blank"` but no `rel: "noopener"`. This can be a security risk
+# as the loaded page will have control over the previous page and could change its location for phishing purposes.
+Rails/LinkToBlank:
+  Enabled: true
+
+# Enforces that mailer names end with `Mailer` suffix.
+Rails/MailerName:
+  Enabled: true
+
+# Identifies places where defining routes with `match` can be replaced with a specific HTTP method.
+Rails/MatchRoute:
+  Enabled: true
+
+# Makes sure that each migration file defines a migration class whose name matches the file name.
+Rails/MigrationClassName:
+  Enabled: true
+
+# Enforces the use of `collection.exclude?(obj)` over `!collection.include?(obj)`.
+Rails/NegateInclude:
+  Enabled: true
+
+# Checks for `add_column` call with NOT NULL constraint in migration file.
+Rails/NotNullColumn:
+  Enabled: true
+
+# Checks for places where ordering by `id` column is used.
+# NOTE: Make sure the changed order column does not introduce performance bottlenecks and appropriate database indexes
+#       are added.
+# NOTE: This cop is disabled by default.
+# See https://rails.rubystyle.guide/#order-by-id.
+Rails/OrderById:
+  Enabled: true
+
+# Checks for the use of output calls like `puts` and `print`.
+Rails/Output:
+  Enabled: true
+
+# Checks for the use of output safety calls like `html_safe`, `raw`, and `safe_concat`.
+# These methods do not escape content
+Rails/OutputSafety:
+  Enabled: true
+
+# Enforces the use of `pick` over `pluck(...).first`.
+# See https://rails.rubystyle.guide#pick.
+Rails/Pick:
+  Enabled: true
+
+# Enforces the use of `pluck` over `map`.
+# `pluck` can be used instead of map to extract a single key from each element in an enumerable.
+# See https://rails.rubystyle.guide#pluck.
+Rails/Pluck:
+  Enabled: true
+
+# ## DISABLED
+# # Enforces the use of ids over `pluck(:id)` and `pluck(primary_key)`.
+# Rails/PluckId:
+#   Enabled: false
+
+# Identifies places where `pluck` is used in `where` query methods and can be replaced with `select`.
+Rails/PluckInWhere:
+  Enabled: true
+
+# Checks for correct grammar when using ActiveSupport’s core extensions to the numeric classes.
+Rails/PluralizationGrammar:
+  Enabled: true
+
+# Checks code that can be written more easily using `Object#presence` defined by Active Support.
+Rails/Presence:
+  Enabled: true
+
+# Checks for code that can be written with simpler conditionals using `Object#present?` defined by Active Support.
+Rails/Present:
+  Enabled: true
+
+# Checks for Rake tasks without the `:environment` task dependency. The `:environment` task loads application code for
+# other Rake tasks. Without it, tasks cannot make use of application code like models.
+Rails/RakeEnvironment:
+  Enabled: true
+
+# Checks for the use of the `read_attribute` or `write_attribute` methods and recommends square brackets instead.
+# See https://rails.rubystyle.guide#read-attribute.
+Rails/ReadWriteAttribute:
+  Enabled: true
+
+# Detect redundant `all` used as a receiver for Active Record query methods.
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: true
+
+# Checks Rails model validations for a redundant `allow_nil` when `allow_blank` is present.
+Rails/RedundantAllowNil:
+  Enabled: true
+
+# Detects cases where the `:foreign_key` option on associations is redundant.
+Rails/RedundantForeignKey:
+  Enabled: true
+
+## DISABLED
+# # Since Rails 5.0 the default for belongs_to is optional: false
+# Rails/RedundantPresenceValidationOnBelongsTo:
+#   Enabled: true
+
+# Checks for redundant receiver in `with_options`.
+Rails/RedundantReceiverInWithOptions:
+  Enabled: true
+
+## DISABLED
+# # Checks for redundant `travel_back` calls.
+# # Since Rails 5.2, `travel_back` is automatically called at the end of the test.
+# Rails/RedundantTravelBack:
+#   Enabled: true
+
+# Checks if the value of the option `class_name`, in the definition of a reflection is a string.
+Rails/ReflectionClassName:
+  Enabled: true
+
+
+## DISABLED
+# # Use `assert_not` methods instead of `refute` methods.
+# # NOTE: This is for tests with Minitest.
+# Rails/RefuteMethods:
+#   Enabled: true
+
+# Checks whether constant value isn’t relative date. Because the relative date will be evaluated only once.
+Rails/RelativeDateConstant:
+  Enabled: true
+
+# Looks for inline rendering within controller actions.
+# See https://rails.rubystyle.guide/#inline-rendering.
+Rails/RenderInline:
+  Enabled: true
+
+# Identifies places where `render text:` can be replaced with `render plain:`.
+# See https://rails.rubystyle.guide/#plain-text-rendering.
+Rails/RenderPlainText:
+  Enabled: true
+
+# Checks for consistent uses of `request.referer`.
+Rails/RequestReferer:
+  Enabled: true
+
+## DISABLED
+# # Checks for the usage of `require_dependency`.
+# Rails/RequireDependency:
+#   Enabled: false
+
+# Prefer `response.parsed_body` to custom parsing logic for `response.body`.
+Rails/ResponseParsedBody:
+  Enabled: true
+
+# Checks whether the change method of the migration file is reversible.
+# See https://rails.rubystyle.guide#reversible-migration.
+Rails/ReversibleMigration:
+  Enabled: true
+
+## DISABLED
+# # Checks whether the migration implements either a `change` method or both an `up` and a `down` method.
+# Rails/ReversibleMigrationMethodDefinition:
+#   Enabled: false
+
+# Use a single `#join` instead of chaining on `Rails.root` or `Rails.public_path`.
+Rails/RootJoinChain:
+  Enabled: true
+
+# Use `Rails.root` IO methods instead of passing it to File.
+Rails/RootPathnameMethods:
+  Enabled: true
+
+# Favor `Rails.public_path` over `Rails.root` with "public".
+Rails/RootPublicPath:
+  Enabled: true
+
+# Converts usages of `try!` to `&.`.
+Rails/SafeNavigation:
+  Enabled: true
+
+# Checks to make sure safe navigation isn’t used with `blank?` in a conditional.
+Rails/SafeNavigationWithBlank:
+  Enabled: true
+
+## DISABLED
+# # Identifies possible cases where Active Record `save!` or related should be used instead of save because the model
+# # might have failed to save and an exception is better than unhandled failure.
+# Rails/SaveBang:
+#   Enabled: false
+
+## DISABLED
+# # Enforces the use of the comment option when adding a new table or column to the database during a migration.
+# Rails/SchemaComment:
+#   Enabled: false
+
+# Checks for scope calls where it was passed a method (usually a scope) instead of a lambda/proc.
+Rails/ScopeArgs:
+  Enabled: true
+
+# Checks for uses of `select(:column_name)` with `map(&:column_name)`.
+# These can be replaced with `pluck(:column_name)`.
+Rails/SelectMap:
+  Enabled: true
+
+# Enforces that short forms of I18n methods are used: `t` instead of `translate` and `l` instead of `localize`.
+Rails/ShortI18n:
+  Enabled: true
+
+# Checks for the use of methods which skip validations which are listed in
+# https://guides.rubyonrails.org/active_record_validations.html#skipping-validations
+Rails/SkipsModelValidations:
+  Enabled: true
+
+# Checks SQL heredocs to use `.squish`.
+# https://rails.rubystyle.guide/#squished-heredocs.
+Rails/SquishedSQLHeredocs:
+  Enabled: true
+
+# Enforces the use of squiggly heredoc over `strip_heredoc`.
+Rails/StripHeredoc:
+  Enabled: true
+
+## DISABLED
+# # Enforces the absence of explicit table name assignment.
+# Rails/TableNameAssignment:
+#   Enabled: false
+
+# Enforces that boolean columns are created with default values (`false` or `true`) and `NOT NULL` constraint.
+Rails/ThreeStateBooleanColumn:
+  Enabled: true
+
+# Checks for the use of Time methods without zone.
+Rails/TimeZone:
+  Enabled: true
+
+# Checks for the use of `Time.zone=` method.
+Rails/TimeZoneAssignment:
+  Enabled: true
+
+# Checks for consistent uses of `to_fs`.
+Rails/ToFormattedS:
+  Enabled: true
+
+# Identifies passing any argument to `#to_s`.
+Rails/ToSWithArgument:
+  Enabled: true
+
+# Identifies top-level `HashWithIndifferentAccess`. This has been soft-deprecated since Rails 5.1.
+Rails/TopLevelHashWithIndifferentAccess:
+  Enabled: true
+
+# Checks for the use of exit statements (namely `return`, `break` and `throw`) in transactions.
+Rails/TransactionExitStatement:
+  Enabled: true
+
+# Prefer using `distinct` before `pluck` instead of `uniq` after `pluck`.
+Rails/UniqBeforePluck:
+  Enabled: true
+
+# When you define a uniqueness validation in Active Record model, you also should add a unique index for the column.
+Rails/UniqueValidationWithoutIndex:
+  Enabled: true
+
+# Checks that environments called with `Rails.env` predicates exist.
+Rails/UnknownEnv:
+  Enabled: true
+
+# Suggests you remove a column that does not exist in the schema from `ignored_columns`.
+Rails/UnusedIgnoredColumns:
+  Enabled: true
+
+# If you try to `render` content along with a non-content status code (100-199, 204, 205, or 304), it will be dropped
+# from the response.
+Rails/UnusedRenderContent:
+  Enabled: true
+
+# Checks for the use of old-style attribute validation macros.
+Rails/Validation:
+  Enabled: true
+
+# Identifies places where manually constructed SQL in `where` can be replaced with `where(attribute: value)`.
+# See https://rails.rubystyle.guide/#hash-conditions.
+Rails/WhereEquals:
+  Enabled: true
+
+# Enforces consistent style when using `exists?`.
+Rails/WhereExists:
+  Enabled: true
+
+# Use `where.missing(...)` to find missing relationship records.
+# Use `Post.where.missing(:author)` instead of `Post.left_joins(:author).where(authors: { id: nil })`.
+Rails/WhereMissing:
+  Enabled: true
+
+# Identifies places where manually constructed SQL in `where` can be replaced with `where.not(...)`.
+Rails/WhereNot:
+  Enabled: true
+
+# Identifies calls to `where.not` with multiple hash arguments.
+Rails/WhereNotWithMultipleConditions:
+  Enabled: true

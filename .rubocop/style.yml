@@ -1,0 +1,1197 @@
+# Access modifiers should be declared to apply to a group of methods.
+Style/AccessModifierDeclarations:
+  Enabled: true
+
+# Checks for grouping of accessors in class and module bodies.
+Style/AccessorGrouping:
+  Enabled: true
+
+# Enforces the use of `#alias`.
+Style/Alias:
+  Enabled: true
+
+# Prefer &&/|| over and/or.
+Style/AndOr:
+  Enabled: true
+
+## DISABLED
+# # This cop identifies places where `do_something(*args, &block)` can be replaced by `do_something(...)`.
+# Style/ArgumentsForwarding:
+#   Enabled: true
+
+## DISABLED
+# # Enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
+# # The cop is disabled by default due to safety concerns.
+# Style/ArrayCoercion:
+#   Enabled: false
+
+# Identifies usages of `arr[0]` and `arr[-1]` and suggests to change them to use `arr.first` and `arr.last instead.
+# The cop is disabled by default due to safety concerns.
+Style/ArrayFirstLast:
+  Enabled: true
+
+# This cop identifies places where `(array1 & array2).any?` can be replaced by `array1.intersect?(array2)`.
+# NOTE: In Ruby 3.1, Array#intersect? has been added.
+Style/ArrayIntersect:
+  Enabled: true
+
+# Use `%w(foo bar baz).join(",")` instead of `%w(foo bar baz) * ","`.
+Style/ArrayJoin:
+  Enabled: true
+
+## DISABLED
+# # Checks for non-ascii (non-English) characters in comments
+# Style/AsciiComments:
+#   Enabled: false
+
+# Checks for uses of `Module#attr`. Use `attr_accessor`/`attr_reader` instead.
+Style/Attr:
+  Enabled: true
+
+## DISABLED
+# # Checks for cases when you could use a block accepting version of a method that does automatic resource cleanup.
+# Style/AutoResourceCleanup:
+#   Enabled: false
+
+# Checks if usage of %() or %{}
+Style/BarePercentLiterals:
+  Enabled: true
+
+# Checks for BEGIN blocks.
+Style/BeginBlock:
+  Enabled: true
+
+# Checks for places where `attr_reader` and `attr_writer` for the same method can be combined into single
+# `attr_accessor`.
+Style/BisectedAttrAccessor:
+  Enabled: true
+
+# Looks for uses of block comments (`=begin... =end`).
+Style/BlockComments:
+  Enabled: true
+
+# Check for uses of braces or `do`/`end` around single line or multi-line blocks.
+Style/BlockDelimiters:
+  Enabled: true
+
+# Use `(1..100).include?(7)` instead of `(1..100) === 7`.
+Style/CaseEquality:
+  Enabled: true
+
+# Identifies places where if-elsif constructions can be replaced with case-when.
+Style/CaseLikeIf:
+  Enabled: true
+
+# Use `"x"` instead of `?x`.
+Style/CharacterLiteral:
+  Enabled: true
+
+# Checks the style of children definitions at classes and modules.
+Style/ClassAndModuleChildren:
+  Enabled: true
+
+# Enforces consistent use of `Object#is_a?`.
+Style/ClassCheck:
+  Enabled: true
+
+# Enforces the use of `Object#instance_of?` instead of class comparison for equality. `==`, `equal?`, and `eql?`.
+Style/ClassEqualityComparison:
+  Enabled: true
+
+# Checks for uses of the class/module name instead of self, when defining class/module methods.
+Style/ClassMethods:
+  Enabled: true
+
+# Enforces using `class << self` to define class methods
+Style/ClassMethodsDefinitions:
+  Enabled: true
+  EnforcedStyle: self_class
+
+# Checks for uses of class variables.
+Style/ClassVars:
+  Enabled: true
+
+# Checks for places where custom logic on rejection nils from arrays and hashes can be replaced with
+# `{Array,Hash}#{compact,compact!}`.
+Style/CollectionCompact:
+  Enabled: true
+
+## DISABLED
+# # Enforces the use of consistent method names from the Enumerable module.
+# Style/CollectionMethods:
+#   Enabled: false
+
+# Use `Foo.method` instead of `Foo::method`.
+Style/ColonMethodCall:
+  Enabled: true
+
+# Use `def self.method... end` instead of `def self::method... end`.
+Style/ColonMethodDefinition:
+  Enabled: true
+
+# Checks for places where multiple consecutive loops over the same data can be combined into a single loop.
+Style/CombinableLoops:
+  Enabled: true
+
+# Enforces using `` or %x around command literals.
+Style/CommandLiteral:
+  Enabled: true
+
+# Checks that comment annotation keywords are written according to guidelines.
+Style/CommentAnnotation:
+  Enabled: true
+
+# Checks for comments put on the same line as some keywords. These keywords are: `class`, `module`, `def`, `begin`,
+# `end`.
+Style/CommentedKeyword:
+  Enabled: true
+
+## DISABLED
+# # Enforces the use of `Comparable#clamp` instead of comparison by minimum and maximum.
+# Style/ComparableClamp:
+#   Enabled: true
+
+# Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.
+Style/ConcatArrayLiterals:
+  Enabled: true
+
+# Check for `if` and `case` statements where each branch is used for both the assignment and comparison of the same
+# variable when using the return of the condition can be used instead.
+Style/ConditionalAssignment:
+  Enabled: true
+
+## DISABLED
+# # Checks that constants defined in classes and modules have an explicit visibility declaration.
+# Style/ConstantVisibility:
+#   Enabled: false
+
+## DISABLED
+# # Check that a copyright notice was given in each source file.
+# Style/Copyright:
+#   Enabled: false
+
+## DISABLED
+# # Checks for inheritance from `Data.define` to avoid creating the anonymous parent class.
+# Style/DataInheritance:
+#   Enabled: true
+
+## DISABLED
+# # Checks for consistent usage of the DateTime class over the Time class.
+# # This cop is disabled by default since these classes, although highly overlapping, have particularities
+# # that make them not replaceable in certain situations when dealing with multiple timezones and/or DST.
+# Style/DateTime:
+#   Enabled: false
+
+# Checks for parentheses in the definition of a method, that does not take any arguments.
+# Both instance and class/singleton methods are checked.
+Style/DefWithParentheses:
+  Enabled: true
+
+# Checks for places where the `#__dir__` method can replace more complex constructs to retrieve a canonicalized
+# absolute path to the current file.
+Style/Dir:
+  Enabled: true
+
+# Prefer to use `Dir.empty?("path/to/dir")` when checking if a directory is empty.
+Style/DirEmpty:
+  Enabled: true
+
+## DISABLED
+# # Detects comments to enable/disable RuboCop. This is useful if want to make sure that every RuboCop error gets
+# # fixed and not quickly disabled with a comment.
+# Style/DisableCopsWithinSourceCodeDirective:
+#   Enabled: false
+
+## DISABLED
+# # When using class_eval (or other eval) with string interpolation, add a comment block showing its appearance if
+# # interpolated (a practice used in Rails code).
+# Style/DocumentDynamicEvalDefinition:
+#   Enabled: false
+
+## DISABLED
+# # Checks for missing top-level documentation of classes and modules.
+# Style/Documentation:
+#   Enabled: false
+
+## DISABLED
+# # Checks for missing documentation comment for public methods. It can optionally be configured to also require
+# # documentation for non-public methods.
+# Style/DocumentationMethod:
+#   Enabled: false
+
+## DISABLED
+# # Detects double disable comments on one line. This is mostly to catch automatically generated comments that need to
+# # be regenerated.
+# Style/DoubleCopDisableDirective:
+#   Enabled: false
+
+# Checks for uses of double negation (!!) to convert something to a boolean value.
+Style/DoubleNegation:
+  Enabled: true
+
+# Checks for loops which iterate a constant number of times, using a Range literal and `#each`. This can be done more
+# readably using `Integer#times`.
+Style/EachForSimpleLoop:
+  Enabled: true
+
+# Looks for `inject`/`reduce` calls where the passed in object is returned at the end and so could be replaced by
+# `each_with_object` without the need to return the object at the end.
+Style/EachWithObject:
+  Enabled: true
+
+# Checks for pipes for empty block parameters.
+# NOTE: Pipes for empty block parameters do not cause syntax errors, but they are redundant.
+Style/EmptyBlockParameter:
+  Enabled: true
+
+# Checks for case statements with an empty condition.
+Style/EmptyCaseCondition:
+  Enabled: true
+
+# Checks for empty else-clauses, possibly including comments and/or an explicit `nil`.
+Style/EmptyElse:
+  Enabled: true
+
+# Checks for using empty heredoc to reduce redundancy.
+Style/EmptyHeredoc:
+  Enabled: true
+
+# Checks for parentheses for empty lambda parameters.
+# NOTE: Parentheses for empty lambda parameters do not cause syntax errors, but they are redundant.
+Style/EmptyLambdaParameter:
+  Enabled: true
+
+# Checks for the use of a method, the result of which would be a literal, like an empty array, hash, or string.
+Style/EmptyLiteral:
+  Enabled: true
+
+# Checks for the formatting of empty method definitions.
+# NOTE: A method definition is not considered empty if it contains comments.
+Style/EmptyMethod:
+  Enabled: true
+
+# Checks ensures source files have no utf-8 encoding comments.
+Style/Encoding:
+  Enabled: true
+
+# Checks for END blocks.
+Style/EndBlock:
+  Enabled: true
+
+# Checks for endless methods.
+Style/EndlessMethod:
+  Enabled: true
+
+# Checks for consistent usage of `ENV["HOME"]`. If `nil` is used as the second argument of `ENV.fetch`, it is treated
+# as a bad case like `ENV[]`.
+Style/EnvHome:
+  Enabled: true
+
+# Ensures that eval methods (`eval`, `instance_eval`, `class_eval` and `module_eval`) are given filename and line
+# number values (`__FILE__` and `__LINE__`).
+Style/EvalWithLocation:
+  Enabled: true
+  Exclude:
+    - spec/**/*
+
+# Checks for places where `Integer#even?` or `Integer#odd?` can be used.
+Style/EvenOdd:
+  Enabled: true
+
+# Checks for exact regexp match inside Regexp literals.
+Style/ExactRegexpMatch:
+  Enabled: true
+
+# Checks for use of the File.expand_path arguments.
+Style/ExpandPathArguments:
+  Enabled: true
+
+# Enforces the use of explicit block argument to avoid writing block literal that just passes its arguments to another
+# block.
+Style/ExplicitBlockArgument:
+  Enabled: true
+
+# Enforces consistency when using exponential notation for numbers in the code (eg `1.2e4`).
+Style/ExponentialNotation:
+  Enabled: true
+
+# Suggests `ENV.fetch` for the replacement of `ENV[]`.
+Style/FetchEnvVar:
+  Enabled: true
+
+# Prefer to use `File.empty?("path/to/file")` when checking if a file is empty.
+Style/FileEmpty:
+  Enabled: true
+
+# Favor `File.(bin)read` convenience methods.
+Style/FileRead:
+  Enabled: true
+
+# Favor `File.(bin)write` convenience methods.
+Style/FileWrite:
+  Enabled: true
+
+# Checks for division with integers coerced to floats.
+Style/FloatDivision:
+  Enabled: true
+
+# Looks for uses of the `for` keyword.
+Style/For:
+  Enabled: true
+
+# Enforces the use of a single string formatting utility.
+Style/FormatString:
+  Enabled: true
+
+# Use a consistent style for named format string tokens.
+Style/FormatStringToken:
+  Enabled: true
+
+# Helps you transition from mutable string literals to frozen string literals.
+# It will add the `# frozen_string_literal: true` magic comment to the top of files to enable frozen string literals.
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+
+# Enforces the use of `$stdout`/`$stderr`/`$stdin` instead of `STDOUT`/`STDERR`/`STDIN`.
+Style/GlobalStdStream:
+  Enabled: true
+
+# Looks for uses of global variables.
+Style/GlobalVars:
+  Enabled: true
+
+# Use a guard clause instead of wrapping the code inside a conditional expression
+Style/GuardClause:
+  Enabled: true
+
+# Checks for presence of braces around hash literal as a last array item.
+# Use `[1, 2, { one: 1, two: 2 }]` instead of `[1, 2, one: 1, two: 2]`
+Style/HashAsLastArrayItem:
+  Enabled: true
+
+# Checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and sequences of values to hashes.
+Style/HashConversion:
+  Enabled: true
+
+# Checks for uses of `each_key` and `each_value` Hash methods.
+Style/HashEachMethods:
+  Enabled: true
+
+# Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods that can be replaced with
+# `Hash#except` method.
+Style/HashExcept:
+  Enabled: true
+
+# Checks for places where case-when represents a simple 1:1 mapping and can be replaced with a hash lookup.
+Style/HashLikeCase:
+  Enabled: true
+
+# Checks hash literal syntax.
+# Use Ruby >= 1.9 syntax for hashes. Prefer { a: :b } over { :a => :b }.
+Style/HashSyntax:
+  Enabled: true
+  EnforcedShorthandSyntax: either
+
+# Looks for uses of `_.each_with_object({}) {...}`, `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+# transforming the keys of a hash, and tries to use a simpler & faster call to `transform_keys` instead.
+Style/HashTransformKeys:
+  Enabled: true
+
+# 
+# Looks for uses of `_.each_with_object({}) {...}`, `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+# transforming the values of a hash, and tries to use a simpler & faster call to `transform_values` instead.
+Style/HashTransformValues:
+  Enabled: true
+
+# Checks for identical expressions at the beginning or end of each branch of a conditional expression.
+Style/IdenticalConditionalBranches:
+  Enabled: true
+
+# If the `else` branch of a conditional consists solely of an `if` node, it can be combined with the `else` to become
+# an `elsif`.
+Style/IfInsideElse:
+  Enabled: true
+
+# Checks for `if` and `unless` statements that would fit on one line
+Style/IfUnlessModifier:
+  Enabled: true
+
+# Checks for `if` and `unless` statements used as modifiers of other `if` or `unless` statements.
+Style/IfUnlessModifierOfIfUnless:
+  Enabled: true
+
+# Checks for redundant `if` with boolean literal branches.
+Style/IfWithBooleanLiteralBranches:
+  Enabled: true
+
+# Checks for uses of semicolon in if statements.
+Style/IfWithSemicolon:
+  Enabled: true
+
+# Use `raise ArgumentError, "Error message here"` instead of `raise "Error message here"`.
+Style/ImplicitRuntimeError:
+  Enabled: true
+
+# Checks for `in ...;` uses in case expressions.
+Style/InPatternThen:
+  Enabled: true
+
+# Use `Kernel#loop` for infinite loops.
+Style/InfiniteLoop:
+  Enabled: true
+
+## DISABLED
+# # Checks for trailing inline comments.
+# Style/InlineComment:
+#   Enabled: false
+
+# Check for usages of `not` or `!` called on a method when an inverse of that method can be used instead.
+Style/InverseMethods:
+  Enabled: true
+
+## DISABLED
+# # Checks for usages of unless which can be replaced by if with inverted condition. Code without unless is easier to
+# # read, but that is subjective, so this cop is disabled by default.
+# Style/InvertibleUnlessCondition:
+#   Enabled: false
+
+# Checks for hardcoded IP addresses, which can make code brittle
+Style/IpAddresses:
+  Enabled: true
+
+# Enforces that optional keyword parameters are placed at the end of the parameters list.
+Style/KeywordParametersOrder:
+  Enabled: true
+
+# Checks for uses of the lambda literal syntax for single line lambdas, and the method call syntax for multiline lambdas.
+Style/Lambda:
+  Enabled: true
+
+# Checks for use of the `lambda.(args)` syntax.
+Style/LambdaCall:
+  Enabled: true
+
+# Checks for string literal concatenation at the end of a line.
+Style/LineEndConcatenation:
+  Enabled: true
+
+# Ensures magic comments are written consistently throughout your code base
+Style/MagicCommentFormat:
+  Enabled: true
+
+# Prefer `select` or `reject` over `map { ... }.compact`.
+Style/MapCompactWithConditionalBlock:
+  Enabled: true
+
+# Checks for usages of each with `<<`, `push`, or `append` which can be replaced by `map`.
+Style/MapIntoArray:
+  Enabled: true
+
+# Looks for uses of `map.to_h` or `collect.to_h` that could be written with just `to_h`.
+Style/MapToHash:
+  Enabled: true
+
+# Looks for uses of `map.to_set` or `collect.to_set` that could be written with just `to_set`.
+Style/MapToSet:
+  Enabled: true
+
+# Enforces the presence of parentheses in method calls containing parameters.
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  Exclude:
+    - spec/**/*
+
+# Checks for unwanted parentheses in parameterless method calls.
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: true
+
+# Use `a { b }.c` instead of `
+# a do
+#  b
+# end.c`
+Style/MethodCalledOnDoEndBlock:
+  Enabled: true
+
+# Defining a method with parameters needs parentheses.
+Style/MethodDefParentheses:
+  Enabled: true
+
+# Checks for potential uses of `Enumerable#minmax`.
+Style/MinMax:
+  Enabled: true
+
+# Enforces the use of `max` or `min` instead of comparison for greater or less.
+Style/MinMaxComparison:
+  Enabled: true
+
+## DISABLED
+# # Checks for if expressions that do not have an else branch. 
+# Style/MissingElse:
+#   Enabled: false
+
+# Checks for the presence of `method_missing` without also defining `respond_to_missing?`.
+Style/MissingRespondToMissing:
+  Enabled: true
+
+# Checks for grouping of mixins in class and module bodies.
+Style/MixinGrouping:
+  Enabled: true
+
+# Checks that `include`, `extend` and `prepend` statements appear inside classes and modules, not at the top level,
+# so as to not affect the behavior of `Object`.
+Style/MixinUsage:
+  Enabled: true
+
+# Checks for use of `extend self` or `module_function` in a module.
+Style/ModuleFunction:
+  Enabled: true
+
+# Checks for chaining of a block after another block that spans multiple lines.
+Style/MultilineBlockChain:
+  Enabled: true
+
+# Checks for uses of if/unless modifiers with multiple-lines bodies.
+Style/MultilineIfModifier:
+  Enabled: true
+
+# Checks for uses of the `then` keyword in multi-line `if` statements.
+Style/MultilineIfThen:
+  Enabled: true
+
+# Checks for uses of the `then` keyword in multi-line `in` statement.
+Style/MultilineInPatternThen:
+  Enabled: true
+
+# Checks expressions wrapping styles for multiline memoization.
+Style/MultilineMemoization:
+  Enabled: true
+
+## DISABLED
+# # Checks for method signatures that span multiple lines.
+# Style/MultilineMethodSignature:
+#   Enabled: false
+
+# Checks for multi-line ternary op expressions.
+Style/MultilineTernaryOperator:
+  Enabled: true
+
+# Checks for uses of the `then` keyword in multi-line `when` statements.
+Style/MultilineWhenThen:
+  Enabled: true
+
+# Checks against comparing a variable with multiple items, where `Array#include?`, `Set#include?` or a `case` could be
+# used instead to avoid code repetition.
+Style/MultipleComparison:
+  Enabled: true
+
+# Checks whether some constant value isn’t a mutable literal (e.g. array or hash).
+Style/MutableConstant:
+  Enabled: true
+
+# Checks for uses of `if` with a negated condition. Only ifs without else are considered.
+Style/NegatedIf:
+  Enabled: true
+
+# Checks for uses of if-else and ternary operators with a negated condition which can be simplified by inverting
+# condition and swapping branches.
+Style/NegatedIfElseCondition:
+  Enabled: true
+
+# Checks for uses of `unless` with a negated condition. Only unless without else are considered.
+Style/NegatedUnless:
+  Enabled: true
+
+# Checks for uses of `while` with a negated condition.
+Style/NegatedWhile:
+  Enabled: true
+
+# Checks for nested `File.dirname`.
+# NOTE: It replaces nested File.dirname with the level argument introduced in Ruby 3.1.
+Style/NestedFileDirname:
+  Enabled: true
+
+# Checks for nested use of `if`, `unless`, `while` and `until` in their modifier form.
+Style/NestedModifier:
+  Enabled: true
+
+# Checks for unparenthesized method calls in the argument list of a parenthesized method call.
+# Use `method1(method2(arg))` instead of `method1(method2 arg)`.
+Style/NestedParenthesizedCalls:
+  Enabled: true
+
+# Checks for nested ternary op expressions.
+Style/NestedTernaryOperator:
+  Enabled: true
+
+# Use `next` to skip iteration instead of a condition at the end.
+Style/Next:
+  Enabled: true
+
+# Checks for comparison of something with nil using `==`. Prefer `nil?`
+Style/NilComparison:
+  Enabled: true
+
+# Checks for lambdas and procs that always return nil, which can be replaced with an empty lambda or proc instead.
+Style/NilLambda:
+  Enabled: true
+
+# Checks for non-nil checks, which are usually redundant.
+# Use `if x ... end` instead of `if x != nil ... end`
+Style/NonNilCheck:
+  Enabled: true
+
+# Checks for uses of the keyword `not` instead of `!`.
+Style/Not:
+  Enabled: true
+
+# Checks for numbered parameters.
+Style/NumberedParameters:
+  Enabled: true
+
+# Detects use of an excessive amount of numbered parameters in a single block.
+Style/NumberedParametersLimit:
+  Enabled: true
+
+# Checks for octal, hex, binary, and decimal literals using uppercase prefixes and corrects them to lowercase prefix
+# or no prefix (in case of decimals).
+Style/NumericLiteralPrefix:
+  Enabled: true
+
+# Checks for big numeric literals without _ between groups of digits in them.
+# Use `1_000_000` instead of `1000000`.
+Style/NumericLiterals:
+  Enabled: true
+
+# Checks for usage of comparison operators (`==`, `>`, `<`) to test numbers as zero, positive, or negative.
+# Use `zero?`, `positive?` or `negative?` instead.
+Style/NumericPredicate:
+  Enabled: true
+
+# Enforces the use of consistent method names`Object#then`.
+Style/ObjectThen:
+  Enabled: true
+
+# Checks for uses of `if`/`then`/`else`/`end` constructs on a single line.
+Style/OneLineConditional:
+  Enabled: true
+
+# Flags uses of OpenStruct, as it is now officially discouraged to be used for performance, version compatibility,
+# and potential security issues. Use `Struct` class instead.
+Style/OpenStructUse:
+  Enabled: true
+
+# Checks for redundant dot before operator method call.
+Style/OperatorMethodCall:
+  Enabled: true
+
+# Checks for options hashes and discourages them if the current Ruby version supports keyword arguments.
+# Use `def fry(temperature: 300) ... end` instead of `def fry(options = {}) ... end`
+Style/OptionHash:
+  Enabled: true
+
+# Checks for optional arguments to methods that do not come at the end of the argument list.
+# Use `def baz(a, b, c = 1) ... end` instead of `def foo(a = 1, b, c) ... end`.
+Style/OptionalArguments:
+  Enabled: true
+
+# Checks for places where keyword arguments can be used instead of boolean arguments when defining methods.
+# NOTE: `respond_to_missing?` method is allowed by default
+Style/OptionalBooleanParameter:
+  Enabled: true
+
+# Checks for potential usage of the `||=` operator.
+# Use `name ||= "Bozhidar"`  instead of `name = name ? name : "Bozhidar"`.
+Style/OrAssignment:
+  Enabled: true
+
+# Checks for simple usages of parallel assignment.
+# NOTE: This will only complain when the number of variables being assigned matched the number of assigning variables.
+Style/ParallelAssignment:
+  Enabled: true
+
+# Checks for the presence of superfluous parentheses around the condition of `if`/`unless`/`while`/`until`.
+Style/ParenthesesAroundCondition:
+  Enabled: true
+
+# Enforces the consistent usage of %-literal delimiters.
+Style/PercentLiteralDelimiters:
+  Enabled: true
+
+# Checks for usage of the %Q() syntax when %q() would do.
+Style/PercentQLiterals:
+  Enabled: true
+
+# Looks for uses of Perl-style regexp match backreferences and their English versions like $1, $2, $&, &+, $MATCH,
+# $PREMATCH, etc.
+Style/PerlBackrefs:
+  Enabled: true
+
+# Checks for uses of methods `Hash#has_key?` and `Hash#has_value?`, and suggests using `Hash#key?` and `Hash#value?`
+# instead.
+Style/PreferredHashMethods:
+  Enabled: true
+
+# Checks for uses of Proc.new where Kernel#proc would be more appropriate.
+Style/Proc:
+  Enabled: true
+
+# Checks if the quotes used for quoted symbols match the configured defaults
+Style/QuotedSymbols:
+  Enabled: true
+
+# Checks the args passed to fail and raise.
+# Use `raise StandardError, "message"` instead of `raise StandardError.new("message")`.
+Style/RaiseArgs:
+  Enabled: true
+
+# Checks for the use of randomly generated numbers, added/subtracted with integer literals, as well as those with
+# `Integer#succ` and `Integer#pred methods`.
+Style/RandomWithOffset:
+  Enabled: true
+
+# Checks for a redundant argument passed to certain methods.
+# NOTE: This cop is limited to methods with single parameter.
+Style/RedundantArgument:
+  Enabled: true
+
+# Checks for the instantiation of array using redundant Array constructor.
+# Autocorrect replaces to array literal which is the simplest and fastest.
+Style/RedundantArrayConstructor:
+  Enabled: true
+
+# Checks for redundant assignment before returning.
+Style/RedundantAssignment:
+  Enabled: true
+
+# Checks for redundant `begin` blocks.
+Style/RedundantBegin:
+  Enabled: true
+
+# Checks for usage of the %W() syntax when %w() would do.
+Style/RedundantCapitalW:
+  Enabled: true
+
+# Checks for unnecessary conditional expressions.
+# Use `a = b || c` instead of `a = b ? b : c`.
+Style/RedundantCondition:
+  Enabled: true
+
+# Checks for redundant returning of true/false in conditionals.
+# Use `x == y` instead of `x == y ? true : false`.
+Style/RedundantConditional:
+  Enabled: true
+
+# Avoid redundant `::` prefix on constant.
+# Use `Const` instead of `::Const`.
+Style/RedundantConstantBase:
+  Enabled: true
+
+# Checks for uses a redundant current directory in path.
+# Use `require_relative "path/to/feature"` instead of `require_relative "./path/to/feature"`.
+Style/RedundantCurrentDirectoryInPath:
+  Enabled: true
+
+# Checks for redundant uses of double splat hash braces.
+# Use `do_something(foo: bar, baz: qux, **options)` instead of `do_something(**{foo: bar, baz: qux}.merge(options))`.
+Style/RedundantDoubleSplatHashBraces:
+  Enabled: true
+
+# Checks for redundant `each`.
+# Use `array.each_with_index { |v, i| do_something(v, i) }` instead of
+#     `array.each.each_with_index { |v, i| do_something(v, i) }`.
+Style/RedundantEach:
+  Enabled: true
+
+# Checks for RuntimeError as the argument of `raise`/`fail`.
+# Use `raise "message"` instead of `raise RuntimeError, "message"`.
+Style/RedundantException:
+  Enabled: true
+
+# Identifies places where `fetch(key) { value }` can be replaced by `fetch(key, value)`.
+# NOTE: The block string "value" in `hash.fetch(:key) { "value" }` is detected when frozen string literal magic comment
+#       is enabled (i.e. # frozen_string_literal: true), but not when disabled.
+Style/RedundantFetchBlock:
+  Enabled: true
+
+# Checks for the presence of superfluous ".rb" extension in the filename provided to require and `require_relative`.
+Style/RedundantFileExtensionInRequire:
+  Enabled: true
+
+# Identifies usages of `any?`, `empty?` or `none?` predicate methods chained to `select`/`filter`/`find_all` and
+# change them to use predicate method instead.
+# Use `arr.any? { |x| x > 1 }` instead of `arr.select { |x| x > 1 }.any?`.
+Style/RedundantFilterChain:
+  Enabled: true
+
+# Check for uses of `Object#freeze` on immutable objects.
+# NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+# NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated string literals when
+#       `# frozen-string-literal: true` is used.
+Style/RedundantFreeze:
+  Enabled: true
+
+# Checks for redundant heredoc delimiter quotes.
+Style/RedundantHeredocDelimiterQuotes:
+  Enabled: true
+
+# Checks for initialize methods that are redundant.
+# NOTE: If an initializer argument has a default value, RuboCop assumes it to not be redundant.
+Style/RedundantInitialize:
+  Enabled: true
+
+# Checks for strings that are just an interpolated expression.
+Style/RedundantInterpolation:
+  Enabled: true
+
+# Check for redundant line continuation.
+Style/RedundantLineContinuation:
+  Enabled: true
+
+# Checks for redundant parentheses.
+Style/RedundantParentheses:
+  Enabled: true
+
+# Use quotes for string literals when they are enough.
+Style/RedundantPercentQ:
+  Enabled: true
+
+# Identifies places where argument can be replaced from a deterministic regexp to a string.
+Style/RedundantRegexpArgument:
+  Enabled: true
+
+# Checks for unnecessary single-element Regexp character classes.
+# Use `r = /x/` instead of `r = /[x]/`.
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+# Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`. Autocorrect replaces to
+# regexp literal which is the simplest and fastest.
+# Use `Regexp.new("regexp")` instead of `Regexp.new(/regexp/)`.
+Style/RedundantRegexpConstructor:
+  Enabled: true
+
+# Checks for redundant escapes inside Regexp literals.
+Style/RedundantRegexpEscape:
+  Enabled: true
+
+# Checks for redundant `return` expressions.
+Style/RedundantReturn:
+  Enabled: true
+  AllowMultipleReturnValues: true
+
+# Checks for redundant uses of `self`.
+Style/RedundantSelf:
+  Enabled: true
+
+# Checks for places where redundant assignments are made for in place modification methods.
+# Use `args.concat(foo)` instead of `args = args.concat(ary)`.
+Style/RedundantSelfAssignment:
+  Enabled: true
+
+# Checks for places where conditional branch makes redundant self-assignment.
+# Use `foo = bar if condition` instead of `foo = condition ? bar : foo`.
+Style/RedundantSelfAssignmentBranch:
+  Enabled: true
+
+# Identifies instances of sorting and then taking only the first or last element.
+# Use `[2, 1, 3].min` instead of `[2, 1, 3].sort.first`.
+Style/RedundantSort:
+  Enabled: true
+
+# Identifies places where `sort_by { ... }` can be replaced by `sort`.
+Style/RedundantSortBy:
+  Enabled: true
+
+# Checks for redundant escapes in string literals.
+Style/RedundantStringEscape:
+  Enabled: true
+
+# Enforces using // around regular expressions.
+Style/RegexpLiteral:
+  Enabled: true
+
+# Sort `require` and `require_relative` in alphabetical order.
+Style/RequireOrder:
+  Enabled: true
+
+# Checks for uses of `rescue` in its modifier form is added.
+Style/RescueModifier:
+  Enabled: true
+
+# Checks for rescuing StandardError.
+Style/RescueStandardError:
+  Enabled: true
+
+## DISABLED
+# # Enforces consistency between return nil and return.
+# # This cop is disabled by default. Because there seems to be a perceived semantic difference between return and return nil
+# Style/ReturnNil:
+#   Enabled: false
+
+# Checks if `return` or `return nil` is used in predicate method definitions.
+Style/ReturnNilInPredicateMethodDefinition:
+  Enabled: true
+
+# Transforms usages of a method call safeguarded by a non nil check for the variable whose method is being called to
+# safe navigation (`&.`).
+# Use `foo&.bar` instead of `foo.bar if foo`.
+Style/SafeNavigation:
+  Enabled: true
+
+# Identifies usages of `shuffle.first`, `shuffle.last`, and `shuffle[some_index]` and change them to use sample instead.
+Style/Sample:
+  Enabled: true
+
+# Looks for places where an subset of an Enumerable (array, range, set, etc.) is calculated based on a Regexp
+# match, and suggests `grep` or `grep_v` instead.
+# Use `array.grep(regexp)` instead of `array.select { |x| x.match? /regexp/ }`.
+Style/SelectByRegexp:
+  Enabled: true
+
+# Enforces the use the shorthand for self-assignment.
+# Use `x += 1` instead of `x = x + 1`.
+Style/SelfAssignment:
+  Enabled: true
+
+# Checks for multiple expressions placed on the same line. It also checks for lines terminated with a semicolon.
+Style/Semicolon:
+  Enabled: true
+  AllowAsExpressionSeparator: true
+
+## DISABLED
+# # Checks for the use of the `send` method.
+# Style/Send:
+#   Enabled: false
+
+# Checks for uses of `fail` and `raise`.
+Style/SignalException:
+  Enabled: true
+
+# Sometimes using `dig` method ends up with just a single argument. In such cases, `dig` should be replaced with `[]`.
+# Use `{ key: "value" }[:key]` instead of `{ key: "value" }.dig(:key)`.
+Style/SingleArgumentDig:
+  Enabled: true
+
+## DISABLED
+# # Checks whether the block parameters of a single-line method accepting a block match the names specified via configuration.
+# Style/SingleLineBlockParams:
+#   Enabled: false
+
+# Checks for single-line `do ... end` block.
+Style/SingleLineDoEndBlock:
+  Enabled: true
+
+# Checks for single-line method definitions that contain a body. It will accept single-line methods with no body.
+Style/SingleLineMethods:
+  Enabled: true
+
+# Checks that arrays are not sliced with the redundant `ary[0..-1]`, replacing it with `ary`, and ensures arrays are
+# sliced with endless ranges instead of `ary[start..-1]`.
+# Use `items[1..]` instead of `items[1..-1]`.
+# Use `items[..42]` instead of `items[nil..42]`.
+Style/SlicingWithRange:
+  Enabled: true
+
+# If the branch of a conditional consists solely of a conditional node, its conditions can be combined with the
+# conditions of the outer branch. This helps to keep the nesting level from getting too deep.
+Style/SoleNestedConditional:
+  Enabled: true
+
+## DISABLED
+# # Looks for uses of Perl-style global variables. Correcting to global variables in the 'English' library will add a
+# # require statement to the top of the file if enabled by RequireEnglish config.
+# Style/SpecialGlobalVars:
+#   Enabled: true
+
+# Check for parentheses around stabby lambda arguments.
+# Use `->(a,b,c) { a + b + c}` instead of `->a,b,c { a + b + c }`.
+Style/StabbyLambdaParentheses:
+  Enabled: true
+
+## DISABLED
+# # Checks for places where classes with only class methods can be replaced with a module
+# Style/StaticClass:
+#   Enabled: false
+
+# Identifies places where `$stderr.puts` can be replaced by `warn`.
+Style/StderrPuts:
+  Enabled: true
+
+# Checks for uses of String#split with empty string or regexp literal argument.
+# Use `string.chars` instead of `string.split(//)`.
+Style/StringChars:
+  Enabled: true
+
+# Checks for places where string concatenation can be replaced with string interpolation.
+# Use `email_with_name = "#{user.name} <#{user.email}>"` instead of `email_with_name = user.name + " <" + user.email + ">"`.
+Style/StringConcatenation:
+  Enabled: true
+
+## DISABLED
+# # Checks for the use of strings as keys in hashes. The use of symbols is preferred instead.
+# # Use `{ one: 1, two: 2, three: 3 }` instead of `{ "one" => 1, "two" => 2, "three" => 3 }`
+# Style/StringHashKeys:
+#   Enabled: false
+
+# Check quotes usage according to lint rule below.
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+# Checks that quotes inside string, symbol, and regexp interpolations match the configured preference.
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+# Enforces the use of consistent method names from the String class. 
+Style/StringMethods:
+  Enabled: true
+
+# Identifies places where `lstrip.rstrip` can be replaced by `strip`.
+Style/Strip:
+  Enabled: true
+
+# Checks for inheritance from `Struct.new`.
+# Use `Person = Struct.new(:first_name, :last_name) do ...` instead of
+#     `class Person < Struct.new(:first_name, :last_name) ...`
+Style/StructInheritance:
+  Enabled: true
+
+# Enforces the presence of parentheses in `super` containing arguments.
+Style/SuperWithArgsParentheses:
+  Enabled: true
+
+# Enforces the use of shorthand-style swapping of 2 variables.
+# Use `x, y = y, x` instead of a temporary variable.
+Style/SwapValues:
+  Enabled: true
+
+# Checks for array literals made up of symbols that are not using the %i() syntax.
+# Use `%i[foo bar baz]` instead of `[:foo, :bar, :baz]`.
+Style/SymbolArray:
+  Enabled: true
+
+# Checks symbol literal syntax.
+# Use `:symbol` instead of `:"symbol"`.
+Style/SymbolLiteral:
+  Enabled: true
+
+# Use symbols as procs when possible.
+# Use `something.map(&:upcase)` instead of `something.map { |s| s.upcase }`.
+Style/SymbolProc:
+  Enabled: true
+
+# Checks for the presence of parentheses around ternary conditions.
+# Use `foo = bar? ? a : b` instead of `foo = (bar?) ? a : b`.
+Style/TernaryParentheses:
+  Enabled: true
+
+# Newcomers to ruby applications may write top-level methods, when ideally they should be organized in appropriate
+# classes or modules
+Style/TopLevelMethodDefinition:
+  Enabled: true
+
+# Checks for trailing code after the class definition.
+Style/TrailingBodyOnClass:
+  Enabled: true
+
+# Checks for trailing code after the method definition.
+Style/TrailingBodyOnMethodDefinition:
+  Enabled: true
+
+# Checks for trailing code after the module definition.
+Style/TrailingBodyOnModule:
+  Enabled: true
+
+# Checks for trailing comma in argument lists.
+# Use `method(1, 2)` instead of `method(1, 2,)`.
+Style/TrailingCommaInArguments:
+  Enabled: true
+
+# Checks for trailing comma in array literals.
+# Use `a = [1, 2]` instead of `a = [1, 2,]`.
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+
+## DISABLED
+# # Checks whether trailing commas in block arguments are required.
+# Style/TrailingCommaInBlockArgs:
+#   Enabled: false
+
+# Checks for trailing comma in hash literals.
+# Use `a = { foo: 1, bar: 2 }` instead of `a = { foo: 1, bar: 2, }`.
+Style/TrailingCommaInHashLiteral:
+  Enabled: true
+
+# Checks for trailing code after the method definition.
+Style/TrailingMethodEndStatement:
+  Enabled: true
+
+# Checks for extra underscores in variable assignment.
+# Use `a, b, = foo()` instead of `a, b, _ = foo()`.
+Style/TrailingUnderscoreVariable:
+  Enabled: true
+
+# Looks for trivial reader/writer methods, that could have been created with the `attr_*` family of functions
+# automatically.
+Style/TrivialAccessors:
+  Enabled: true
+
+# Looks for unless expressions with else clauses.
+Style/UnlessElse:
+  Enabled: true
+
+# Checks for the use of logical operators in an unless condition. It discourages such code, as the condition becomes
+# more difficult to read and understand.
+Style/UnlessLogicalOperators:
+  Enabled: true
+
+# Checks for accessing the first element of `String#unpack` which can be replaced with the shorter method `unpack1`.
+Style/UnpackFirst:
+  Enabled: true
+
+# Checks for variable interpolation (like `{#@ivar}`).
+Style/VariableInterpolation:
+  Enabled: true
+
+# Checks for `when ... ; ...` uses in `case` expressions. Prefer `when ... then ...`
+Style/WhenThen:
+  Enabled: true
+
+# Checks for uses of `do` in multi-line `while`/`until` statements.
+Style/WhileUntilDo:
+  Enabled: true
+
+# Checks for `while` and `until` statements that would fit on one line if written as a modifier `while`/`until`.
+Style/WhileUntilModifier:
+  Enabled: true
+
+# Checks for array literals made up of word-like strings, that are not using the %w() syntax.
+# Use `%w[foo bar baz]` instead of `["foo", "bar", "baz"]`.
+Style/WordArray:
+  Enabled: true
+
+# Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with `File.read` argument.
+# NOTE: `YAML.safe_load_file` was introduced in Ruby 3.0.
+Style/YAMLFileRead:
+  Enabled: true
+
+# Enforces or forbids Yoda conditions, i.e. comparison operations where the order of expression is reversed.
+# Use `x == 5`  instead of `5 == x`.
+Style/YodaCondition:
+  Enabled: true
+
+## DISABLED
+# # Forbids Yoda expressions, i.e. binary operations (using *, +, &, |, and ^ operators) where the order of expression
+# # is reversed, eg. `1 + x`.
+# # NOTE: This cop is disabled by default to respect user intentions such as:
+# #       `config.server_port = 9000 + ENV["TEST_ENV_NUMBER"].to_i`
+# Style/YodaExpression:
+#   Enabled: false
+
+# Checks for numeric comparisons that can be replaced by a predicate method, such as `receiver.length == 0`,
+# `receiver.length > 0`, and `receiver.length != 0`, `receiver.length < 1` and `receiver.size == 0` that can be
+# replaced by `receiver.empty?` and `!receiver.empty?`.
+Style/ZeroLengthPredicate:
+  Enabled: true

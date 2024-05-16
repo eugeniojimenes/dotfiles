@@ -1,0 +1,439 @@
+# Bare access modifiers should be indented as deep as method definitions, or as deep as the class/module keyword.
+Layout/AccessModifierIndentation:
+  Enabled: true
+
+# Checks if the arguments on a multi-line method definition are aligned.
+Layout/ArgumentAlignment:
+  Enabled: true
+
+# Checks if the elements of a multi-line array literal are aligned.
+Layout/ArrayAlignment:
+  Enabled: true
+
+# Checks the indentation of the first line of the right-hand-side of a multi-line assignment.
+Layout/AssignmentIndentation:
+  Enabled: true
+
+# Checks whether the end keyword of begin is aligned properly.
+Layout/BeginEndAlignment:
+  Enabled: true
+
+# Checks whether the end keywords are aligned properly for do end blocks.
+Layout/BlockAlignment:
+  Enabled: true
+
+# Checks whether the end statement of a do..end block is on its own line.
+Layout/BlockEndNewline:
+  Enabled: true
+
+# Checks how the when and ins of a case expression are indented in relation to its case or end keyword.
+Layout/CaseIndentation:
+  Enabled: true
+
+# Checks if the code style follows the ExpectedOrder configuration
+Layout/ClassStructure:
+  Enabled: true
+  ExpectedOrder:
+   - module_inclusion
+   - constants
+   - association
+   - public_attribute_macros
+   - public_delegate
+   - macros
+   - public_class_methods
+   - initializer
+   - public_methods
+   - protected_attribute_macros
+   - protected_methods
+   - private_attribute_macros
+   - private_delegate
+   - private_methods
+
+# Checks the indentation of here document closings.
+Layout/ClosingHeredocIndentation:
+  Enabled: true
+
+# Checks the indentation of hanging closing parentheses in method calls, method definitions, and grouped expressions.
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
+
+# Checks the indentation of comments.
+Layout/CommentIndentation:
+  Enabled: true
+
+# Checks for conditions that are not on the same line as if/while/until.
+Layout/ConditionPosition:
+  Enabled: true
+
+# Checks whether the end keywords of method definitions are aligned properly.
+Layout/DefEndAlignment:
+  Enabled: true
+
+# Checks the . position in multi-line method calls.
+Layout/DotPosition:
+  Enabled: true
+
+# Checks the alignment of else keywords.
+Layout/ElseAlignment:
+  Enabled: true
+
+# Checks empty comment.
+Layout/EmptyComment:
+  Enabled: true
+  AllowBorderComment: true
+  AllowMarginComment: true
+
+# Enforces empty line after guard clause.
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+# Checks for a newline after the final magic comment (after "# frozen_string_literal: true" line).
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+## DISABLED
+# # Enforces empty line after multiline condition.
+# Layout/EmptyLineAfterMultilineCondition:
+#   Enabled: false
+
+# Checks whether class/module/method definitions are separated by one or more empty lines.
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+# Checks for two or more consecutive blank lines.
+Layout/EmptyLines:
+  Enabled: true
+
+# Access modifiers should be surrounded by blank lines (in this case only before). 
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+  EnforcedStyle: only_before
+
+# Checks if empty lines exist around the arguments of a method invocation.
+Layout/EmptyLinesAroundArguments:
+  Enabled: true
+
+# Checks for a newline after an attribute accessor or a group of them
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+# Checks if empty lines exist around the bodies of begin-end blocks.
+Layout/EmptyLinesAroundBeginBody:
+  Enabled: true
+
+# Checks if empty lines around the bodies of blocks match the configuration.
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: true
+
+# In a regular class definition, no empty lines around the body.
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+
+# Checks if empty lines exist around the bodies of begin sections.
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: true
+
+# In a regular method definition, no empty lines around the body.
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+# In a regular module definition, no empty lines around the body.
+Layout/EmptyLinesAroundModuleBody:
+  Enabled: true
+
+# Align `end` with the matching keyword or starting expression except for assignments.
+Layout/EndAlignment:
+  Enabled: true
+  EnforcedStyleAlignWith: variable
+  AutoCorrect: true
+
+# Checks for Windows-style line endings in the source code.
+Layout/EndOfLine:
+  Enabled: true
+
+# Checks for extra/unnecessary whitespace.
+Layout/ExtraSpacing:
+  Enabled: true
+
+# Checks the indentation of the first argument in a method call.
+# Arguments after the first one are checked by Layout/ArgumentAlignment.
+Layout/FirstArgumentIndentation:
+  Enabled: true
+
+# Checks the indentation of the first element in an array literal where the opening bracket and the first element are
+# on separate lines.
+# NOTE: The other elements' indentations are handled by Layout/ArrayAlignment cop.
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+
+## DISABLED
+# # Checks for a line break before the first element in a multi-line array.
+# Layout/FirstArrayElementLineBreak:
+#   Enabled: false
+
+# Checks the indentation of the first key in a hash literal where the opening brace and the first key are on separate
+# lines.
+# NOTE: The other keys' indentations are handled by the HashAlignment.
+Layout/FirstHashElementIndentation:
+  Enabled: true
+
+## DISABLED
+# # Checks for a line break before the first element in a multi-line hash.
+# Layout/FirstHashElementLineBreak:
+#   Enabled: true
+
+# Checks for a line break before the first argument in a multi-line method call.
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+
+# Checks for a line break before the first parameter in a multi-line method parameter definition.
+Layout/FirstMethodParameterLineBreak:
+  Enabled: true
+
+# Checks the indentation of the first parameter in a method definition.
+# Parameters after the first one are checked by Layout/ParameterAlignment
+Layout/FirstParameterIndentation:
+  Enabled: true
+
+# Check that the keys, separators, and values of a multi-line hash literal are aligned according to configuration.
+# * key: left align keys, one space before hash rockets and values.
+# * always_inspect:  Inspect both implicit and explicit hashes.
+Layout/HashAlignment:
+  Enabled: true
+  ## DEAFULT VALUES:
+  # EnforcedHashRocketStyle: key
+  # EnforcedColonStyle: key
+  # EnforcedLastArgumentHashStyle: always_inspect
+
+# Checks for the placement of the closing parenthesis in a method call that passes a HEREDOC string as an argument.
+Layout/HeredocArgumentClosingParenthesis:
+  Enabled: true
+
+# Checks the indentation of the here document bodies.
+Layout/HeredocIndentation:
+  Enabled: true
+
+# Method definitions after `private` or `protected` isolated calls need one extra level of indentation.
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: indented_internal_methods
+
+# No tabs for indentation.
+Layout/IndentationStyle:
+  Enabled: true
+
+# Two spaces for indentation.
+Layout/IndentationWidth:
+  Enabled: true
+
+# Checks for indentation of the first non-blank non-comment line in a file.
+Layout/InitialIndentation:
+  Enabled: true
+
+# Checks whether comments have a leading space after the denoting the start of the comment
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+# Checks for unnecessary leading blank lines at the beginning of a file. 
+Layout/LeadingEmptyLines:
+  Enabled: true
+
+# Checks that strings broken over multiple lines contain trailing spaces instead of leading spaces. 
+Layout/LineContinuationLeadingSpace:
+  Enabled: true
+
+# Checks that the backslash of a line continuation is separated from preceding text by exactly one space.
+Layout/LineContinuationSpacing:
+  Enabled: true
+
+# Checks the indentation of the next line after a line that ends with a string literal and a backslash.
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: true
+
+# Checks the length of lines in the source code. Max: 120 (deafult).
+Layout/LineLength:
+  Enabled: true
+
+# Checks that the closing brace in an array literal is either on the same line as the last array element.
+Layout/MultilineArrayBraceLayout:
+  Enabled: true
+
+# Ensures that each item in a multi-line array starts on a separate line.
+Layout/MultilineArrayLineBreaks:
+  Enabled: true
+
+# Checks whether the multiline assignments have a newline after the assignment operator.
+Layout/MultilineAssignmentLayout:
+  Enabled: true
+
+# Checks whether the multiline do end blocks have a newline after the start of the block.
+Layout/MultilineBlockLayout:
+  Enabled: true
+
+# Checks that the closing brace in a hash literal is either on the same line as the last hash element.
+Layout/MultilineHashBraceLayout:
+  Enabled: true
+
+# Ensures that each key in a multi-line hash starts on a separate line.
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
+# Ensures that each argument in a multi-line method call starts on a separate line.
+Layout/MultilineMethodArgumentLineBreaks:
+  Enabled: true
+
+# Checks that the closing brace in a method call is either on the same line as the last method argument.
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
+# Checks the indentation of the method name part in method calls that span more than one line.
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+
+# Checks that the closing brace in a method definition is either on the same line as the last method parameter.
+Layout/MultilineMethodDefinitionBraceLayout:
+  Enabled: true
+
+# Ensures that each parameter in a multi-line method definition starts on a separate line.
+Layout/MultilineMethodParameterLineBreaks:
+  Enabled: true
+
+# Checks the indentation of the right hand side operand in binary operations that span more than one line.
+Layout/MultilineOperationIndentation:
+  Enabled: true
+
+# Checks if the parameters on a multi-line method call or definition are aligned.
+Layout/ParameterAlignment:
+  Enabled: true
+
+# Checks whether certain expressions, e.g. method calls, that could fit completely on a single line, are broken up
+# into multiple lines unnecessarily
+Layout/RedundantLineBreak:
+  Enabled: true
+
+# Checks whether the rescue and ensure keywords are aligned properly.
+Layout/RescueEnsureAlignment:
+  Enabled: true
+
+# Checks if method calls are chained onto single line blocks. It considers that a line break before the dot improves
+# the readability of the code.
+Layout/SingleLineBlockChain:
+  Enabled: true
+  Exclude:
+    - spec/**/*
+
+# Use `def f(a:, b: 2); {a: 3}; end` instead of `def f(a:, b:2); {a:3}; end`.
+Layout/SpaceAfterColon:
+  Enabled: true
+
+# Use `{ foo:bar, }` instead of `{ foo:bar,}`.
+Layout/SpaceAfterComma:
+  Enabled: true
+
+# Use `def method=(y) end` instead of `def method= (y) end`.
+Layout/SpaceAfterMethodName:
+  Enabled: true
+
+# Use `!something` instead of `! something`.
+Layout/SpaceAfterNot:
+  Enabled: true
+
+# Use `x = 1; y = 2` instead of `x = 1;y = 2`.
+Layout/SpaceAfterSemicolon:
+  Enabled: true
+
+# Checks the spacing inside and after block parameters pipes.
+# NOTE: Line breaks inside parameter pipes are checked by Layout/MultilineBlockLayout and not by this cop.
+Layout/SpaceAroundBlockParameters:
+  Enabled: true
+
+# Use `def some_method(arg1 = :default, arg2 = nil, arg3 = []) ... end` instead of
+# `def some_method(arg1=:default, arg2=nil, arg3=[]) ... end`.
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+# Use `something = 123 if test` instead of `something = 123if test`.
+Layout/SpaceAroundKeyword:
+  Enabled: true
+
+# Use `foo.bar` instead of `foo. bar`.
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+# Use `total = 3 * 4` instead of `total = 3*4`.
+Layout/SpaceAroundOperators:
+  Enabled: true
+
+# Use `foo {}` not `foo{}`.
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
+# Use `collection[index_or_key]` instead of `collection [index_or_key]`.
+Layout/SpaceBeforeBrackets:
+  Enabled: true
+
+# Use `[1, 2, 3]` instead of `[1 , 2 , 3]`.
+Layout/SpaceBeforeComma:
+  Enabled: true
+
+# Use `1 + 1 # some comment...` instead of `1 + 1 #some comment...`.
+Layout/SpaceBeforeComment:
+  Enabled: true
+
+# Use `something "hello"` instead of `something"hello"`.
+# NOTE: This is ignored if Style/MethodCallWithArgsParentheses is enabled.
+Layout/SpaceBeforeFirstArg:
+  Enabled: true
+
+# Use `x = 1; y = 2` instead of `x = 1 ; y = 2`.
+Layout/SpaceBeforeSemicolon:
+  Enabled: true
+
+# Use `a = ->(x, y) { x + y }` instead of `a = -> (x, y) { x + y }`.
+Layout/SpaceInLambdaLiteral:
+  Enabled: true
+
+# Use `array = [a, b, c]` instead of `array = [ a, b, c ]`.
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+
+# Checks for unnecessary additional spaces inside array percent literals (i.e. %i/%w).
+Layout/SpaceInsideArrayPercentLiteral:
+  Enabled: true
+
+# Use `foo { bar }` not `foo {bar}`.
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+  EnforcedStyleForEmptyBraces: space
+
+# Use `{ a: 1 }` not `{a:1}`.
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+# Use `g = (a + 3)` instead of `g = (a + 3 )`.
+Layout/SpaceInsideParens:
+  Enabled: true
+
+# Use `%i(foo bar baz)` instead of `%i( foo bar baz )`.
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: true
+
+# Use `1..5` instead of `1 .. 5`.
+Layout/SpaceInsideRangeLiteral:
+  Enabled: true
+
+# Use `hash[:key]` instead of `hash[ :key ]`.
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: true
+
+# Use `"Hello #{name}!"` instead of `Hello #{ name }!"`.
+Layout/SpaceInsideStringInterpolation:
+  Enabled: true
+
+# Empty lines should not have any spaces.
+Layout/TrailingEmptyLines:
+  Enabled: true
+
+# No trailing whitespace.
+Layout/TrailingWhitespace:
+  Enabled: true

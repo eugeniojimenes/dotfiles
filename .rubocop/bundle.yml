@@ -1,0 +1,27 @@
+# A Gem’s requirements should be listed only once in a Gemfile.
+Bundler/DuplicatedGem:
+  Enabled: true
+
+# A Gem group, or a set of groups, should be listed only once in a Gemfile.
+Bundler/DuplicatedGroup:
+  Enabled: true
+
+# Each gem in the Gemfile should have a comment explaining its purpose in the project.
+Bundler/GemComment:
+  Enabled: true
+
+# Verifies that a project contains Gemfile and Gemfile.lock
+Bundler/GemFilename:
+  Enabled: true
+
+# Enforce that Gem version specifications or a commit reference (branch, ref, or tag) are either required or forbidden.
+Bundler/GemVersion:
+  Enabled: true
+
+# Passing symbol arguments to source (e.g. source :rubygems) is deprecated because they default to using HTTP requests.
+Bundler/InsecureProtocolSource:
+  Enabled: true
+
+# Gems should be alphabetically sorted within groups.
+Bundler/OrderedGems:
+  Enabled: true

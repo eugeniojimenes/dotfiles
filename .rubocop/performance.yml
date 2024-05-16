@@ -1,0 +1,235 @@
+Performance:
+  Exclude:
+    - spec/**/*
+
+# Identifies usages of `ancestors.include?` and change them to use `⇐` instead.
+Performance/AncestorsInclude:
+  Enabled: true
+
+# Identifies places where slicing arrays with semi-infinite ranges can be replaced by `Array#take` and `Array#drop`.
+# Use `array.take(3)` instead of `array[..2]` or `array[...3]`.
+# NOTE: This cop was created due to a mistake in microbenchmark and hence is disabled by default.
+#       Refer https://github.com/rubocop/rubocop-performance/pull/175#issuecomment-731892717
+Performance/ArraySemiInfiniteRangeSlice:
+  Enabled: true
+
+# Identifies places where numeric argument to `BigDecimal` should be converted to string.
+Performance/BigDecimalWithNumericArgument:
+  Enabled: true
+
+# Identifies places where `bind(obj).call(args, ...)` can be replaced by `bind_call(obj, args, ...)`.
+Performance/BindCall:
+  Enabled: true
+
+# Identifies unnecessary use of a `block_given?` where explicit check of `block` argument would suffice.
+Performance/BlockGivenWithExplicitBlock:
+  Enabled: true
+
+# Identifies places where `caller[n]` can be replaced by `caller(n..n).first`.
+Performance/Caller:
+  Enabled: true
+
+# Reordering `when` conditions with a splat to the end of the `when` branches can improve performance.
+Performance/CaseWhenSplat:
+  Enabled: true
+
+## DISABLED
+# # Identifies places where a case-insensitive string comparison can better be implemented using `casecmp`.
+# # NOTE: This cop is disabled by default because String#casecmp only works with ASCII characters.
+# Performance/Casecmp:
+#   Enabled: false
+
+# Identifies usages of `array.compact.flatten.map { |x| x.downcase }`. Each of these methods (`compact`, `flatten`,
+# `map`) will generate a new intermediate array that is promptly thrown away. Instead it is faster to mutate when we
+# know it’s safe.
+Performance/ChainArrayAllocation:
+  Enabled: true
+
+# Identifies places where Array and Hash literals are used within loops. It is better to extract them into a local
+# variable or constant to avoid unnecessary allocations on each iteration.
+Performance/CollectionLiteralInLoop:
+  Enabled: true
+
+# Identifies places where `sort { |a, b| a.foo <⇒ b.foo }` can be replaced by `sort_by(&:foo)`.
+Performance/CompareWithBlock:
+  Enabled: true
+
+# Identifies places where `Concurrent.monotonic_time` can be replaced by
+# `Process.clock_gettime(Process::CLOCK_MONOTONIC)`.
+Performance/ConcurrentMonotonicTime:
+  Enabled: true
+
+# Finds regular expressions with dynamic components that are all constants.
+Performance/ConstantRegexp:
+  Enabled: true
+
+# Identifies usages of `count` on an Enumerable that follow calls to `select`, `find_all`, `filter` or `reject`.
+# Use `[1, 2, 3].count { |e| e > 2 }` instead of `[1, 2, 3].select { |e| e > 2 }.size`.
+Performance/Count:
+  Enabled: true
+
+# This cop identifies places where `gsub(/\Aprefix/, "")` and `sub(/\Aprefix/, "")` can be replaced by
+# `delete_prefix("prefix")`.
+Performance/DeletePrefix:
+  Enabled: true
+
+# This cop identifies places where `gsub(/suffix\z/, "")` and `sub(/suffix\z/, "")` can be replaced by
+# `delete_suffix("suffix")`.
+Performance/DeleteSuffix:
+  Enabled: true
+
+# Identifies usages of `first`, `last`, `[0]` or `[-1]` chained to `select`, `find_all` or `filter` and change them to
+# use `detect` instead.
+Performance/Detect:
+  Enabled: true
+
+# Checks for double `#start_with?` or `#end_with?` calls separated by `||`. In some cases such calls can be replaced
+# with an single `#start_with?`/`#end_with?` call.
+Performance/DoubleStartEndWith:
+  Enabled: true
+
+# Identifies unnecessary use of a regex where `String#end_with?` would suffice.
+Performance/EndWith:
+  Enabled: true
+
+# Do not compute the size of statically sized objects like `"foo".size` or `[1, 2, 3].size`.
+Performance/FixedSize:
+  Enabled: true
+
+# Identifies usages of `map { ... }.flatten` and change them to use `flat_map { ... }` instead.
+Performance/FlatMap:
+  Enabled: true
+
+# Checks for inefficient searching of keys and values within hashes.
+# Use `{ a: 1, b: 2 }.key?(:a)` instead of `{ a: 1, b: 2 }.keys.include?(:a)`.
+Performance/InefficientHashSearch:
+  Enabled: true
+
+# Identifies places where inefficient `readlines` method can be replaced by `each_line` to avoid fully loading file
+# content into memory.
+Performance/IoReadlines:
+  Enabled: true
+
+# Identifies places where `map { ... }.compact` can be replaced by `filter_map`.
+Performance/MapCompact:
+  Enabled: true
+
+# Checks if the `map` method is used in a chain.
+# Use `array.map { |item| item.foo.bar }` instead of `array.map(&:foo).map(&:bar)`.
+Performance/MapMethodChain:
+  Enabled: true
+
+# Identifies places where methods are converted to blocks with the use of `&method`.
+# Use `array.map { |x| do_something(x) }` insetad of `array.map(&method(:do_something))`.
+Performance/MethodObjectAsBlock:
+  Enabled: true
+
+# Checks for `OpenStruct.new` calls. Instantiation of an `OpenStruct` invalidates Ruby global method cache as it causes
+# dynamic method definition during program runtime.
+Performance/OpenStruct:
+  Enabled: true
+
+# Identifies uses of `Range#include?` and `Range#member?`, which iterates over each item in a Range to see if a
+# specified item is there.
+# Use `('a'..'z').cover?('b')` instead of `('a'..'z').include?('b')`.
+Performance/RangeInclude:
+  Enabled: true
+
+# Identifies the use of a `&block` parameter and `block.call` where yield would do just as well.
+Performance/RedundantBlockCall:
+  Enabled: true
+
+# Checks for uses `Enumerable#all?`, `Enumerable#any?`, `Enumerable#one?`, and `Enumerable#none?` are compared
+# with `===` or similar methods in block.
+Performance/RedundantEqualityComparisonBlock:
+  Enabled: true
+
+# Identifies the use of `Regexp#match` or `String#match`, which returns `#<MatchData>`/`nil`. The return value of `=~`
+# is an integral `index`/`nil` and is more performant.
+Performance/RedundantMatch:
+  Enabled: true
+
+# Identifies places where `Hash#merge!` can be replaced by `Hash#[]=`.
+# Use `hash["key"] = "value"` instead of `hash.merge!({"key" => "value"})`.
+Performance/RedundantMerge:
+  Enabled: true
+
+# Identifies places where `sort { |a, b| a <⇒ b }` can be replaced with `sort`.
+Performance/RedundantSortBlock:
+  Enabled: true
+
+# Identifies places where `split` argument can be replaced from a deterministic regexp to a string.
+Performance/RedundantSplitRegexpArgument:
+  Enabled: true
+
+# Checks for redundant `String#chars`.
+Performance/RedundantStringChars:
+  Enabled: true
+
+# In Ruby 2.4, `String#match?`, `Regexp#match?`, and `Symbol#match?` have been added.
+# These methods are faster than `match`.
+Performance/RegexpMatch:
+  Enabled: true
+
+# Identifies usages of `reverse.each` and change them to use `reverse_each` instead.
+Performance/ReverseEach:
+  Enabled: true
+
+# Identifies places where `reverse.first(n)` and `reverse.first` can be replaced by `last(n).reverse` and `last`.
+Performance/ReverseFirst:
+  Enabled: true
+
+# Identifies places where `select.map` can be replaced by `filter_map`.
+Performance/SelectMap:
+  Enabled: true
+
+# Identifies usages of `count` on an Array and Hash and change them to `size`.
+Performance/Size:
+  Enabled: true
+
+# Identifies places where `sort { |a, b| b <⇒ a }` can be replaced by a faster `sort.reverse`.
+Performance/SortReverse:
+  Enabled: true
+
+# Identifies places where `gsub(/a+/, "a")` and `gsub!(/a+/, "a")` can be replaced by `squeeze("a")`
+# and `squeeze!("a")`.
+Performance/Squeeze:
+  Enabled: true
+
+# Identifies unnecessary use of a regex where `String#start_with?` would suffice.
+Performance/StartWith:
+  Enabled: true
+
+# Identifies places where string identifier argument can be replaced by symbol identifier argument.
+# It prevents the redundancy of the internal string-to-symbol conversion.
+# Use `send(:do_something)` instead of `send("do_something")`.
+Performance/StringIdentifierArgument:
+  Enabled: true
+
+# Identifies unnecessary use of a regex where `String#include?` would suffice.
+# Use `str.include?("ab")` instead of `str.match?(/ab/)`.
+Performance/StringInclude:
+  Enabled: true
+
+# Identifies places where `gsub` can be replaced by `tr` or `delete`.
+Performance/StringReplacement:
+  Enabled: true
+
+# Identifies places where custom code finding the sum of elements in some Enumerable object can be replaced
+# by `Enumerable#sum method`.
+# Use `[1, 2, 3].sum { |elem| elem ** 2 }` instead of `[1, 2, 3].map { |elem| elem ** 2 }.sum`.
+Performance/Sum:
+  Enabled: true
+
+# Checks for `.times.map` calls. In most cases such calls can be replaced with an explicit array creation.
+Performance/TimesMap:
+  Enabled: true
+
+# In Ruby 2.3 or later, use unary plus operator to unfreeze a string literal instead of `String#dup` and `String.new`.
+# Unary plus operator is faster than `String#dup`.
+Performance/UnfreezeString:
+  Enabled: true
+
+# Identifies places where `URI::Parser.new` can be replaced by `URI::DEFAULT_PARSER`.
+Performance/UriDefaultParser:
+  Enabled: true

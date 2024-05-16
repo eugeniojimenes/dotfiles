@@ -1,0 +1,457 @@
+## DISABLED
+# # Checks that left braces for adjacent single line lets are aligned.
+# RSpec/AlignLeftLetBrace:
+#   Enabled: false
+
+## DISABLED
+# # Checks that right braces for adjacent single line lets are aligned.
+# RSpec/AlignRightLetBrace:
+#   Enabled: false
+
+# Check that instances are not being stubbed globally.
+# See https://rspec.rubystyle.guide/#any_instance_of.
+RSpec/AnyInstance:
+  Enabled: true
+
+# Checks that around blocks actually run the test.
+# See https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/AroundBlock.
+RSpec/AroundBlock:
+  Enabled: true
+
+# Check for expectations where `be` is used without argument.
+# See https://rspec.rubystyle.guide/#be-matcher.
+RSpec/Be:
+  Enabled: true
+
+# Prefer using `be_empty` when checking for an empty array.
+RSpec/BeEmpty:
+  Enabled: true
+
+# Check for expectations where `be(...)` can replace `eq(...)`.
+RSpec/BeEq:
+  Enabled: true
+
+# Check for expectations where `be(...)` can replace `eql(...)`.
+RSpec/BeEql:
+  Enabled: true
+
+# Ensures a consistent style is used when matching `nil`.
+# See https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/BeNil.
+RSpec/BeNil:
+  Enabled: true
+
+# Check that `before/after(:all/:context)` isn’t being used.
+# See https://rspec.rubystyle.guide/#avoid-hooks-with-context-scope.
+RSpec/BeforeAfterAll:
+  Enabled: true
+
+# Prefer negated matchers over to `change.by(0)`.
+RSpec/ChangeByZero:
+  Enabled: true
+
+# Enforces consistent use of `be_a`.
+RSpec/ClassCheck:
+  Enabled: true
+
+# Checks where `contain_exactly` is used.
+RSpec/ContainExactly:
+  Enabled: true
+
+# `context` should not be used for specifying methods.
+# See https://rspec.rubystyle.guide/#example-group-naming.
+RSpec/ContextMethod:
+  Enabled: true
+
+# Checks that `context` docstring starts with an allowed prefix.
+# See https://rspec.rubystyle.guide/#context-descriptions.
+RSpec/ContextWording:
+  Enabled: true
+
+# Check that the first argument to the top-level `describe` is a constant.
+# See https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass.
+RSpec/DescribeClass:
+  Enabled: true
+
+# Checks that the second argument to `describe` specifies a method.
+# https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeMethod
+RSpec/DescribeMethod:
+  Enabled: true
+
+# Avoid describing symbols.
+RSpec/DescribeSymbol:
+  Enabled: true
+
+# Checks that tests use `described_class`.
+RSpec/DescribedClass:
+  Enabled: true
+
+# Avoid opening modules and defining specs within them.
+RSpec/DescribedClassModuleWrapping:
+  Enabled: true
+
+## DISABLED
+# # Enforces custom RSpec dialects.
+# # NOTE: This cop is disabled by default.
+# RSpec/Dialect:
+#   Enabled: false
+
+# Avoid duplicated metadata.
+RSpec/DuplicatedMetadata:
+  Enabled: true
+
+# Checks if an example group does not include any tests.
+RSpec/EmptyExampleGroup:
+  Enabled: true
+
+# Checks for empty `before` and `after` hooks.
+RSpec/EmptyHook:
+  Enabled: true
+
+# Checks if there is an empty line after example blocks.
+RSpec/EmptyLineAfterExample:
+  Enabled: true
+
+# Checks if there is an empty line after example group blocks.
+RSpec/EmptyLineAfterExampleGroup:
+  Enabled: true
+
+# Checks if there is an empty line after the last `let` block.
+RSpec/EmptyLineAfterFinalLet:
+  Enabled: true
+
+# Checks if there is an empty line after hook blocks.
+RSpec/EmptyLineAfterHook:
+  Enabled: true
+
+# Checks if there is an empty line after `subject` block
+RSpec/EmptyLineAfterSubject:
+  Enabled: true
+
+# Avoid empty metadata hash.
+RSpec/EmptyMetadata:
+  Enabled: true
+
+# Check that the `output` matcher is not called with an empty string.
+RSpec/EmptyOutput:
+  Enabled: true
+
+# Use `eq` instead of `be ==` to compare objects.
+RSpec/Eq:
+  Enabled: true
+
+# Checks for long examples.
+RSpec/ExampleLength:
+  Enabled: true
+  CountAsOne: [array, hash, heredoc, method_call]
+
+# Checks for examples without a description.
+RSpec/ExampleWithoutDescription:
+  Enabled: true
+
+# Checks for common mistakes in example descriptions.
+# See https://rspec.rubystyle.guide/#should-in-example-docstrings.
+RSpec/ExampleWording:
+  Enabled: true
+
+# Checks for excessive whitespace in example descriptions.
+RSpec/ExcessiveDocstringSpacing:
+  Enabled: true
+
+# Checks for `expect(...)` calls containing literal values.
+RSpec/ExpectActual:
+  Enabled: true
+
+# Checks for consistent style of change matcher.
+RSpec/ExpectChange:
+  Enabled: true
+
+# Do not use `expect` in hooks such as `before`.
+RSpec/ExpectInHook:
+  Enabled: true
+
+# Checks for opportunities to use `expect { ... }.to` output.
+RSpec/ExpectOutput:
+  Enabled: true
+
+# Checks that spec file paths are consistent and well-formed.
+RSpec/FilePath:
+  Enabled: true
+
+# Checks if examples are focused.
+RSpec/Focus:
+  Enabled: true
+
+# Checks the arguments passed to `before`, `around`, and `after`.
+RSpec/HookArgument:
+  Enabled: true
+
+# Checks for `before/around/after` hooks that come after an example.
+RSpec/HooksBeforeExamples:
+  Enabled: true
+
+# Checks for equality assertions with identical expressions on both sides.
+RSpec/IdenticalEqualityAssertion:
+  Enabled: true
+
+# Check that implicit block expectation syntax is not used.
+RSpec/ImplicitBlockExpectation:
+  Enabled: true
+
+# Check that a consistent implicit expectation style is used.
+RSpec/ImplicitExpect:
+  Enabled: true
+
+# Checks for usage of implicit subject (`is_expected/should`).
+RSpec/ImplicitSubject:
+  Enabled: true
+
+# Do not set up test data using indexes (e.g.,`item_1`, `item_2`).
+RSpec/IndexedLet:
+  Enabled: true
+
+# Checks for `instance_double` used with `have_received`.
+RSpec/InstanceSpy:
+  Enabled: true
+
+# Checks for instance variable usage in specs.
+# see https://rspec.rubystyle.guide/#instance-variables.
+RSpec/InstanceVariable:
+  Enabled: true
+
+# Check for `specify` with `is_expected` and one-liner expectations.
+RSpec/IsExpectedSpecify:
+  Enabled: true
+
+# Checks that only one `it_behaves_like` style is used.
+RSpec/ItBehavesLike:
+  Enabled: true
+
+# Check that `all` matcher is used instead of iterating over an array.
+RSpec/IteratedExpectation:
+  Enabled: true
+
+# Enforce that `subject` is the first definition in the test.
+# See https://rspec.rubystyle.guide/#leading-subject.
+RSpec/LeadingSubject:
+  Enabled: true
+
+# Checks that no class, module, or constant is declared.
+RSpec/LeakyConstantDeclaration:
+  Enabled: true
+
+# Checks for `let` definitions that come after an example.
+RSpec/LetBeforeExamples:
+  Enabled: true
+
+# Checks unreferenced `let!` calls being used for test setup.
+RSpec/LetSetup:
+  Enabled: true
+
+# Checks where `match_array` is used.
+RSpec/MatchArray:
+  Enabled: true
+
+# Check that chains of messages are not being stubbed.
+RSpec/MessageChain:
+  Enabled: true
+
+## DISABLED
+# # Checks for consistent message expectation style.
+# # NOTE: This cop is disabled by default.
+# RSpec/MessageExpectation:
+#   Enabled: false
+
+# Checks that message expectations are set using spies.
+RSpec/MessageSpies:
+  Enabled: true
+
+# Use consistent metadata style.
+RSpec/MetadataStyle:
+  Enabled: true
+
+# Checks that the first argument to an example group is not empty.
+RSpec/MissingExampleGroupArgument:
+  Enabled: true
+
+# Checks for multiple top-level example groups.
+RSpec/MultipleDescribes:
+  Enabled: true
+
+# Checks if examples contain too many `expect` calls.
+# This cop ignores when use `:aggregate_failures`.
+# See https://rspec.rubystyle.guide/#expectation-per-example.
+RSpec/MultipleExpectations:
+  Enabled: true
+
+# Checks if example groups contain too many `let` and `subject` calls.
+RSpec/MultipleMemoizedHelpers:
+  Enabled: true
+  Max: 5
+
+# Checks if an example group defines `subject` multiple times.
+RSpec/MultipleSubjects:
+  Enabled: true
+
+# Checks for explicitly referenced test subjects.
+RSpec/NamedSubject:
+  Enabled: true
+
+# 
+RSpec/NestedGroups:
+  Enabled: true
+
+# 
+RSpec/NoExpectationExample:
+  Enabled: true
+
+# 
+RSpec/NotToNot:
+  Enabled: true
+
+# 
+RSpec/OverwritingSetup:
+  Enabled: true
+
+# 
+RSpec/Pending:
+  Enabled: true
+
+# 
+RSpec/PendingWithoutReason:
+  Enabled: true
+
+# 
+RSpec/PredicateMatcher:
+  Enabled: true
+
+# 
+RSpec/ReceiveCounts:
+  Enabled: true
+
+# 
+RSpec/ReceiveMessages:
+  Enabled: true
+
+# 
+RSpec/ReceiveNever:
+  Enabled: true
+
+# 
+RSpec/RedundantAround:
+  Enabled: true
+
+# 
+RSpec/RedundantPredicateMatcher:
+  Enabled: true
+
+# 
+RSpec/RemoveConst:
+  Enabled: true
+
+# 
+RSpec/RepeatedDescription:
+  Enabled: true
+
+# 
+RSpec/RepeatedExample:
+  Enabled: true
+
+# 
+RSpec/RepeatedExampleGroupBody:
+  Enabled: true
+
+# 
+RSpec/RepeatedExampleGroupDescription:
+  Enabled: true
+
+# 
+RSpec/RepeatedIncludeExample:
+  Enabled: true
+
+# 
+RSpec/RepeatedSubjectCall:
+  Enabled: true
+
+# 
+RSpec/ReturnFromStub:
+  Enabled: true
+
+# 
+RSpec/ScatteredLet:
+  Enabled: true
+
+# 
+RSpec/ScatteredSetup:
+  Enabled: true
+
+# 
+RSpec/SharedContext:
+  Enabled: true
+
+# 
+RSpec/SharedExamples:
+  Enabled: true
+
+# 
+RSpec/SingleArgumentMessageChain:
+  Enabled: true
+
+# 
+RSpec/SkipBlockInsideExample:
+  Enabled: true
+
+# 
+RSpec/SortMetadata:
+  Enabled: true
+
+# 
+RSpec/SpecFilePathFormat:
+  Enabled: true
+
+# 
+RSpec/SpecFilePathSuffix:
+  Enabled: true
+
+# 
+RSpec/StubbedMock:
+  Enabled: true
+
+# 
+RSpec/SubjectDeclaration:
+  Enabled: true
+
+# 
+RSpec/SubjectStub:
+  Enabled: true
+
+# 
+RSpec/UndescriptiveLiteralsDescription:
+  Enabled: true
+
+# 
+RSpec/UnspecifiedException:
+  Enabled: true
+
+# 
+RSpec/VariableDefinition:
+  Enabled: true
+
+# 
+RSpec/VariableName:
+  Enabled: true
+
+# 
+RSpec/VerifiedDoubleReference:
+  Enabled: true
+
+# 
+RSpec/VerifiedDoubles:
+  Enabled: true
+
+# 
+RSpec/VoidExpect:
+  Enabled: true
+
+# 
+RSpec/Yield:
+  Enabled: true

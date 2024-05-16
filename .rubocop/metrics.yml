@@ -1,0 +1,56 @@
+# Checks that the ABC size of methods is not higher than the configured maximum. The ABC size is based on assignments,
+# branches (method calls), and conditions.
+# See more on http://c2.com/cgi/wiki?AbcMetric and on https://en.wikipedia.org/wiki/ABC_Software_Metric.
+Metrics/AbcSize:
+  Enabled: true
+
+# Checks if the length of a block exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
+Metrics/BlockLength:
+  Enabled: true
+
+# Checks for excessive nesting of conditional and looping constructs.
+Metrics/BlockNesting:
+  Enabled: true
+
+# Checks if the length of a class exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
+Metrics/ClassLength:
+  Enabled: true
+  Max: 100
+
+# Checks for literals with extremely many entries. This is indicative of configuration or data that may be better
+# extracted somewhere else, like a database, fetched from an API, or read from a non-code file (CSV, JSON, YAML, etc.).
+Metrics/CollectionLiteralLength:
+  Enabled: true
+  LengthThreshold: 250
+
+# Checks that the cyclomatic complexity of methods. The cyclomatic complexity is the number of linearly independent
+# paths through a method.
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 7
+
+# Checks if the length of a method exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
+Metrics/MethodLength:
+  Enabled: true
+  CountAsOne: [ array, hash, heredoc, method_call ]
+  Max: 15
+
+# Checks if the length of a module exceeds some maximum value.
+# NOTE: Comment lines is ignored in this Metric by default.
+Metrics/ModuleLength:
+  Enabled: true
+  Max: 100
+
+# Checks for methods with too many parameters.
+Metrics/ParameterLists:
+  Enabled: true
+  Max: 5
+
+# Tries to produce a complexity score that’s a measure of the complexity the reader experiences when looking at a
+# method.
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 8

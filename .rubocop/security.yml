@@ -1,0 +1,32 @@
+# Checks for implementations of the hash method which combine values using custom logic instead of delegating to
+# `Array#hash`.
+Security/CompoundHash:
+  Enabled: true
+
+# Checks for the use of `Kernel#eval` and `Binding#eval`.
+Security/Eval:
+  Enabled: true
+
+# Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`, `IO.foreach`, and `IO.readlines`.
+Security/IoMethods:
+  Enabled: true
+
+# Checks for the use of JSON class methods which have potential security issues.
+Security/JSONLoad:
+  Enabled: true
+
+# Checks for the use of `Marshal` class methods which have potential security issues leading to remote code execution
+# when loading from an untrusted source.
+Security/MarshalLoad:
+  Enabled: true
+
+# Checks for the use of `Kernel#open` and `URI.open` with dynamic data.
+# NOTE: `open` and `URI.open` with literal strings are not flagged by this cop.
+Security/Open:
+  Enabled: true
+
+# Checks for the use of YAML class methods which have potential security issues leading to remote code execution when
+# loading from an untrusted source.
+# NOTE: Ruby 3.1+ (Psych 4) uses `Psych.load` as `Psych.safe_load` by default.
+Security/YAMLLoad:
+  Enabled: true

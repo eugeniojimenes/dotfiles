@@ -1,0 +1,79 @@
+# Makes sure that accessor methods are named properly. Applies to both instance and class methods.
+Naming/AccessorMethodName:
+  Enabled: true
+
+# Checks for non-ascii characters in identifier and constant names.
+Naming/AsciiIdentifiers:
+  Enabled: true
+
+# Makes sure that certain binary operator methods have their sole parameter named `other`.
+Naming/BinaryOperatorParameterName:
+  Enabled: true
+
+## DISABLED
+# # This cop identifies places where `do_something(&block)` can be replaced by `do_something(&)`.
+# # NOTE: In Ruby 3.1, anonymous block forwarding has been added.
+# Naming/BlockForwarding:
+#   Enabled: true
+
+# Checks block parameter names for how descriptive they are. It is highly configurable.
+Naming/BlockParameterName:
+  Enabled: true
+  MinNameLength: 1
+  AllowNamesEndingInNumbers: true
+
+# Checks for class and module names with an underscore in them.
+Naming/ClassAndModuleCamelCase:
+  Enabled: true
+
+# Checks whether constant names are written using SCREAMING_SNAKE_CASE.
+Naming/ConstantName:
+  Enabled: true
+
+# Makes sure that Ruby source files have snake_case names.
+# NOTE: Ruby scripts (i.e. source files with a shebang in the first line) are ignored.
+Naming/FileName:
+  Enabled: true
+
+# Checks that your heredocs are using the configured case.
+# NOTE: By default it is configured to enforce uppercase heredocs.
+Naming/HeredocDelimiterCase:
+  Enabled: true
+
+# Checks that your heredocs are using meaningful delimiters.
+Naming/HeredocDelimiterNaming:
+  Enabled: true
+
+# Recommends the use of inclusive language instead of problematic terms.
+Naming/InclusiveLanguage:
+  Enabled: true
+
+# Checks for memoized methods whose instance variable name does not match the method name.
+Naming/MemoizedInstanceVariableName:
+  Enabled: true
+
+# Makes sure that all methods use the configured style (snake_case).
+Naming/MethodName:
+  Enabled: true
+
+# Checks method parameter names for how descriptive they are.  It is highly configurable.
+Naming/MethodParameterName:
+  Enabled: true
+  MinNameLength: 3
+  AllowNamesEndingInNumbers: true
+
+# Checks that predicate methods names end with a question mark and do not start with a forbidden prefix.
+Naming/PredicateName:
+  Enabled: true
+
+# Makes sure that rescued exceptions variables are named as expected.
+Naming/RescuedExceptionsVariableName:
+  Enabled: true
+
+# Makes sure that all variables use the configured style (snake_case).
+Naming/VariableName:
+  Enabled: true
+
+# Makes sure that all numbered variables use the configured style (normalcase).
+Naming/VariableNumber:
+  Enabled: true
