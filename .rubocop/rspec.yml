@@ -296,162 +296,171 @@ RSpec/MultipleSubjects:
 RSpec/NamedSubject:
   Enabled: true
 
-# 
+# Checks for nested example groups like a `context inside a context`.
 RSpec/NestedGroups:
   Enabled: true
 
-# 
+# Checks if an example contains any expectation
 RSpec/NoExpectationExample:
   Enabled: true
 
-# 
+# Checks for consistent method usage for negating expectations.
 RSpec/NotToNot:
   Enabled: true
 
-# 
+# Checks if there is a let/subject that overwrites an existing one.
 RSpec/OverwritingSetup:
   Enabled: true
 
-# 
-RSpec/Pending:
-  Enabled: true
+## DISABLED
+# # Checks for any pending or skipped examples.
+# # NOTE: This cop is disabled by default.
+# RSpec/Pending:
+#   Enabled: false
 
-# 
+# Checks for pending or skipped examples without reason.
+# Use ` pending "reason"` or `pending: "reason"`.
 RSpec/PendingWithoutReason:
   Enabled: true
 
-# 
+# Prefer using predicate matcher over using predicate method directly.
+# Use `expect(foo).to be_something` instead of `expect(foo.something?).to be_truthy`.
 RSpec/PredicateMatcher:
   Enabled: true
 
-# 
+# Check for `once` and `twice` receive counts matchers usage.
+# Like `expect(foo).to receive(:bar).once` instead of `expect(foo).to receive(:bar).exactly(1).times`.
 RSpec/ReceiveCounts:
   Enabled: true
 
-# 
+# Checks for multiple messages stubbed on the same object.
 RSpec/ReceiveMessages:
   Enabled: true
 
-# 
+# Prefer `not_to receive(...)` over `receive(...).never`.
 RSpec/ReceiveNever:
   Enabled: true
 
-# 
+# Remove redundant around hook.
 RSpec/RedundantAround:
   Enabled: true
 
-# 
+# Checks for redundant predicate matcher.
+# Like `expect(foo).not_to include(bar)` instead of `expect(foo).not_to be_include(bar)`.
 RSpec/RedundantPredicateMatcher:
   Enabled: true
 
-# 
+# Checks that `remove_const` is not used in specs.
 RSpec/RemoveConst:
   Enabled: true
 
-# 
+# Check for repeated description strings in example groups.
 RSpec/RepeatedDescription:
   Enabled: true
 
-# 
+# Check for repeated examples (repeated tests) within example groups.
 RSpec/RepeatedExample:
   Enabled: true
 
-# 
+# Check for repeated describe and context block body.
 RSpec/RepeatedExampleGroupBody:
   Enabled: true
 
-# 
+# Check for repeated example group descriptions.
 RSpec/RepeatedExampleGroupDescription:
   Enabled: true
 
-# 
+# Check for repeated include of shared examples.
 RSpec/RepeatedIncludeExample:
   Enabled: true
 
-# 
+# Checks for repeated calls to subject missing that it is memoized.
 RSpec/RepeatedSubjectCall:
   Enabled: true
 
-# 
+# Checks for consistent style of stub’s return setting.
+# Use `allow(Foo).to receive(:bar).and_return("baz")` instead of `allow(Foo).to receive(:bar) { "baz" }`.
 RSpec/ReturnFromStub:
   Enabled: true
 
-# 
+# Checks for let scattered across the example group.
 RSpec/ScatteredLet:
   Enabled: true
 
-# 
+# Checks for setup scattered across multiple hooks in an example group.
 RSpec/ScatteredSetup:
   Enabled: true
 
-# 
+# Checks for proper `shared_context` and `shared_examples` usage.
 RSpec/SharedContext:
   Enabled: true
 
-# 
+# Checks for consistent style for shared example names.
 RSpec/SharedExamples:
   Enabled: true
 
-# 
+# Checks that chains of messages contain more than one element.
 RSpec/SingleArgumentMessageChain:
   Enabled: true
 
-# 
+# Checks for passing a block to skip within examples.
 RSpec/SkipBlockInsideExample:
   Enabled: true
 
-# 
-RSpec/SortMetadata:
-  Enabled: true
+## DISABLED
+# # Sort RSpec metadata alphabetically.
+# RSpec/SortMetadata:
+#   Enabled: true
 
-# 
+# Checks that spec file paths are consistent and well-formed.
 RSpec/SpecFilePathFormat:
   Enabled: true
 
-# 
+# Checks that spec file paths suffix are consistent and well-formed
 RSpec/SpecFilePathSuffix:
   Enabled: true
 
-# 
+# Checks that message expectations do not have a configured response.
 RSpec/StubbedMock:
   Enabled: true
 
-# 
+# Ensure that subject is defined using subject helper.
 RSpec/SubjectDeclaration:
   Enabled: true
 
-# 
+# Checks for stubbed test subjects.
 RSpec/SubjectStub:
   Enabled: true
 
-# 
+# Description should be descriptive.
 RSpec/UndescriptiveLiteralsDescription:
   Enabled: true
 
-# 
+# Checks for a specified error in checking raised errors.
+# Use `.to raise_error(StandardError)` instead of `.to raise_error`.
 RSpec/UnspecifiedException:
   Enabled: true
 
-# 
+# Checks that memoized helpers names are symbols or strings.
 RSpec/VariableDefinition:
   Enabled: true
 
-# 
+# Checks that memoized helper names use the configured style.
 RSpec/VariableName:
   Enabled: true
 
-# 
+# Checks for consistent verified double reference style.
 RSpec/VerifiedDoubleReference:
   Enabled: true
 
-# 
+# Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: true
 
-# 
+# Checks void `expect()`.
 RSpec/VoidExpect:
   Enabled: true
 
-# 
+# Checks for calling a block within a stub.
 RSpec/Yield:
   Enabled: true
