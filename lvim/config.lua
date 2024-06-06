@@ -35,6 +35,31 @@ lvim.plugins = {
     ft = { "markdown" },
     build = function() vim.fn["mkdp#util#install"]() end,
   },
+  {
+    "zk-org/zk-nvim",
+    config = function()
+      require("zk").setup({
+        picker = "telescope",
+        lsp = {
+          config = {
+            cmd = { "zk", "lsp" },
+            name = "zk",
+          },
+
+          auto_attach = {
+            enabled = true,
+            filetypes = { "markdown" },
+          },
+        },
+      })
+    end
+  },
+  {
+    "benfowler/telescope-luasnip.nvim",
+    config = function()
+      require("telescope").load_extension("luasnip")
+    end,
+  },
 }
 
 -- Colorscheme
@@ -60,6 +85,8 @@ endfunction
 lvim.keys.normal_mode["<TAB>"] = ":BufferLineCycleNext<CR>" -- goes to the next buffer
 lvim.keys.normal_mode["<S-TAB>"] = ":BufferLineCyclePrev<CR>" -- goes to the previous buffer
 lvim.keys.normal_mode["<C-L>"] = ":nohlsearch<CR><C-L>" -- Clear highlighted search.
+
+lvim.builtin.which_key.mappings["ss"] = { ":Telescope luasnip<CR>", "Snippets available" } -- Search available snippets for current file
 
 lvim.builtin.which_key.mappings["G"] = {
   name = "Git Fugitive",

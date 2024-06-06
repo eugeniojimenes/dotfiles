@@ -1,8 +1,4 @@
-# # NOTEBOOK SETTINGS
-# [notebook]
-# dir = "~/my-zk/"
-
-# NOTE SETTINGS
+# NOTEBOOK SETTINGS
 [note]
 
 # Language used when writing notes.
