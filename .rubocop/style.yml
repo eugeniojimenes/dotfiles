@@ -102,10 +102,12 @@ Style/ClassEqualityComparison:
 Style/ClassMethods:
   Enabled: true
 
-# Enforces using `class << self` to define class methods
-Style/ClassMethodsDefinitions:
-  Enabled: true
-  EnforcedStyle: self_class
+## DISABLED
+# # NOTE: This cop is disabled by default
+# # Enforces using `class << self` to define class methods
+# Style/ClassMethodsDefinitions:
+#   Enabled: false
+#   EnforcedStyle: self_class
 
 # Checks for uses of class variables.
 Style/ClassVars:

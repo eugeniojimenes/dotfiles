@@ -6,9 +6,10 @@ Bundler/DuplicatedGem:
 Bundler/DuplicatedGroup:
   Enabled: true
 
-# Each gem in the Gemfile should have a comment explaining its purpose in the project.
-Bundler/GemComment:
-  Enabled: true
+## DISABLED
+# # Each gem in the Gemfile should have a comment explaining its purpose in the project.
+# Bundler/GemComment:
+#   Enabled: true
 
 # Verifies that a project contains Gemfile and Gemfile.lock
 Bundler/GemFilename:
