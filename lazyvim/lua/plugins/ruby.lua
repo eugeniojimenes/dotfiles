@@ -18,8 +18,8 @@ return {
           enabled = true,
           settings = {
             solargraph = {
-              diagnostics = false,
-              formatting = false
+              diagnostics = false, -- set `true` to use .rubocop.yml
+              formatting = false   -- set `true` to use .rubocop.yml
             },
           },
         },
@@ -27,7 +27,7 @@ return {
           enabled = false,
         },
         standardrb = {
-          enabled = true,
+          enabled = true, -- set `false` to use .rubocop.yml
         },
       },
     },
