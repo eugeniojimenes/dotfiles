@@ -4,7 +4,7 @@
 	name = Eugenio Augusto Jimenes
 	email = eugeniojimenes@gmail.com
 [core]
-	editor = vim
+	editor = nvim
 [pull]
 	rebase = false
 [init]

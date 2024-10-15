@@ -1,8 +1,7 @@
+local lsp = vim.g.lazyvim_ruby_lsp
+local formatter = vim.g.lazyvim_ruby_formatter
+
 return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "ruby" } },
-  },
   {
     "williamboman/mason.nvim",
     opts = { ensure_installed = { "ruby-lsp", "solargraph", "rubocop", "standardrb" } },
@@ -10,26 +9,26 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
-      servers = {
-        ruby_lsp = {
-          enabled = false,
-        },
-        solargraph = {
-          enabled = true,
+    servers = {
+      ruby_lsp = {
+        enabled = lsp == "ruby_lsp",
+      },
+      solargraph = {
+        enabled = lsp == "solargraph",
           settings = {
             solargraph = {
-              diagnostics = false, -- set `true` to use .rubocop.yml
-              formatting = false   -- set `true` to use .rubocop.yml
+              diagnostics = formatter == "solargraph", -- set `true` to use .rubocop.yml
+              formatting = formatter == "solargraph"   -- set `true` to use .rubocop.yml
             },
           },
-        },
-        rubocop = {
-          enabled = false,
-        },
-        standardrb = {
-          enabled = true, -- set `false` to use .rubocop.yml
-        },
       },
+      rubocop = {
+        enabled = formatter == "rubocop",
+      },
+      standardrb = {
+        enabled = formatter == "standardrb",
+      },
+    },
     },
   },
 }

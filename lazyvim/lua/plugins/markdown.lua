@@ -1,8 +1,4 @@
 return {
-  -- {
-  --   "nvim-treesitter/nvim-treesitter",
-  --   opts = { ensure_installed = { "ruby" } },
-  -- },
   {
     "williamboman/mason.nvim",
     opts = { ensure_installed = { "ltex-ls" } },
@@ -13,7 +9,7 @@ return {
       servers = {
         ltex = {
           cmd = { "ltex-ls" },
-          filetypes = { "markdown", "text", "gitcommit" },
+          filetypes = { "markdown", "text", "gitcommit", "norg" },
         },
       },
     },

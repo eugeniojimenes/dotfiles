@@ -21,17 +21,19 @@ vim.opt.list = true
 vim.opt.listchars = { eol = "󱞥", trail = "", tab = ">-", nbsp = "~" }
 vim.opt.relativenumber = true
 vim.opt.mouse = ""
+vim.g.autoformat = false
 
 -- -- For Ruby language:
+vim.cmd('autocmd FileType ruby setlocal indentkeys-=.')
 -- local function file_exists(filename)
 --   local stat = vim.loop.fs_stat(filename)
 --   return stat and stat.type == 'file'
 -- end
--- vim.g.lazyvim_ruby_lsp = "solargraph"
+vim.g.lazyvim_ruby_lsp = "solargraph"
 -- if file_exists(".rubocop.yml") then
 --   vim.g.lazyvim_ruby_formatter = "rubocop"
 -- else
---   vim.g.lazyvim_ruby_formatter = "standardrb"
+vim.g.lazyvim_ruby_formatter = "standardrb"
 -- end
 
 -- Set ltex-ls language on the fly
@@ -53,37 +55,3 @@ vim.api.nvim_create_user_command(
   end,
   { nargs = 1, desc = "Set ltex-ls language" }
 )
-
--- -- Set solargraph to use rubocop on the fly
--- vim.api.nvim_create_user_command(
---   "SolargraphWithDiagnostics",
---   function()
---     local clients = vim.lsp.get_active_clients()
---     local solargraph_done = false
---     local standardrb_done = false
---
---     for _, client in ipairs(clients) do
---       if client.name == "solargraph" then
---         vim.api.nvim_notify("Set solargraph with rubocop diagnostics", vim.log.levels.INFO,
---           { title = "utils.functions", timeout = 2000 })
---         client.config.settings.solargraph.diagnostics = true
---         client.config.settings.solargraph.formatting = true
---         vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = client.config.settings })
---         solargraph_done = true
---       end
---
---       if client.name == "standardrb" then
---         vim.api.nvim_notify("Disable Standardrb", vim.log.levels.INFO,
---           { title = "utils.functions", timeout = 2000 })
---         client.stop()
---         vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = client.config.settings })
---         standardrb_done = true
---       end
---
---       if solargraph_done and standardrb_done then
---         return
---       end
---     end
---   end,
---   { nargs = 0, desc = "Set solargraph with rubocop" }
--- )
