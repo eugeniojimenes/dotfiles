@@ -63,11 +63,7 @@ Also add `ZSH_THEME="powerlevel10k/powerlevel10k"` in your `~/.zshrc` (in my alr
 For the plugins, install [rvm](https://rvm.io/) and
 [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-## Tilix Terminal Emulator
-To import my setup (**it should have *Nerd Fonts* installed!**) execute:
-```bash
-$ dconf dump /com/gexperts/Tilix/ < tilix.dconf
-```
+## Kitty Terminal Emulator - WIP
 
 ## My Neovim like an IDE
 Set of plugins and settings that I use in Neovim. To organized it (and don't let it as a giant
@@ -122,6 +118,7 @@ sudo pacman -S openjdk-src
 ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/dotfiles/.zshrc ~/.zshrc
 ln -s ~/dotfiles/.zshenv ~/.zshenv
+ln -s ~/dotfiles/.asdfrc ~/.asdfrc
 ln -s ~/dotfiles/nvim ~/.config/nvim
 ln -s ~/dotfiles/zk ~/my-zk/.zk
 ln -s ~/dotfiles/zk ~/.config/zk
