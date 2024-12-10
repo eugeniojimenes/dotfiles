@@ -1,7 +1,0 @@
-
-return {
-  filetypes = {
-    "eruby",
-    "html",
-  },
-}
