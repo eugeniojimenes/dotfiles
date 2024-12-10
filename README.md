@@ -29,13 +29,6 @@ colors for commands like `$ git log`. I also defined the `develop` branch as the
 commit message template defined in [.gitmessage](./.gitmessage), which was inspired in
 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
-## Nerd Fonts
-A Font package that I use in Tilix and Neovim. To install or read more about see:
-<https://github.com/ryanoasis/nerd-fonts>.
-
-I'm using **FireCode Nerd Font Regular** and for Arch Linux system is this
-[package](https://archlinux.org/packages/community/any/ttf-firacode-nerd/).
-
 ## Oh My Zsh
 I use `zsh` shell with [*Oh My Zsh*](https://github.com/ohmyzsh/ohmyzsh) manager. To check if you
 have it installed in your linux and if it is defined as default shell, use:
@@ -60,8 +53,24 @@ $ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:
 ```
 Also add `ZSH_THEME="powerlevel10k/powerlevel10k"` in your `~/.zshrc` (in my already has it).
 
-For the plugins, install [rvm](https://rvm.io/) and
-[nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Nerd Fonts and emoji - **REQUIRED**
+
+
+To install the whole nerdfonts package:
+```sh
+sudo pacman -S nerd-font
+```
+
+To install only one font, like **FireCode Nerd Font Regular** do:
+```sh
+sudo pacman -S ttf-firacode-nerd tf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
+```
+
+For emojis:
+
+```sh
+sudo pacman -S noto-fonts-emoji
+```
 
 ## Kitty Terminal Emulator - WIP
 
@@ -83,30 +92,17 @@ Copy, change and use it at will. Suggestions and (polite) criticism are welcome 
 install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator profile or if
 you use Tilix you can use my settings as I explained before.
 
-## My Zettelkasten notes
-After reading about this method I realized that I got completely disorganized with my work
-annotations and I found an amazing solution for use this method with Neovim thanks to
-[Mickaël Menu](https://github.com/mickael-menu). You can read more about this here:
-<https://github.com/mickael-menu/zk>.
-
-This is also a good excuse to practice my English writing some kind of personal journal, like my
-daily routine, and this note-talking assistant can be configured for this propose too as they
-describe in their documentation: <https://github.com/mickael-menu/zk/blob/main/docs/daily-journal.md>.
-
-This also is a personal stuff, I use a collection of groups in my [zk config file](./zk/config.toml)
-that attend my needs, for example. I strongly recommend you to watch this video <https://youtu.be/UzhZb7e4l4Y>,
-which was a good guide for me, be sides
-[the documentation of zk](https://github.com/mickael-menu/zk/blob/main/docs/getting-started.md),
-of course.
-
-On Arch Linux the following packages are required:
-```sh
-sudo pacman -S zk fzf bat
+For Neorg you need:
+```bash
+sudo pacman -S luarocks
 ```
-
+and inside neovim execute:
+```vim
+:Neorg sync-parsers
+```
 ## Spell Check and cohesion
 
-To write my markdowns, specially for my zk'notes, I use the ltex-ls LSP but for that you need to install java
+To write my markdowns I use the ltex-ls LSP but for that you need to install java
 
 ```sh
 sudo pacman -S openjdk-src
@@ -119,10 +115,13 @@ ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/dotfiles/.zshrc ~/.zshrc
 ln -s ~/dotfiles/.zshenv ~/.zshenv
 ln -s ~/dotfiles/.asdfrc ~/.asdfrc
-ln -s ~/dotfiles/nvim ~/.config/nvim
-ln -s ~/dotfiles/zk ~/my-zk/.zk
-ln -s ~/dotfiles/zk ~/.config/zk
-ln -s ~/dotfiles/lvim ~/.config/lvim
+ln -s ~/dotfiles/lazyvim ~/.config/nvim
+ln -s ~/dotfiles/config/hypr ~/.config/
+ln -s ~/dotfiles/config/waybar ~/.config/
+ln -s ~/dotfiles/config/kitty ~/.config/
+ln -s ~/dotfiles/config/dunst ~/.config/
+ln -s ~/dotfiles/config/chrome-flags.conf ~/.config/
+ln -s ~/dotfiles/config/code-flags.conf ~/.config/
 ```
 
 ## asdf
