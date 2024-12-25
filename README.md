@@ -120,6 +120,7 @@ ln -s ~/dotfiles/config/hypr ~/.config/
 ln -s ~/dotfiles/config/waybar ~/.config/
 ln -s ~/dotfiles/config/kitty ~/.config/
 ln -s ~/dotfiles/config/dunst ~/.config/
+ln -s ~/dotfiles/config/wlogout ~/.config/
 ln -s ~/dotfiles/config/chrome-flags.conf ~/.config/
 ln -s ~/dotfiles/config/code-flags.conf ~/.config/
 ```
