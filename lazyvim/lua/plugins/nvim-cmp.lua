@@ -6,6 +6,7 @@ return {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
+    "hrsh7th/cmp-nvim-lua",
   },
   -- Not all LSP servers add brackets when completing a function.
   -- To better deal with this, LazyVim adds a custom option to cmp,
@@ -22,7 +23,7 @@ return {
     local defaults = require("cmp.config.default")()
     local auto_select = true
     return {
-      auto_brackets = {}, -- configure any filetype to auto add brackets
+      auto_brackets = {"javascript", "typescript"}, -- configure any filetype to auto add brackets
       completion = {
         completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect"),
       },

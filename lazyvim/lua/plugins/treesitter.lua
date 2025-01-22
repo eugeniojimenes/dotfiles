@@ -10,6 +10,8 @@ return {
       ensure_installed = {
         "ruby",
         "norg",
+        "javascript",
+        "typescript",
       },
     }
   }
