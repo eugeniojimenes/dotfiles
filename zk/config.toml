@@ -68,7 +68,7 @@ colon-tags = true
 [tool]
 
 # Default editor used to open notes.
-editor = "lvim"
+editor = "nvim"
 
 # Pager used to scroll through long output.
 pager = "less -FIRX"
