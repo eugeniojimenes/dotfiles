@@ -67,12 +67,60 @@ sudo pacman -S ttf-firacode-nerd tf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mo
 ```
 
 For emojis:
-
 ```sh
 sudo pacman -S noto-fonts-emoji
 ```
 
 ## Kitty Terminal Emulator - WIP
+
+## SDDM
+
+Install sddm with `sudo pacman -Sy sddm`
+
+Download the latest release version of catppuccin-mocha theme on <https://github.com/catppuccin/sddm/releases> and
+unizp it in `/usr/share/sddm/themes/` folder.
+
+Copy `./config/sddm/sddm.conf` in `/etc/sddm.conf.d/` folder (create it with doesn't exist).
+
+Commands example:
+```sh
+curl -L -o /tmp/catppuccin-mocha.zip \
+    https://github.com/catppuccin/sddm/releases/download/v1.0.0/catppuccin-mocha.zip
+sudo unzip /tmp/catppuccin-mocha.zip /usr/share/sddm/themes/
+sudo mkdir /etc/sddm.conf.d
+sudo cp ~/dotfiles/config/sddm/sddm.conf /etc/sddm.conf.d/
+
+```
+## wlogout and swaylock
+Install this packages
+```sh
+yay -S wlogout
+sudo pacman -S swayidle swaylock
+```
+Add this symbolic link:
+```sh
+ln -s ~/dotfiles/config/wlogout ~/.config/
+ln -s ~/dotfiles/config/swaylock ~/.config/
+```
+
+## Screenshot
+Just install this packages:
+```sh
+sudo pacman -S grim slurp
+```
+And the PrintScreen key on your keyboard is the binding defined on `./config/hypr/hyprland.conf` with the command
+`grim -g "$(slurp -d)" - | wl-copy`.
+
+## Audio and Bluetooth
+For audio, make sure that you have this packages installed:
+```sh
+sudo pacman -S networkmanager pipewire pipewire-alsa pipewire-pulse pipewire-jack
+```
+For Bluetooth install de following:
+```sh
+sudo pacman -S bluez bluez-utils blueman
+```
+And when you right click on the  icon of waybar you'll open `blueman-manager`
 
 ## My Neovim like an IDE
 Set of plugins and settings that I use in Neovim. To organized it (and don't let it as a giant
@@ -101,9 +149,7 @@ and inside neovim execute:
 :Neorg sync-parsers
 ```
 ## Spell Check and cohesion
-
 To write my markdowns I use the ltex-ls LSP but for that you need to install java
-
 ```sh
 sudo pacman -S openjdk-src
 ```
@@ -126,23 +172,16 @@ ln -s ~/dotfiles/config/code-flags.conf ~/.config/
 ```
 
 ## asdf
-
 **NOTE:** For ruby you're going to need this packages as `ruby-build`'s requirements:
-
 ```sh
 pacman -S --needed base-devel rust libffi libyaml openssl zlib
 ```
-
 Download and install these languages:
 ```sh
 # Ruby
 asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
 asdf install ruby 2.7.1
 asdf global ruby 2.7.1
-# Python
-asdf plugin add python
-asdf install python 3.10.8
-asdf global python 3.10.8
 # Nodejs
 asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 asdf install nodejs latest
