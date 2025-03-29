@@ -100,7 +100,7 @@ Isso também é pessoal, eu uso uma coleção de grupos no meu
 [arquivo de configuração do zk](./zk/config.toml) que atendem às minhas necessidades, por exemplo.
 Eu recomendo fortemente que você assista a este vídeo <https://youtu.be/UzhZb7e4l4Y>, que foi um
 bom guia para mim, além da
-[documentação do zk](https://github.com/mickael-menu/zk/blob/main/docs/getting-started.md), é claro.
+[documentação do zk](https://github.com/zk-org/zk/blob/main/docs/tips/getting-started.md), é claro.
 
 ## Meus *symbolic links*
 
