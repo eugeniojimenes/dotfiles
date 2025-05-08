@@ -1,0 +1,41 @@
+ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+hwclock --systohc
+vim /etc/locale.gen 
+locale-gen 
+vim /etc/locale.conf
+exit
+echo "arch-loq" > /etc/hostname
+cat /etc/hostname
+cat /etc/locale.conf > /etc/vconsole.conf
+vim /etc/locale.conf 
+vim /etc/vconsole.conf 
+cat /etc/vconsole.conf 
+cat /etc/locale.conf 
+cat /etc/hosts 
+vim /etc/hosts 
+cat /etc/hostname 
+cat /etc/hosts
+echo "JaTiKion_%$45"
+passwd
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+useradd -mG wheel callmarx
+passwd callmarx
+EDITOR=vim visudo
+systemctl enable NetworkManager
+exit
+cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bkp
+sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist.bkp 
+vim /etc/pacman.d/mirrorlist.bkp 
+vim /etc/pacman.d/mirrorlist
+exit
+cat /sys/module/nvidia_drm/parameters/modeset 
+cat /etc/modules-load.d/gnutls.conf 
+journalctl -b 0 --grep "renderer for"
+exit
+cat sddm/
+cat sddm/10-wayland.conf 
+exit
+chmod a+x Zscaler-linux-1.5.0.41-installer.run
+./Zscaler-linux-1.5.0.41-installer.run 
+exit

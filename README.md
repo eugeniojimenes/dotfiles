@@ -159,7 +159,8 @@ sudo pacman -S openjdk-src
 ```sh
 ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/dotfiles/.zshrc ~/.zshrc
-ln -s ~/dotfiles/.zshenv ~/.zshenv
+# ln -s ~/dotfiles/.zshenv ~/.zshenv
+ln -s ~/my-zk/.zshenv ~/.zshenv
 ln -s ~/dotfiles/.asdfrc ~/.asdfrc
 ln -s ~/dotfiles/lazyvim ~/.config/nvim
 ln -s ~/dotfiles/config/hypr ~/.config/
