@@ -1,9 +1,10 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.lang.ruby"
+    "lazyvim.plugins.extras.lang.typescript"
   ],
+  "install_version": 8,
   "news": {
-    "NEWS.md": "7429"
+    "NEWS.md": "10960"
   },
-  "version": 7
+  "version": 8
 }
