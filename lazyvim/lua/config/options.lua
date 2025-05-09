@@ -38,9 +38,9 @@ vim.cmd('autocmd FileType ruby setlocal indentkeys-=.')
 -- end
 vim.g.lazyvim_ruby_lsp = "solargraph"
 -- if file_exists(".rubocop.yml") then
---   vim.g.lazyvim_ruby_formatter = "rubocop"
+vim.g.lazyvim_ruby_formatter = "rubocop"
 -- else
-vim.g.lazyvim_ruby_formatter = "standardrb"
+-- vim.g.lazyvim_ruby_formatter = "standardrb"
 -- end
 
 -- Set ltex-ls language on the fly
