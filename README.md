@@ -116,9 +116,11 @@ For audio, make sure that you have this packages installed:
 ```sh
 sudo pacman -S networkmanager pipewire pipewire-alsa pipewire-pulse pipewire-jack
 ```
-For Bluetooth install de following:
+For Bluetooth:
 ```sh
 sudo pacman -S bluez bluez-utils blueman
+sudo systemctl enable bluetooth.service
+sudo systemctl start bluetooth.service
 ```
 And when you right click on the  icon of waybar you'll open `blueman-manager`
 
@@ -163,13 +165,17 @@ ln -s ~/dotfiles/.zshrc ~/.zshrc
 ln -s ~/my-zk/.zshenv ~/.zshenv
 ln -s ~/dotfiles/.asdfrc ~/.asdfrc
 ln -s ~/dotfiles/lazyvim ~/.config/nvim
-ln -s ~/dotfiles/config/hypr ~/.config/
-ln -s ~/dotfiles/config/waybar ~/.config/
-ln -s ~/dotfiles/config/kitty ~/.config/
-ln -s ~/dotfiles/config/dunst ~/.config/
-ln -s ~/dotfiles/config/wlogout ~/.config/
-ln -s ~/dotfiles/config/chrome-flags.conf ~/.config/
+## For hyprland:
 ln -s ~/dotfiles/config/code-flags.conf ~/.config/
+ln -s ~/dotfiles/config/chrome-flags.conf ~/.config/
+ln -s ~/dotfiles/config/dunst ~/.config/
+ln -s ~/dotfiles/config/gtk-3.0 ~/.config/
+ln -s ~/dotfiles/config/gtk-4.0 ~/.config/
+ln -s ~/dotfiles/config/hypr ~/.config/
+ln -s ~/dotfiles/config/kitty ~/.config/
+ln -s ~/dotfiles/config/swaylock ~/.config/
+ln -s ~/dotfiles/config/waybar ~/.config/
+ln -s ~/dotfiles/config/wlogout ~/.config/
 ```
 
 ## asdf
