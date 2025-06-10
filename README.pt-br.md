@@ -102,6 +102,11 @@ Eu recomendo fortemente que você assista a este vídeo <https://youtu.be/UzhZb7
 bom guia para mim, além da
 [documentação do zk](https://github.com/zk-org/zk/blob/main/docs/tips/getting-started.md), é claro.
 
+### Requisitos:
+```sh
+sudo pacman -S zk bat
+```
+
 ## Meus *symbolic links*
 
 ```sh

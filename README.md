@@ -139,21 +139,34 @@ gem install neovim rubocop rubocop-packaging rubocop-performance rubocop-rails r
 Copy, change and use it at will. Suggestions and (polite) criticism are welcome 🤓.
 
 **NOTE**: To use the [vim-devicons](https://github.com/ryanoasis/vim-devicons) icons you need to
-install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator profile or if
-you use Tilix you can use my settings as I explained before.
+install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator.
 
-For Neorg you need:
-```bash
-sudo pacman -S luarocks
-```
-and inside neovim execute:
-```vim
-:Neorg sync-parsers
-```
 ## Spell Check and cohesion
 To write my markdowns I use the ltex-ls LSP but for that you need to install java
 ```sh
 sudo pacman -S openjdk-src
+```
+
+## My Zettelkasten notes
+After reading about this method, I realized I'd become completely disorganized with my work notes 
+and found an incredible solution to implement it with Neovim thanks to 
+[Mickaël Menu](https://github.com/mickael-menu). You can read more about it here: 
+<https://github.com/mickael-menu/zk>.
+
+This also serves as a good excuse to practice my English by writing some form of personal journal, 
+like my daily routine. This note-taking assistant can be configured for this purpose as well, 
+as described in its documentation: 
+<https://github.com/mickael-menu/zk/blob/main/docs/daily-journal.md>.
+
+This setup is personal too - I use a collection of groups in my 
+[zk configuration file](./zk/config.toml) that suit my needs, for example. 
+I highly recommend watching this video <https://youtu.be/UzhZb7e4l4Y>, which was a 
+great guide for me, along with the 
+[zk documentation](https://github.com/zk-org/zk/blob/main/docs/tips/getting-started.md), of course.
+
+### Requirements:
+```sh
+sudo pacman -S zk bat
 ```
 
 ## My symbolic links
@@ -161,10 +174,10 @@ sudo pacman -S openjdk-src
 ```sh
 ln -s ~/dotfiles/.gitconfig ~/.gitconfig
 ln -s ~/dotfiles/.zshrc ~/.zshrc
-# ln -s ~/dotfiles/.zshenv ~/.zshenv
 ln -s ~/my-zk/.zshenv ~/.zshenv
 ln -s ~/dotfiles/.asdfrc ~/.asdfrc
 ln -s ~/dotfiles/lazyvim ~/.config/nvim
+ln -s ~/dotfiles/zk ~/my-zk/.zk
 ## For hyprland:
 ln -s ~/dotfiles/config/code-flags.conf ~/.config/
 ln -s ~/dotfiles/config/chrome-flags.conf ~/.config/
