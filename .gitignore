@@ -2,3 +2,4 @@
 **/backupdir/**
 **/plugin/packer_compiled.lua
 **/*-lock.json
+**/*.db
