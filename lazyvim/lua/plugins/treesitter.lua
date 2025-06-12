@@ -4,6 +4,7 @@ return {
     opts = {
       highlight = { enable = true },
       indent = { enable = true },
+      -- folding = { enable = true, custom_foldtext = true },
       ensure_installed = {
         "bash",
         "diff",
