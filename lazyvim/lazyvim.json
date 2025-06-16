@@ -1,6 +1,8 @@
 {
   "extras": [
+    "lazyvim.plugins.extras.ai.copilot",
     "lazyvim.plugins.extras.coding.luasnip",
+    "lazyvim.plugins.extras.lang.markdown",
     "lazyvim.plugins.extras.lang.ruby",
     "lazyvim.plugins.extras.lang.typescript"
   ],
