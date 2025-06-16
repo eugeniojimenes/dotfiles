@@ -29,9 +29,9 @@ if is_wsl() then
 end
 vim.opt.list = true
 vim.opt.listchars = { eol = "󱞥", trail = "", tab = ">-", nbsp = "~" }
+vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.mouse = ""
-vim.g.autoformat = false
+vim.opt.mouse = "a"
 
 -- -- For Ruby language:
 -- vim.cmd("autocmd FileType ruby setlocal indentkeys-=.")
