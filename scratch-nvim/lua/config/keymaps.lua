@@ -1,47 +1,83 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+local wk = require("which-key")
 
-local map = vim.keymap.set
+wk.add({
+  -- Top Pickers & Explorer
+  { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
+  { "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
+  { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
+  { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffer Picker" },
 
--- buffers and windows
-map("n", "<TAB>",      "<CMD>BufferLineCycleNext<CR>",          { desc = "Next Buffer" })      -- goes to the next buffer
-map("n", "<S-TAB>",    "<CMD>BufferLineCyclePrev<CR>",          { desc = "Prev Buffer" })    -- goes to the next buffer
-map("n", "[b",         "<CMD>BufferLineCyclePrev<CR>",          { desc = "Prev Buffer" })
-map("n", "]b",         "<CMD>BufferLineCycleNext<CR>",          { desc = "Next Buffer" })
-map("n", "[B",         "<CMD>BufferLineMovePrev<CR>",           { desc = "Move buffer prev" })
-map("n", "]B",         "<CMD>BufferLineMoveNext<CR>",           { desc = "Move buffer next" })
-map("n", "<C-s>",      "<CMD>w<CR>",                            { desc = "Save file on current buffer" })
-map("n", "<C-q>",      function() Snacks.bufdelete() end,       { desc = "Delete current buffer" })
-map("n", "<leader>bd", function() Snacks.bufdelete() end,       { desc = "Delete current buffer" })
-map("n", "<leader>bo", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
-map("n", "<leader>bD", "<CMD>bd<CR>",                           { desc = "Delete Buffer and Window" })
-map("n", "<C-x>",      "<CMD>bd<CR>",                           { desc = "Delete Buffer and Window" })
-map("n", "<C-k>",      "<CMD>wincmd k<CR>",                     { desc = "goto up window"})
-map("n", "<C-j>",      "<CMD>wincmd j<CR>",                     { desc = "goto down window"})
-map("n", "<C-h>",      "<CMD>wincmd h<CR>",                     { desc = "goto left window"})
-map("n", "<C-l>",      "<CMD>wincmd l<CR>",                     { desc = "goto right window"})
+  -- buffers and windows
+  { "<tab>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+  { "<s-tab>", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+  { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev Buffer" },
+  { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer" },
+  { "[B", "<cmd>BufferLineMovePrev<cr>", desc = "Move buffer prev" },
+  { "]B", "<cmd>BufferLineMoveNext<cr>", desc = "Move buffer next" },
+  { "<C-s>", "<cmd>w<cr>", desc = "Save file on current buffer" },
+  { "<C-q>", function() Snacks.bufdelete() end, desc = "Delete current buffer" },
+  { "<C-x>", "<cmd>bd<cr>", desc = "Delete Buffer and Window" },
+  { "<C-k>", "<cmd>wincmd k<cr>", desc = "goto up window" },
+  { "<C-j>", "<cmd>wincmd j<cr>", desc = "goto down window" },
+  { "<C-h>", "<cmd>wincmd h<cr>", desc = "goto left window" },
+  { "<C-l>", "<cmd>wincmd l<cr>", desc = "goto right window" },
+  -- { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" }, -- alredy mapped above
+  { "<leader>b", group = "Buffers" },
+  { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete current buffer" },
+  { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
+  { "<leader>bD", "<cmd>bd<cr>", desc = "Delete Buffer and Window" },
 
--- Resize window using <ctrl> arrow keys
-map("n", "<C-Up>",     "<CMD>resize +2<CR>",                    { desc = "Increase Window Height" })
-map("n", "<C-Down>",   "<CMD>resize -2<CR>",                    { desc = "Decrease Window Height" })
-map("n", "<C-Left>",   "<CMD>vertical resize -2<CR>",           { desc = "Decrease Window Width" })
-map("n", "<C-Right>",  "<CMD>vertical resize +2<CR>",           { desc = "Increase Window Width" })
+  -- Resize window using <ctrl> arrow keys
+  { "<C-Up>", "<cmd>resize +2<cr>", desc = "Increase Window Height" },
+  { "<C-Down>", "<cmd>resize -2<cr>", desc = "Decrease Window Height" },
+  { "<C-Left>", "<cmd>vertical resize -2<cr>", desc = "Decrease Window Width" },
+  { "<C-Right>", "<cmd>vertical resize +2<cr>", desc = "Increase Window Width" },
 
--- files
-map("n", "<C-f>",            function() Snacks.picker.pick("files") end, { desc = "Find Files" })
-map("n", "<leader><leader>", function() Snacks.picker.recent() end,      { desc = "Recent Files" })
-map("n", "<leader>fb",       function() Snacks.picker.buffers() end,     { desc = "Buffers" })
-map("n", "<leader>fg",       function() Snacks.picker.grep() end,        { desc = "Grep Files" })
-map("n", "<leader>e",        function() Snacks.explorer() end,           { desc = "Explorer" })
+  -- files
+  { "<C-f>", function() Snacks.picker.pick("files") end, desc = "Find Files" },
+  { "<leader><leader>", function() Snacks.picker.recent() end, desc = "Recent Files" },
+  -- { "<leader><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" }, -- alredy mapped above
+  -- { "<leader>e", function() Snacks.explorer() end, desc = "Explorer" }, -- alredy mapped above
+  { "<leader>f", group = "Files" },
+  { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent Files" },
+  { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep Files" },
+  { "<leader>fn", "<cmd>enew<cr>", desc = "New File" },
 
--- better indenting
-map("v", "<", "<gv")
-map("v", ">", ">gv")
+  -- git
+  { "<leader>g",  group = "git" },
+  { "<leader>gb", function() Snacks.picker.git_branches() end, desc = "Git Branches" },
+  { "<leader>gg", function() Snacks.lazygit() end,             desc = "Lazygit" },
+  -- { "<leader>gl", function() Snacks.lazygit.log_file() end,    desc = "Lazygit Log (cwd)" },
+  { "<leader>gl", function() Snacks.picker.git_log() end,      desc = "Git Log" },
+  { "<leader>gL", function() Snacks.picker.git_log_line() end, desc = "Git Log Line" },
+  { "<leader>gs", function() Snacks.picker.git_status() end,   desc = "Git Status" },
+  { "<leader>gS", function() Snacks.picker.git_stash() end,    desc = "Git Stash" },
+  { "<leader>gd", function() Snacks.picker.git_diff() end,     desc = "Git Diff (Hunks)" },
+  { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git Log File" },
 
--- new file
-map("n", "<leader>fn", "<CMD>enew<CR>", { desc = "New File" })
+  -- History
+  { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
+  { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
 
--- Clear search and stop snippet on escape
-map("n", "<esc>", "<CMD>nohlsearch<CR>", { desc = "Escape and Clear hlsearch" })
+  -- tabs
+  { "<leader><tab>", group = "Tabs" },
+  { "<leader><tab>l", "<cmd>tablast<cr>", desc = "Last Tab" },
+  { "<leader><tab>o", "<cmd>tabonly<cr>", desc = "Close Other Tabs" },
+  { "<leader><tab>f", "<cmd>tabfirst<cr>", desc = "First Tab" },
+  { "<leader><tab><tab>", "<cmd>tabnew<cr>", desc = "New Tab" },
+  { "<leader><tab>]", "<cmd>tabnext<cr>", desc = "Next Tab" },
+  { "<leader><tab>d", "<cmd>tabclose<cr>", desc = "Close Tab" },
+  { "<leader><tab>[", "<cmd>tabprevious<cr>", desc = "Previous Tab" },
+
+  -- better indenting
+  { "<", "<gv", mode = "v" },
+  { ">", ">gv", mode = "v" },
+
+  -- commenting
+  { "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", desc = "Add Comment Below" },
+  { "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", desc = "Add Comment Above" },
+
+  -- Clear search and stop snippet on escape
+  { "<esc>", "<cmd>nohlsearch<cr>", desc = "Escape and Clear hlsearch" },
+})
 
