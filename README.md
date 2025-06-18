@@ -189,6 +189,8 @@ ln -s ~/dotfiles/config/kitty ~/.config/
 ln -s ~/dotfiles/config/swaylock ~/.config/
 ln -s ~/dotfiles/config/waybar ~/.config/
 ln -s ~/dotfiles/config/wlogout ~/.config/
+## For tmux:
+ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
 ```
 
 ## asdf
