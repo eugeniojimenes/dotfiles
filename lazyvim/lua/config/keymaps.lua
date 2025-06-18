@@ -9,3 +9,6 @@ map("n", "<S-TAB>", "<cmd>BufferLineCyclePrev<cr>",    { desc = "Prev Buffer" })
 map("n", "<C-q>",   function() Snacks.bufdelete() end, { desc = "Delete current buffer" })
 map("n", "<leader>bD", "<CMD>bd<CR>",                  { desc = "Delete Buffer and Window" })
 map("n", "<C-x>",      "<CMD>bd<CR>",                  { desc = "Delete Buffer and Window" })
+
+
+map("n", "<C-f>", function() Snacks.picker.pick("files") end, { desc = "Find Files" })
