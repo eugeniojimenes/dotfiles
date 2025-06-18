@@ -124,6 +124,17 @@ sudo systemctl start bluetooth.service
 ```
 And when you right click on the  icon of waybar you'll open `blueman-manager`
 
+
+## tmux
+Run:
+```sh
+sudo pacman -S tmux
+mkdir -p ~/.tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.tmux/plugins/catppuccin
+ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
+```
+
 ## My Neovim like an IDE
 Set of plugins and settings that I use in Neovim. To organized it (and don't let it as a giant
 single file) I spread my setup in other files as you can see in [nvim/lua/user](./nvim/lua/user),
