@@ -15,6 +15,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     ---- TODO: search if there is an way to move this to keymap.lua (and if it's a good practice)
     map("K", vim.lsp.buf.hover, "Hover Documentation")
+    map("g", "", "Goto options")
     map("gl", vim.diagnostic.open_float, "Open Diagnostic Float")
     map("gs", vim.lsp.buf.signature_help, "Signature Documentation")
     map("gd", function() Snacks.picker.lsp_definitions() end, "Goto Definition")
