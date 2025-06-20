@@ -1,6 +1,7 @@
 vim.lsp.enable({
   "lua_ls",
   "solargraph",
+  "vtsls",
 })
 
 vim.diagnostic.config({
