@@ -5,54 +5,32 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    opts = {
-      options = {
-        -- mode = "tabs",
-        -- separator_style = "padded_slant",
-      },
-    },
+    opts = {},
   },
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {
-    },
+    opts = {},
   },
   {
     "folke/todo-comments.nvim",
     -- dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = { "MunifTanjim/nui.nvim" },
     opts = {
+      cmdline = {
+        enabled = true,
+        view = "cmdline_popup", -- Noice's floating cmdline :cite[2]:cite[7]
+      },
+      presets = {
+        command_palette = true, -- Combine cmdline and popupmenu
+        bottom_search = true, -- Classic search at bottom
+      },
     },
-    -- keys = {
-    --     {
-    --         "tn",
-    --         function()
-    --             require("todo-comments").jump_next()
-    --         end,
-    --         desc = "next marked comment",
-    --     },
-    --     {
-    --         "tN",
-    --         function()
-    --             require("todo-comments").jump_prev()
-    --         end,
-    --         desc = "prev marked comment",
-    --     },
-    --     {
-    --         "<leader>ft",
-    --         ":lua Snacks.picker.todo_comments()<CR>",
-    --         desc = "search todo comments",
-    --     },
-    -- },
-    -- opts = {
-    --     keywords = {
-    --         FIX = { icon = " ", color = "#FF2D00", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
-    --         TODO = { icon = " ", color = "#FF8C00" },
-    --         HACK = { icon = " ", color = "#3498DB", alt = { "MYTH" } },
-    --         WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-    --         NOTE = { icon = " ", color = "#98C379", alt = { "INFO", "HINT" } },
-    --     },
-    -- },
   },
 }

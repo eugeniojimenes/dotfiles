@@ -23,19 +23,15 @@ return {
           ]],
         },
       },
+      explorer = { enabled = true },
       indent = { enabled = true },
       input = { enabled = true },
-      -- input = {
-      --   enabled = true,
-      --   icon = " ",
-      --   icon_hl = "SnacksInputIcon",
-      --   icon_pos = "left",
-      --   prompt_pos = "title",
-      --   win = { style = "input" },
-      --   expand = true,
-      -- },
       git = { enabled = true },
-      picker = { enabled = true },
+      picker = {
+        hidden = true, -- to show hidden files
+        ignored = true, -- to show .gitignore files
+        enabled = true,
+      },
       notifier = { enabled = true },
       quickfile = { enabled = true },
       statuscolumn = { enabled = true },

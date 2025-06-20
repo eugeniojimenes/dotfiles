@@ -106,9 +106,9 @@ wk.add({
   { "<", "<gv", mode = "v" },
   { ">", ">gv", mode = "v" },
 
-  -- -- commenting
-  -- { "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", desc = "Add Comment Below" },
-  -- { "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", desc = "Add Comment Above" },
+  -- commenting
+  { "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", desc = "Add Comment Below" },
+  { "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", desc = "Add Comment Above" },
 
   -- Clear search and stop snippet on escape
   { "<esc>", "<cmd>nohlsearch<cr>", desc = "Escape and Clear hlsearch" },

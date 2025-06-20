@@ -10,11 +10,12 @@ return {
     config = function()
       require('mini.comment').setup()
       require('mini.sessions').setup()
-      local diff = require("mini.diff")
-      diff.setup({
-        -- Disabled by default
-        source = diff.gen_source.none(),
-      })
+      require('mini.pairs').setup()
+      -- local diff = require("mini.diff")
+      -- diff.setup({
+      --   -- Disabled by default
+      --   source = diff.gen_source.none(),
+      -- })
       -- TODO: Serach more about it!
       require('mini.git').setup() -- tpope/vim-fugitive alternative!!!
     end,
