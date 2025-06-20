@@ -7,14 +7,17 @@ local function is_wsl()
   return string.find(output, "WSL") ~= nil
 end
 
-vim.cmd("set expandtab")
-vim.cmd("set tabstop=2")
-vim.cmd("set softtabstop=2")
-vim.cmd("set shiftwidth=2")
-
+-- vim.cmd("set expandtab")
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.undofile = true
+vim.opt.undolevels = 10000
+vim.opt.updatetime = 200 -- Save swap file and trigger CursorHold
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
--- vim.opt.swapfile = false
+-- vim.opt.swapfile = true
 vim.opt.wrap = true
 vim.opt.clipboard = "unnamedplus"
 vim.opt.colorcolumn = "120"
