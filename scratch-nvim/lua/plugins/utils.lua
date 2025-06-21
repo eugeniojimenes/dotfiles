@@ -8,16 +8,16 @@ return {
     event = "VeryLazy",
     version = "*",
     config = function()
+      require('mini.bracketed').setup()
       require('mini.comment').setup()
-      require('mini.sessions').setup()
+      require('mini.git').setup() -- TODO: serach about it! tpope/vim-fugitive alternative!
       require('mini.pairs').setup()
-      -- local diff = require("mini.diff")
+      require('mini.sessions').setup() -- TODO: serach about it!
+      -- local diff = require("mini.diff") -- TODO: serach about it!
       -- diff.setup({
       --   -- Disabled by default
       --   source = diff.gen_source.none(),
       -- })
-      -- TODO: Serach more about it!
-      require('mini.git').setup() -- tpope/vim-fugitive alternative!!!
     end,
   },
   -- {
