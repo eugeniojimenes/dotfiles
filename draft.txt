@@ -53,3 +53,14 @@ MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 ==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-fallback.img'
   -> Early uncompressed CPIO image generation successful
 ==> Initcpio image generation successful
+
+
+Jun 21 20:38:22 adaarch kernel: ahci 0000:00:0e.0: probe with driver ahci failed with error -12
+Jun 21 20:38:22 adaarch kernel: NVRM: loading NVIDIA UNIX Open Kernel Module for x86_64  570.144  Release Build  (archlinux-builder@echo archlinux)
+Jun 21 20:38:28 adaarch kernel: ucsi_acpi USBC000:00: con1: failed to register alt modes
+Jun 21 20:38:28 adaarch kernel: ucsi_acpi USBC000:00: error -ETIMEDOUT: PPM init failed
+
+ahci probe with driver ahci failed with error
+NVRM: loading NVIDIA UNIX Open Kernel Module 
+ucsi_acpi USBC con1: failed to register alt modes
+ucsi_acpi USBCerror -ETIMEDOUT: PPM init failed

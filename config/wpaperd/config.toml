@@ -1,0 +1,4 @@
+[default]
+duration = "15m"
+path = "~/.config/Banksy-Wallpapers"
+sorting = "random"
