@@ -111,6 +111,15 @@ sudo pacman -S grim slurp
 And the PrintScreen key on your keyboard is the binding defined on `./config/hypr/hyprland.conf` with the command
 `grim -g "$(slurp -d)" - | wl-copy`.
 
+## Wallpapers
+
+The `wpaperd` setup is on `./config/wpaperd/config.toml` and is ponting to `~/.config/Banksy-Wallpapers` folder. You
+can download it on [Banksy's blog](https://www.banksy.blog/downloads).
+```sh
+mkdir ~/.config/wpaperd
+ln -s ~/dotfiles/config/wpaperd/config.toml ~/.config/wpaperd/config.toml
+```
+
 ## Audio and Bluetooth
 For audio, make sure that you have this packages installed:
 ```sh
