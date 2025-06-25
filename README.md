@@ -189,6 +189,15 @@ great guide for me, along with the
 sudo pacman -S zk bat
 ```
 
+## Asdf - Tool version manager for python, ruby, node etc.
+Download the last binary version on [Asdf github](https://github.com/asdf-vm/asdf/releases) and extract it to `~/.local/bin/`. Should be like:
+```sh
+tar xzvf asdf-v0.18.0-linux-amd64.tar.gz -C ~/.local/bin/
+
+```
+NOTE: On my `~/.zshenv` I add `PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$HOME/.local/bin:$PATH"
+`
+
 ## My symbolic links
 
 ```sh
