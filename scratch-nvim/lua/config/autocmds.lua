@@ -27,6 +27,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("gI", function() snacks.picker.lsp_implementations() end, "Goto Implementation")
     map("gy", function() snacks.picker.lsp_type_definitions() end, "Goto T[y]pe Definition")
     map("<leader>l", "", "Language server protocol options")
+    map("<leader>ll", vim.diagnostic.open_float, "Open Diagnostic Float")
     map("<leader>ls", function() snacks.picker.lsp_symbols() end, "LSP Symbols")
     map("<leader>lS", function() snacks.picker.lsp_workspace_symbols() end, "LSP Workspace Symbols")
     map("<leader>la", vim.lsp.buf.code_action, "Code Action")

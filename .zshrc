@@ -123,4 +123,6 @@ source $ZSH/oh-my-zsh.sh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 alias snvim="NVIM_APPNAME=scratch-nvim nvim"
-alias lnvim="NVIM_APPNAME=lazzyvim nvim"
+alias lnvim="NVIM_APPNAME=lazyvim nvim"
+eval "$(uv generate-shell-completion zsh)"
+eval "$(uvx --generate-shell-completion zsh)"
