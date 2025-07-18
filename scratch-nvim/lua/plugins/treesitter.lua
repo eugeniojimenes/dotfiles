@@ -1,6 +1,8 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
     opts = {
       highlight = { enable = true },
       indent = { enable = true },
@@ -18,10 +20,12 @@ return {
         "markdown",
         "markdown_inline",
         "printf",
+        "prisma",
         "python",
         "query",
         "regex",
         "ruby",
+        "sql",
         "toml",
         "tsx",
         "typescript",
