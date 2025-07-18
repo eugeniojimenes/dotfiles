@@ -1,7 +1,8 @@
 vim.lsp.enable({
   "lua_ls",
   "solargraph",
-  "vtsls",
+  -- "vtsls",
+  "ts_ls",
   "ruff",
   "pyright",
 })
