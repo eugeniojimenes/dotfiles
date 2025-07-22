@@ -1,11 +1,11 @@
-vim.lsp.enable({
-  "lua_ls",
-  "solargraph",
-  -- "vtsls",
-  "ts_ls",
-  "ruff",
-  "pyright",
-})
+-- vim.lsp.enable({
+--   "lua_ls",
+--   "solargraph",
+--   -- "vtsls",
+--   "ts_ls",
+--   "ruff",
+--   "pyright",
+-- })
 
 vim.diagnostic.config({
   -- virtual_lines = true,
