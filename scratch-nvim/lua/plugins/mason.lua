@@ -17,6 +17,8 @@ return {
           "ts_ls",
           "ruff",
           "pyright",
+          "tailwindcss",
+          "eslint",
         },
       },
   }
