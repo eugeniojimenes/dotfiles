@@ -16,6 +16,15 @@ vim.diagnostic.config({
   float = {
     border = "rounded",
     source = true,
+    -- source = "always", -- Display source of diagnostic (e.g., "LSP")
+    -- border = "single", -- Add a border around the float window
+    -- focusable = true, -- Allow the float window to be focused
+    -- header = "Diagnostics:", -- Add a header to the float window
+    -- prefix = " ", -- Add a prefix to each diagnostic message
+    -- severity_sort = true, -- Sort diagnostics by severity
+    -- format = function(diagnostic)
+    --   return string.format("[%s] %s", diagnostic.severity, diagnostic.message)
+    -- end,
   },
   signs = {
     text = {

@@ -10,7 +10,7 @@ return {
     config = function()
       require('mini.bracketed').setup()
       require('mini.comment').setup()
-      require('mini.git').setup() -- TODO: serach about it! tpope/vim-fugitive alternative!
+      -- require('mini.git').setup() -- TODO: serach about it! tpope/vim-fugitive alternative!
       require('mini.pairs').setup()
       require('mini.sessions').setup() -- TODO: serach about it!
       -- local diff = require("mini.diff") -- TODO: serach about it!
