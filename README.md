@@ -161,6 +161,16 @@ Copy, change and use it at will. Suggestions and (polite) criticism are welcome 
 **NOTE**: To use the [vim-devicons](https://github.com/ryanoasis/vim-devicons) icons you need to
 install [Nerd Fonts](https://www.nerdfonts.com) and enable in your terminal emulator.
 
+
+## Lazygit
+
+see more on [Lazygit github](https://github.com/jesseduffield/lazygit)
+```sh
+sudo pacman -S lazygit
+
+ln -s ~/dotfiles/config/lazygit/config.yml ~/.config/lazygit/config.yml
+```
+
 ## Spell Check and cohesion
 To write my markdowns I use the ltex-ls LSP but for that you need to install java
 ```sh
@@ -207,6 +217,7 @@ ln -s ~/my-zk/.zshenv ~/.zshenv
 ln -s ~/dotfiles/.asdfrc ~/.asdfrc
 ln -s ~/dotfiles/lazyvim ~/.config/nvim
 ln -s ~/dotfiles/zk ~/my-zk/.zk
+ln -s ~/dotfiles/config/lazygit/config.yml ~/.config/lazygit/config.yml
 ## For hyprland:
 ln -s ~/dotfiles/config/code-flags.conf ~/.config/
 ln -s ~/dotfiles/config/chrome-flags.conf ~/.config/
