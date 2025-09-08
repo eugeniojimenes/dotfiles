@@ -1,0 +1,11 @@
+[settings]
+idiomatic_version_file_enable_tools = ["ruby"]
+
+[settings.ruby]
+ruby_build_opts = "CC=gcc-14 CXX=g++-14"
+
+[tools]
+dotnet = "8.0.406"
+node = { version = "20.19.4", postinstall = "corepack enable; npm install -g neovim" }
+python = { version = "3.11.13", postinstall = "pip install --upgrade pip; pip install neovim" }
+ruby = { version = "3.4.5", postinstall = "gem install bundler neovim" }

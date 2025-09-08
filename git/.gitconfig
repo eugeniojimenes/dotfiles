@@ -1,0 +1,18 @@
+[user]
+	name = Eugenio Augusto Jimenes
+	email = eugeniojimenes@gmail.com
+[color]
+	ui = true
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+[core]
+	editor = nvim
+[pull]
+	rebase = true
+[init]
+	defaultBranch = develop
+[commit]
+	template = ~/dotfiles/git/.gitmessage
