@@ -41,12 +41,6 @@ git clone https://github.com/callmarx/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-If you want the Omarchy-focused configuration, use the Omarchy branch if present:
-```sh
-git checkout feat/omarchy
-```
-
-
 ## Omarchy customization
 I use Omarchy to bootstrap the machine. See the official docs for getting started:
 - https://omarchy.org/
@@ -76,8 +70,7 @@ yay -S google-chrome # `rocm-smi-lib` for AMD GPU required by `btop`
 ## Packages required by my dotfiles
 ```sh
 ## Bash customization and local bin (via mise):
-sudo pacman -S mise usage starship
-
+sudo pacman -S usage # mise and starship packages is installed by omarchy
 ```
 
 ## Apply dotfiles with GNU Stow
