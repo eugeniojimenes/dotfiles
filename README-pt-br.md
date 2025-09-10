@@ -15,9 +15,9 @@ Um conjunto curado dos meus arquivos pessoais de configuração (dotfiles) para 
 - [Pacotes necessários para estes dotfiles](#pacotes-necessários-para-estes-dotfiles)
 - [Aplicar dotfiles com GNU Stow](#aplicar-dotfiles-com-gnu-stow)
   - [Sobre cada módulo](#sobre-cada-modulo)
-- [Desfazer Stow (remover symlinks)](#desfazer-stow-remover-symlinks)
+  - [Desfazer Stow (remover symlinks)](#desfazer-stow-remover-symlinks)
 - [Outras ferramentas e setups](#outras-ferramentas-e-setups)
-  - [Lazygit](#lazygit)
+  - [Lazygit e Lazydocker](#lazygit-e-lazydocker)
   - [Notas Zettelkasten (zk)](#notas-zettelkasten-zk)
   - [Cedilha com layout de teclado dos EUA](#cedilha-com-layout-de-teclado-dos-eua)
 - [Opcional: limpar plugins do Neovim](#opcional-limpar-plugins-do-neovim)
@@ -108,26 +108,21 @@ stow tmux
 # stow scratch-nvim
 ```
 
+### Desfazer Stow (remover symlinks)
+Se desejar remover os symlinks criados pelo Stow (sem apagar seus arquivos), use `-D`:
+```sh
+# A partir da raiz do repositório
+cd ~/dotfiles
+stow -D lazyvim
+stow -D hypr
+# ...e assim por diante para qualquer módulo que você queira desanexar
+```
+
 ### Sobre cada módulo:
 1. Neovim (LazyVim): a configuração está em `lazyvim/`. Após aplicar com o Stow:
   ```sh
   # Opcional: limpe todos os plugins/dados locais do Neovim antes da primeira execução
   rm -rf ~/.local/share/nvim/*
-  ```
-
-2. (opcional) Scratch Neovim
-  Um perfil de Neovim separado e isolado para testes ou demonstrações fica em `scratch-nvim/`.
-
-  Para usar:
-  1. use o stow para criar `~/.config/scratch-nvim`:
-  ```sh
-  cd ~/dotfiles
-  stow scratch-nvim
-  ```
-
-  2. Use `NVIM_APPNAME` para executá-lo
-  ```sh
-  NVIM_APPNAME=scratch-nvim nvim
   ```
 
 3. Hyprland: configuração em `./hypr/.config`.
@@ -170,22 +165,27 @@ stow tmux
   - define `develop` como branch padrão,
   - utiliza um template de mensagem de commit inspirado em Conventional Commits.
 
-## Desfazer Stow (remover symlinks)
-Se desejar remover os symlinks criados pelo Stow (sem apagar seus arquivos), use `-D`:
-```sh
-# A partir da raiz do repositório
-cd ~/dotfiles
-stow -D lazyvim
-stow -D hypr
-# ...e assim por diante para qualquer módulo que você queira desanexar
-```
+8. (opcional) Scratch Neovim
+  Um perfil de Neovim separado e isolado para testes ou demonstrações fica em `scratch-nvim/`.
+
+  Para usar:
+  1. use o stow para criar `~/.config/scratch-nvim`:
+  ```sh
+  cd ~/dotfiles
+  stow scratch-nvim
+  ```
+
+  2. Use `NVIM_APPNAME` para executá-lo
+  ```sh
+  NVIM_APPNAME=scratch-nvim nvim
+  ```
 
 ## Outras ferramentas e setups:
 
-### Lazygit
-Instale Lazygit:
+### Lazygit e Lazydocker
+Eu uso lazygit e lazydocker para uma interface de terminal simples para git e docker. Essas ferramentas são instaladas por padrão com o Omarchy, mas se você precisar instalá-las manualmente:
 ```sh
-sudo pacman -S lazygit
+sudo pacman -S lazygit lazydocker
 ```
 
 Nota: se você mantém uma configuração pessoal do Lazygit, crie um symlink para `~/.config/lazygit/config.yml`. Este repositório não inclui um arquivo de configuração do Lazygit por padrão.
