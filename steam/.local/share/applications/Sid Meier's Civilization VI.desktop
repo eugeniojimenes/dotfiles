@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Sid Meier's Civilization VI
+Comment=Play this game on Steam
+Exec=env -u SDL_VIDEODRIVER steam %U steam://rungameid/289070
+Icon=steam_icon_289070
+Terminal=false
+Type=Application
+Categories=Game;
+
