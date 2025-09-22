@@ -4,7 +4,7 @@ return {
     opts = {}
   },
   {
-    "echasnovski/mini.nvim",
+    "nvim-mini/mini.nvim",
     event = "VeryLazy",
     version = "*",
     config = function()
