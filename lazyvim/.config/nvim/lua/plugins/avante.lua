@@ -42,7 +42,7 @@ return {
       {
         -- Make sure to set this up properly if you have lazy=true
         "MeanderingProgrammer/render-markdown.nvim",
-        optional = true,
+        -- optional = true,
         opts = {
           file_types = { "markdown", "Avante" },
         },
