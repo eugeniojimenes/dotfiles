@@ -10,7 +10,7 @@ return {
     lazy = true,
     name = "catppuccin",
     opts = {
-      transparent_background = true,
+      -- transparent_background = true,
       lsp_styles = {
         underlines = {
           errors = { "undercurl" },
@@ -23,7 +23,7 @@ return {
         aerial = true,
         alpha = true,
         blink_cmp = true,
-        bufferline = true,
+        -- bufferline = true,
         cmp = true,
         dashboard = true,
         flash = true,
@@ -57,6 +57,17 @@ return {
             opts.highlights = require("catppuccin.special.bufferline").get_theme()
           end
         end,
+      },
+    },
+  },
+  {
+    "akinsho/bufferline.nvim",
+    opts = {
+      options = {
+        separator_style = "slant",
+        -- buffer_background = "#000000",
+        -- buffer_foreground = "#ffffff",
+        -- sort_by = "insert_after_current",
       },
     },
   },
