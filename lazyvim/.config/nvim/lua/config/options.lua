@@ -11,7 +11,6 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.g.autoformat = false
-vim.opt.laststatus = 3 -- Required by avante.nvim
 
 -- -- For Ruby language:
 vim.cmd("autocmd FileType ruby setlocal indentkeys-=.")
