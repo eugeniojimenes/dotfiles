@@ -100,8 +100,6 @@ stow lazyvim
 stow mise
 stow mpv
 stow tmux
-# Optional isolated Neovim profile
-# stow scratch-nvim
 ```
 
 ### Unstow (remove symlinks)
@@ -160,21 +158,6 @@ stow -D hypr
   - enables colored output,
   - sets `develop` as the default branch,
   - wires a commit message template inspired by Conventional Commits.
-
-8. (optional) Scratch Neovim
-  A separate, isolated Neovim profile for testing or demos lives under `scratch-nvim/`.
-
-  To use it:
-  1. stow it to create `~/.config/scratch-nvim`:
-  ```sh
-  cd ~/dotfiles
-  stow scratch-nvim
-  ```
-
-  2. Use `NVIM_APPNAME` to run it
-  ```sh
-  NVIM_APPNAME=scratch-nvim nvim
-  ```
 
 
 ## Other tools and setups
