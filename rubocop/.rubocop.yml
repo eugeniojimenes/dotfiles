@@ -1,0 +1,9 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+# Identifies places where Array and Hash literals are used within loops. It is better to extract them into a local
+# variable or constant to avoid unnecessary allocations on each iteration.
+Performance/CollectionLiteralInLoop:
+  Enabled: true
