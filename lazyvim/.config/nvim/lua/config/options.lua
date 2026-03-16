@@ -12,6 +12,10 @@ vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.g.autoformat = false
 
--- vim.g.lazyvim_ruby_lsp = "solargraph"
-vim.g.lazyvim_ruby_lsp = "ruby_lsp"
+
+---- For Ruby Language ----
+-- NOTE: Temporarily bug fix for this issue: https://github.com/nvim-treesitter/nvim-treesitter/issues/3363
+vim.cmd("autocmd FileType ruby setlocal indentkeys-=.")
+-- LSP setup:
+vim.g.lazyvim_ruby_lsp = "solargraph" -- or "ruby_lsp"
 vim.g.lazyvim_ruby_formatter = "rubocop"
