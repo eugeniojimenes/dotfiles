@@ -89,7 +89,6 @@ mv ~/.config/hypr ~/.config/hypr.bkp 2>/dev/null
 mv ~/.config/nvim ~/.config/nvim.bkp 2>/dev/null
 mv ~/.config/mise ~/.config/mise.bkp 2>/dev/null
 mv ~/.config/mpv ~/.config/mpv.bkp 2>/dev/null
-mv ~/.tmux.conf ~/.tmux.conf.bkp 2>/dev/null
 
 # Stow the modules you want
 stow alacritty
@@ -124,18 +123,19 @@ stow -D hypr
 3. mpv: setup is under `./mpv/.config/`.
 
 4. tmux: setup is under `./tmux/`.
-  Install tmux and plugins:
+  Install tmux and TPM, then stow:
   ```sh
   sudo pacman -S tmux
-  mkdir -p ~/.tmux/plugins
+  mkdir -p ~/.config/tmux/plugins
   # Plugin manager
-  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-  # Theme (pinned)
-  git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.tmux/plugins/catppuccin
+  git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
-  # Then stow the tmux config (if you haven't yet)
+  # Stow the tmux config
   cd ~/dotfiles
   stow tmux
+
+  # Inside tmux, install plugins (tmux-resurrect, tmux-continuum, etc.)
+  # prefix + I
   ```
 
 5. mise (tool version manager): setup is under `./mise/.config/mise/`.
