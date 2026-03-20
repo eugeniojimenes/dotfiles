@@ -18,5 +18,9 @@ decorations = "None"
 bindings = [
 { key = "F11", action = "ToggleFullscreen" },
 { key = "Insert", mods = "Shift", action = "Paste" },
-{ key = "Insert", mods = "Control", action = "Copy" }
+{ key = "Insert", mods = "Control", action = "Copy" },
+  { key = "Return", mods = "Shift", chars = "\u001B\r" }
 ]
+
+[terminal]
+osc52 = "CopyPaste"
