@@ -173,19 +173,6 @@ sudo pacman -S lazygit lazydocker
 
 Nota: se você mantém uma configuração pessoal do Lazygit, crie um symlink para `~/.config/lazygit/config.yml`. Este repositório não inclui um arquivo de configuração do Lazygit por padrão.
 
-### Notas Zettelkasten (zk)
-Eu uso [zk](https://github.com/zk-org/zk) para um sistema de notas no estilo Zettelkasten, frequentemente junto com o Neovim.
-
-Instale:
-```sh
-sudo pacman -S zk bat
-```
-
-Recursos úteis:
-- Documentação do diário: https://github.com/mickael-menu/zk/blob/main/docs/daily-journal.md
-- Dicas para começar: https://github.com/zk-org/zk/blob/main/docs/tips/getting-started.md
-- Vídeo que me ajudou: https://youtu.be/UzhZb7e4l4Y
-
 ### Cedilha com layout de teclado dos EUA
 Este é meu workaround pessoal para digitar "ç" em um layout de teclado Inglês (EUA, internacional com teclas mortas). Aplique com cautela, pois arquivos do sistema podem ser sobrescritos por atualizações.
 

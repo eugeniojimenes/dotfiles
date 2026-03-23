@@ -170,20 +170,6 @@ sudo pacman -S lazygit lazydocker
 
 **Note:** if you keep a personal Lazygit config, symlink it into `~/.config/lazygit/config.yml`. I personally use the default configuration.
 
-### Zettelkasten (zk) notes
-I use [zk](https://github.com/zk-org/zk) for a Zettelkasten-style note system, often alongside Neovim.
-
-Install:
-```sh
-sudo pacman -S zk bat
-```
-
-Helpful resources:
-- Daily journal docs: https://github.com/mickael-menu/zk/blob/main/docs/daily-journal.md
-- Getting started tips: https://github.com/zk-org/zk/blob/main/docs/tips/getting-started.md
-- Video walkthrough that helped me: https://youtu.be/UzhZb7e4l4Y
-
-
 ### Cedilla with US keyboard layout
 This is my personal workaround to type "ç" on an English (US, international with dead keys) layout. Please apply with caution, as system files may be overwritten by updates.
 
