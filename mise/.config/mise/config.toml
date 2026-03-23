@@ -4,6 +4,7 @@ idiomatic_version_file_enable_tools = ["ruby"]
 [settings.ruby]
 
 [tools]
+go = "latest"
 node = { version = "22", postinstall = "corepack enable; npm install -g neovim" }
 python = { version = "3.11.13", postinstall = "pip install --upgrade pip; pip install neovim" }
 ruby = { version = "3.4.5", postinstall = "gem install bundler neovim" }
