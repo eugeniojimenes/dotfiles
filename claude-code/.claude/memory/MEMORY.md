@@ -1,0 +1,1 @@
+- [Wayland always](user_wayland.md) — always on Wayland; use wl-copy/wl-paste freely
