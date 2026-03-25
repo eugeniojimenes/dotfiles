@@ -18,7 +18,6 @@ Um conjunto curado dos meus arquivos pessoais de configuração (dotfiles) para 
   - [Desfazer Stow (remover symlinks)](#desfazer-stow-remover-symlinks)
 - [Outras ferramentas e setups](#outras-ferramentas-e-setups)
   - [Lazygit e Lazydocker](#lazygit-e-lazydocker)
-  - [Notas Zettelkasten (zk)](#notas-zettelkasten-zk)
   - [Cedilha com layout de teclado dos EUA](#cedilha-com-layout-de-teclado-dos-eua)
 - [Opcional: limpar plugins do Neovim](#opcional-limpar-plugins-do-neovim)
 - [Licença](#licença)
@@ -91,17 +90,18 @@ mv ~/.config/hypr ~/.config/hypr.bkp 2>/dev/null
 mv ~/.config/nvim ~/.config/nvim.bkp 2>/dev/null
 mv ~/.config/mise ~/.config/mise.bkp 2>/dev/null
 mv ~/.config/mpv ~/.config/mpv.bkp 2>/dev/null
-
+mv ~/.claude ~/.claude.bkp 2>/dev/null
 
 # Stow os módulos que você deseja
-
 stow alacritty
 stow bash
+stow claude-code
 stow git
 stow hypr
 stow lazyvim
 stow mise
 stow mpv
+stow steam
 stow tmux
 ```
 
@@ -116,17 +116,44 @@ stow -D hypr
 ```
 
 ### Sobre cada módulo:
-1. Neovim (LazyVim): a configuração está em `lazyvim/`. Após aplicar com o Stow:
+1. **Alacritty**: configuração em `alacritty/.config/alacritty/`. Customiza fonte (JetBrainsMono Nerd Font), padding, keybindings e importa o tema atual do Omarchy.
+
+2. **Bash** (customizado com Starship): configuração em `bash/`.
+  Eu uso `bash` com o [starship](https://starship.rs/guide/).
+  Observação: conforme mencionado em [Pacotes necessários para estes dotfiles](#pacotes-necessários-para-estes-dotfiles), garanta que `starship` esteja instalado.
+
+3. **Claude Code**: configuração em `claude-code/.claude/`. Configuração global do Claude Code — inclui `CLAUDE.md` (instruções), skills customizadas (`skills/`) e memória persistente (`memory/`). Faça stow para colocar em `~/.claude/`.
+
+4. **Git**: configuração em `git/`.
+  Configuração geral:
+  - habilita saída colorida,
+  - define `develop` como branch padrão,
+  - utiliza um template de mensagem de commit inspirado em Conventional Commits.
+
+5. **Hyprland**: configuração em `hypr/.config/hypr/`.
+
+6. **Neovim (LazyVim)**: configuração em `lazyvim/`. Após aplicar com o Stow:
   ```sh
   # Opcional: limpe todos os plugins/dados locais do Neovim antes da primeira execução
   rm -rf ~/.local/share/nvim/*
   ```
 
-3. Hyprland: configuração em `./hypr/.config`.
+7. **mise** (gerenciador de versões de ferramentas): configuração em `mise/.config/mise/`.
+  Este setup usa o [mise](https://mise.jdx.dev/getting-started.html) para gerenciar versões de ferramentas.
 
-4. mpv: configuração em `./mpv/.config/`.
+  - As ferramentas e versões globais estão definidas em ~/dotfiles/mise/.config/mise/config.toml.
+  - Como mencionado em [Pacotes necessários para estes dotfiles](#pacotes-necessários-para-estes-dotfiles), garanta que `mise` e `usage` estejam instalados.
 
-5. tmux: configuração em `./tmux/`.
+  ```sh
+  # Instale as ferramentas declaradas
+  mise install
+  ```
+
+8. **mpv**: configuração em `mpv/.config/mpv/`.
+
+9. **Steam**: configuração em `steam/`. Arquivos `.desktop` customizados para Steam e jogos, colocados em `~/.local/share/applications/`.
+
+10. **tmux**: configuração em `tmux/`.
   Instale o tmux e o TPM, depois faça o stow:
   ```sh
   sudo pacman -S tmux
@@ -137,31 +164,9 @@ stow -D hypr
   # Faça o stow da configuração do tmux
   cd ~/dotfiles
   stow tmux
-
-  # Dentro do tmux, instale os plugins (tmux-resurrect, tmux-continuum, etc.)
-  # prefix + I
   ```
 
-6. mise (gerenciador de versões de ferramentas): configuração em `./mise/.config/mise/`.
-  Este setup usa o [mise](https://mise.jdx.dev/getting-started.html) para gerenciar versões de ferramentas.
-
-  - As ferramentas e versões globais estão definidas em ~/dotfiles/mise/.config/mise/config.toml.
-  - Como mencionado em [Pacotes necessários para este dotfiles](#pacotes-necessários-para-este-dotfiles), garanta que `mise` e `usage` estejam instalados.
-
-  ```sh
-  # Instale as ferramentas declaradas
-  mise install
-  ```
-
-7. Bash (customizado com Starship): configuração em `./bash/`.
-  Eu uso `bash` com o [starship](https://starship.rs/guide/).
-  Observação: conforme mencionado em [Pacotes necessários para este dotfiles](#pacotes-necessários-para-este-dotfiles), garanta que `starship` esteja instalado.
-
-8. Git: configuração em `./git/`.
-  Configuração geral:
-  - habilita saída colorida,
-  - define `develop` como branch padrão,
-  - utiliza um template de mensagem de commit inspirado em Conventional Commits.
+  **OBS:** Dentro do tmux, instale os plugins (tmux-resurrect, tmux-continuum, etc.) com `prefix + I` (com o meu prefix seria `CTRL+\ + I` ou `CTRL+b + I`)
 
 ## Outras ferramentas e setups:
 
@@ -174,7 +179,7 @@ sudo pacman -S lazygit lazydocker
 Nota: se você mantém uma configuração pessoal do Lazygit, crie um symlink para `~/.config/lazygit/config.yml`. Este repositório não inclui um arquivo de configuração do Lazygit por padrão.
 
 ### Cedilha com layout de teclado dos EUA
-Este é meu workaround pessoal para digitar "ç" em um layout de teclado Inglês (EUA, internacional com teclas mortas). Aplique com cautela, pois arquivos do sistema podem ser sobrescritos por atualizações.
+Este é meu workaround pessoal para digitar "ç" em um layout de teclado Inglês ("*US, international with dead keys*"). Aplique com cautela e atente-se de que arquivos do sistema podem ser sobrescritos em atualizações.
 
 1) Configure seu layout de teclado do sistema para: Inglês (EUA, internacional com teclas mortas).
 
@@ -214,7 +219,8 @@ sudo mv Compose /usr/share/X11/locale/en_US.UTF-8/Compose
 ## Opcional: limpar plugins do Neovim
 Se deseja um início limpo no Neovim:
 ```sh
-rm -rf ~/.local/share/nvim/*
+rm -rf ~/.local/share/nvim
+rm -rf ~/.local/state/nvim
 ```
 
 ## Licença
