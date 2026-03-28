@@ -1,10 +1,25 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 ## What this repo is
 
-Personal dotfiles for an Arch/Omarchy-based system, managed with **GNU Stow**. Each top-level directory is a Stow module: `alacritty`, `bash`, `claude-code`, `git`, `hypr`, `lazyvim`, `mise`, `mpv`, `steam`, `tmux`.
+Personal dotfiles for an Arch/Omarchy-based system, managed with **GNU Stow**. Each top-level directory is a Stow module: `alacritty`, `bash`, `claude-code`, `git`, `hypr`, `lazyvim`, `mise`, `mpv`, `rubocop`, `steam`, `tmux`.
 
 Stow creates symlinks from each module's contents into `$HOME`, mirroring the directory structure. For example, `hypr/.config/hypr/hyprland.conf` becomes `~/.config/hypr/hyprland.conf`.
+
+## Common commands
+
+```sh
+# Apply a module (run from repo root ~/dotfiles)
+stow <module>          # e.g. stow hypr
+
+# Remove a module's symlinks
+stow -D <module>       # e.g. stow -D hypr
+
+# After stowing mise, install declared tool versions
+mise install
+```
 
 ## Architecture: Omarchy layering pattern
 
@@ -14,7 +29,7 @@ Stow creates symlinks from each module's contents into `$HOME`, mirroring the di
 2. User overrides live in this repo and are sourced/applied **after** the defaults, overwriting what needs to change.
 
 This applies to:
-- **Hyprland** (`hypr/.config/hypr/`): `hyprland.conf` sources Omarchy defaults, then sources the local override files (`input.conf`, `bindings.conf`, `monitors.conf`, etc.). Add customizations only to those override files.
+- **Hyprland** (`hypr/.config/hypr/`): `hyprland.conf` sources Omarchy defaults, then sources local override files. Add customizations only to these override files: `input.conf`, `bindings.conf`, `monitors.conf`, `autostart.conf`, `envs.conf`, `looknfeel.conf`, `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
 - **Bash** (`bash/.bashrc`): sources `~/.local/share/omarchy/default/bash/rc`, then any local additions follow.
 
 ## Public repo — no secrets
@@ -22,6 +37,8 @@ This applies to:
 **IMPORTANT:** This repository is **public**. Never add tokens, API keys, passwords, private SSH/GPG keys, or any personal credentials to any file here. If a config requires a secret (e.g. an env var), reference it by variable name only and set the actual value outside this repo.
 
 ## Commit style
+
+The default branch is `develop` (not `main`/`master`).
 
 Conventional Commits format enforced via commit template (`git/.gitmessage`):
 
