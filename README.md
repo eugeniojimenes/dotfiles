@@ -133,7 +133,11 @@ stow -D hypr
 6. **Neovim (LazyVim)**: setup is under `lazyvim/`. After stowing:
   ```sh
   # Optional: clear all local Neovim plugins/data before first run
-  rm -rf ~/.local/share/nvim/*
+  rm -rf ~/.local/share/nvim
+  rm -rf ~/.local/state/nvim
+  # After setup mise (described below):
+  gem install neovim # for ruby support in Neovim
+  yay -S tree-sitter-cli-git # official tree-sitter-cli package is often outdated
   ```
 
 7. **mise** (tool version manager): setup is under `mise/.config/mise/`.
