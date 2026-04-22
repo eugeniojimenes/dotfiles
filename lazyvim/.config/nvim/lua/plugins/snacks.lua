@@ -7,8 +7,11 @@ return {
         file = {
           truncate = "left",
           min_width = 60, -- minimum length of the truncated path
-        }
-      }
+        },
+      },
+    },
+    scroll = {
+      enabled = false, -- Disable scrolling animations
     },
   },
 }

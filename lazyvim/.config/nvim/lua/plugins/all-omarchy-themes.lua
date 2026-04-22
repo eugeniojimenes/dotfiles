@@ -1,0 +1,1 @@
+/home/callmarx/.config/nvim-omarchy/lua/plugins/all-themes.lua
