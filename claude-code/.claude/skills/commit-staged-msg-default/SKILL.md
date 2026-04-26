@@ -1,7 +1,7 @@
 ---
-name: commit-staged-msg
-description: Generate a commit message based on staged changes and repo conventions
-argument-hint: "[commit]"
+name: commit-staged-msg-default
+description: "DEFAULT: Generate a commit message based on staged changes and repo conventions"
+disable-model-invocation: true
 allowed-tools: Bash, Read, Grep
 ---
 
