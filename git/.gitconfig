@@ -16,3 +16,11 @@
 	defaultBranch = develop
 [commit]
 	template = ~/dotfiles/git/.gitmessage
+[merge]
+	conflictStyle = zdiff3
+[rebase]
+	autoSquash = true
+[push]
+	followTags = true
+[rerere]
+	enabled = true

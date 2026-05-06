@@ -27,4 +27,29 @@ return {
       }):map("<leader>um")
     end,
   },
+  {
+    "selimacerbas/markdown-preview.nvim",
+    dependencies = { "selimacerbas/live-server.nvim" },
+    ft = { "markdown" },
+    keys = {
+      { "<leader>cp", "<cmd>MarkdownPreviewToggle<cr>", ft = "markdown", desc = "Markdown Preview" },
+    },
+    config = function()
+      local mp = require("markdown_preview")
+      mp.setup({
+        -- all optional; sane defaults shown
+        instance_mode = "takeover", -- "takeover" (one tab) or "multi" (tab per instance)
+        port = 0, -- 0 = auto (8421 for takeover, OS-assigned for multi)
+        open_browser = true,
+        debounce_ms = 300,
+      })
+      vim.api.nvim_create_user_command("MarkdownPreviewToggle", function()
+        if mp._active_bufnr then
+          mp.stop()
+        else
+          mp.start()
+        end
+      end, { desc = "Toggle markdown preview" })
+    end,
+  },
 }
