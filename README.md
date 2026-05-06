@@ -19,6 +19,7 @@ A curated set of my personal configuration files (dotfiles) for Arch-based syste
 - [Other tools and setups](#other-tools-and-setups)
   - [Lazygit and Lazydocker](#lazygit-and-lazydocker)
   - [Cedilla with US keyboard layout](#cedilla-with-us-keyboard-layout)
+  - [English Notes logging (Claude Code)](#english-notes-logging-claude-code)
 - [Optional: clear Neovim plugins](#optional-clear-neovim-plugins)
 - [License](#license)
 - [Code of conduct](#code-of-conduct)
@@ -218,6 +219,62 @@ sudo mv Compose /usr/share/X11/locale/en_US.UTF-8/Compose
 ```
 
 4) Reboot the computer.
+
+### English Notes logging (Claude Code)
+The `claude-code` module includes an automated logger for the "English Notes" feedback that Claude appends to every response. It captures each correction into a local SQLite database so I can review recurring patterns without asking Claude to recall them across sessions.
+
+**How it works:**
+- Claude appends an "English Notes" section after every reply (per `claude-code/.claude/CLAUDE.md`).
+- Following that section, Claude emits a hidden JSON payload wrapped in an HTML comment (`<!-- english-notes ... -->`). The comment is invisible in the rendered chat but present in the session transcript. Each entry has the wrong/correct text, a canonical `rule_id` from `claude-code/.claude/english-rules.md`, the category, and a `pt_calque` flag for Portuguese-to-English literal mappings.
+- A `Stop` hook (`claude-code/.claude/hooks/log-english-notes.sh`) parses that payload from the transcript and inserts each correction as a row in `~/.claude/english-notes.db`.
+- The DB stays out of this repo (machine-local data only).
+
+**Token cost:** the skinny rule index in `CLAUDE.md` adds ~350 tokens per turn (cached most of the time). The full taxonomy (`english-rules.md`) is read only by the bash hook — zero tokens for Claude.
+
+**Manual setup steps:**
+
+1) Stow the module (creates the `~/.claude/` symlinks):
+```sh
+cd ~/dotfiles
+stow claude-code
+```
+
+2) Make sure `jq` and `sqlite3` are installed (Arch usually has both):
+```sh
+sudo pacman -S --needed jq sqlite
+```
+
+3) Initialize the database schema (idempotent — safe to re-run):
+```sh
+~/.claude/hooks/init-english-db.sh
+```
+
+The `Stop` hook is already registered in `claude-code/.claude/settings.json` (which stows into `~/.claude/settings.json`), so no manual edit is needed. Machine-specific overrides go in `~/.claude/settings.local.json`, which is not tracked here.
+
+4) (Optional) Backfill historical English Notes from past Claude Code transcripts:
+```sh
+~/.claude/hooks/backfill-english-notes.sh
+```
+This regex-extracts notes from `~/.claude/projects/**/*.jsonl` and inserts them with `source='backfill'`. Best-effort parsing — older notes lack the JSON block, so most fields land in the `raw` column only.
+
+**Querying the data:**
+```sh
+# Top recurring rules
+~/.claude/bin/eng-stats top
+
+# Portuguese-calque mistakes only
+~/.claude/bin/eng-stats calques
+
+# Free-text search
+~/.claude/bin/eng-stats search worth
+
+# By project / by month
+~/.claude/bin/eng-stats by-project
+~/.claude/bin/eng-stats by-month
+```
+
+Or query `~/.claude/english-notes.db` directly with `sqlite3`.
+
 
 ## Optional: clear Neovim plugins
 If you want a clean Neovim start:

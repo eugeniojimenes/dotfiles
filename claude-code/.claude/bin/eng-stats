@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+# Quick query helpers over ~/.claude/english-notes.db.
+# Usage: eng-stats <subcommand> [args]
+
+set -euo pipefail
+
+DB="${ENGLISH_NOTES_DB:-$HOME/.claude/english-notes.db}"
+
+if [[ ! -f "$DB" ]]; then
+  echo "DB not found at $DB. Run ~/.claude/hooks/init-english-db.sh first." >&2
+  exit 1
+fi
+
+cmd="${1:-help}"
+shift || true
+
+case "$cmd" in
+  top)
+    n="${1:-15}"
+    sqlite3 -header -column "$DB" <<SQL
+SELECT rule_id,
+       COUNT(*) AS hits,
+       SUM(pt_calque) AS calques,
+       MAX(ts) AS last_seen
+FROM notes
+WHERE rule_id NOT IN ('spelling', '')
+GROUP BY rule_id
+ORDER BY hits DESC, last_seen DESC
+LIMIT $n;
+SQL
+    ;;
+
+  calques)
+    n="${1:-30}"
+    sqlite3 -header -column "$DB" <<SQL
+SELECT rule_id, COUNT(*) AS hits, GROUP_CONCAT(DISTINCT wrong) AS examples
+FROM notes
+WHERE pt_calque = 1
+GROUP BY rule_id
+ORDER BY hits DESC
+LIMIT $n;
+SQL
+    ;;
+
+  search)
+    q="${1:?usage: eng-stats search <term>}"
+    q_esc="${q//\'/\'\'}"
+    sqlite3 -header -column "$DB" <<SQL
+SELECT n.ts, n.project, n.rule_id, n.wrong, n.correct
+FROM notes_fts f
+JOIN notes n ON n.id = f.rowid
+WHERE notes_fts MATCH '$q_esc'
+ORDER BY n.ts DESC
+LIMIT 50;
+SQL
+    ;;
+
+  by-project)
+    sqlite3 -header -column "$DB" <<'SQL'
+SELECT project, COUNT(*) AS notes, SUM(pt_calque) AS calques
+FROM notes
+GROUP BY project
+ORDER BY notes DESC;
+SQL
+    ;;
+
+  by-month)
+    sqlite3 -header -column "$DB" <<'SQL'
+SELECT strftime('%Y-%m', ts) AS month, COUNT(*) AS notes, SUM(pt_calque) AS calques
+FROM notes
+GROUP BY month
+ORDER BY month DESC;
+SQL
+    ;;
+
+  recent)
+    n="${1:-20}"
+    sqlite3 -header -column "$DB" <<SQL
+SELECT ts, rule_id, wrong, correct
+FROM notes
+ORDER BY ts DESC
+LIMIT $n;
+SQL
+    ;;
+
+  rule)
+    r="${1:?usage: eng-stats rule <rule_id>}"
+    r_esc="${r//\'/\'\'}"
+    sqlite3 -header -column "$DB" <<SQL
+SELECT ts, project, wrong, correct, explanation
+FROM notes
+WHERE rule_id = '$r_esc'
+ORDER BY ts DESC;
+SQL
+    ;;
+
+  count)
+    sqlite3 -header -column "$DB" <<'SQL'
+SELECT source, COUNT(*) AS rows FROM notes GROUP BY source;
+SQL
+    ;;
+
+  help|--help|-h|*)
+    cat <<'EOF'
+eng-stats — query the English Notes database
+
+  eng-stats top [N]            Top N recurring rules (default 15)
+  eng-stats calques [N]        Portuguese-calque mistakes only
+  eng-stats search <term>      Full-text search (FTS5)
+  eng-stats by-project         Counts grouped by project
+  eng-stats by-month           Counts grouped by month
+  eng-stats recent [N]         Last N corrections (default 20)
+  eng-stats rule <rule_id>     All hits for a specific rule
+  eng-stats count              Row counts by source (live vs backfill)
+
+DB path: $ENGLISH_NOTES_DB (default ~/.claude/english-notes.db)
+EOF
+    ;;
+esac
