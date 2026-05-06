@@ -27,13 +27,26 @@ project="$(basename "${cwd:-unknown}")"
 
 [[ -f "$transcript_path" ]] || { log "no transcript at $transcript_path"; exit 0; }
 
-# 2. Get the very last assistant text block from the transcript.
+# 2. Get the last assistant text block that contains an english-notes marker,
+# scoped to the CURRENT turn only (entries after the last user message).
+# Whole-transcript scope re-inserts the previous turn's block whenever a
+# follow-up prompt produces no new notes. Trailing sub-agent texts in the
+# same turn are still handled because we take `last` within the slice.
 last_text="$(
-  jq -rs '[.[] | select(.type=="assistant") | .message.content[]? | select(.type=="text") | .text] | last // ""' \
-    "$transcript_path" 2>/dev/null
+  jq -rs '
+    # tool_result entries also have type=="user", so filter on content shape
+    # to find the last actual human prompt.
+    def is_human_user:
+      .type == "user"
+      and (.message.content | if type == "string" then true
+           else (.[0].type // "") != "tool_result" end);
+    (map(is_human_user) | rindex(true)) as $u
+    | .[(($u // -1) + 1):]
+    | [.[] | select(.type=="assistant") | .message.content[]? | select(.type=="text") | .text | select(test("<!-- english-notes"))] | last // ""
+  ' "$transcript_path" 2>/dev/null
 )"
 
-[[ -z "$last_text" ]] && { log "no assistant text in $transcript_path"; exit 0; }
+[[ -z "$last_text" ]] && exit 0  # No english-notes block this session — normal.
 
 # 3. Extract the JSON inside <!-- english-notes ... -->.
 json_block="$(
