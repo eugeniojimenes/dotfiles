@@ -46,6 +46,7 @@ return {
       vim.api.nvim_create_user_command("MarkdownPreviewToggle", function()
         if mp._active_bufnr then
           mp.stop()
+          mp._active_bufnr = nil
         else
           mp.start()
         end

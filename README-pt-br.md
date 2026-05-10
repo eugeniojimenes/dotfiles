@@ -4,7 +4,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-lightblue)](/code_of_conduct.pt-br.md)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 [![en](https://img.shields.io/badge/lang-en-red.svg)](./README.md)
-[![love](https://img.shields.io/badge/Build%20With-%F0%9F%96%A4-lightgreen)](https://callmarx.github.io)
+[![love](https://img.shields.io/badge/Build%20With-%F0%9F%96%A4-lightgreen)](https://eugeniojimenes.dev)
 
 Um conjunto curado dos meus arquivos pessoais de configuração (dotfiles) para sistemas baseados em Arch, projetado para ser gerenciado com GNU Stow. Esta configuração atualmente tem como alvo um ambiente baseado em Omarchy, mas a maioria das partes funciona em qualquer instalação Arch.
 
@@ -37,7 +37,7 @@ sudo pacman -S --needed git stow
 
 Clone e acesse este repositório:
 ```sh
-git clone https://github.com/callmarx/dotfiles.git ~/dotfiles
+git clone https://github.com/eugeniojimenes/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
