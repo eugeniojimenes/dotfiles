@@ -89,6 +89,7 @@ mv ~/.config/hypr ~/.config/hypr.bkp 2>/dev/null
 mv ~/.config/nvim ~/.config/nvim.bkp 2>/dev/null
 mv ~/.config/mise ~/.config/mise.bkp 2>/dev/null
 mv ~/.config/mpv ~/.config/mpv.bkp 2>/dev/null
+mv ~/.rubocop.yml ~/.rubocop.yml.bkp 2>/dev/null
 mv ~/.claude ~/.claude.bkp 2>/dev/null
 
 # Stow the modules you want
@@ -100,6 +101,7 @@ stow hypr
 stow lazyvim
 stow mise
 stow mpv
+stow rubocop
 stow steam
 stow tmux
 ```
@@ -154,9 +156,11 @@ stow -D hypr
 
 8. **mpv**: setup is under `mpv/.config/mpv/`.
 
-9. **Steam**: setup is under `steam/`. Custom `.desktop` files for Steam and games, placed in `~/.local/share/applications/`.
+9. **RuboCop**: setup is under `rubocop/`. Global RuboCop config (`rubocop/.rubocop.yml` → `~/.rubocop.yml`). Enables the `rubocop-performance`, `rubocop-rails`, and `rubocop-rspec` plugins and a couple of extra cops.
 
-10. **tmux**: setup is under `tmux/`.
+10. **Steam**: setup is under `steam/`. Custom `.desktop` files for Steam and games, placed in `~/.local/share/applications/`.
+
+11. **tmux**: setup is under `tmux/`.
   Install tmux and TPM, then stow:
   ```sh
   sudo pacman -S tmux
