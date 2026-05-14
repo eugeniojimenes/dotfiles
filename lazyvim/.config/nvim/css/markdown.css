@@ -1,0 +1,216 @@
+/*
+ * Tokyo Night flavored markdown stylesheet for markdown-preview.nvim
+ * Palette: https://github.com/folke/tokyonight.nvim
+ */
+
+:root {
+  --tn-bg: #1a1b26;
+  --tn-bg-dark: #16161e;
+  --tn-bg-highlight: #292e42;
+  --tn-bg-code: #1f2335;
+  --tn-fg: #c0caf5;
+  --tn-fg-dark: #a9b1d6;
+  --tn-fg-gutter: #3b4261;
+  --tn-comment: #565f89;
+  --tn-blue: #7aa2f7;
+  --tn-cyan: #7dcfff;
+  --tn-green: #9ece6a;
+  --tn-magenta: #bb9af7;
+  --tn-orange: #ff9e64;
+  --tn-red: #f7768e;
+  --tn-yellow: #e0af68;
+  --tn-border: #292e42;
+}
+
+html, body {
+  background: var(--tn-bg) !important;
+  color: var(--tn-fg);
+}
+
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 56px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--tn-fg);
+  background: var(--tn-bg);
+  word-wrap: break-word;
+}
+
+.markdown-body a {
+  color: var(--tn-blue);
+  text-decoration: none;
+}
+.markdown-body a:hover { text-decoration: underline; }
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 28px;
+  margin-bottom: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--tn-fg);
+}
+.markdown-body h1 {
+  font-size: 2em;
+  padding-bottom: .35em;
+  border-bottom: 1px solid var(--tn-border);
+  color: var(--tn-magenta);
+}
+.markdown-body h2 {
+  font-size: 1.5em;
+  padding-bottom: .3em;
+  border-bottom: 1px solid var(--tn-border);
+  color: var(--tn-blue);
+}
+.markdown-body h3 { font-size: 1.25em; color: var(--tn-cyan); }
+.markdown-body h4 { font-size: 1em; color: var(--tn-green); }
+.markdown-body h5 { font-size: .9em; color: var(--tn-yellow); }
+.markdown-body h6 { font-size: .85em; color: var(--tn-comment); }
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body blockquote,
+.markdown-body table,
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 2em;
+}
+.markdown-body li + li { margin-top: .25em; }
+.markdown-body li::marker { color: var(--tn-magenta); }
+
+.markdown-body blockquote {
+  margin: 0 0 16px;
+  padding: 0 1em;
+  color: var(--tn-fg-dark);
+  border-left: .3em solid var(--tn-magenta);
+  background: var(--tn-bg-dark);
+  border-radius: 0 6px 6px 0;
+}
+.markdown-body blockquote > :first-child { margin-top: .6em; }
+.markdown-body blockquote > :last-child  { margin-bottom: .6em; }
+
+.markdown-body code,
+.markdown-body tt {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 85%;
+  padding: .2em .4em;
+  background: var(--tn-bg-code);
+  color: var(--tn-orange);
+  border-radius: 6px;
+}
+
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.5;
+  background: var(--tn-bg-code);
+  border: 1px solid var(--tn-border);
+  border-radius: 8px;
+}
+.markdown-body pre code {
+  display: inline;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  border-radius: 0;
+  font-size: 100%;
+}
+
+.markdown-body hr {
+  height: 1px;
+  border: 0;
+  margin: 24px 0;
+  background: var(--tn-border);
+}
+
+.markdown-body table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.markdown-body table th {
+  font-weight: 600;
+  color: var(--tn-cyan);
+  background: var(--tn-bg-dark);
+}
+.markdown-body table th,
+.markdown-body table td {
+  padding: 8px 14px;
+  border: 1px solid var(--tn-border);
+}
+.markdown-body table tr {
+  background: var(--tn-bg);
+}
+.markdown-body table tr:nth-child(2n) {
+  background: var(--tn-bg-dark);
+}
+
+.markdown-body img {
+  max-width: 100%;
+  box-sizing: content-box;
+  border-radius: 6px;
+}
+
+.markdown-body kbd {
+  display: inline-block;
+  padding: 3px 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 10px;
+  color: var(--tn-fg);
+  vertical-align: middle;
+  background: var(--tn-bg-highlight);
+  border: 1px solid var(--tn-fg-gutter);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 var(--tn-fg-gutter);
+}
+
+.markdown-body .task-list-item { list-style-type: none; }
+.markdown-body .task-list-item input { margin: 0 .35em .25em -1.4em; vertical-align: middle; }
+
+.markdown-body mark {
+  background: var(--tn-yellow);
+  color: var(--tn-bg);
+  padding: 0 .2em;
+  border-radius: 3px;
+}
+
+/* TOC */
+.markdown-body .toc {
+  background: var(--tn-bg-dark);
+  border: 1px solid var(--tn-border);
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 24px;
+}
+
+/* Selection */
+.markdown-body ::selection {
+  background: var(--tn-fg-gutter);
+  color: var(--tn-fg);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--tn-bg); }
+::-webkit-scrollbar-thumb { background: var(--tn-fg-gutter); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tn-comment); }

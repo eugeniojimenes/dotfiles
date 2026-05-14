@@ -1,0 +1,107 @@
+/*
+ * Tokyo Night highlight.js theme for markdown-preview.nvim
+ * Targets highlight.js v9+ class names.
+ */
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0;
+  background: transparent;
+  color: #c0caf5;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #565f89;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link {
+  color: #bb9af7;
+}
+
+.hljs-function .hljs-keyword {
+  color: #bb9af7;
+}
+
+.hljs-subst {
+  color: #c0caf5;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string {
+  color: #9ece6a;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+  color: #e0af68;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #ff9e64;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #7aa2f7;
+}
+
+.hljs-function,
+.hljs-name {
+  color: #7aa2f7;
+}
+
+.hljs-params {
+  color: #c0caf5;
+}
+
+.hljs-tag,
+.hljs-tag .hljs-name {
+  color: #f7768e;
+}
+
+.hljs-tag .hljs-attr {
+  color: #e0af68;
+}
+
+.hljs-emphasis { font-style: italic; }
+.hljs-strong   { font-weight: 700; }
+
+.hljs-deletion {
+  color: #f7768e;
+  background-color: rgba(247, 118, 142, 0.15);
+}
+
+.hljs-addition {
+  color: #9ece6a;
+  background-color: rgba(158, 206, 106, 0.15);
+}
+
+.hljs-doctag,
+.hljs-formula {
+  color: #7dcfff;
+}
+
+.hljs-builtin-name {
+  color: #e0af68;
+}
