@@ -1,9 +1,11 @@
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
+experimental = true
 
 [settings.ruby]
 
 [tools]
+"github:can1357/oh-my-pi" = "latest"
 go = "latest"
 node = { version = "22", postinstall = "corepack enable; npm install -g neovim" }
 python = { version = "3.11.13", postinstall = "pip install --upgrade pip; pip install neovim" }

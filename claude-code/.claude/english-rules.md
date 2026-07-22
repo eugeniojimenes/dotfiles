@@ -216,6 +216,25 @@ Seeded from a corpus of ~187 prior corrections across multiple projects (2025–
   - "miss use" → "misuse"
 - **note:** Prefix *mis-* always attaches directly: *mistake, misuse, misread, misunderstand, misspell*. *miss* (verb) is unrelated.
 
+### third-person-singular-s
+- **name:** Third-person singular -s (he/she/it)
+- **pt_calque:** false
+- **examples:**
+  - "a GLM that cost less" → "a GLM that costs less"
+  - "it make sense" → "it makes sense"
+  - "this function return a value" → "this function returns a value"
+- **note:** Present simple: verbs after he/she/it/singular-noun take **-s/-es** (*it costs*, *he makes*, *the function returns*). A relative pronoun *that/which/who* inherits the antecedent's number, so "a GLM **that costs**" (singular) vs "GLMs **that cost**" (plural).
+
+### less-vs-fewer-countable
+- **name:** fewer (countable) vs less (uncountable)
+- **pt_calque:** true
+- **trigger PT:** *menos* (covers both *less* and *fewer*)
+- **examples:**
+  - "less tokens" → "fewer tokens"
+  - "less mistakes" → "fewer mistakes"
+  - "less options" → "fewer options"
+- **note:** *fewer* + plural countable nouns (tokens, mistakes, options, lines); *less* + uncountable nouns (less memory, less time, less context, less information). PT *menos* maps to both — pick by whether you can count the noun.
+
 ---
 
 ## Categories (for the `category` field)

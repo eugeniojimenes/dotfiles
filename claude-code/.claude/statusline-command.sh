@@ -61,6 +61,19 @@ if [ -f "$caveman_flag" ] && [ ! -L "$caveman_flag" ]; then
   esac
 fi
 
+# Ponytail badge — mirror of caveman block (flag written by ponytail-activate.js)
+ponytail_flag="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.ponytail-active"
+if [ -f "$ponytail_flag" ] && [ ! -L "$ponytail_flag" ]; then
+  ponytail_mode=$(head -c 64 "$ponytail_flag" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]')
+  ponytail_mode=$(printf '%s' "$ponytail_mode" | tr -cd 'a-z0-9-')
+  case "$ponytail_mode" in
+    lite|full|ultra)
+      suffix=$(printf '%s' "$ponytail_mode" | tr '[:lower:]' '[:upper:]')
+      parts+=("$(printf '\033[38;5;108m[PONYTAIL:%s]\033[0m' "$suffix")")
+      ;;
+  esac
+fi
+
 # Join with separator
 printf '%s' "${parts[0]}"
 for part in "${parts[@]:1}"; do
