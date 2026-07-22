@@ -101,8 +101,11 @@ stow hypr
 stow lazyvim
 stow mise
 stow mpv
+stow rubocop
 stow steam
 stow tmux
+stow omp
+stow opencode
 ```
 
 ### Desfazer Stow (remover symlinks)
@@ -155,9 +158,11 @@ stow -D hypr
 
 8. **mpv**: configuração em `mpv/.config/mpv/`.
 
-9. **Steam**: configuração em `steam/`. Arquivos `.desktop` customizados para Steam e jogos, colocados em `~/.local/share/applications/`.
+9. **RuboCop**: configuração em `rubocop/`. Config global do RuboCop (`rubocop/.rubocop.yml` → `~/.rubocop.yml`). Habilita os plugins `rubocop-performance`, `rubocop-rails` e `rubocop-rspec` e alguns cops extras.
 
-10. **tmux**: configuração em `tmux/`.
+10. **Steam**: configuração em `steam/`. Arquivos `.desktop` customizados para Steam e jogos, colocados em `~/.local/share/applications/`.
+
+11. **tmux**: configuração em `tmux/`.
   Instale o tmux e o TPM, depois faça o stow:
   ```sh
   sudo pacman -S tmux
@@ -171,6 +176,10 @@ stow -D hypr
   ```
 
   **OBS:** Dentro do tmux, instale os plugins (tmux-resurrect, tmux-continuum, etc.) com `prefix + I` (com o meu prefix seria `CTRL+\ + I` ou `CTRL+b + I`)
+
+12. **oh-my-pi (omp)**: configuração em `omp/.omp/`. Config do agente oh-my-pi — uma extensão TUI de mode-badge (`agent/extensions/`). Aplica em `~/.omp/`.
+
+13. **OpenCode**: configuração em `opencode/.config/opencode/`. Config do OpenCode — modelo, plugins (ponytail, caveman), MCP context7 e ajustes da TUI. Aplica em `~/.config/opencode/`.
 
 ## Outras ferramentas e setups:
 

@@ -103,6 +103,8 @@ stow mpv
 stow rubocop
 stow steam
 stow tmux
+stow omp
+stow opencode
 ```
 
 ### Unstow (remove symlinks)
@@ -173,6 +175,10 @@ stow -D hypr
   ```
 
   **NOTE:** Inside tmux, install plugins (tmux-resurrect, tmux-continuum, etc.) with `prefix + I` (with my prefix will be `CTRL+\ + I` or `CTRL+b + I`)
+
+12. **oh-my-pi (omp)**: setup is under `omp/.omp/`. Config for the oh-my-pi agent — a TUI mode-badge extension (`agent/extensions/`). Stows to `~/.omp/`.
+
+13. **OpenCode**: setup is under `opencode/.config/opencode/`. OpenCode config — model, plugins (ponytail, caveman), context7 MCP, and TUI settings. Stows to `~/.config/opencode/`.
 
 
 ## Other tools and setups

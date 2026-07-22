@@ -2,3 +2,4 @@
 **/backupdir/**
 **/plugin/packer_compiled.lua
 **/*.db
+/.opencode/
