@@ -32,6 +32,10 @@ This applies to:
 - **Hyprland** (`hypr/.config/hypr/`): `hyprland.conf` sources Omarchy defaults, then sources local override files. The layered files that override an Omarchy default (source-default-then-override) are: `input.conf`, `bindings.conf`, `monitors.conf`, `autostart.conf`, `envs.conf`, `looknfeel.conf`. The rest — `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf` — are standalone configs (Omarchy ships no default to source), edited in full. Add customizations only to these files.
 - **Bash** (`bash/.bashrc`): sources `~/.local/share/omarchy/default/bash/rc`, then any local additions follow.
 
+**LazyVim is the exception** — it does not source-then-override. Omarchy's Neovim config ships as a separate pacman package (`omarchy-nvim`, installed to `/usr/share/omarchy-nvim/config/`), and there is nothing to `source` from Lua. The files that came from Omarchy are **vendored as real files** in `lazyvim/.config/nvim/`: `lua/plugins/all-omarchy-themes.lua` and `plugin/after/transparency.lua`. Refresh them by diffing against `/usr/share/omarchy-nvim/config/`, never by symlinking to it (root-owned, and the path has already moved once).
+
+**Never point a file inside a stowed module at a path outside the repo.** Modules are stowed at the directory level, so Omarchy's migrations (`sed -i`, `cp` against `~/.config/...`) resolve through the directory symlink and edit this repo's real files — which is intended, and shows up in `git status` after an update. A *file*-level symlink escaping the repo breaks that: migrations are guarded by `[[ -f ... ]]`, which is false for a dangling link, so the update is skipped silently and machines drift. `lua/plugins/theme.lua` shows the alternative — resolve the path at runtime.
+
 ## Public repo — no secrets
 
 **IMPORTANT:** This repository is **public**. Never add tokens, API keys, passwords, private SSH/GPG keys, or any personal credentials to any file here. If a config requires a secret (e.g. an env var), reference it by variable name only and set the actual value outside this repo.

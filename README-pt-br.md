@@ -12,6 +12,8 @@ Um conjunto curado dos meus arquivos pessoais de configuração (dotfiles) para 
 ## Índice
 - [Início Rápido](#início-rápido)
 - [Customizações do Omarchy](#customizações-do-omarchy)
+  - [Atualizações do Omarchy escrevem dentro deste repositório](#atualizações-do-omarchy-escrevem-dentro-deste-repositório)
+  - [Nota para a atualização ao Omarchy 4](#nota-para-a-atualização-ao-omarchy-4)
 - [Pacotes necessários para estes dotfiles](#pacotes-necessários-para-estes-dotfiles)
 - [Aplicar dotfiles com GNU Stow](#aplicar-dotfiles-com-gnu-stow)
   - [Sobre cada módulo](#sobre-cada-modulo)
@@ -66,6 +68,22 @@ omarchy-pkg-install
 # ou diretamente via yay:
 yay -S google-chrome # rocm-smi-lib necessário para o btop ler GPU AMD
 ```
+
+### Atualizações do Omarchy escrevem dentro deste repositório
+Cada módulo aqui é aplicado pelo Stow no nível de *diretório* (`~/.config/hypr` → `~/dotfiles/hypr/.config/hypr`), e o Omarchy distribui mudanças de configuração rodando `sed -i` / `cp` sobre `~/.config/...` nas suas migrações. Essas escritas atravessam o symlink do diretório e caem nos **arquivos reais deste repositório**, então depois de um `omarchy-update` o `git status` pode mostrar mudanças que ninguém aqui fez. Revise o diff e mantenha o que fizer sentido — não descarte por reflexo.
+
+O corolário: nunca aponte um arquivo dentro de um módulo do Stow para um caminho fora do repositório. As migrações do Omarchy são protegidas por `[[ -f ... ]]`, que é falso para um symlink quebrado, então a atualização é ignorada em silêncio e as duas máquinas divergem.
+
+### Nota para a atualização ao Omarchy 4
+O Omarchy 4 move o tema ativo de `~/.config/omarchy/current` para `~/.local/state/omarchy/current` (veja os comentários em `/usr/bin/omarchy-nvim-setup`). Estes arquivos fixam o caminho do 3.x e precisam do novo após a atualização:
+
+| Arquivo | Linha |
+|---|---|
+| `hypr/.config/hypr/hyprland.conf` | `source = ~/.config/omarchy/current/theme/hyprland.conf` |
+| `hypr/.config/hypr/hyprlock.conf` | `source = ...`, além de `path = ~/.config/omarchy/current/background` |
+| `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
+
+O `source =` do Hyprland e o `general.import` do Alacritty não conseguem testar dois caminhos, então esses são edição manual. As próprias migrações do Omarchy podem reescrevê-los antes — veja a nota acima. O Neovim não precisa de nada: `lazyvim/.config/nvim/lua/plugins/theme.lua` já tenta os dois caminhos em tempo de execução.
 
 ## Pacotes necessários para estes dotfiles
 ```sh
@@ -144,6 +162,17 @@ stow -D hypr
   gem install neovim # suporte ao ruby no Neovim
   yay -S tree-sitter-cli-git # pacote oficial tree-sitter-cli normalmente está desatualizado
   ```
+
+  **Relação com a configuração do Neovim do Omarchy.** O Omarchy distribui sua própria configuração do LazyVim pelo pacote `omarchy-nvim` (`/usr/share/omarchy-nvim/config/`, replicada em `/etc/skel` para novos usuários). Como este repositório é dono de `~/.config/nvim`, o `omarchy-nvim-setup` não mexe nele. Por isso dois arquivos do Omarchy são **copiados** para cá como arquivos reais, e não como symlinks — apontar para fora do repositório torna a configuração irreproduzível em uma segunda máquina:
+
+  - `lua/plugins/all-omarchy-themes.lua` — pré-carrega todos os colorschemes do Omarchy para que a troca de tema seja instantânea. O Omarchy nunca atualiza esse arquivo depois da instalação, então confira a defasagem de vez em quando:
+    ```sh
+    diff /usr/share/omarchy-nvim/config/lua/plugins/all-themes.lua \
+         ~/dotfiles/lazyvim/.config/nvim/lua/plugins/all-omarchy-themes.lua
+    ```
+  - `plugin/after/transparency.lua` — remove o fundo dos grupos de destaque. O Omarchy altera esse arquivo no lugar por migrações, então ele pode aparecer no `git status` após uma atualização.
+
+  O `lua/plugins/theme.lua` resolve o tema ativo em tempo de execução em vez de usar symlink, então o mesmo commit funciona no Omarchy 3.x e 4.x. Veja a [nota para a atualização ao Omarchy 4](#nota-para-a-atualização-ao-omarchy-4).
 
 7. **mise** (gerenciador de versões de ferramentas): configuração em `mise/.config/mise/`.
   Este setup usa o [mise](https://mise.jdx.dev/getting-started.html) para gerenciar versões de ferramentas.

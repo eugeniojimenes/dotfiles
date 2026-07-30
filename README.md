@@ -12,6 +12,8 @@ A curated set of my personal configuration files (dotfiles) for Arch-based syste
 ## Table of contents
 - [Quickstart](#quickstart)
 - [Omarchy customization](#omarchy-customization)
+  - [Omarchy updates write into this repo](#omarchy-updates-write-into-this-repo)
+  - [Omarchy 4 upgrade note](#omarchy-4-upgrade-note)
 - [Packages required](#packages-required-by-my-dotfiles)
 - [Apply dotfiles with GNU Stow](#apply-dotfiles-with-gnu-stow)
   - [About each module](#about-each-module)
@@ -65,6 +67,22 @@ omarchy-pkg-install
 # or directly via yay:
 yay -S google-chrome # `rocm-smi-lib` for AMD GPU required by `btop`
 ```
+
+### Omarchy updates write into this repo
+Every module here is stowed at the *directory* level (`~/.config/hypr` → `~/dotfiles/hypr/.config/hypr`), and Omarchy ships config changes by running `sed -i` / `cp` against `~/.config/...` in its migrations. Those writes resolve through the directory symlink and land on the **real files in this repo**, so after an `omarchy-update` a `git status` may show changes nobody here made. Review the diff and keep what's wanted — don't discard it reflexively.
+
+The corollary: never point a file inside a stowed module at a path outside the repo. Omarchy's migrations are guarded by `[[ -f ... ]]`, which is false for a dangling symlink, so the update is skipped in silence and the two machines drift apart.
+
+### Omarchy 4 upgrade note
+Omarchy 4 moves the active theme from `~/.config/omarchy/current` to `~/.local/state/omarchy/current` (see the comments in `/usr/bin/omarchy-nvim-setup`). These files hardcode the 3.x path and need the new one after upgrading:
+
+| File | Line |
+|---|---|
+| `hypr/.config/hypr/hyprland.conf` | `source = ~/.config/omarchy/current/theme/hyprland.conf` |
+| `hypr/.config/hypr/hyprlock.conf` | `source = ...`, plus `path = ~/.config/omarchy/current/background` |
+| `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
+
+Hyprland's `source =` and Alacritty's `general.import` can't probe two locations, so these are a manual edit. Omarchy's own migrations may rewrite them first — see the note above. Neovim needs nothing: `lazyvim/.config/nvim/lua/plugins/theme.lua` already tries both paths at runtime.
 
 ## Packages required by my dotfiles
 ```sh
@@ -143,6 +161,17 @@ stow -D hypr
   gem install neovim # for ruby support in Neovim
   yay -S tree-sitter-cli-git # official tree-sitter-cli package is often outdated
   ```
+
+  **Relationship to Omarchy's Neovim config.** Omarchy ships its own LazyVim config through the `omarchy-nvim` package (`/usr/share/omarchy-nvim/config/`, seeded to `/etc/skel` for new users). Since this repo owns `~/.config/nvim`, `omarchy-nvim-setup` leaves it alone. Two of Omarchy's files are therefore **vendored** here as real files rather than symlinked — symlinking them outside the repo makes the config unreproducible on a second machine:
+
+  - `lua/plugins/all-omarchy-themes.lua` — preloads every Omarchy colorscheme so theme hot-reloading switches instantly. Omarchy never refreshes this after install, so check for drift now and then:
+    ```sh
+    diff /usr/share/omarchy-nvim/config/lua/plugins/all-themes.lua \
+         ~/dotfiles/lazyvim/.config/nvim/lua/plugins/all-omarchy-themes.lua
+    ```
+  - `plugin/after/transparency.lua` — strips highlight backgrounds. Omarchy patches this one in place via migrations, so it may show up in `git status` after an update.
+
+  `lua/plugins/theme.lua` resolves the active theme at runtime instead of symlinking it, so the same commit works on Omarchy 3.x and 4.x. See [Omarchy 4 upgrade note](#omarchy-4-upgrade-note).
 
 7. **mise** (tool version manager): setup is under `mise/.config/mise/`.
   This setup uses [mise](https://mise.jdx.dev/getting-started.html) for managing tool versions.
