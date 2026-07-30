@@ -17,3 +17,5 @@ Thumbs.db
 *.o
 *.so
 *.dylib
+
+**/.claude/settings.local.json
