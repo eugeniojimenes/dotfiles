@@ -66,7 +66,8 @@ omarchy-webapp-remove
 # via helper do Omarchy
 omarchy-pkg-install
 # ou diretamente via yay:
-yay -S google-chrome # rocm-smi-lib necessário para o btop ler GPU AMD
+yay -S google-chrome
+yay -S rocm-smi-lib # necessário para o btop ler a GPU AMD
 ```
 
 ### Atualizações do Omarchy escrevem dentro deste repositório
@@ -87,8 +88,11 @@ O `source =` do Hyprland e o `general.import` do Alacritty não conseguem testar
 
 ## Pacotes necessários para estes dotfiles
 ```sh
-## Bash customization and local bin (via mise):
-sudo pacman -S usage # mise and starship packages is installed by omarchy
+## Customização do bash e bin local (via mise):
+sudo pacman -S usage # mise e starship já vêm instalados pelo Omarchy
+
+## Ferramentas usadas pelos módulos abaixo (tmux, Neovim, TUIs de git/docker):
+sudo pacman -S tmux tree-sitter-cli lazygit lazydocker
 ```
 
 ## Aplicar dotfiles com GNU Stow
@@ -108,7 +112,11 @@ mv ~/.config/hypr ~/.config/hypr.bkp 2>/dev/null
 mv ~/.config/nvim ~/.config/nvim.bkp 2>/dev/null
 mv ~/.config/mise ~/.config/mise.bkp 2>/dev/null
 mv ~/.config/mpv ~/.config/mpv.bkp 2>/dev/null
+mv ~/.rubocop.yml ~/.rubocop.yml.bkp 2>/dev/null
 mv ~/.claude ~/.claude.bkp 2>/dev/null
+mv ~/.config/tmux ~/.config/tmux.bkp 2>/dev/null
+mv ~/.config/opencode ~/.config/opencode.bkp 2>/dev/null
+mv ~/.omp ~/.omp.bkp 2>/dev/null
 
 # Stow os módulos que você deseja
 stow alacritty
@@ -143,7 +151,7 @@ stow -D hypr
   Eu uso `bash` com o [starship](https://starship.rs/guide/).
   Observação: conforme mencionado em [Pacotes necessários para estes dotfiles](#pacotes-necessários-para-estes-dotfiles), garanta que `starship` esteja instalado.
 
-3. **Claude Code**: configuração em `claude-code/.claude/`. Configuração global do Claude Code — inclui `CLAUDE.md` (instruções), skills customizadas (`skills/`) e memória persistente (`memory/`). Faça stow para colocar em `~/.claude/`.
+3. **Claude Code**: configuração em `claude-code/.claude/`. Configuração global do Claude Code — `CLAUDE.md` (instruções), `settings.json`, skills customizadas (`skills/`) e `statusline-command.sh`. Faça stow para colocar em `~/.claude/`. Estado local da máquina (`settings.local.json`, memória por projeto) fica fora do repositório.
 
 4. **Git**: configuração em `git/`.
   Configuração geral:
@@ -151,7 +159,11 @@ stow -D hypr
   - define `develop` como branch padrão,
   - utiliza um template de mensagem de commit inspirado em Conventional Commits.
 
-5. **Hyprland**: configuração em `hypr/.config/hypr/`.
+5. **Hyprland**: configuração em `hypr/.config/hypr/`. Os padrões do Omarchy nunca são editados. O `hyprland.conf` carrega os padrões de `~/.local/share/omarchy/default/hypr/` e depois carrega os arquivos locais, que sobrescrevem o que for necessário.
+  - Em camadas (carregam o padrão do Omarchy antes de sobrescrevê-lo): `input.conf`, `bindings.conf`, `monitors.conf`, `autostart.conf`, `envs.conf`, `looknfeel.conf`.
+  - Independentes (o Omarchy não fornece padrão para carregar, então são editados por completo): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+
+  Coloque customizações apenas nesses arquivos — nunca nos padrões do Omarchy.
 
 6. **Neovim (LazyVim)**: configuração em `lazyvim/`. Após aplicar com o Stow:
   ```sh
@@ -160,7 +172,7 @@ stow -D hypr
   rm -rf ~/.local/state/nvim
   # Depois de configurar o mise (descrito a seguir):
   gem install neovim # suporte ao ruby no Neovim
-  yay -S tree-sitter-cli-git # pacote oficial tree-sitter-cli normalmente está desatualizado
+  sudo pacman -S tree-sitter-cli
   ```
 
   **Relação com a configuração do Neovim do Omarchy.** O Omarchy distribui sua própria configuração do LazyVim pelo pacote `omarchy-nvim` (`/usr/share/omarchy-nvim/config/`, replicada em `/etc/skel` para novos usuários). Como este repositório é dono de `~/.config/nvim`, o `omarchy-nvim-setup` não mexe nele. Por isso dois arquivos do Omarchy são **copiados** para cá como arquivos reais, e não como symlinks — apontar para fora do repositório torna a configuração irreproduzível em uma segunda máquina:
@@ -205,6 +217,8 @@ stow -D hypr
   ```
 
   **OBS:** Dentro do tmux, instale os plugins (tmux-resurrect, tmux-continuum, etc.) com `prefix + I` (com o meu prefix seria `CTRL+\ + I` ou `CTRL+b + I`)
+
+  Apenas o `tmux.conf` é aplicado pelo Stow, então `~/.config/tmux` continua um diretório real e o que o TPM baixa em `plugins/` fica fora deste repositório — nada a adicionar no gitignore.
 
 12. **oh-my-pi (omp)**: configuração em `omp/.omp/`. Config do agente oh-my-pi — uma extensão TUI de mode-badge (`agent/extensions/`). Aplica em `~/.omp/`.
 

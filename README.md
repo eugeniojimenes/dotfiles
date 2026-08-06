@@ -65,7 +65,8 @@ omarchy-webapp-remove
 # via Omarchy helper
 omarchy-pkg-install
 # or directly via yay:
-yay -S google-chrome # `rocm-smi-lib` for AMD GPU required by `btop`
+yay -S google-chrome
+yay -S rocm-smi-lib # required by `btop` to read an AMD GPU
 ```
 
 ### Omarchy updates write into this repo
@@ -87,7 +88,10 @@ Hyprland's `source =` and Alacritty's `general.import` can't probe two locations
 ## Packages required by my dotfiles
 ```sh
 ## Bash customization and local bin (via mise):
-sudo pacman -S usage # mise and starship packages is installed by omarchy
+sudo pacman -S usage # mise and starship are already installed by Omarchy
+
+## Tools used by the modules below (tmux, Neovim, git/docker TUIs):
+sudo pacman -S tmux tree-sitter-cli lazygit lazydocker
 ```
 
 ## Apply dotfiles with GNU Stow
@@ -108,6 +112,9 @@ mv ~/.config/mise ~/.config/mise.bkp 2>/dev/null
 mv ~/.config/mpv ~/.config/mpv.bkp 2>/dev/null
 mv ~/.rubocop.yml ~/.rubocop.yml.bkp 2>/dev/null
 mv ~/.claude ~/.claude.bkp 2>/dev/null
+mv ~/.config/tmux ~/.config/tmux.bkp 2>/dev/null
+mv ~/.config/opencode ~/.config/opencode.bkp 2>/dev/null
+mv ~/.omp ~/.omp.bkp 2>/dev/null
 
 # Stow the modules you want
 stow alacritty
@@ -142,7 +149,7 @@ stow -D hypr
   I use `bash` with [starship](https://starship.rs/guide/).
   **Note:** As noted above in [Packages required by my dotfiles](#packages-required-by-my-dotfiles), ensure `starship` is installed.
 
-3. **Claude Code**: setup is under `claude-code/.claude/`. Global Claude Code config — includes `CLAUDE.md` (instructions), custom skills (`skills/`), and persistent memory (`memory/`). Stow it to place at `~/.claude/`.
+3. **Claude Code**: setup is under `claude-code/.claude/`. Global Claude Code config — `CLAUDE.md` (instructions), `settings.json`, custom skills (`skills/`), and `statusline-command.sh`. Stow it to place at `~/.claude/`. Machine-local state (`settings.local.json`, per-project memory) stays out of the repo.
 
 4. **Git**: setup is under `git/`.
   General configuration:
@@ -150,7 +157,11 @@ stow -D hypr
   - sets `develop` as the default branch,
   - wires a commit message template inspired by Conventional Commits.
 
-5. **Hyprland**: setup is under `hypr/.config/hypr/`.
+5. **Hyprland**: setup is under `hypr/.config/hypr/`. Omarchy's defaults are never edited. `hyprland.conf` sources them from `~/.local/share/omarchy/default/hypr/`, then sources the local files so they override.
+  - Layered (source the Omarchy default first, then override it): `input.conf`, `bindings.conf`, `monitors.conf`, `autostart.conf`, `envs.conf`, `looknfeel.conf`.
+  - Standalone (Omarchy ships no default to source, so they're edited in full): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+
+  Put customizations in these files only — never in the Omarchy defaults.
 
 6. **Neovim (LazyVim)**: setup is under `lazyvim/`. After stowing:
   ```sh
@@ -159,7 +170,7 @@ stow -D hypr
   rm -rf ~/.local/state/nvim
   # After setup mise (described below):
   gem install neovim # for ruby support in Neovim
-  yay -S tree-sitter-cli-git # official tree-sitter-cli package is often outdated
+  sudo pacman -S tree-sitter-cli
   ```
 
   **Relationship to Omarchy's Neovim config.** Omarchy ships its own LazyVim config through the `omarchy-nvim` package (`/usr/share/omarchy-nvim/config/`, seeded to `/etc/skel` for new users). Since this repo owns `~/.config/nvim`, `omarchy-nvim-setup` leaves it alone. Two of Omarchy's files are therefore **vendored** here as real files rather than symlinked — symlinking them outside the repo makes the config unreproducible on a second machine:
@@ -204,6 +215,8 @@ stow -D hypr
   ```
 
   **NOTE:** Inside tmux, install plugins (tmux-resurrect, tmux-continuum, etc.) with `prefix + I` (with my prefix will be `CTRL+\ + I` or `CTRL+b + I`)
+
+  Only `tmux.conf` is stowed, so `~/.config/tmux` stays a real directory and TPM's downloads under `plugins/` land outside this repo — nothing to gitignore.
 
 12. **oh-my-pi (omp)**: setup is under `omp/.omp/`. Config for the oh-my-pi agent — a TUI mode-badge extension (`agent/extensions/`). Stows to `~/.omp/`.
 

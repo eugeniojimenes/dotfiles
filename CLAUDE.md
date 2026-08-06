@@ -67,5 +67,5 @@ docs(readme): update tmux install instructions for XDG path
 - **lazyvim** (`lazyvim/.config/nvim/`): LazyVim-based Neovim config. Plugin specs live in `lua/plugins/`. Lock file is `lazy-lock.json`.
 - **mise** (`mise/.config/mise/config.toml`): Manages Node 22, Python 3.11, Ruby 3.4, Rust (latest), uv (latest). Run `mise install` after stowing.
 - **tmux**: Requires TPM at `~/.config/tmux/plugins/tpm`. After stowing, install plugins inside tmux with `prefix + I` (installs tmux-resurrect, tmux-continuum, etc.).
-- **claude-code** (`claude-code/.claude/`): Global Claude Code config — includes `CLAUDE.md` (English learning feedback instructions), custom skills (`skills/`), and persistent memory (`memory/`). Stow it to place at `~/.claude/`.
+- **claude-code** (`claude-code/.claude/`): Global Claude Code config — `CLAUDE.md` (English learning feedback instructions), `settings.json`, custom skills (`skills/`), and `statusline-command.sh`. Stow it to place at `~/.claude/`. Machine-local state (`settings.local.json`, per-project memory) is gitignored and stays out of the repo.
 
