@@ -205,9 +205,8 @@ stow -D hypr
   Install tmux and TPM, then stow:
   ```sh
   sudo pacman -S tmux
-  mkdir -p ~/.config/tmux/plugins
-  # Plugin manager
-  git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
+  # Plugin manager — note the path: NOT under ~/.config/tmux
+  git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
 
   # Stow the tmux config
   cd ~/dotfiles
@@ -216,7 +215,11 @@ stow -D hypr
 
   **NOTE:** Inside tmux, install plugins (tmux-resurrect, tmux-continuum, etc.) with `prefix + I` (with my prefix will be `CTRL+\ + I` or `CTRL+b + I`)
 
-  Only `tmux.conf` is stowed, so `~/.config/tmux` stays a real directory and TPM's downloads under `plugins/` land outside this repo — nothing to gitignore.
+  TPM lives at `~/.local/share/tmux/plugins/` (set via `TMUX_PLUGIN_MANAGER_PATH` in `tmux.conf`) so that `~/.config/tmux/` holds nothing but `tmux.conf`. That lets stow link the **directory**, like every other module — a file-level link gets replaced by a regular copy the next time an Omarchy migration runs `sed -i` on `~/.config/tmux/tmux.conf`, which is exactly how this module silently drifted out of the repo once already.
+
+  Session state survives reboots via tmux-resurrect + tmux-continuum (auto-save every 5 min, auto-restore when the server starts). `SUPER + ALT + RETURN` decides what to open by asking whether any client is currently **attached** to the primary server, not whether a session exists: with nothing attached it attaches to the primary (starting it, and restoring the saved sessions, if it isn't running yet), so closing every terminal and opening a new one lands back in your work rather than in a fresh server. With one already attached, it opens an **independent** server on its own socket, with its own session list. That costs nothing: continuum only checks for a rival server at plugin load, so the isolated servers silently opt out of saving and restoring while the primary carries on. The one case that assumption misses is killing the primary while an isolated server is still alive — the next launch then builds a new primary that continuum silently leaves unsaved; kill the isolated servers first. Old snapshots need no external cleanup: resurrect prunes them itself on every save, keeping `@resurrect-delete-backup-after` days' worth and never fewer than the 5 newest.
+
+  Neovim buffers are **not** restored by resurrect — `@resurrect-strategy-nvim` only reads a `Session.vim` in the pane's cwd, and LazyVim stores sessions with persistence.nvim. Reopen them with `<leader>qs`.
 
 12. **oh-my-pi (omp)**: setup is under `omp/.omp/`. Config for the oh-my-pi agent — a TUI mode-badge extension (`agent/extensions/`). Stows to `~/.omp/`.
 
