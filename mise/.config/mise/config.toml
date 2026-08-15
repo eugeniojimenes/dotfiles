@@ -4,6 +4,9 @@ experimental = true
 
 [settings.ruby]
 
+[env]
+CFLAGS = "-std=gnu17"
+
 [tools]
 "github:can1357/oh-my-pi" = "latest"
 go = "latest"
