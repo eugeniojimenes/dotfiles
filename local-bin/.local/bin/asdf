@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# ponytail: asdf -> mise shim. A work CLI hardcodes `asdf` calls in its installers
+# and has no mise backend. mise already reads .tool-versions, so only the CLI
+# verbs it uses need translating.
+set -euo pipefail
+
+case "${1-}" in
+  plugin | plugins)
+    # No-op. mise resolves tools from its own registry at install time.
+    # Forwarding to `mise plugins install` would install the *asdf* plugin for
+    # node/ruby and shadow mise's faster core backends.
+    exit 0
+    ;;
+  install)
+    shift
+    exec mise install "$@"
+    ;;
+  --version | version)
+    exec mise --version
+    ;;
+  *)
+    exec mise "$@"
+    ;;
+esac

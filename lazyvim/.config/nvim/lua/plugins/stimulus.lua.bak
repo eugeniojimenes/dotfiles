@@ -1,0 +1,26 @@
+-- Mason's stimulus-language-server is a plain Node script whose shebang resolves `node` from PATH.
+-- In a repo whose .tool-versions pins an old Node version, its bundled
+-- @typescript-eslint uses `??=` and the server dies at startup with
+-- "SyntaxError: Unexpected token '??='". Pin it to a Node that supports the syntax so a project's
+-- Node pin cannot break it. Nothing here enables the server: mason-lspconfig's automatic_enable
+-- already starts it because the mason package is installed.
+-- ponytail: node@22 is hardcoded; bump it when mise's global node moves on.
+local function node22_cmd(cmd)
+  if vim.fn.executable("mise") ~= 1 then
+    return cmd
+  end
+  return vim.list_extend({ "mise", "exec", "node@22", "--" }, cmd)
+end
+
+return {
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        stimulus_ls = {
+          cmd = node22_cmd({ "stimulus-language-server", "--stdio" }),
+        },
+      },
+    },
+  },
+}

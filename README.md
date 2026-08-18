@@ -132,6 +132,7 @@ stow claude-code
 stow git
 stow hypr
 stow lazyvim
+stow local-bin
 stow mise
 stow mpv
 stow rubocop

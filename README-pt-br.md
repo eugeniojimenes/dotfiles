@@ -16,7 +16,7 @@ Um conjunto curado dos meus arquivos pessoais de configuração (dotfiles) para 
   - [Nota para a atualização ao Omarchy 4](#nota-para-a-atualização-ao-omarchy-4)
 - [Pacotes necessários para estes dotfiles](#pacotes-necessários-para-estes-dotfiles)
 - [Aplicar dotfiles com GNU Stow](#aplicar-dotfiles-com-gnu-stow)
-  - [Sobre cada módulo](#sobre-cada-modulo)
+  - [Sobre cada módulo](#sobre-cada-módulo)
   - [Desfazer Stow (remover symlinks)](#desfazer-stow-remover-symlinks)
 - [Outras ferramentas e setups](#outras-ferramentas-e-setups)
   - [Lazygit e Lazydocker](#lazygit-e-lazydocker)
@@ -34,7 +34,6 @@ Pré-requisitos:
 
 ```sh
 sudo pacman -S --needed git stow
-# yay: https://github.com/Jguer/yay
 ```
 
 Clone e acesse este repositório:
@@ -76,15 +75,24 @@ Cada módulo aqui é aplicado pelo Stow no nível de *diretório* (`~/.config/hy
 O corolário: nunca aponte um arquivo dentro de um módulo do Stow para um caminho fora do repositório. As migrações do Omarchy são protegidas por `[[ -f ... ]]`, que é falso para um symlink quebrado, então a atualização é ignorada em silêncio e as duas máquinas divergem.
 
 ### Nota para a atualização ao Omarchy 4
-O Omarchy 4 move o tema ativo de `~/.config/omarchy/current` para `~/.local/state/omarchy/current` (veja os comentários em `/usr/bin/omarchy-nvim-setup`). Estes arquivos fixam o caminho do 3.x e precisam do novo após a atualização:
+**O caminho do tema mudou.** O Omarchy 4 move o tema ativo de `~/.config/omarchy/current` para `~/.local/state/omarchy/current` (veja os comentários em `/usr/bin/omarchy-nvim-setup`). Estes arquivos fixam o caminho do 3.x e precisam do novo após a atualização:
 
 | Arquivo | Linha |
 |---|---|
-| `hypr/.config/hypr/hyprland.conf` | `source = ~/.config/omarchy/current/theme/hyprland.conf` |
 | `hypr/.config/hypr/hyprlock.conf` | `source = ...`, além de `path = ~/.config/omarchy/current/background` |
 | `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
 
 O `source =` do Hyprland e o `general.import` do Alacritty não conseguem testar dois caminhos, então esses são edição manual. As próprias migrações do Omarchy podem reescrevê-los antes — veja a nota acima. O Neovim não precisa de nada: `lazyvim/.config/nvim/lua/plugins/theme.lua` já tenta os dois caminhos em tempo de execução.
+
+**A configuração do Hyprland virou Lua.** O Hyprland 0.56 carrega `~/.config/hypr/hyprland.lua` com preferência sobre o `hyprland.conf`, e a atualização do Quattro deixa arquivos `.lua` *de template, vazios* ao lado dos seus `.conf` — atravessando o symlink de diretório do Stow, direto neste repositório. Os `.conf` continuam ali sem efeito nenhum, então cada configuração pessoal de monitor/input/keybinding volta silenciosamente ao padrão do Omarchy. Este repositório já foi portado e os `.conf` mortos foram removidos; veja a seção do Hyprland abaixo.
+
+**O terminal padrão virou o foot.** O Quattro instala `~/.local/share/applications/foot.desktop`, e sem um `~/.config/xdg-terminals.list` presente o `xdg-terminal-exec` escolhe ele em vez do Alacritty — então `SUPER + RETURN`, o launcher do tmux e todo `omarchy-launch-tui` abrem o foot com o tamanho de fonte dele. Correção:
+
+```sh
+omarchy-default-terminal alacritty
+```
+
+**O caminho do próprio Omarchy mudou.** `~/.local/share/omarchy` agora é um symlink para `/usr/share/omarchy`, e `OMARCHY_PATH` (definido a partir de `/etc/omarchy.conf` quando presente) é o valor a usar — o `bash/.bashrc` o resolve antes de carregar o rc do Omarchy.
 
 ## Pacotes necessários para estes dotfiles
 ```sh
@@ -125,6 +133,7 @@ stow claude-code
 stow git
 stow hypr
 stow lazyvim
+stow local-bin
 stow mise
 stow mpv
 stow rubocop
@@ -159,11 +168,23 @@ stow -D hypr
   - define `develop` como branch padrão,
   - utiliza um template de mensagem de commit inspirado em Conventional Commits.
 
-5. **Hyprland**: configuração em `hypr/.config/hypr/`. Os padrões do Omarchy nunca são editados. O `hyprland.conf` carrega os padrões de `~/.local/share/omarchy/default/hypr/` e depois carrega os arquivos locais, que sobrescrevem o que for necessário.
-  - Em camadas (carregam o padrão do Omarchy antes de sobrescrevê-lo): `input.conf`, `bindings.conf`, `monitors.conf`, `autostart.conf`, `envs.conf`, `looknfeel.conf`.
-  - Independentes (o Omarchy não fornece padrão para carregar, então são editados por completo): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+5. **Hyprland**: configuração em `hypr/.config/hypr/`. Os padrões do Omarchy nunca são editados. Desde o Omarchy 4 a configuração é em **Lua**: o `hyprland.lua` prepara o module path do Omarchy, faz `require` de `default.hypr.omarchy` (todos os padrões, vindos de `$OMARCHY_PATH/default/hypr/`) e então faz `require` dos arquivos locais, para que eles sobrescrevam.
+  - Sobrescritas em Lua, carregadas depois dos padrões: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
+  - Hyprlang independentes (o Omarchy não fornece padrão para carregar, então são editados por completo): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
 
   Coloque customizações apenas nesses arquivos — nunca nos padrões do Omarchy.
+
+  Duas APIs estão em jogo: `hl.*` é o Hyprland cru (`hl.config`, `hl.monitor`, `hl.env`, `hl.unbind`, `hl.dsp.*`) e `o.*` é o açúcar sintático do Omarchy (`o.bind`, `o.window`, `o.launch_on_start`), definido em `$OMARCHY_PATH/default/hypr/helpers.lua`. O `.luarc.json` aponta o lua-ls para `/usr/share/hypr/stubs`, para autocompletar.
+
+  **Keybindings não sobrescrevem, eles se acumulam.** Carregar depois não substitui uma tecla que o Omarchy já reivindicou — um segundo `o.bind` na mesma tecla apenas adiciona uma duplicata. Desfaça o bind antes:
+
+  ```lua
+  hl.unbind("SUPER + SHIFT + M")
+  o.bind("SUPER + M", "Music", { omarchy = "spotify" })
+  o.bind("SUPER + SHIFT + M", "Move workspace to next monitor", hl.dsp.workspace.move({ monitor = "+1" }))
+  ```
+
+  Prefira as tabelas de launcher `{ omarchy = "browser" }` / `{ tui = "btop" }` a fixar um executável, para que `omarchy default browser` continue sendo a única fonte de verdade. Liste tudo que está bindado no momento com `omarchy menu keybindings --print`.
 
 6. **Neovim (LazyVim)**: configuração em `lazyvim/`. Após aplicar com o Stow:
   ```sh
@@ -207,9 +228,8 @@ stow -D hypr
   Instale o tmux e o TPM, depois faça o stow:
   ```sh
   sudo pacman -S tmux
-  mkdir -p ~/.config/tmux/plugins
-  # Gerenciador de plugins
-  git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
+  # Gerenciador de plugins — atenção ao caminho: NÃO fica sob ~/.config/tmux
+  git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
 
   # Faça o stow da configuração do tmux
   cd ~/dotfiles
@@ -218,7 +238,11 @@ stow -D hypr
 
   **OBS:** Dentro do tmux, instale os plugins (tmux-resurrect, tmux-continuum, etc.) com `prefix + I` (com o meu prefix seria `CTRL+\ + I` ou `CTRL+b + I`)
 
-  Apenas o `tmux.conf` é aplicado pelo Stow, então `~/.config/tmux` continua um diretório real e o que o TPM baixa em `plugins/` fica fora deste repositório — nada a adicionar no gitignore.
+  O TPM fica em `~/.local/share/tmux/plugins/` (definido via `TMUX_PLUGIN_MANAGER_PATH` no `tmux.conf`) para que `~/.config/tmux/` não contenha nada além do `tmux.conf`. Isso permite que o Stow crie o link do **diretório**, como em todos os outros módulos — um link no nível de arquivo é substituído por uma cópia comum na próxima vez que uma migração do Omarchy rodar `sed -i` sobre `~/.config/tmux/tmux.conf`, que é exatamente como este módulo já divergiu do repositório em silêncio uma vez.
+
+  O estado das sessões sobrevive a reboots via tmux-resurrect + tmux-continuum (auto-save a cada 5 min, auto-restore quando o servidor inicia). O `SUPER + ALT + RETURN` decide o que abrir perguntando se algum cliente está **conectado** ao servidor primário, e não se existe alguma sessão: sem ninguém conectado, ele conecta ao primário (iniciando-o, e restaurando as sessões salvas, caso ainda não esteja rodando), então fechar todos os terminais e abrir um novo devolve você ao seu trabalho em vez de um servidor limpo. Com um já conectado, ele abre um servidor **independente**, no próprio socket, com a própria lista de sessões. Isso não custa nada: o continuum só procura um servidor rival no carregamento do plugin, então os servidores isolados se excluem em silêncio do save e do restore, enquanto o primário segue trabalhando. O único caso que essa premissa não cobre é matar o primário com um servidor isolado ainda vivo — o próximo launch constrói um novo primário que o continuum deixa sem salvar, também em silêncio; mate os servidores isolados antes. Snapshots antigos não precisam de limpeza externa: o resurrect os poda sozinho a cada save, mantendo `@resurrect-delete-backup-after` dias e nunca menos que os 5 mais recentes.
+
+  Buffers do Neovim **não** são restaurados pelo resurrect — o `@resurrect-strategy-nvim` só lê um `Session.vim` no cwd do painel, e o LazyVim guarda sessões com o persistence.nvim. Reabra-os com `<leader>qs`.
 
 12. **oh-my-pi (omp)**: configuração em `omp/.omp/`. Config do agente oh-my-pi — uma extensão TUI de mode-badge (`agent/extensions/`). Aplica em `~/.omp/`.
 
@@ -239,14 +263,16 @@ Este é meu workaround pessoal para digitar "ç" em um layout de teclado Inglês
 
 1) Configure seu layout de teclado do sistema para: Inglês (EUA, internacional com teclas mortas).
 
-Para Hyprland, edite `~/.config/hypr/hyprland.conf` ou `~/.config/hypr/input.conf`:
-```conf
-# Exemplo para layouts de teclado Brasileiro e dos EUA
-input {
-  kb_layout = br, us
-  kb_variant = abnt2,intl
-  kb_options = compose:caps,grp:alt_space_toggle
-}
+Para Hyprland, edite `~/.config/hypr/input.lua`:
+```lua
+-- Exemplo para layouts de teclado Brasileiro e dos EUA
+hl.config({
+  input = {
+    kb_layout = "br,us",
+    kb_variant = "abnt2,intl",
+    kb_options = "compose:caps,grp:alt_space_toggle",
+  },
+})
 ```
 
 2) Edite os caches do GTK immodules (os caminhos variam por distro/versões):
