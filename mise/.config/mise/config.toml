@@ -8,6 +8,9 @@ experimental = true
 CFLAGS = "-std=gnu17"
 
 [tools]
+claude = "latest"
+codex = "latest"
+gh = "latest"
 "github:can1357/oh-my-pi" = "latest"
 go = "latest"
 node = { version = "22", postinstall = "corepack enable; npm install -g neovim" }

@@ -75,15 +75,24 @@ Every module here is stowed at the *directory* level (`~/.config/hypr` → `~/do
 The corollary: never point a file inside a stowed module at a path outside the repo. Omarchy's migrations are guarded by `[[ -f ... ]]`, which is false for a dangling symlink, so the update is skipped in silence and the two machines drift apart.
 
 ### Omarchy 4 upgrade note
-Omarchy 4 moves the active theme from `~/.config/omarchy/current` to `~/.local/state/omarchy/current` (see the comments in `/usr/bin/omarchy-nvim-setup`). These files hardcode the 3.x path and need the new one after upgrading:
+**Theme path moved.** Omarchy 4 moves the active theme from `~/.config/omarchy/current` to `~/.local/state/omarchy/current` (see the comments in `/usr/bin/omarchy-nvim-setup`). These files hardcode the 3.x path and need the new one after upgrading:
 
 | File | Line |
 |---|---|
-| `hypr/.config/hypr/hyprland.conf` | `source = ~/.config/omarchy/current/theme/hyprland.conf` |
 | `hypr/.config/hypr/hyprlock.conf` | `source = ...`, plus `path = ~/.config/omarchy/current/background` |
 | `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
 
 Hyprland's `source =` and Alacritty's `general.import` can't probe two locations, so these are a manual edit. Omarchy's own migrations may rewrite them first — see the note above. Neovim needs nothing: `lazyvim/.config/nvim/lua/plugins/theme.lua` already tries both paths at runtime.
+
+**Hyprland config moved to Lua.** Hyprland 0.56 loads `~/.config/hypr/hyprland.lua` in preference to `hyprland.conf`, and Quattro's upgrade drops *empty template* `.lua` files next to your `.conf` files — through the stow directory symlink, straight into this repo. The `.conf` files keep sitting there doing nothing, so every personal monitor/input/keybinding setting silently reverts to the Omarchy default. This repo has been ported and the dead `.conf` files deleted; see the Hyprland section below.
+
+**Default terminal moved to foot.** Quattro installs `~/.local/share/applications/foot.desktop`, and with no `~/.config/xdg-terminals.list` present `xdg-terminal-exec` picks it over Alacritty — so `SUPER + RETURN`, the tmux launcher and every `omarchy-launch-tui` open foot at its own font size. Fix:
+
+```sh
+omarchy-default-terminal alacritty
+```
+
+**Omarchy's own path moved.** `~/.local/share/omarchy` is now a symlink to `/usr/share/omarchy`, and `OMARCHY_PATH` (set from `/etc/omarchy.conf` when present) is the value to use — `bash/.bashrc` resolves it before sourcing Omarchy's rc.
 
 ## Packages required by my dotfiles
 ```sh
@@ -157,11 +166,23 @@ stow -D hypr
   - sets `develop` as the default branch,
   - wires a commit message template inspired by Conventional Commits.
 
-5. **Hyprland**: setup is under `hypr/.config/hypr/`. Omarchy's defaults are never edited. `hyprland.conf` sources them from `~/.local/share/omarchy/default/hypr/`, then sources the local files so they override.
-  - Layered (source the Omarchy default first, then override it): `input.conf`, `bindings.conf`, `monitors.conf`, `autostart.conf`, `envs.conf`, `looknfeel.conf`.
-  - Standalone (Omarchy ships no default to source, so they're edited in full): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+5. **Hyprland**: setup is under `hypr/.config/hypr/`. Omarchy's defaults are never edited. Since Omarchy 4 the config is **Lua**: `hyprland.lua` bootstraps Omarchy's module path, `require`s `default.hypr.omarchy` (all the defaults, from `$OMARCHY_PATH/default/hypr/`), then `require`s the local files so they override.
+  - Layered Lua overrides, loaded after the defaults: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
+  - Standalone hyprlang (Omarchy ships no default to layer, so they're edited in full): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
 
   Put customizations in these files only — never in the Omarchy defaults.
+
+  Two APIs are in scope: `hl.*` is raw Hyprland (`hl.config`, `hl.monitor`, `hl.env`, `hl.unbind`, `hl.dsp.*`) and `o.*` is Omarchy's sugar (`o.bind`, `o.window`, `o.launch_on_start`), defined in `$OMARCHY_PATH/default/hypr/helpers.lua`. `.luarc.json` points lua-ls at `/usr/share/hypr/stubs` for completion.
+
+  **Keybindings don't override, they stack.** Loading later doesn't replace a key Omarchy already claimed — a second `o.bind` on the same key just adds a duplicate. Unbind first:
+
+  ```lua
+  hl.unbind("SUPER + SHIFT + M")
+  o.bind("SUPER + M", "Music", { omarchy = "spotify" })
+  o.bind("SUPER + SHIFT + M", "Move workspace to next monitor", hl.dsp.workspace.move({ monitor = "+1" }))
+  ```
+
+  Prefer the `{ omarchy = "browser" }` / `{ tui = "btop" }` launcher tables over hardcoding an executable, so `omarchy default browser` stays the single source of truth. List everything currently bound with `omarchy menu keybindings --print`.
 
 6. **Neovim (LazyVim)**: setup is under `lazyvim/`. After stowing:
   ```sh
@@ -241,14 +262,16 @@ This is my personal workaround to type "ç" on an English (US, international wit
 
 1) Set your system keyboard layout to: English (US, international with dead keys).
 
-For Hyprland, edit `~/.config/hypr/hyprland.conf` or `~/.config/hypr/input.conf`:
-```conf
-# Example for Brazilian and US keyboard layouts
-input {
-  kb_layout = br, us
-  kb_variant = abnt2,intl
-  kb_options = compose:caps,grp:alt_space_toggle
-}
+For Hyprland, edit `~/.config/hypr/input.lua`:
+```lua
+-- Example for Brazilian and US keyboard layouts
+hl.config({
+  input = {
+    kb_layout = "br,us",
+    kb_variant = "abnt2,intl",
+    kb_options = "compose:caps,grp:alt_space_toggle",
+  },
+})
 ```
 
 2) Edit the GTK immodules caches (paths vary by distro/versions):
