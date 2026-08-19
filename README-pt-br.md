@@ -217,7 +217,31 @@ stow -D hypr
   mise install
   ```
 
-8. **mpv**: configuração em `mpv/.config/mpv/`.
+8. **mpv**: configuração em `mpv/.config/mpv/`. Interface = [uosc](https://github.com/tomasklaen/uosc).
+
+  Só o `mpv.conf` é versionado. Árvore do uosc (`scripts/`, `fonts/`, o `script-opts/uosc.conf` dele)
+  fica no gitignore, instalada e não vendorizada: ~18 MB, a maior parte binários pré-compilados sem
+  checksum. `~/.config/mpv` = symlink de diretório para o repositório, então tudo abaixo escreve nos
+  caminhos ignorados, nunca aparece no `git status`.
+
+  Instalação. `stow mpv` antes: o instalador roda `mkdir -p ~/.config/mpv`, e um diretório real ali
+  impede o symlink de diretório que o stow precisa.
+
+  ```sh
+  stow mpv
+  curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
+  ```
+
+  Atualização. O uosc se atualiza sozinho. Abra o menu dele no mpv (botão direito, ou tecla `menu`),
+  escolha **Update uosc**. Roda o mesmo instalador com `MPV_CONFIG_DIR` em `~/.config/mpv`, então
+  precisa de `curl` e `unzip`. A linha do curl acima faz o mesmo. Para criar um atalho:
+
+  ```
+  Ctrl+u script-binding uosc/update
+  ```
+
+  O Omarchy instala o mpv, torna ele o player de vídeo padrão, não fornece configuração de mpv, então
+  nada aqui sobrescreve um padrão do Omarchy. Notas completas em `mpv/.config/mpv/README.md`.
 
 9. **RuboCop**: configuração em `rubocop/`. Config global do RuboCop (`rubocop/.rubocop.yml` → `~/.rubocop.yml`). Habilita os plugins `rubocop-performance`, `rubocop-rails` e `rubocop-rspec` e alguns cops extras.
 

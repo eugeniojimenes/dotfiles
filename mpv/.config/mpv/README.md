@@ -48,4 +48,24 @@ Installs to `/usr/share/mpv/`, needs symlinks into `~/.config/mpv/` to take effe
 installer: a symlink inside a stowed module pointing outside the repo is exactly what `CLAUDE.md`
 warns against. Do not use `mpv-uosc-git`, untouched upstream since 2024-02.
 
-Last vendored version, for diffing behaviour after an upgrade: **uosc 5.12.0**.
+## Update uosc
+
+uosc updates itself. Open its menu in mpv (right click, or `menu` key), pick **Update uosc**.
+`main.lua` binds it to `script-binding uosc/update`, so a keybind works too:
+
+```
+Ctrl+u script-binding uosc/update
+```
+
+Updater shells out to the same `installers/unix.sh` a fresh install uses, with `MPV_CONFIG_DIR`
+set to mpv's own config dir. Needs `curl` and `unzip` on PATH. Curl line above is equivalent.
+Restart mpv after.
+
+Everything it writes lands in gitignored paths, so an update never dirties `git status`.
+Upstream notes the self-updater does not work on macOS; irrelevant here.
+
+Running version: `uosc_version` at the top of `scripts/uosc/main.lua`, or the `uosc-version`
+script message.
+
+The installer only downloads `script-opts/uosc.conf` when absent, so ours never refreshes. To
+pick up new defaults after a big upgrade, delete it and re-run.

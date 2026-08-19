@@ -46,6 +46,37 @@ Applies to:
 
 **IMPORTANT:** This repository is **public**. Never add tokens, API keys, passwords, private SSH/GPG keys, or any personal credentials to any file here. If a config requires a secret (e.g. an env var), reference it by variable name only and set the actual value outside this repo.
 
+## Writing style: docs and comments
+
+Applies to every `.md` here (**this file included**) and every code comment.
+
+- **Compress.** caveman skill, level `full`: drop articles, filler, hedging, pleasantries.
+  Fragments fine. Short synonyms. Prefer `=` and `:` over spelled-out copulas. All technical
+  substance stays, only fluff goes. Never touch code blocks, command lines, API names, error
+  strings, or option names.
+- **No em-dashes.** Colon, period, comma or parentheses instead. Same for ` -- ` used as a pause
+  in a comment. A literal `--` inside a command is argument syntax, leave it: `mise exec --
+  bundle exec rubocop` breaks if reflowed.
+- **No AI tells.** Drop "moreover", "furthermore", "additionally", "however", "it is worth
+  noting". No one-line dramatic pauses. No filler adjectives ("crucial", "robust", "seamless",
+  "comprehensive"), no "leverage" where "use" works.
+- `README-pt-br.md` compresses the style, not the language. Portuguese articles carry grammar
+  that English ones do not, so its ratio is lower on purpose. Technical terms, code and CLI stay
+  verbatim, untranslated.
+
+One exception: `claude-code/.claude/` is prompt text, not documentation. Its skills use the
+em-dash as a list separator the model reads, so rewording changes behaviour. Left as is, and
+excluded from the sweep.
+
+Sweep before committing. Pattern is `\x{2014}` rather than a literal em-dash so the command does
+not match its own definition in this file:
+
+```sh
+git ls-files -z ':!claude-code/.claude' | xargs -0 grep -nP '\x{2014}'
+```
+
+Commit messages are separate, see [Commit style](#commit-style) below.
+
 ## Commit style
 
 Default branch = `develop` (not `main`/`master`).
