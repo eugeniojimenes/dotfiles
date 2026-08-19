@@ -2,17 +2,17 @@
 # System-monitoring TUIs on their own tmux server: btop in one window, lazydocker in another.
 #
 # Own socket (-L sys-tools), so its session never shows up in the primary's `prefix + s` and vice
-# versa -- same isolation as the iso-<pid> servers in tmux-launch.sh. Unlike those the socket
+# versa. Same isolation as the iso-<pid> servers in tmux-launch.sh. Unlike those the socket
 # name is fixed, so a second press reattaches instead of stacking a new server.
 #
 # This one is a viewer, not a workspace: it holds no state worth keeping, and quitting either TUI
-# is meant to close the whole thing. Hence the two settings below, applied once at creation --
-# they live on the server, so a later reattach inherits them.
+# is meant to close the whole thing. So the two settings below, applied once at creation.
+# They live on the server, so a later reattach inherits them.
 #
 #   pane-exited -> kill-server   quitting btop or lazydocker takes the server (and the window with
 #                                it) down, instead of leaving a half-empty dashboard behind. It
 #                                fires for *any* pane process ending, so closing a split you opened
-#                                in here also closes the lot -- fine for a viewer, worth knowing.
+#                                in here also closes the lot. Fine for a viewer, worth knowing.
 #                                It does not fire while the session is being built.
 #   unbind C-s / C-r             resurrect is loaded here too, via the shared tmux.conf, and it
 #                                writes to one directory for every server. A stray `prefix + Ctrl-s`

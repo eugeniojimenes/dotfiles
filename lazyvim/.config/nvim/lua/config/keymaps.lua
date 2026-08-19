@@ -13,8 +13,8 @@ map("n", "<C-x>",      "<CMD>bd<CR>",                  { desc = "Delete Buffer a
 
 map("n", "<C-f>", function() Snacks.picker.pick("files") end, { desc = "Find Files" })
 
--- `gr` (LSP references) re-globs and re-parses every .rb in the workspace on each call —
--- 8824 files and ~25s in a work repo — because ruby-lsp deliberately does not keep references in
+-- `gr` (LSP references) re-globs and re-parses every .rb in the workspace on each call
+-- (8824 files and ~25s in a work repo) because ruby-lsp deliberately does not keep references in
 -- its index. For *methods* it then matches on the bare name (ReferenceFinder::MethodTarget), with
 -- no receiver typing, so ripgrep is about as accurate and finishes in a tenth of a second. `gr`
 -- stays on the LSP, which is genuinely semantic for constants; this is the fast sibling.

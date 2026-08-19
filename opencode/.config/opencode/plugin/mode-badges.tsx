@@ -1,5 +1,5 @@
 /** @jsxImportSource @opentui/solid */
-// mode-badges — bottom statusline badges showing active caveman/ponytail levels.
+// mode-badges: bottom statusline badges showing active caveman/ponytail levels.
 // Mirrors the Claude Code statusline badges (~/.claude/statusline-command.sh).
 // Display-only: reads the flag files the caveman.mjs / ponytail plugins write.
 import { createRoot, createSignal } from "solid-js"
@@ -30,7 +30,7 @@ const tui: TuiPlugin = async (api) => {
   createRoot((dispose) => {
     const [modes, setModes] = createSignal(MODES.map((m) => readMode(m.file)))
 
-    // ponytail: 1s poll of two tiny flag files — no event exists for state written
+    // ponytail: 1s poll of two tiny flag files. No event exists for state written
     // by sibling plugins. Upgrade to fs.watch if this ever shows in profiles.
     const timer = setInterval(() => setModes(MODES.map((m) => readMode(m.file))), 1000)
     api.lifecycle.onDispose(() => { clearInterval(timer); dispose() })

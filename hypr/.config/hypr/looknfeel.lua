@@ -13,7 +13,7 @@ hl.config({
 -- match on that tag. lazydocker is absent from the list, which is the whole reason one floats and
 -- the other does not.
 --
--- Hyprland has no "unfloat" rule, so drop the tag instead. Tags applied by a rule are dynamic --
--- `hyprctl clients` marks them with a `*` -- and get re-evaluated, so removing one here, after
+-- Hyprland has no "unfloat" rule, so drop the tag instead. Tags applied by a rule are dynamic
+-- (`hyprctl clients` marks them with a `*`) and get re-evaluated, so removing one here, after
 -- Omarchy's rules have run, un-matches the float rules that keyed on it.
 o.window("org.omarchy.btop", { tag = "-floating-window" })

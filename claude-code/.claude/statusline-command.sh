@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claude Code status line — mirrors Starship-style prompt info
+# Claude Code status line. Mirrors Starship-style prompt info.
 input=$(cat)
 
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd')
@@ -48,7 +48,7 @@ if [ -n "$used" ]; then
   parts+=("$(printf "${color}ctx:%d%%\033[0m" "$used_int")")
 fi
 
-# Caveman badge — always show mode suffix (e.g. [CAVEMAN:FULL])
+# Caveman badge. Always show mode suffix (e.g. [CAVEMAN:FULL]).
 caveman_flag="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.caveman-active"
 if [ -f "$caveman_flag" ] && [ ! -L "$caveman_flag" ]; then
   caveman_mode=$(head -c 64 "$caveman_flag" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]')
@@ -61,7 +61,7 @@ if [ -f "$caveman_flag" ] && [ ! -L "$caveman_flag" ]; then
   esac
 fi
 
-# Ponytail badge — mirror of caveman block (flag written by ponytail-activate.js)
+# Ponytail badge. Mirror of caveman block (flag written by ponytail-activate.js).
 ponytail_flag="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.ponytail-active"
 if [ -f "$ponytail_flag" ] && [ ! -L "$ponytail_flag" ]; then
   ponytail_mode=$(head -c 64 "$ponytail_flag" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]')

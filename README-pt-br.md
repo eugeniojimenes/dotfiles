@@ -79,7 +79,6 @@ Corolário: nunca aponte um arquivo dentro de um módulo do Stow para um caminho
 
 | Arquivo | Linha |
 |---|---|
-| `hypr/.config/hypr/hyprlock.conf` | `source = ...`, além de `path = ~/.config/omarchy/current/background` |
 | `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
 
 O `source =` do Hyprland e o `general.import` do Alacritty não conseguem testar dois caminhos, então esses são edição manual. As próprias migrações do Omarchy podem reescrevê-los antes, veja a nota acima. O Neovim não precisa de nada: `lazyvim/.config/nvim/lua/plugins/theme.lua` já tenta os dois caminhos em tempo de execução.
@@ -170,7 +169,7 @@ stow -D hypr
 
 5. **Hyprland**: configuração em `hypr/.config/hypr/`. Os padrões do Omarchy nunca são editados. Desde o Omarchy 4 a configuração é em **Lua**: o `hyprland.lua` prepara o module path do Omarchy, faz `require` de `default.hypr.omarchy` (todos os padrões, vindos de `$OMARCHY_PATH/default/hypr/`) e então faz `require` dos arquivos locais, para que eles sobrescrevam.
   - Sobrescritas em Lua, carregadas depois dos padrões: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
-  - Hyprlang independentes (o Omarchy não fornece padrão para carregar, então são editados por completo): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+  - Nenhum arquivo hyprlang independente. `hypridle.conf` e `hyprlock.conf` removidos: **o Omarchy 4 não instala nem `hypridle` nem `hyprlock`**, ociosidade e bloqueio agora são do `omarchy-shell`, então esses arquivos configuravam daemons que não existiam. `hyprsunset.conf` e `xdph.conf` removidos: o Omarchy 4 *fornece* os dois em `/usr/share/omarchy/config/hypr/`, cópias daqui idênticas byte a byte, não sobrescreviam nada.
 
   Coloque customizações apenas nesses arquivos. Nunca nos padrões do Omarchy.
 

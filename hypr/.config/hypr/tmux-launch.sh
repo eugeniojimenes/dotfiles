@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Tmux launcher for the SUPER ALT + RETURN keybind.
 #
-# The test is "is any client attached to the default server?", not "does a session exist" -- that distinction is the
+# Test is "any client attached to the default server?", not "does a session exist". That distinction is the
 # whole point:
 #
 #   nothing attached -> attach to the primary server on the default socket, or start it. Reopening a terminal after
 #                       closing the last one therefore lands back in the live sessions instead of a fresh server.
 #                       Across a reboot they are gone: nothing restores on its own, so the first launch of the day
 #                       is a clean server. `prefix + Ctrl-r` pulls back the last snapshot you took with
-#                       `prefix + Ctrl-s`, layout and cwds only -- resurrect relaunches no programs here.
+#                       `prefix + Ctrl-s`, layout and cwds only. Resurrect relaunches no programs here.
 #   already attached -> independent server on its own socket (iso-<pid>), with its own session list. It cannot see
 #                       the primary's sessions and they cannot see it, so `prefix + s` in either one stays clean.
 #

@@ -6,7 +6,7 @@
  *   - store durable state in the session (survives /tree, /branch, resume)
  *   - inject a steering instruction on the next turn so the model adopts the mode
  *
- * Modes default on at `full`. No statusline badge — the session-start steering
+ * Modes default on at `full`. No statusline badge. The session-start steering
  * message and the per-toggle `notify` popup carry mode state.
  */
 import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent";

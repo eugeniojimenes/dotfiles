@@ -14,7 +14,7 @@ local function mise_cmd(cmd)
   if vim.fn.executable("mise") ~= 1 then
     vim.schedule(function()
       vim.notify(
-        "[ruby] `mise` is not on PATH — using global tooling, project bundle ignored",
+        "[ruby] `mise` is not on PATH, using global tooling, project bundle ignored",
         vim.log.levels.WARN
       )
     end)
@@ -58,7 +58,7 @@ warn_on_stale_bundle()
 --
 -- `Gemfile` also matches the *nearest* one, which is wrong inside a monolith: a work repo carries
 -- `engines/passwordless/Gemfile` and `engines/request_tracker/Gemfile`, so any buffer under
--- `engines/` claimed its own root and got its own ruby_lsp + rubocop pair — a second full index of
+-- `engines/` claimed its own root and got its own ruby_lsp + rubocop pair: a second full index of
 -- the same repo, and a rubocop that cannot load `.rubocop.yml`, whose `require:
 -- ./rubocop/custom_cops` only resolves from the repo root. `.git` marks the real checkout, so try
 -- it first and keep `Gemfile` for a bundler project that is not a git repo.
@@ -129,7 +129,7 @@ return {
   },
   {
     -- LazyVim's ruby extra points conform at rubocop, which spawns a *second* `bundle exec rubocop`
-    -- on every save — on top of the rubocop LSP already attached to the buffer, which advertises
+    -- on every save, on top of the rubocop LSP already attached to the buffer, which advertises
     -- `document_formatting_provider: true` and autocorrects exactly the same way. Emptying the
     -- conform list leaves conform with no source for ruby, so LazyVim's LSP formatter (registered
     -- as primary at priority 1) becomes the active one. One rubocop process instead of two, and

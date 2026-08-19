@@ -79,7 +79,6 @@ Corollary: never point file inside stowed module at path outside repo. Omarchy m
 
 | File | Line |
 |---|---|
-| `hypr/.config/hypr/hyprlock.conf` | `source = ...`, plus `path = ~/.config/omarchy/current/background` |
 | `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
 
 Hyprland `source =` and Alacritty `general.import` can't probe two locations. Edit manually. Omarchy migrations may rewrite them first, see note above. Neovim needs nothing: `lazyvim/.config/nvim/lua/plugins/theme.lua` already tries both paths at runtime.
@@ -169,7 +168,7 @@ stow -D hypr
 
 5. **Hyprland**: setup under `hypr/.config/hypr/`. Omarchy defaults never edited. Since Omarchy 4 config is **Lua**: `hyprland.lua` bootstraps Omarchy module path, `require`s `default.hypr.omarchy` (all defaults, from `$OMARCHY_PATH/default/hypr/`), then `require`s local files so they override.
   - Layered Lua overrides, loaded after defaults: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
-  - Standalone hyprlang (Omarchy ships no default to layer, so edited in full): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+  - No standalone hyprlang files. `hypridle.conf` and `hyprlock.conf` dropped: **Omarchy 4 installs neither `hypridle` nor `hyprlock`**, idle and lock now `omarchy-shell` job, so those files configured daemons that weren't there. `hyprsunset.conf` and `xdph.conf` dropped: Omarchy 4 *does* ship both at `/usr/share/omarchy/config/hypr/`, copies here byte-identical, overrode nothing.
 
   Put customizations in these files only. Never in Omarchy defaults.
 
