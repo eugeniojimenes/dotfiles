@@ -20,7 +20,16 @@ o.bind("SUPER + SHIFT + M", "Move workspace to next monitor", hl.dsp.workspace.m
 o.bind("SUPER + N", "Editor", { omarchy = "editor" })
 
 -- TUIs.
-o.bind("SUPER + SHIFT + T", "Activity monitor (btop)", { tui = "btop" })
+-- btop keeps Omarchy's own SUPER + CTRL + T; it is untiled by a window rule in looknfeel.lua
+-- rather than rebound here.
+--
+-- btop + lazydocker as two windows of one isolated tmux server. See tmux-sys-tools.sh.
+o.bind("SUPER + SHIFT + T", "System tools (btop + lazydocker)",
+  "omarchy-launch-or-focus org.omarchy.sys-tools 'omarchy-launch-tui --app-id=org.omarchy.sys-tools "
+  .. os.getenv("HOME") .. "/.config/hypr/tmux-sys-tools.sh'")
+
+-- Omarchy's standalone lazydocker is redundant now that it lives in the window above.
+hl.unbind("SUPER + SHIFT + D")
 
 o.bind("SUPER + SHIFT + L", "Lock screen", "omarchy-lock-screen")
 

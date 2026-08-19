@@ -6,7 +6,7 @@
 [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](./README-pt-br.md)
 [![love](https://img.shields.io/badge/Build%20With-%F0%9F%96%A4-lightgreen)](https://eugeniojimenes.dev)
 
-A curated set of my personal configuration files (dotfiles) for Arch-based systems, designed to be managed with GNU Stow. This setup currently targets an Omarchy-based environment, but most pieces work on any Arch install.
+My personal config files (dotfiles) for Arch-based systems, managed with GNU Stow. Targets Omarchy-based environment, but most pieces work on any Arch install.
 
 
 ## Table of contents
@@ -30,26 +30,26 @@ A curated set of my personal configuration files (dotfiles) for Arch-based syste
 Prerequisites:
 - Arch-based distro (or Omarchy)
 - `git` and `stow` installed
-- `yay` available if you want to install AUR packages
+- `yay` if want AUR packages
 
 ```sh
 sudo pacman -S --needed git stow
 ```
 
-Clone and enter this repository:
+Clone and enter repo:
 ```sh
 git clone https://github.com/eugeniojimenes/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
 ## Omarchy customization
-I use Omarchy to bootstrap the machine. See the official docs for getting started:
+Omarchy bootstraps machine. Official docs:
 - https://omarchy.org/
 - https://manuals.omamix.org/2/the-omarchy-manual/50/getting-started
 
-Common customizations I do:
+Common customizations:
 
-1) Remove apps/packages I don't use
+1) Remove unused apps/packages
 ```sh
 # Example: remove gnome-keyring
 omarchy-pkg-remove
@@ -60,7 +60,7 @@ yay -Rs gnome-keyring
 omarchy-webapp-remove
 ```
 
-2) Install a couple of extra packages
+2) Install extra packages
 ```sh
 # via Omarchy helper
 omarchy-pkg-install
@@ -70,29 +70,29 @@ yay -S rocm-smi-lib # required by `btop` to read an AMD GPU
 ```
 
 ### Omarchy updates write into this repo
-Every module here is stowed at the *directory* level (`~/.config/hypr` → `~/dotfiles/hypr/.config/hypr`), and Omarchy ships config changes by running `sed -i` / `cp` against `~/.config/...` in its migrations. Those writes resolve through the directory symlink and land on the **real files in this repo**, so after an `omarchy-update` a `git status` may show changes nobody here made. Review the diff and keep what's wanted — don't discard it reflexively.
+Every module stowed at *directory* level (`~/.config/hypr` → `~/dotfiles/hypr/.config/hypr`). Omarchy ships config changes by running `sed -i` / `cp` against `~/.config/...` in migrations. Those writes resolve through directory symlink and land on **real files in this repo**. So after `omarchy-update`, `git status` may show changes nobody here made. Review diff, keep what wanted. No reflexive discard.
 
-The corollary: never point a file inside a stowed module at a path outside the repo. Omarchy's migrations are guarded by `[[ -f ... ]]`, which is false for a dangling symlink, so the update is skipped in silence and the two machines drift apart.
+Corollary: never point file inside stowed module at path outside repo. Omarchy migrations guarded by `[[ -f ... ]]`, false for dangling symlink, so update skipped silent and two machines drift apart.
 
 ### Omarchy 4 upgrade note
-**Theme path moved.** Omarchy 4 moves the active theme from `~/.config/omarchy/current` to `~/.local/state/omarchy/current` (see the comments in `/usr/bin/omarchy-nvim-setup`). These files hardcode the 3.x path and need the new one after upgrading:
+**Theme path moved.** Omarchy 4 moves active theme from `~/.config/omarchy/current` to `~/.local/state/omarchy/current` (see comments in `/usr/bin/omarchy-nvim-setup`). These files hardcode 3.x path, need new one after upgrade:
 
 | File | Line |
 |---|---|
 | `hypr/.config/hypr/hyprlock.conf` | `source = ...`, plus `path = ~/.config/omarchy/current/background` |
 | `alacritty/.config/alacritty/alacritty.toml` | `general.import = [...]` |
 
-Hyprland's `source =` and Alacritty's `general.import` can't probe two locations, so these are a manual edit. Omarchy's own migrations may rewrite them first — see the note above. Neovim needs nothing: `lazyvim/.config/nvim/lua/plugins/theme.lua` already tries both paths at runtime.
+Hyprland `source =` and Alacritty `general.import` can't probe two locations. Edit manually. Omarchy migrations may rewrite them first, see note above. Neovim needs nothing: `lazyvim/.config/nvim/lua/plugins/theme.lua` already tries both paths at runtime.
 
-**Hyprland config moved to Lua.** Hyprland 0.56 loads `~/.config/hypr/hyprland.lua` in preference to `hyprland.conf`, and Quattro's upgrade drops *empty template* `.lua` files next to your `.conf` files — through the stow directory symlink, straight into this repo. The `.conf` files keep sitting there doing nothing, so every personal monitor/input/keybinding setting silently reverts to the Omarchy default. This repo has been ported and the dead `.conf` files deleted; see the Hyprland section below.
+**Hyprland config moved to Lua.** Hyprland 0.56 loads `~/.config/hypr/hyprland.lua` over `hyprland.conf`. Quattro upgrade drops *empty template* `.lua` files next to your `.conf` files, through stow directory symlink, straight into repo. `.conf` files keep sitting there doing nothing, so every personal monitor/input/keybinding setting silently reverts to Omarchy default. This repo ported, dead `.conf` files deleted. See Hyprland section below.
 
-**Default terminal moved to foot.** Quattro installs `~/.local/share/applications/foot.desktop`, and with no `~/.config/xdg-terminals.list` present `xdg-terminal-exec` picks it over Alacritty — so `SUPER + RETURN`, the tmux launcher and every `omarchy-launch-tui` open foot at its own font size. Fix:
+**Default terminal moved to foot.** Quattro installs `~/.local/share/applications/foot.desktop`. With no `~/.config/xdg-terminals.list` present, `xdg-terminal-exec` picks it over Alacritty, so `SUPER + RETURN`, tmux launcher and every `omarchy-launch-tui` open foot at own font size. Fix:
 
 ```sh
 omarchy-default-terminal alacritty
 ```
 
-**Omarchy's own path moved.** `~/.local/share/omarchy` is now a symlink to `/usr/share/omarchy`, and `OMARCHY_PATH` (set from `/etc/omarchy.conf` when present) is the value to use — `bash/.bashrc` resolves it before sourcing Omarchy's rc.
+**Omarchy own path moved.** `~/.local/share/omarchy` now symlink to `/usr/share/omarchy`. `OMARCHY_PATH` (set from `/etc/omarchy.conf` when present) is value to use. `bash/.bashrc` resolves it before sourcing Omarchy rc.
 
 ## Packages required by my dotfiles
 ```sh
@@ -104,7 +104,7 @@ sudo pacman -S tmux tree-sitter-cli lazygit lazydocker
 ```
 
 ## Apply dotfiles with GNU Stow
-Stow manages symlinks from this repo into your $HOME. I typically back up existing configs first.
+Stow manages symlinks from repo into $HOME. Back up existing configs first.
 
 ```sh
 cd ~/dotfiles
@@ -143,7 +143,7 @@ stow opencode
 ```
 
 ### Unstow (remove symlinks)
-If you want to remove symlinks created by Stow (without deleting your files), use `-D`:
+Remove Stow symlinks without deleting files. Use `-D`:
 ```sh
 # From the repo root
 cd ~/dotfiles
@@ -153,29 +153,29 @@ stow -D hypr
 ```
 
 ### About each module:
-1. **Alacritty**: setup is under `alacritty/.config/alacritty/`. Customizes font (JetBrainsMono Nerd Font), padding, keybindings, and imports the current Omarchy theme.
+1. **Alacritty**: setup under `alacritty/.config/alacritty/`. Customizes font (JetBrainsMono Nerd Font), padding, keybindings, imports current Omarchy theme.
 
-2. **Bash** (customized with Starship): setup is under `bash/`.
+2. **Bash** (customized with Starship): setup under `bash/`.
   I use `bash` with [starship](https://starship.rs/guide/).
-  **Note:** As noted above in [Packages required by my dotfiles](#packages-required-by-my-dotfiles), ensure `starship` is installed.
+  **Note:** per [Packages required by my dotfiles](#packages-required-by-my-dotfiles), ensure `starship` installed.
 
-3. **Claude Code**: setup is under `claude-code/.claude/`. Global Claude Code config — `CLAUDE.md` (instructions), `settings.json`, custom skills (`skills/`), and `statusline-command.sh`. Stow it to place at `~/.claude/`. Machine-local state (`settings.local.json`, per-project memory) stays out of the repo.
+3. **Claude Code**: setup under `claude-code/.claude/`. Global Claude Code config: `CLAUDE.md` (instructions), `settings.json`, custom skills (`skills/`), `statusline-command.sh`. Stow places at `~/.claude/`. Machine-local state (`settings.local.json`, per-project memory) stays out of repo.
 
-4. **Git**: setup is under `git/`.
-  General configuration:
-  - enables colored output,
-  - sets `develop` as the default branch,
-  - wires a commit message template inspired by Conventional Commits.
+4. **Git**: setup under `git/`.
+  General config:
+  - colored output,
+  - `develop` as default branch,
+  - commit message template inspired by Conventional Commits.
 
-5. **Hyprland**: setup is under `hypr/.config/hypr/`. Omarchy's defaults are never edited. Since Omarchy 4 the config is **Lua**: `hyprland.lua` bootstraps Omarchy's module path, `require`s `default.hypr.omarchy` (all the defaults, from `$OMARCHY_PATH/default/hypr/`), then `require`s the local files so they override.
-  - Layered Lua overrides, loaded after the defaults: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
-  - Standalone hyprlang (Omarchy ships no default to layer, so they're edited in full): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
+5. **Hyprland**: setup under `hypr/.config/hypr/`. Omarchy defaults never edited. Since Omarchy 4 config is **Lua**: `hyprland.lua` bootstraps Omarchy module path, `require`s `default.hypr.omarchy` (all defaults, from `$OMARCHY_PATH/default/hypr/`), then `require`s local files so they override.
+  - Layered Lua overrides, loaded after defaults: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
+  - Standalone hyprlang (Omarchy ships no default to layer, so edited in full): `hypridle.conf`, `hyprlock.conf`, `hyprsunset.conf`, `xdph.conf`.
 
-  Put customizations in these files only — never in the Omarchy defaults.
+  Put customizations in these files only. Never in Omarchy defaults.
 
-  Two APIs are in scope: `hl.*` is raw Hyprland (`hl.config`, `hl.monitor`, `hl.env`, `hl.unbind`, `hl.dsp.*`) and `o.*` is Omarchy's sugar (`o.bind`, `o.window`, `o.launch_on_start`), defined in `$OMARCHY_PATH/default/hypr/helpers.lua`. `.luarc.json` points lua-ls at `/usr/share/hypr/stubs` for completion.
+  Two APIs in scope: `hl.*` is raw Hyprland (`hl.config`, `hl.monitor`, `hl.env`, `hl.unbind`, `hl.dsp.*`), `o.*` is Omarchy sugar (`o.bind`, `o.window`, `o.launch_on_start`), defined in `$OMARCHY_PATH/default/hypr/helpers.lua`. `.luarc.json` points lua-ls at `/usr/share/hypr/stubs` for completion.
 
-  **Keybindings don't override, they stack.** Loading later doesn't replace a key Omarchy already claimed — a second `o.bind` on the same key just adds a duplicate. Unbind first:
+  **Keybindings don't override, they stack.** Loading later doesn't replace key Omarchy already claimed. Second `o.bind` on same key just adds duplicate. Unbind first:
 
   ```lua
   hl.unbind("SUPER + SHIFT + M")
@@ -195,14 +195,14 @@ stow -D hypr
   sudo pacman -S tree-sitter-cli
   ```
 
-  **Relationship to Omarchy's Neovim config.** Omarchy ships its own LazyVim config through the `omarchy-nvim` package (`/usr/share/omarchy-nvim/config/`, seeded to `/etc/skel` for new users). Since this repo owns `~/.config/nvim`, `omarchy-nvim-setup` leaves it alone. Two of Omarchy's files are therefore **vendored** here as real files rather than symlinked — symlinking them outside the repo makes the config unreproducible on a second machine:
+  **Relationship to Omarchy's Neovim config.** Omarchy ships its own LazyVim config through the `omarchy-nvim` package (`/usr/share/omarchy-nvim/config/`, seeded to `/etc/skel` for new users). Since this repo owns `~/.config/nvim`, `omarchy-nvim-setup` leaves it alone. Two of Omarchy's files are therefore **vendored** here as real files rather than symlinked. Symlinking them outside the repo makes the config unreproducible on a second machine:
 
-  - `lua/plugins/all-omarchy-themes.lua` — preloads every Omarchy colorscheme so theme hot-reloading switches instantly. Omarchy never refreshes this after install, so check for drift now and then:
+  - `lua/plugins/all-omarchy-themes.lua`: preloads every Omarchy colorscheme so theme hot-reloading switches instantly. Omarchy never refreshes this after install, so check for drift now and then:
     ```sh
     diff /usr/share/omarchy-nvim/config/lua/plugins/all-themes.lua \
          ~/dotfiles/lazyvim/.config/nvim/lua/plugins/all-omarchy-themes.lua
     ```
-  - `plugin/after/transparency.lua` — strips highlight backgrounds. Omarchy patches this one in place via migrations, so it may show up in `git status` after an update.
+  - `plugin/after/transparency.lua`: strips highlight backgrounds. Omarchy patches this one in place via migrations, so it may show up in `git status` after an update.
 
   `lua/plugins/theme.lua` resolves the active theme at runtime instead of symlinking it, so the same commit works on Omarchy 3.x and 4.x. See [Omarchy 4 upgrade note](#omarchy-4-upgrade-note).
 
@@ -227,7 +227,7 @@ stow -D hypr
   Install tmux and TPM, then stow:
   ```sh
   sudo pacman -S tmux
-  # Plugin manager — note the path: NOT under ~/.config/tmux
+  # Plugin manager. Note the path: NOT under ~/.config/tmux
   git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
 
   # Stow the tmux config
@@ -235,17 +235,19 @@ stow -D hypr
   stow tmux
   ```
 
-  **NOTE:** Inside tmux, install plugins (tmux-resurrect, tmux-continuum, etc.) with `prefix + I` (with my prefix will be `CTRL+\ + I` or `CTRL+b + I`)
+  **NOTE:** Inside tmux, install plugins (tmux-sensible, tmux-resurrect, etc.) with `prefix + I` (with my prefix will be `CTRL+\ + I` or `CTRL+b + I`). If you are updating an existing machine that still has tmux-continuum installed, drop it with `prefix + ALT + u`.
 
-  TPM lives at `~/.local/share/tmux/plugins/` (set via `TMUX_PLUGIN_MANAGER_PATH` in `tmux.conf`) so that `~/.config/tmux/` holds nothing but `tmux.conf`. That lets stow link the **directory**, like every other module — a file-level link gets replaced by a regular copy the next time an Omarchy migration runs `sed -i` on `~/.config/tmux/tmux.conf`, which is exactly how this module silently drifted out of the repo once already.
+  TPM lives at `~/.local/share/tmux/plugins/` (set via `TMUX_PLUGIN_MANAGER_PATH` in `tmux.conf`) so that `~/.config/tmux/` holds nothing but `tmux.conf`. That lets stow link the **directory**, like every other module. A file-level link gets replaced by a regular copy the next time an Omarchy migration runs `sed -i` on `~/.config/tmux/tmux.conf`, which is exactly how this module silently drifted out of the repo once already.
 
-  Session state survives reboots via tmux-resurrect + tmux-continuum (auto-save every 5 min, auto-restore when the server starts). `SUPER + ALT + RETURN` decides what to open by asking whether any client is currently **attached** to the primary server, not whether a session exists: with nothing attached it attaches to the primary (starting it, and restoring the saved sessions, if it isn't running yet), so closing every terminal and opening a new one lands back in your work rather than in a fresh server. With one already attached, it opens an **independent** server on its own socket, with its own session list. That costs nothing: continuum only checks for a rival server at plugin load, so the isolated servers silently opt out of saving and restoring while the primary carries on. The one case that assumption misses is killing the primary while an isolated server is still alive — the next launch then builds a new primary that continuum silently leaves unsaved; kill the isolated servers first. Old snapshots need no external cleanup: resurrect prunes them itself on every save, keeping `@resurrect-delete-backup-after` days' worth and never fewer than the 5 newest.
+  Snapshots are **manual on both ends**: `prefix + Ctrl-s` saves, `prefix + Ctrl-r` restores. There is no timer. tmux-continuum used to provide one and was removed: with auto-restore off, its auto-save only did damage, because the empty server you open after a reboot overwrites the snapshot you wanted. A restore rebuilds sessions, windows, pane layouts, each pane's cwd and its scrollback, but **starts no programs** (`@resurrect-processes 'false'`), so nothing reopens an editor you had already walked away from.
 
-  Neovim buffers are **not** restored by resurrect — `@resurrect-strategy-nvim` only reads a `Session.vim` in the pane's cwd, and LazyVim stores sessions with persistence.nvim. Reopen them with `<leader>qs`.
+  `SUPER + ALT + RETURN` decides what to open by asking whether any client is currently **attached** to the primary server, not whether a session exists. With nothing attached it attaches to the primary, starting it if it isn't running yet, so closing every terminal and opening a new one lands back in your work rather than in a fresh server. With one already attached, it opens an **independent** server on its own socket, with its own session list. `SUPER + SHIFT + T` opens a third one on socket `sys-tools`, holding btop and lazydocker as two windows; quitting either of them closes the whole dashboard, and resurrect's keys are unbound there so it can never save over your real snapshot. None of them need to coordinate and start order is irrelevant, because no server writes a snapshot unless you tell it to. Old snapshots need no external cleanup: resurrect prunes them itself on every save, keeping `@resurrect-delete-backup-after` days' worth and never fewer than the 5 newest.
 
-12. **oh-my-pi (omp)**: setup is under `omp/.omp/`. Config for the oh-my-pi agent — a TUI mode-badge extension (`agent/extensions/`). Stows to `~/.omp/`.
+  Neovim buffers are **not** restored by resurrect. `@resurrect-strategy-nvim` only reads a `Session.vim` in the pane's cwd, and LazyVim stores sessions with persistence.nvim. Reopen them with `<leader>qs`.
 
-13. **OpenCode**: setup is under `opencode/.config/opencode/`. OpenCode config — model, plugins (ponytail, caveman), context7 MCP, and TUI settings. Stows to `~/.config/opencode/`.
+12. **oh-my-pi (omp)**: setup is under `omp/.omp/`. Config for the oh-my-pi agent, a TUI mode-badge extension (`agent/extensions/`). Stows to `~/.omp/`.
+
+13. **OpenCode**: setup is under `opencode/.config/opencode/`. OpenCode config: model, plugins (ponytail, caveman), context7 MCP, and TUI settings. Stows to `~/.config/opencode/`.
 
 
 ## Other tools and setups
@@ -296,18 +298,18 @@ sed 's/ć/ç/g' < /usr/share/X11/locale/en_US.UTF-8/Compose | sed 's/Ć/Ç/g' > 
 sudo mv Compose /usr/share/X11/locale/en_US.UTF-8/Compose
 ```
 
-4) Reboot the computer.
+4) Reboot computer.
 
 
 ## Optional: clear Neovim plugins
-If you want a clean Neovim start:
+Clean Neovim start:
 ```sh
 rm -rf ~/.local/share/nvim
 rm -rf ~/.local/state/nvim
 ```
 
 ## License
-This project is available as open source under the MIT license. See [LICENSE](/LICENSE).
+Open source under MIT license. See [LICENSE](/LICENSE).
 
 
 ## Code of conduct
