@@ -79,6 +79,9 @@ Applies to every `.md` here (**this file included**) and every code comment.
 - **No AI tells.** Drop "moreover", "furthermore", "additionally", "however", "it is worth
   noting". No one-line dramatic pauses. No filler adjectives ("crucial", "robust", "seamless",
   "comprehensive"), no "leverage" where "use" works.
+- **Comments wrap at ~120, not 80.** Matches `colorcolumn = "120"` in
+  `lazyvim/.config/nvim/lua/config/options.lua`. Code comments only. Markdown prose stays
+  unwrapped, one line per paragraph, editor soft-wraps it.
 - `README-pt-br.md` compresses the style, not the language. Portuguese articles carry grammar
   that English ones do not, so its ratio is lower on purpose. Technical terms, code and CLI stay
   verbatim, untranslated.
