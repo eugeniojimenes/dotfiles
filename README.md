@@ -18,8 +18,10 @@ My personal config files (dotfiles) for Arch-based systems, managed with GNU Sto
 - [Apply dotfiles with GNU Stow](#apply-dotfiles-with-gnu-stow)
   - [About each module](#about-each-module)
   - [Unstow (remove symlinks)](#unstow-remove-symlinks)
+- [Health check](#health-check)
 - [Other tools and setups](#other-tools-and-setups)
   - [Lazygit and Lazydocker](#lazygit-and-lazydocker)
+  - [Keyboard layout per machine](#keyboard-layout-per-machine)
   - [Cedilla with US keyboard layout](#cedilla-with-us-keyboard-layout)
 - [Optional: clear Neovim plugins](#optional-clear-neovim-plugins)
 - [License](#license)
@@ -168,6 +170,7 @@ stow -D hypr
 
 5. **Hyprland**: setup under `hypr/.config/hypr/`. Omarchy defaults never edited. Since Omarchy 4 config is **Lua**: `hyprland.lua` bootstraps Omarchy module path, `require`s `default.hypr.omarchy` (all defaults, from `$OMARCHY_PATH/default/hypr/`), then `require`s local files so they override.
   - Layered Lua overrides, loaded after defaults: `monitors.lua`, `input.lua`, `bindings.lua`, `looknfeel.lua`, `autostart.lua`.
+  - `input.lua` sets no `kb_layout` or `kb_variant`. Omarchy derives both from `/etc/vconsole.conf`, see [Keyboard layout per machine](#keyboard-layout-per-machine).
   - No standalone hyprlang files. `hypridle.conf` and `hyprlock.conf` dropped: **Omarchy 4 installs neither `hypridle` nor `hyprlock`**, idle and lock now `omarchy-shell` job, so those files configured daemons that weren't there. `hyprsunset.conf` and `xdph.conf` dropped: Omarchy 4 *does* ship both at `/usr/share/omarchy/config/hypr/`, copies here byte-identical, overrode nothing.
 
   Put customizations in these files only. Never in Omarchy defaults.
@@ -273,6 +276,31 @@ stow -D hypr
 13. **OpenCode**: setup is under `opencode/.config/opencode/`. OpenCode config: model, plugins (ponytail, caveman), context7 MCP, and TUI settings. Stows to `~/.config/opencode/`.
 
 
+## Health check
+`dotfiles-doctor` verifies fresh install, or existing machine after `omarchy update`. Read-only by default, prints exact repair for whatever it finds. `--fix` applies safe ones.
+
+```sh
+dotfiles-doctor          # report only
+dotfiles-doctor --fix    # apply the safe repairs
+```
+
+Fresh clone: `local-bin` not stowed yet, call by path:
+```sh
+~/dotfiles/local-bin/.local/bin/dotfiles-doctor --fix
+```
+
+Checks:
+- **stow**, per module. Three states: linked, not linked yet, or **conflict**. Conflict = real file where symlink belongs, what an Omarchy migration leaves behind (see [Omarchy updates write into this repo](#omarchy-updates-write-into-this-repo)). Never auto-fixed: file may hold changes worth keeping, diff against repo before deleting.
+- **packages** from [Packages required](#packages-required-by-my-dotfiles), via `pacman -Qq`.
+- **mise**: `mise ls --missing`, plus the three Neovim host packages the `postinstall` hooks in `config.toml` install (`gem`, `npm`, `pip`). Hooks fail silently, so a runtime can install with Neovim support missing.
+- **external installs** no package manager owns: TPM and the plugins `tmux.conf` declares, uosc under `~/.config/mpv/scripts`, Neovim plugins counted against `lazy-lock.json`.
+- **input**: live `kb_layout`/`kb_variant` against `/etc/vconsole.conf`, guarding the undocumented Omarchy fallback this repo leans on (see [Keyboard layout per machine](#keyboard-layout-per-machine)). Tolerates the `us,` group Omarchy prepends for non-Latin layouts. Skipped when `input.lua` sets the layout itself, or outside a Hyprland session.
+- **machine-local files** absent on a fresh machine by design: `~/.claude/settings.json` (flagged if it is a *symlink*, which would put work marketplace names in this public repo), `~/.config/xdg-terminals.list` pinning Alacritty, and the cedilla Compose patch that `libx11` updates revert. The cedilla check runs only when `intl` appears anywhere in the variant list, so a pure ABNT2 machine stays quiet while a `br,us` notebook is still checked: its us group reaches `dead_acute` and needs the patch.
+
+Exit code 1 on any failure, 0 when clean. No repo-hygiene checks (`git status`, uncommitted Omarchy migrations), review those by hand.
+
+Module list = directories in repo root, so new module covered with no script edit.
+
 ## Other tools and setups
 
 ### Lazygit and Lazydocker
@@ -283,46 +311,64 @@ sudo pacman -S lazygit lazydocker
 
 **Note:** if you keep a personal Lazygit config, symlink it into `~/.config/lazygit/config.yml`. I personally use the default configuration.
 
+### Keyboard layout per machine
+Desktop = US international with dead keys. Notebook = ABNT2. One repo, no branching.
+
+No layout in this repo. Omarchy's `default/hypr/input.lua` reads `/etc/vconsole.conf`: `kb_layout` from `XKBLAYOUT`, `kb_variant` from `XKBVARIANT`. Machine-local system config, so each machine answers for itself.
+
+Set once per machine, then `hyprctl reload`:
+```sh
+# Desktop: US international with dead keys
+sudo localectl set-x11-keymap us pc105+inet intl terminate:ctrl_alt_bksp
+
+# Notebook: ABNT2 first, US international second
+sudo localectl set-x11-keymap br,us pc105 ",intl" terminate:ctrl_alt_bksp
+```
+
+Pass all four arguments, `localectl` rewrites the whole X11 block and omitting model or options clears them. Read the machine's own `/etc/vconsole.conf` first, carry its model and options over, never copy another machine's. Conversion runs both ways unless `--no-convert`, so the console `KEYMAP` follows too (`br,us` lands on `br-abnt2`).
+
+**Variant slot for `br` stays empty.** `abnt2` is an XKB *model*, not a `br` variant: `xkbcli list` gives `br` only `nodeadkeys`, `dvorak`, `nativo`, `nativo-us`, `thinkpad`, `thinkpad_nodeadkeys`, `nativo-epo`, `rus`. Base `br` already *is* ABNT2, including the 107th key `<AB11>` (`slash`/`question`) and the dedicated ç on `<AC10>`. Writing `abnt2,intl` compiles fine and produces byte-identical symbols, changing only the keymap label to `pc_br(abnt2)_inet(evdev)`, so it works while documenting something false. Model `abnt2` and `pc105` also compile byte-identical for `br`, so the model is not worth changing.
+
+So `hypr/.config/hypr/input.lua` sets no `kb_layout`, no `kb_variant`. Still sets `kb_options`, which Omarchy does **not** read from `XKBOPTIONS`. Omarchy default = `compose:caps,shift:both_capslock_cancel`, plus a group toggle for non-Latin layouts only. `br` is Latin, so `br,us` gets no toggle unless this repo adds one. `grp:alt_space_toggle` is inert with a single layout, one value serves both machines.
+
+Check what is live:
+```sh
+hyprctl getoption input:kb_layout
+hyprctl getoption input:kb_variant
+```
+
+**This diverges from Omarchy's manual on purpose.** The [manual](https://omarchy.org/manual/keyboard-mouse-trackpad/) says to hardcode the layout in `input.lua` (`kb_layout = "us,dk"`), reachable from *Setup > Input* in the Omarchy menu (`Super + Space`), and never mentions vconsole or `localectl`. This repo takes the vconsole route so one committed file serves both machines. The fallback is real, `default/hypr/input.lua` reads `vconsole.XKBLAYOUT or "us"`, but it is Omarchy's code and not its documented interface, and this is Omarchy `4.0.0.alpha`. If a release drops that read, layout falls back to `us` silently. [Issue #6878](https://github.com/basecamp/omarchy/issues/6878) is the same seam failing in the wild: Quattro upgrades where vconsole carried only `KEYMAP` and no `XKBLAYOUT` lost their layout entirely. `localectl set-x11-keymap` writes both keys, so these machines sit in the good state those reporters lacked.
+
 ### Cedilla with US keyboard layout
-This is my personal workaround to type "ç" on an English (US, international with dead keys) keyboard layout. Please apply with caution and be aware that system files may be overwritten by updates.
+Workaround to type "ç" on English (US, international with dead keys). That layout maps `'` + `c` to ć, not ç.
 
-1) Set your system keyboard layout to: English (US, international with dead keys).
+Layout itself needs nothing here, see [Keyboard layout per machine](#keyboard-layout-per-machine). One file to patch:
 
-For Hyprland, edit `~/.config/hypr/input.lua`:
-```lua
--- Example for Brazilian and US keyboard layouts
-hl.config({
-  input = {
-    kb_layout = "br,us",
-    kb_variant = "abnt2,intl",
-    kb_options = "compose:caps,grp:alt_space_toggle",
-  },
-})
-```
-
-2) Edit the GTK immodules caches (paths vary by distro/versions):
 ```sh
-sudo vim /usr/lib/gtk-3.0/3.0.0/immodules.cache
-sudo vim /usr/lib/gtk-2.0/2.10.0/immodules.cache
-```
-Change the line:
-```
-"cedilla" "Cedilla" "gtk20" "/usr/share/locale" "az:ca:co:fr:gv:oc:pt:sq:tr:wa"
-```
-To:
-```
-"cedilla" "Cedilla" "gtk20" "/usr/share/locale" "az:ca:co:fr:gv:oc:pt:sq:tr:wa:en"
+sudo cp /usr/share/X11/locale/en_US.UTF-8/Compose{,.bak}
+sed 's/ć/ç/g; s/Ć/Ç/g' /usr/share/X11/locale/en_US.UTF-8/Compose.bak |
+  sudo tee /usr/share/X11/locale/en_US.UTF-8/Compose >/dev/null
 ```
 
-3) Replace "ć" with "ç" and "Ć" with "Ç" in `/usr/share/X11/locale/en_US.UTF-8/Compose`:
+Log out and back in.
+
+**How it reaches your apps.** Compose chain, each file including the next:
+```
+~/.XCompose
+  include "%H/.local/share/omarchy/default/xcompose"
+    include "%L"  ->  /usr/share/X11/locale/en_US.UTF-8/Compose  (patched above)
+```
+`%L` = locale Compose file. Omarchy seeds `~/.XCompose` with that include, so the patch reaches everything. fcitx5 runs by default under Omarchy, serves Wayland clients through its `waylandim` frontend; terminals read the same table through xkbcommon.
+
+Verify without typing anything:
 ```sh
-sudo cp /usr/share/X11/locale/en_US.UTF-8/Compose /usr/share/X11/locale/en_US.UTF-8/Compose.bak
-sed 's/ć/ç/g' < /usr/share/X11/locale/en_US.UTF-8/Compose | sed 's/Ć/Ç/g' > Compose
-sudo mv Compose /usr/share/X11/locale/en_US.UTF-8/Compose
+xkbcli compile-compose | grep '<dead_acute> <c>'
 ```
+Patched prints `<dead_acute> <c> :  "ç" U0107`. Keysym stays `U0107`, which *is* ć, because the sed swaps the output string and not the name. Unpatched prints "ć".
 
-4) Reboot computer.
+**`libx11` owns that file, so every update restores it and ç breaks silently.** `dotfiles-doctor` catches it, keyed on the SHA256 mismatch `pacman -Qkk libx11` reports while the patch holds.
 
+**Old GTK `immodules.cache` step dropped.** It added `:en` to the `cedilla` row in `/usr/lib/gtk-3.0/3.0.0/immodules.cache`, plus a gtk-2.0 twin. Neither does anything now: `GTK_IM_MODULE` is unset under Omarchy, so GTK apps go through Wayland text-input to fcitx5 and never load `im-cedilla.so`, and `/usr/lib/gtk-2.0/` no longer exists. No package owns `immodules.cache` either, so a gtk3 rebuild discards edits to it anyway.
 
 ## Optional: clear Neovim plugins
 Clean Neovim start:

@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+# Health check for this dotfiles repo: stow state, packages, mise tools, external installs, machine-local files.
+# Read-only by default. --fix runs the safe repairs (never resolves a stow conflict, that needs eyes on the file).
+# Runs before stow too: ~/dotfiles/local-bin/.local/bin/dotfiles-doctor
+
+set -uo pipefail
+
+FIX=0
+case "${1-}" in
+  --fix) FIX=1 ;;
+  -h | --help)
+    sed -n '2,4p' "$0" | sed 's/^# \?//'
+    exit 0
+    ;;
+  "") ;;
+  *)
+    echo "unknown argument: $1 (try --help)" >&2
+    exit 2
+    ;;
+esac
+
+# readlink resolves the stow symlink, so this finds the repo whether the script is called through
+# ~/.local/bin or straight out of a fresh clone.
+REPO=$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd) || exit 1
+
+if [[ -t 1 ]]; then
+  R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[1m' N=$'\e[0m'
+else
+  R= G= Y= B= N=
+fi
+
+problems=0
+ok() { printf "  ${G}ok${N}    %s\n" "$*"; }
+bad() {
+  printf "  ${R}FAIL${N}  %s\n" "$*"
+  problems=$((problems + 1))
+}
+warn() { printf "  ${Y}warn${N}  %s\n" "$*"; }
+note() { printf '        %s\n' "$*"; }
+section() { printf "\n${B}%s${N}\n" "$*"; }
+
+# Print the repair, or run it under --fix.
+repair() {
+  if ((FIX)); then
+    note "running: $*"
+    eval "$@" 2>&1 | sed 's/^/        /'
+  else
+    note "fix: $*"
+  fi
+}
+
+section "stow modules"
+cd "$REPO" || exit 1
+for mod in */; do
+  mod=${mod%/}
+  # A stow module holds dot-prefixed targets. Skips any plain directory added later.
+  ls -A "$mod" | grep -q '^\.' || continue
+  out=$(stow -n -v "$mod" 2>&1)
+  rc=$?
+  out=$(grep -v '^WARNING: in simulation mode' <<<"$out")
+  if ((rc != 0)); then
+    bad "$mod conflict"
+    sed 's/^/        /' <<<"$out"
+    note "resolve by hand (real file where a symlink belongs, usually an Omarchy migration), then: stow $mod"
+  elif [[ -n $out ]]; then
+    bad "$mod not stowed"
+    repair "stow $mod"
+  else
+    ok "$mod"
+  fi
+done
+
+section "packages"
+missing=()
+for pkg in git stow tmux tree-sitter-cli lazygit lazydocker usage mise starship alacritty mpv curl unzip; do
+  pacman -Qq "$pkg" &>/dev/null || missing+=("$pkg")
+done
+if ((${#missing[@]})); then
+  bad "not installed: ${missing[*]}"
+  repair "sudo pacman -S --needed ${missing[*]}"
+else
+  ok "all declared packages installed"
+fi
+
+section "mise tools"
+if ! command -v mise &>/dev/null; then
+  bad "mise not on PATH"
+else
+  absent=$(mise ls --missing 2>/dev/null)
+  if [[ -n $absent ]]; then
+    bad "declared tools not installed"
+    sed 's/^/        /' <<<"$absent"
+    repair "mise install"
+  else
+    ok "all declared tools installed"
+  fi
+  # config.toml postinstall hooks wire Neovim into each runtime. Silent no-ops when a hook fails.
+  command -v neovim-ruby-host &>/dev/null && ok "ruby neovim gem" || {
+    bad "ruby neovim gem"
+    repair "mise exec ruby -- gem install neovim"
+  }
+  command -v neovim-node-host &>/dev/null && ok "node neovim package" || {
+    bad "node neovim package"
+    repair "mise exec node -- npm install -g neovim"
+  }
+  python -c 'import neovim' &>/dev/null && ok "python neovim package" || {
+    bad "python neovim package"
+    repair "mise exec python -- pip install neovim"
+  }
+fi
+
+section "external installs"
+TPM=$HOME/.local/share/tmux/plugins/tpm
+if [[ -d $TPM ]]; then
+  ok "tpm"
+  absent=()
+  while read -r plugin; do
+    [[ $plugin == tpm ]] && continue
+    [[ -d $HOME/.local/share/tmux/plugins/$plugin ]] || absent+=("$plugin")
+  done < <(sed -n "s/.*@plugin '[^\/]*\/\([^']*\)'.*/\1/p" "$REPO/tmux/.config/tmux/tmux.conf")
+  if ((${#absent[@]})); then
+    bad "tmux plugins missing: ${absent[*]}"
+    repair "$TPM/bin/install_plugins"
+  else
+    ok "tmux plugins"
+  fi
+else
+  bad "tpm not installed"
+  repair "git clone https://github.com/tmux-plugins/tpm $TPM"
+fi
+
+if [[ -d $HOME/.config/mpv/scripts/uosc ]]; then
+  ok "uosc"
+else
+  bad "uosc not installed"
+  repair "curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash"
+fi
+
+LAZY=$HOME/.local/share/nvim/lazy
+if [[ -d $LAZY ]]; then
+  locked=$(grep -c '": {' "$REPO/lazyvim/.config/nvim/lazy-lock.json")
+  installed=$(find "$LAZY" -maxdepth 1 -mindepth 1 -type d | wc -l)
+  if ((installed < locked)); then
+    warn "nvim plugins: $installed installed, $locked in lazy-lock.json"
+    note "fix: nvim --headless '+Lazy! restore' +qa"
+  else
+    ok "nvim plugins ($installed)"
+  fi
+else
+  bad "nvim plugins not installed"
+  repair "nvim --headless '+Lazy! restore' +qa"
+fi
+
+section "input"
+# input.lua carries no kb_layout/kb_variant; Omarchy's default derives both from /etc/vconsole.conf. That
+# read is Omarchy code, not its documented interface (the manual says to hardcode in input.lua), and this is
+# 4.0.0.alpha. If a release drops it, layout reverts to "us" silently. Same seam as omarchy issue #6878.
+vc_layout=$(sed -n 's/^XKBLAYOUT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
+vc_variant=$(sed -n 's/^XKBVARIANT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
+live_layout=$(hyprctl getoption input:kb_layout 2>/dev/null | sed -n 's/^str: //p')
+
+if [[ -z $live_layout ]]; then
+  : # no Hyprland session to query, nothing to compare
+elif grep -qE '^\s*kb_layout' "$REPO/hypr/.config/hypr/input.lua" 2>/dev/null; then
+  ok "input.lua sets kb_layout directly, vconsole not in play"
+elif [[ -z $vc_layout ]]; then
+  bad "/etc/vconsole.conf has no XKBLAYOUT, so Omarchy falls back to us (omarchy issue #6878)"
+  note "fix: sudo localectl set-x11-keymap <layout> <model> <variant> <options>"
+else
+  live_variant=$(hyprctl getoption input:kb_variant 2>/dev/null | sed -n 's/^str: //p')
+  # Omarchy prepends a us group when the leading layout cannot type Latin, so accept that shape too.
+  for pair in "layout:$live_layout:$vc_layout:us," "variant:$live_variant:$vc_variant:,"; do
+    IFS=: read -r what live vc prefix <<<"$pair"
+    if [[ $live == "$vc" || $live == "$prefix$vc" ]]; then
+      ok "kb_$what ${live:-(empty)} matches vconsole"
+    else
+      bad "kb_$what is ${live:-(empty)}, vconsole says ${vc:-(empty)}"
+      note "Omarchy may have dropped the vconsole read; set kb_$what in input.lua directly"
+    fi
+  done
+fi
+
+section "machine-local files"
+SETTINGS=$HOME/.claude/settings.json
+if [[ -L $SETTINGS ]]; then
+  bad "~/.claude/settings.json is a symlink, so its work marketplace names would land in this public repo"
+  note "fix: replace with a real file, see the claude-code notes in CLAUDE.md"
+elif [[ -f $SETTINGS ]]; then
+  ok "~/.claude/settings.json"
+else
+  bad "~/.claude/settings.json absent"
+  note "fix: decrypt ~/.private/claude-settings.json.age into place, then re-add marketplaces"
+fi
+
+TERMS=$HOME/.config/xdg-terminals.list
+if [[ -f $TERMS ]] && grep -qx 'Alacritty.desktop' "$TERMS"; then
+  ok "default terminal is Alacritty"
+else
+  bad "default terminal not pinned, Omarchy launchers will open foot"
+  repair "omarchy-default-terminal alacritty"
+fi
+
+# Only us(intl) types ć on ' + c and needs the Compose patch. Match intl anywhere in the list, not just
+# first: a br,us notebook leads with ABNT2 (real ç key) but still reaches us(intl) through the group
+# toggle, and needs the patch there. Live Hyprland value first, vconsole when outside a session.
+variant=$(hyprctl getoption input:kb_variant 2>/dev/null | sed -n 's/^str: //p')
+[[ -z $variant ]] && variant=$(sed -n 's/^XKBVARIANT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
+if [[ ,$variant, == *,intl,* ]]; then
+  # libx11 owns the Compose file, so every update restores it and silently takes ç with it. A SHA256
+  # mismatch means the patch is still in place. Reported on stderr, and `pacman -Qkk` exits 1 whenever
+  # any file is altered, so capture first: piping straight into grep would trip pipefail on a hit.
+  qkk=$(pacman -Qkk libx11 2>&1)
+  if grep -q 'locale/en_US.UTF-8/Compose (SHA256' <<<"$qkk"; then
+    ok "cedilla patch in en_US.UTF-8/Compose"
+  else
+    bad "cedilla patch gone, a libx11 update restored the file, ' + c now types ć"
+    note "fix: see Cedilla with US keyboard layout in README.md (needs sudo, so not automated here)"
+  fi
+fi
+
+if ((problems)); then
+  printf "\n${R}%d problem(s)${N}%s\n" "$problems" "$( ((FIX)) || echo ', re-run with --fix to apply the safe repairs')"
+  exit 1
+fi
+printf "\n${G}all checks passed${N}\n"
