@@ -183,13 +183,13 @@ fi
 section "machine-local files"
 SETTINGS=$HOME/.claude/settings.json
 if [[ -L $SETTINGS ]]; then
-  bad "~/.claude/settings.json is a symlink, so its work marketplace names would land in this public repo"
+  bad "~/.claude/settings.json is a symlink, so Claude Code writes into the module and private unlock refuses it"
   note "fix: replace with a real file, see the claude-code notes in CLAUDE.md"
 elif [[ -f $SETTINGS ]]; then
   ok "~/.claude/settings.json"
 else
   bad "~/.claude/settings.json absent"
-  note "fix: decrypt ~/.private/claude-settings.json.age into place, then re-add marketplaces"
+  note "fix: ~/.private/private unlock, then re-add marketplaces"
 fi
 
 TERMS=$HOME/.config/xdg-terminals.list

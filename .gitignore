@@ -4,6 +4,12 @@
 **/*.db
 /.opencode/
 
+# Repo-root agent dir, separate from the claude-code/ module payload below. Claude Code writes
+# settings.local.json here for this project, and its permission entries name work tools verbatim.
+# Was covered only by ~/.config/git/ignore, which is machine-local and untracked, so a fresh
+# machine showed the file as untracked in a public repo. Allow-list anything that earns tracking.
+/.claude/
+
 # uosc ships own Lua tree plus ~17 MB prebuilt `ziggy` binaries (linux, darwin, windows .exe).
 # No place in a public repo: no checksums, no provenance, two of three never run here.
 # Install instead, see mpv/.config/mpv/README.md.
@@ -16,3 +22,12 @@
 /mpv/.config/mpv/fonts/
 /mpv/.config/mpv/script-opts/
 /mpv/.config/mpv/.uosc-backup/
+
+# This directory is a stow module payload AND a valid Claude Code project-settings dir, which is the same
+# layout Claude Code creates in every project it runs from. So a session started with cwd anywhere under
+# claude-code/ writes its settings.json here, inside the public repo. Seen untracked on a second machine,
+# 2026-08-21. Ignore the lot, re-allow only the three files this module actually ships.
+/claude-code/.claude/*
+!/claude-code/.claude/CLAUDE.md
+!/claude-code/.claude/skills/
+!/claude-code/.claude/statusline-command.sh
