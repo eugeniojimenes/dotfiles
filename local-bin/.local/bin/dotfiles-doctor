@@ -82,6 +82,18 @@ else
   ok "all declared packages installed"
 fi
 
+# tmux-sys-tools.sh opens the Docker window through Omarchy's wrapper rather than lazydocker directly:
+# Omarchy 4 stopped granting the root-equivalent docker group, so the wrapper is what reaches the socket
+# (pkexec, or straight through under sudoless Docker). It is an Omarchy internal, undocumented and marked
+# hidden in its own menu metadata, on a 4.0.0.alpha that churns. A rename leaves the window dying at launch
+# with nothing to read, so name the seam here instead.
+if command -v omarchy-launch-docker-tui &>/dev/null; then
+  ok "omarchy-launch-docker-tui"
+else
+  bad "omarchy-launch-docker-tui gone, the docker window in tmux-sys-tools.sh cannot open"
+  note "Omarchy renamed or dropped the wrapper; point tmux-sys-tools.sh at whatever replaced it"
+fi
+
 section "mise tools"
 if ! command -v mise &>/dev/null; then
   bad "mise not on PATH"

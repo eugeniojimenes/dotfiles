@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# System-monitoring TUIs on their own tmux server: btop in one window, lazydocker in another.
+# System-monitoring TUIs on their own tmux server: btop in one window, the Docker TUI in another.
 #
 # Own socket (-L sys-tools), so its session never shows up in the primary's `prefix + s` and vice
 # versa. Same isolation as the iso-<pid> servers in tmux-launch.sh. Unlike those the socket
@@ -9,7 +9,7 @@
 # is meant to close the whole thing. So the two settings below, applied once at creation.
 # They live on the server, so a later reattach inherits them.
 #
-#   pane-exited -> kill-server   quitting btop or lazydocker takes the server (and the window with
+#   pane-exited -> kill-server   quitting btop or the Docker TUI takes the server (and the window with
 #                                it) down, instead of leaving a half-empty dashboard behind. It
 #                                fires for *any* pane process ending, so closing a split you opened
 #                                in here also closes the lot. Fine for a viewer, worth knowing.
@@ -20,9 +20,17 @@
 #                                snapshot. Nothing here is worth saving, so take the keys away.
 #                                Nothing restores either: continuum is gone, these keys were the
 #                                only trigger left.
+#
+# The docker window runs Omarchy's wrapper, not lazydocker itself. Omarchy 4 stopped putting users in
+# the root-equivalent docker group (upstream PR #8056), so raw lazydocker now dies on a permission
+# denied against /var/run/docker.sock. omarchy-launch-docker-tui branches on omarchy-sudo-docker:
+# pkexec when the socket is unreachable, straight through once sudoless Docker is opted back in. No
+# polkit agent is installed, so pkexec prompts on the pty instead of popping a dialog, and that prompt
+# waits inside this detached window until you switch to it. Declining it exits the pane, which the
+# hook above turns into a kill-server, so a refused password closes btop too.
 tmux -L sys-tools has-session -t sys-tools 2>/dev/null ||
   tmux -L sys-tools new-session -d -s sys-tools -n btop btop \; \
-    new-window -d -n docker lazydocker \; \
+    new-window -d -n docker omarchy-launch-docker-tui \; \
     set-hook -g pane-exited kill-server \; \
     unbind C-s \; unbind C-r
 
