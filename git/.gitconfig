@@ -24,3 +24,7 @@
 	followTags = true
 [rerere]
 	enabled = true
+# Work identity: ~/.gitconfig-work, a symlink into ~/.private. Never in this public repo.
+# Glob avoids naming the employer: matches ~/<something>-workspace/ only. Missing file = git ignores it.
+[includeIf "gitdir:~/*-workspace/"]
+	path = ~/.gitconfig-work

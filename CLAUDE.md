@@ -110,6 +110,7 @@ docs(readme): update tmux install instructions for XDG path
 
 ## Key module notes
 
+- **git**: work identity conditional, `[includeIf "gitdir:~/*-workspace/"]` at bottom of `.gitconfig`. Glob on purpose: matches the work checkout dir without naming the employer, which a literal path would. Target `~/.gitconfig-work` = symlink into `~/.private` (payload `gitwork`, ciphertext `gitconfig-work.age`), so work email never lands here. Missing target is not an error, git skips an include whose path does not exist, so a machine with no `~/.private` unlocked just falls through to the personal `[user]`. Same reasoning as `settings.json` in **claude-code** below.
 - **alacritty**: not Omarchy 4 default. Quattro ships **foot**, installs `~/.local/share/applications/foot.desktop`, which `xdg-terminal-exec` picks. Every Omarchy launcher (`omarchy-launch-terminal`, `omarchy-launch-tui`) goes through it, so whole session silently moves to foot's `~/.config/foot/foot.ini` (font size 9). Reclaim with `omarchy-default-terminal alacritty`, which writes `~/.config/xdg-terminals.list`. That file machine-local and untracked; re-run command on fresh machine. Kept over foot and Kitty because tabs, splits and persistence come from tmux here, so native ones add nothing.
 - **lazyvim** (`lazyvim/.config/nvim/`): LazyVim-based Neovim config. Plugin specs in `lua/plugins/`. Lock file `lazy-lock.json`.
 - **mise** (`mise/.config/mise/config.toml`): Node 22, Python 3.11, Ruby 3.4, Rust (latest), uv (latest). Run `mise install` after stowing.
