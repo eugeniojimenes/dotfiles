@@ -16,6 +16,7 @@ return {
         "js-debug-adapter",
         "json-lsp",
         "lua-language-server",
+        "marksman",
         "prettier",
         "prisma-language-server",
         "pyright",
