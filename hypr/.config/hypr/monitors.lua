@@ -8,7 +8,7 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 -- Desktop setup.
 hl.monitor({
   output = "desc:LG Electronics LG HDR WFHD 0x01010101",
-  mode = "2560x1080@74.99",
+  mode = "2560x1080@59.98",
   position = "auto-right",
   scale = 1,
 })
