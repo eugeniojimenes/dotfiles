@@ -10,6 +10,26 @@ map("n", "<C-q>",   function() Snacks.bufdelete() end, { desc = "Delete current 
 map("n", "<leader>bD", "<CMD>bd<CR>",                  { desc = "Delete Buffer and Window" })
 map("n", "<C-x>",      "<CMD>bd<CR>",                  { desc = "Delete Buffer and Window" })
 
+-- Jump by bufferline position, not buffer number: `<leader>b0` = leftmost tab, `<leader>b1` the next.
+-- `go_to(n, true)` and `get_elements()` both index bufferline's ordered list, so pins and `[B`/`]B` moves
+-- count and the label always names the buffer the key actually opens. which-key stores a function `desc`
+-- as a getter (`which-key/util.lua:288`), so it re-runs on every popup and the names stay live.
+local buffer_jumps = {}
+for i = 0, 9 do
+  buffer_jumps[#buffer_jumps + 1] = {
+    "<leader>b" .. i,
+    function() require("bufferline").go_to(i + 1, true) end,
+    desc = function()
+      local el = require("bufferline").get_elements().elements[i + 1]
+      if not el then return "(none)" end
+      local rel = vim.fn.fnamemodify(el.path or "", ":~:.")
+      if rel == "" then return el.name or "[No Name]" end
+      return #rel > 40 and vim.fn.pathshorten(rel) or rel
+    end,
+  }
+end
+require("which-key").add(buffer_jumps)
+
 
 map("n", "<C-f>", function() Snacks.picker.pick("files") end, { desc = "Find Files" })
 
