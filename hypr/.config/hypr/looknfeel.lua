@@ -17,3 +17,8 @@ hl.config({
 -- (`hyprctl clients` marks them with a `*`) and get re-evaluated, so removing one here, after
 -- Omarchy's rules have run, un-matches the float rules that keyed on it.
 o.window("org.omarchy.btop", { tag = "-floating-window" })
+
+-- Stop terminal bells from stealing focus. tmux `bell-action any` forwards a bell from any window (nvim, a finished
+-- Claude session) to Alacritty, which asks for attention via xdg-activation, and Omarchy's global
+-- `misc.focus_on_activate = true` turns that into a focus switch. Window still gets marked urgent.
+o.window("Alacritty", { focus_on_activate = false })
