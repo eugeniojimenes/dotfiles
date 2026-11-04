@@ -212,6 +212,21 @@ else
   repair "omarchy-default-terminal alacritty"
 fi
 
+# Omarchy maps images to imv.desktop, which gets only the clicked file, so next/prev have nothing to step to.
+# imv ships imv-dir.desktop for exactly this. Set in mimeapps.list, not by editing imv.desktop: Omarchy
+# migrations re-run omarchy-refresh-applications, which copies its launchers over ~/.local/share/applications.
+IMAGES="image/png image/jpeg image/gif image/webp image/bmp image/tiff"
+wrong=()
+for t in $IMAGES; do
+  [[ $(xdg-mime query default "$t" 2>/dev/null) == imv-dir.desktop ]] || wrong+=("$t")
+done
+if ((${#wrong[@]})); then
+  bad "${wrong[*]} not opening in imv-dir, next/prev image will not work"
+  repair "xdg-mime default imv-dir.desktop $IMAGES"
+else
+  ok "images open in imv-dir"
+fi
+
 # Only us(intl) types ć on ' + c and needs the Compose patch. Match intl anywhere in the list, not just
 # first: a br,us notebook leads with ABNT2 (real ç key) but still reaches us(intl) through the group
 # toggle, and needs the patch there. Live Hyprland value first, vconsole when outside a session.
