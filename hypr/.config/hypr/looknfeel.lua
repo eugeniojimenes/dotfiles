@@ -5,6 +5,8 @@ hl.config({
   general = {
     -- Tighter outer gaps than the Omarchy default.
     gaps_out = 5,
+    -- Tighter gap between tiled windows.
+    gaps_in = 2,
   },
 })
 
