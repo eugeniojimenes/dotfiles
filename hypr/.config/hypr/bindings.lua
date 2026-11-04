@@ -24,9 +24,13 @@ o.bind("SUPER + N", "Editor", { omarchy = "editor" })
 -- rather than rebound here.
 --
 -- btop + lazydocker as two windows of one isolated tmux server. See tmux-sys-tools.sh.
-o.bind("SUPER + SHIFT + T", "System tools (btop + lazydocker)",
+o.bind(
+  "SUPER + SHIFT + T",
+  "System tools (btop + lazydocker)",
   "omarchy-launch-or-focus org.omarchy.sys-tools 'omarchy-launch-tui --app-id=org.omarchy.sys-tools "
-  .. os.getenv("HOME") .. "/.config/hypr/tmux-sys-tools.sh'")
+    .. os.getenv("HOME")
+    .. "/.config/hypr/tmux-sys-tools.sh'"
+)
 
 -- Omarchy's standalone lazydocker is redundant now that it lives in the window above.
 hl.unbind("SUPER + SHIFT + D")
@@ -45,4 +49,8 @@ o.bind("ALT + SHIFT + TAB", "Previous workspace", hl.dsp.focus({ workspace = "e-
 -- tmux-launch.sh attaches the primary server once, then gives every later
 -- launch its own iso-<pid> socket.
 hl.unbind("SUPER + ALT + RETURN")
-o.bind("SUPER + ALT + RETURN", "Tmux", "omarchy-launch-terminal " .. os.getenv("HOME") .. "/.config/hypr/tmux-launch.sh")
+o.bind(
+  "SUPER + ALT + RETURN",
+  "Tmux",
+  "omarchy-launch-terminal " .. os.getenv("HOME") .. "/.config/hypr/tmux-launch.sh"
+)
