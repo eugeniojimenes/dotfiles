@@ -13,7 +13,6 @@ CFLAGS = "-std=gnu17"
 
 [tools]
 claude = "latest"
-codex = "latest"
 gh = "latest"
 "github:can1357/oh-my-pi" = "latest"
 glab = "latest"
