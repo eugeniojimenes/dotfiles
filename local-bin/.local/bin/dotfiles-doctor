@@ -98,7 +98,8 @@ section "mise tools"
 if ! command -v mise &>/dev/null; then
   bad "mise not on PATH"
 else
-  absent=$(mise ls --missing 2>/dev/null)
+  # Lazy tools (Omarchy's /etc/mise/conf.d declarations) install on first use, so missing is fine.
+  absent=$(mise ls --missing 2>/dev/null | grep -v '(lazy)')
   if [[ -n $absent ]]; then
     bad "declared tools not installed"
     sed 's/^/        /' <<<"$absent"
@@ -227,21 +228,20 @@ else
   ok "images open in imv-dir"
 fi
 
-# Only us(intl) types ć on ' + c and needs the Compose patch. Match intl anywhere in the list, not just
+# Only us(intl) types ć on ' + c and needs the cedilla override. Match intl anywhere in the list, not just
 # first: a br,us notebook leads with ABNT2 (real ç key) but still reaches us(intl) through the group
-# toggle, and needs the patch there. Live Hyprland value first, vconsole when outside a session.
+# toggle, and needs it there. Live Hyprland value first, vconsole when outside a session.
 variant=$(hyprctl getoption input:kb_variant 2>/dev/null | sed -n 's/^str: //p')
 [[ -z $variant ]] && variant=$(sed -n 's/^XKBVARIANT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
 if [[ ,$variant, == *,intl,* ]]; then
-  # libx11 owns the Compose file, so every update restores it and silently takes ç with it. A SHA256
-  # mismatch means the patch is still in place. Reported on stderr, and `pacman -Qkk` exits 1 whenever
-  # any file is altered, so capture first: piping straight into grep would trip pipefail on a hit.
-  qkk=$(pacman -Qkk libx11 2>&1)
-  if grep -q 'locale/en_US.UTF-8/Compose (SHA256' <<<"$qkk"; then
-    ok "cedilla patch in en_US.UTF-8/Compose"
+  # Effective table, not a file check: xkbcommon resolves ~/.XCompose and its includes the way fcitx5 does.
+  # Capture first: grep -q exits on the hit, xkbcli dies on SIGPIPE and pipefail inverts the result.
+  compose=$(xkbcli compile-compose 2>/dev/null)
+  if grep -q '^<dead_acute> <c> *: *"ç"' <<<"$compose"; then
+    ok "cedilla: ' + c types ç"
   else
-    bad "cedilla patch gone, a libx11 update restored the file, ' + c now types ć"
-    note "fix: see Cedilla with US keyboard layout in README.md (needs sudo, so not automated here)"
+    bad "cedilla: ' + c types ć"
+    note "fix: see Cedilla with US keyboard layout in README.md"
   fi
 fi
 

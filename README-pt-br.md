@@ -295,7 +295,7 @@ O que verifica:
 - **mise**: `mise ls --missing`, mais os três pacotes de host do Neovim que os hooks `postinstall` do `config.toml` instalam (`gem`, `npm`, `pip`). Esses hooks falham em silêncio, então um runtime pode estar instalado sem o suporte a Neovim.
 - **instalações externas** que nenhum gerenciador de pacotes controla: TPM e os plugins declarados no `tmux.conf`, uosc em `~/.config/mpv/scripts`, plugins do Neovim contados contra o `lazy-lock.json`.
 - **input**: `kb_layout`/`kb_variant` ativos contra o `/etc/vconsole.conf`, protegendo o fallback não documentado do Omarchy no qual este repositório se apoia (veja [Layout de teclado por máquina](#layout-de-teclado-por-máquina)). Tolera o grupo `us,` que o Omarchy prefixa em layouts não latinos. Pulado quando o próprio `input.lua` define o layout, ou fora de uma sessão do Hyprland.
-- **arquivos locais da máquina**, ausentes em uma máquina nova de propósito: `~/.claude/settings.json` (sinalizado se for um *symlink*, o que colocaria nomes de marketplaces do trabalho neste repo público), `~/.config/xdg-terminals.list` fixando o Alacritty, imagens abrindo no `imv-dir.desktop` (o Omarchy escolhe o `imv.desktop`, que abre só o arquivo clicado, então próxima/anterior não fazem nada), e a correção de cedilha no Compose que as atualizações do `libx11` revertem. A verificação da cedilha só roda quando `intl` aparece em qualquer posição da lista de variantes, então uma máquina só ABNT2 fica quieta, enquanto um notebook `br,us` continua sendo verificado: o grupo us dele alcança o `dead_acute` e precisa da correção.
+- **arquivos locais da máquina**, ausentes em uma máquina nova de propósito: `~/.claude/settings.json` (sinalizado se for um *symlink*, o que colocaria nomes de marketplaces do trabalho neste repo público), `~/.config/xdg-terminals.list` fixando o Alacritty, imagens abrindo no `imv-dir.desktop` (o Omarchy escolhe o `imv.desktop`, que abre só o arquivo clicado, então próxima/anterior não fazem nada), e a sobrescrita de cedilha no `~/.XCompose`, verificada na tabela efetiva que o `xkbcli compile-compose` monta. A verificação da cedilha só roda quando `intl` aparece em qualquer posição da lista de variantes, então uma máquina só ABNT2 fica quieta, enquanto um notebook `br,us` continua sendo verificado: o grupo us dele alcança o `dead_acute` e precisa da sobrescrita.
 
 Código de saída 1 quando algo falha, 0 quando está limpo. Não verifica higiene do repo (`git status`, migrações do Omarchy não commitadas); revise isso à mão.
 
@@ -342,31 +342,36 @@ hyprctl getoption input:kb_variant
 ### Cedilha com layout de teclado dos EUA
 Workaround para digitar "ç" no layout Inglês ("*US, international with dead keys*"). Esse layout mapeia `'` + `c` para ć, e não para ç.
 
-O layout em si não precisa de nada aqui, veja [Layout de teclado por máquina](#layout-de-teclado-por-máquina). Um arquivo para corrigir:
+O layout em si não precisa de nada aqui, veja [Layout de teclado por máquina](#layout-de-teclado-por-máquina). Duas linhas no final do `~/.XCompose`, sem sudo:
 
 ```sh
-sudo cp /usr/share/X11/locale/en_US.UTF-8/Compose{,.bak}
-sed 's/ć/ç/g; s/Ć/Ç/g' /usr/share/X11/locale/en_US.UTF-8/Compose.bak |
-  sudo tee /usr/share/X11/locale/en_US.UTF-8/Compose >/dev/null
+cat >>~/.XCompose <<'EOF'
+
+# Cedilla on us/intl: dead_acute + c gives ç, not ć. Overrides the system Compose included above.
+<dead_acute> <c> : "ç" ccedilla
+<dead_acute> <C> : "Ç" Ccedilla
+EOF
+omarchy-restart-xcompose
 ```
 
-Saia da sessão e entre de novo.
-
-**Como isso chega nos aplicativos.** Cadeia de Compose, cada arquivo incluindo o próximo:
+**Por que funciona.** Cadeia de Compose, cada arquivo incluindo o próximo:
 ```
 ~/.XCompose
-  include "%H/.local/share/omarchy/default/xcompose"
-    include "%L"  ->  /usr/share/X11/locale/en_US.UTF-8/Compose  (corrigido acima)
+  include "/usr/share/omarchy/default/xcompose"
+    include "%L"  ->  /usr/share/X11/locale/en_US.UTF-8/Compose  (mapeia para ć)
+  <dead_acute> <c> : "ç"  (a definição posterior vence)
 ```
-`%L` = o arquivo Compose da locale. O Omarchy já cria o `~/.XCompose` com esse include, então a correção alcança tudo. O fcitx5 roda por padrão no Omarchy e atende os clientes Wayland pelo frontend `waylandim`; os terminais leem a mesma tabela através do xkbcommon.
+A mesma sequência definida duas vezes = a última vence, por isso a sobrescrita fica depois do include. O fcitx5 roda por padrão no Omarchy e atende os clientes Wayland pelo frontend `waylandim`; os terminais leem a mesma tabela através do xkbcommon.
+
+O `~/.XCompose` fica local na máquina, fora do repo: o Omarchy o cria com seu nome e e-mail do git (`omarchy-setup-git`), que não pertencem a um repo público. O Omarchy não mexe numa cópia editada à mão.
 
 Para verificar sem digitar nada:
 ```sh
 xkbcli compile-compose | grep '<dead_acute> <c>'
 ```
-Corrigido, imprime `<dead_acute> <c> :  "ç" U0107`. O keysym continua `U0107`, que *é* o ć, porque o sed troca a string de saída e não o nome. Sem a correção, imprime "ć".
+Corrigido, imprime `<dead_acute> <c> :  "ç" ccedilla`. Sem a correção, imprime "ć".
 
-**O `libx11` é dono desse arquivo, então toda atualização o restaura e o ç quebra em silêncio.** O `dotfiles-doctor` detecta isso, usando como chave a divergência de SHA256 que o `pacman -Qkk libx11` reporta enquanto a correção está de pé.
+**Correção antiga no arquivo do sistema removida.** Ela rodava `sed 's/ć/ç/g'` no `/usr/share/X11/locale/en_US.UTF-8/Compose`. O `libx11` é dono desse arquivo, então toda atualização o restaurava e o ç quebrava em silêncio (o libx11 1.8.14 fez exatamente isso). Se uma máquina ainda a tiver, `sudo pacman -S libx11` restaura o arquivo original; a sobrescrita acima cobre os dois estados.
 
 **Passo antigo do `immodules.cache` do GTK removido.** Ele acrescentava `:en` na linha `cedilla` do `/usr/lib/gtk-3.0/3.0.0/immodules.cache`, mais um gêmeo em gtk-2.0. Nenhum dos dois faz nada hoje: o `GTK_IM_MODULE` não é definido no Omarchy, então os aplicativos GTK passam pelo text-input do Wayland até o fcitx5 e nunca carregam o `im-cedilla.so`, e o `/usr/lib/gtk-2.0/` não existe mais. Nenhum pacote é dono do `immodules.cache` também, então um rebuild do gtk3 descarta qualquer edição feita nele.
 

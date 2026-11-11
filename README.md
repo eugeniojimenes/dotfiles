@@ -295,7 +295,7 @@ Checks:
 - **mise**: `mise ls --missing`, plus the three Neovim host packages the `postinstall` hooks in `config.toml` install (`gem`, `npm`, `pip`). Hooks fail silently, so a runtime can install with Neovim support missing.
 - **external installs** no package manager owns: TPM and the plugins `tmux.conf` declares, uosc under `~/.config/mpv/scripts`, Neovim plugins counted against `lazy-lock.json`.
 - **input**: live `kb_layout`/`kb_variant` against `/etc/vconsole.conf`, guarding the undocumented Omarchy fallback this repo leans on (see [Keyboard layout per machine](#keyboard-layout-per-machine)). Tolerates the `us,` group Omarchy prepends for non-Latin layouts. Skipped when `input.lua` sets the layout itself, or outside a Hyprland session.
-- **machine-local files** absent on a fresh machine by design: `~/.claude/settings.json` (flagged if it is a *symlink*, which would put work marketplace names in this public repo), `~/.config/xdg-terminals.list` pinning Alacritty, images opening in `imv-dir.desktop` (Omarchy picks `imv.desktop`, which opens only the clicked file, so next/prev image do nothing), and the cedilla Compose patch that `libx11` updates revert. The cedilla check runs only when `intl` appears anywhere in the variant list, so a pure ABNT2 machine stays quiet while a `br,us` notebook is still checked: its us group reaches `dead_acute` and needs the patch.
+- **machine-local files** absent on a fresh machine by design: `~/.claude/settings.json` (flagged if it is a *symlink*, which would put work marketplace names in this public repo), `~/.config/xdg-terminals.list` pinning Alacritty, images opening in `imv-dir.desktop` (Omarchy picks `imv.desktop`, which opens only the clicked file, so next/prev image do nothing), and the cedilla override in `~/.XCompose`, checked on the effective table `xkbcli compile-compose` builds. The cedilla check runs only when `intl` appears anywhere in the variant list, so a pure ABNT2 machine stays quiet while a `br,us` notebook is still checked: its us group reaches `dead_acute` and needs the override.
 
 Exit code 1 on any failure, 0 when clean. No repo-hygiene checks (`git status`, uncommitted Omarchy migrations), review those by hand.
 
@@ -342,31 +342,36 @@ hyprctl getoption input:kb_variant
 ### Cedilla with US keyboard layout
 Workaround to type "ç" on English (US, international with dead keys). That layout maps `'` + `c` to ć, not ç.
 
-Layout itself needs nothing here, see [Keyboard layout per machine](#keyboard-layout-per-machine). One file to patch:
+Layout itself needs nothing here, see [Keyboard layout per machine](#keyboard-layout-per-machine). Two lines at end of `~/.XCompose`, no sudo:
 
 ```sh
-sudo cp /usr/share/X11/locale/en_US.UTF-8/Compose{,.bak}
-sed 's/ć/ç/g; s/Ć/Ç/g' /usr/share/X11/locale/en_US.UTF-8/Compose.bak |
-  sudo tee /usr/share/X11/locale/en_US.UTF-8/Compose >/dev/null
+cat >>~/.XCompose <<'EOF'
+
+# Cedilla on us/intl: dead_acute + c gives ç, not ć. Overrides the system Compose included above.
+<dead_acute> <c> : "ç" ccedilla
+<dead_acute> <C> : "Ç" Ccedilla
+EOF
+omarchy-restart-xcompose
 ```
 
-Log out and back in.
-
-**How it reaches your apps.** Compose chain, each file including the next:
+**Why it works.** Compose chain, each file including the next:
 ```
 ~/.XCompose
-  include "%H/.local/share/omarchy/default/xcompose"
-    include "%L"  ->  /usr/share/X11/locale/en_US.UTF-8/Compose  (patched above)
+  include "/usr/share/omarchy/default/xcompose"
+    include "%L"  ->  /usr/share/X11/locale/en_US.UTF-8/Compose  (maps to ć)
+  <dead_acute> <c> : "ç"  (later definition wins)
 ```
-`%L` = locale Compose file. Omarchy seeds `~/.XCompose` with that include, so the patch reaches everything. fcitx5 runs by default under Omarchy, serves Wayland clients through its `waylandim` frontend; terminals read the same table through xkbcommon.
+Same sequence defined twice = last one wins, so the override sits after the include. fcitx5 runs by default under Omarchy, serves Wayland clients through its `waylandim` frontend; terminals read the same table through xkbcommon.
+
+`~/.XCompose` stays machine-local, not in repo: Omarchy seeds it with your git name and email (`omarchy-setup-git`), which do not belong in a public repo. Omarchy leaves a hand-edited copy alone.
 
 Verify without typing anything:
 ```sh
 xkbcli compile-compose | grep '<dead_acute> <c>'
 ```
-Patched prints `<dead_acute> <c> :  "ç" U0107`. Keysym stays `U0107`, which *is* ć, because the sed swaps the output string and not the name. Unpatched prints "ć".
+Fixed prints `<dead_acute> <c> :  "ç" ccedilla`. Unfixed prints "ć".
 
-**`libx11` owns that file, so every update restores it and ç breaks silently.** `dotfiles-doctor` catches it, keyed on the SHA256 mismatch `pacman -Qkk libx11` reports while the patch holds.
+**Old system-file patch dropped.** It ran `sed 's/ć/ç/g'` over `/usr/share/X11/locale/en_US.UTF-8/Compose`. `libx11` owns that file, so every update restored it and ç broke silently (libx11 1.8.14 did exactly that). If a machine still carries it, `sudo pacman -S libx11` restores the stock file; the override above covers both states.
 
 **Old GTK `immodules.cache` step dropped.** It added `:en` to the `cedilla` row in `/usr/lib/gtk-3.0/3.0.0/immodules.cache`, plus a gtk-2.0 twin. Neither does anything now: `GTK_IM_MODULE` is unset under Omarchy, so GTK apps go through Wayland text-input to fcitx5 and never load `im-cedilla.so`, and `/usr/lib/gtk-2.0/` no longer exists. No package owns `immodules.cache` either, so a gtk3 rebuild discards edits to it anyway.
 
