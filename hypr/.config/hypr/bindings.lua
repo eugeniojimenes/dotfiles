@@ -20,9 +20,6 @@ o.bind("SUPER + SHIFT + M", "Move workspace to next monitor", hl.dsp.workspace.m
 o.bind("SUPER + N", "Editor", { omarchy = "editor" })
 
 -- TUIs.
--- btop keeps Omarchy's own SUPER + CTRL + T; it is untiled by a window rule in looknfeel.lua
--- rather than rebound here.
---
 -- btop + lazydocker as two windows of one isolated tmux server. See tmux-sys-tools.sh.
 -- Omarchy 4.5 moved standalone btop ("Activity") onto this key, so unbind it first or both open.
 hl.unbind("SUPER + SHIFT + T")
@@ -56,3 +53,38 @@ o.bind(
   "Tmux",
   "omarchy-launch-terminal " .. os.getenv("HOME") .. "/.config/hypr/tmux-launch.sh"
 )
+
+-- Global workspaces 1-10 shared by every monitor, as before Omarchy 4.5. Its per-monitor blocks
+-- (default/hypr/monitor-workspaces.lua: LG 1-10, Samsung 11-20) leave "guest" workspaces that SUPER + N
+-- cannot reach. No setting turns them off, so: rebind the keys to raw dispatchers, stub the functions the
+-- bar and Hyprland events still call, and drop the block file so the bar falls back to one shared row.
+-- Upgrade check: these names come from monitor-workspaces.lua; a rename there brings the blocks back.
+o.workspaces.reconcile = function() end
+o.workspaces.focus = function(slot)
+  return hl.dsp.focus({ workspace = tostring(slot) })
+end
+os.remove((os.getenv("XDG_STATE_HOME") or os.getenv("HOME") .. "/.local/state") .. "/omarchy/monitor-workspaces")
+
+for workspace = 1, 10 do
+  local key = "code:" .. tostring(workspace + 9)
+  local id = tostring(workspace)
+  hl.unbind("SUPER + " .. key)
+  hl.unbind("SUPER + SHIFT + " .. key)
+  hl.unbind("SUPER + SHIFT + ALT + " .. key)
+  o.bind("SUPER + " .. key, "Switch to workspace " .. id, hl.dsp.focus({ workspace = id }))
+  o.bind("SUPER + SHIFT + " .. key, "Move window to workspace " .. id, hl.dsp.window.move({ workspace = id }))
+  o.bind(
+    "SUPER + SHIFT + ALT + " .. key,
+    "Move window silently to workspace " .. id,
+    hl.dsp.window.move({ workspace = id, follow = false })
+  )
+end
+
+for key, dir in pairs({ LEFT = "l", RIGHT = "r", UP = "u", DOWN = "d" }) do
+  hl.unbind("SUPER + SHIFT + ALT + " .. key)
+  o.bind(
+    "SUPER + SHIFT + ALT + " .. key,
+    "Move workspace to " .. key:lower() .. " monitor",
+    hl.dsp.workspace.move({ monitor = dir })
+  )
+end
