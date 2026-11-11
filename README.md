@@ -295,7 +295,7 @@ Checks:
 - **mise**: `mise ls --missing`, plus the three Neovim host packages the `postinstall` hooks in `config.toml` install (`gem`, `npm`, `pip`). Hooks fail silently, so a runtime can install with Neovim support missing.
 - **external installs** no package manager owns: TPM and the plugins `tmux.conf` declares, uosc under `~/.config/mpv/scripts`, Neovim plugins counted against `lazy-lock.json`.
 - **input**: live `kb_layout`/`kb_variant` against `/etc/vconsole.conf`, guarding the undocumented Omarchy fallback this repo leans on (see [Keyboard layout per machine](#keyboard-layout-per-machine)). Tolerates the `us,` group Omarchy prepends for non-Latin layouts. Skipped when `input.lua` sets the layout itself, or outside a Hyprland session.
-- **machine-local files** absent on a fresh machine by design: `~/.claude/settings.json` (flagged if it is a *symlink*, which would put work marketplace names in this public repo), `~/.config/xdg-terminals.list` pinning Alacritty, images opening in `imv-dir.desktop` (Omarchy picks `imv.desktop`, which opens only the clicked file, so next/prev image do nothing), and the cedilla override in `~/.XCompose`, checked on the effective table `xkbcli compile-compose` builds. The cedilla check runs only when `intl` appears anywhere in the variant list, so a pure ABNT2 machine stays quiet while a `br,us` notebook is still checked: its us group reaches `dead_acute` and needs the override.
+- **machine-local files** absent on a fresh machine by design: `~/.claude/settings.json` (flagged if it is a *symlink*, which would put work marketplace names in this public repo), `~/.config/xdg-terminals.list` pinning Alacritty, images opening in `imv-dir.desktop` (Omarchy picks `imv.desktop`, which opens only the clicked file, so next/prev image do nothing), and the cedilla override in `~/.XCompose`, checked on the effective table `xkbcli compile-compose` builds. The cedilla check runs only when `intl` appears in the global variant or in any keyboard's own, so the notebook's built-in ABNT2 alone stays quiet while a plugged-in US keyboard still gets checked: it reaches `dead_acute` and needs the override.
 
 Exit code 1 on any failure, 0 when clean. No repo-hygiene checks (`git status`, uncommitted Omarchy migrations), review those by hand.
 
@@ -312,24 +312,28 @@ sudo pacman -S lazygit lazydocker
 **Note:** if you keep a personal Lazygit config, symlink it into `~/.config/lazygit/config.yml`. I personally use the default configuration.
 
 ### Keyboard layout per machine
-Desktop = US international with dead keys. Notebook = ABNT2. One repo, no branching.
+Desktop = US international with dead keys. Notebook = built-in ABNT2, external USB keyboard US international. One repo, no branching.
 
-No layout in this repo. Omarchy's `default/hypr/input.lua` reads `/etc/vconsole.conf`: `kb_layout` from `XKBLAYOUT`, `kb_variant` from `XKBVARIANT`. Machine-local system config, so each machine answers for itself.
+No global layout in this repo. Omarchy's `default/hypr/input.lua` reads `/etc/vconsole.conf`: `kb_layout` from `XKBLAYOUT`, `kb_variant` from `XKBVARIANT`. Machine-local system config, so each machine answers for itself.
 
 Set once per machine, then `hyprctl reload`:
 ```sh
 # Desktop: US international with dead keys
 sudo localectl set-x11-keymap us pc105+inet intl terminate:ctrl_alt_bksp
 
-# Notebook: ABNT2 first, US international second
-sudo localectl set-x11-keymap br,us pc105 ",intl" terminate:ctrl_alt_bksp
+# Notebook: built-in ABNT2
+sudo localectl set-x11-keymap br pc105 "" terminate:ctrl_alt_bksp
 ```
 
-Pass all four arguments, `localectl` rewrites the whole X11 block and omitting model or options clears them. Read the machine's own `/etc/vconsole.conf` first, carry its model and options over, never copy another machine's. Conversion runs both ways unless `--no-convert`, so the console `KEYMAP` follows too (`br,us` lands on `br-abnt2`).
+Pass all four arguments, `localectl` rewrites the whole X11 block and omitting model or options clears them. Read the machine's own `/etc/vconsole.conf` first, carry its model and options over, never copy another machine's. Conversion runs both ways unless `--no-convert`, so the console `KEYMAP` follows too (`br` lands on `br-abnt2`).
 
-**Variant slot for `br` stays empty.** `abnt2` is an XKB *model*, not a `br` variant: `xkbcli list` gives `br` only `nodeadkeys`, `dvorak`, `nativo`, `nativo-us`, `thinkpad`, `thinkpad_nodeadkeys`, `nativo-epo`, `rus`. Base `br` already *is* ABNT2, including the 107th key `<AB11>` (`slash`/`question`) and the dedicated ç on `<AC10>`. Writing `abnt2,intl` compiles fine and produces byte-identical symbols, changing only the keymap label to `pc_br(abnt2)_inet(evdev)`, so it works while documenting something false. Model `abnt2` and `pc105` also compile byte-identical for `br`, so the model is not worth changing.
+**Variant slot for `br` stays empty.** `abnt2` is an XKB *model*, not a `br` variant: `xkbcli list` gives `br` only `nodeadkeys`, `dvorak`, `nativo`, `nativo-us`, `thinkpad`, `thinkpad_nodeadkeys`, `nativo-epo`, `rus`. Base `br` already *is* ABNT2, including the 107th key `<AB11>` (`slash`/`question`) and the dedicated ç on `<AC10>`. Writing `abnt2` as variant compiles fine and produces byte-identical symbols, changing only the keymap label to `pc_br(abnt2)_inet(evdev)`, so it works while documenting something false. Model `abnt2` and `pc105` also compile byte-identical for `br`, so the model is not worth changing.
 
-So `hypr/.config/hypr/input.lua` sets no `kb_layout`, no `kb_variant`. Still sets `kb_options`, which Omarchy does **not** read from `XKBOPTIONS`. Omarchy default = `compose:caps,shift:both_capslock_cancel`, plus a group toggle for non-Latin layouts only. `br` is Latin, so `br,us` gets no toggle unless this repo adds one. `grp:alt_space_toggle` is inert with a single layout, one value serves both machines.
+So `hypr/.config/hypr/input.lua` sets no global `kb_layout`, no `kb_variant`. It sets `kb_options` (Omarchy does **not** read `XKBOPTIONS`), same as Omarchy's default `compose:caps,shift:both_capslock_cancel`.
+
+**External keyboard = per-device layout, not a second group.** `input.lua` lists external US keyboards by name and gives each `us`/`intl` with `hl.device`. Built-in keyboard keeps vconsole's `br`, USB keyboard types US, no toggle to press. Old setup was `br,us` plus `grp:alt_space_toggle`; dropped because one global group had to be switched by hand on every keyboard swap, and Omarchy 4.5 binds Alt + Space to dictation. Same values as the desktop's vconsole, so the rule is inert there.
+
+Add a new keyboard: `hyprctl devices`, take the name without `-system-control`/`-consumer-control` plus its numbered twin (`-1`, `-2`), append to the list. Keep each `hl.device` call on one line, `dotfiles-doctor` greps `^\s*kb_layout` to detect a hardcoded global layout. Verify: `hyprctl devices -j | jq -c '.keyboards[] | {name, variant}'`.
 
 Check what is live:
 ```sh

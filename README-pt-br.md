@@ -295,7 +295,7 @@ O que verifica:
 - **mise**: `mise ls --missing`, mais os três pacotes de host do Neovim que os hooks `postinstall` do `config.toml` instalam (`gem`, `npm`, `pip`). Esses hooks falham em silêncio, então um runtime pode estar instalado sem o suporte a Neovim.
 - **instalações externas** que nenhum gerenciador de pacotes controla: TPM e os plugins declarados no `tmux.conf`, uosc em `~/.config/mpv/scripts`, plugins do Neovim contados contra o `lazy-lock.json`.
 - **input**: `kb_layout`/`kb_variant` ativos contra o `/etc/vconsole.conf`, protegendo o fallback não documentado do Omarchy no qual este repositório se apoia (veja [Layout de teclado por máquina](#layout-de-teclado-por-máquina)). Tolera o grupo `us,` que o Omarchy prefixa em layouts não latinos. Pulado quando o próprio `input.lua` define o layout, ou fora de uma sessão do Hyprland.
-- **arquivos locais da máquina**, ausentes em uma máquina nova de propósito: `~/.claude/settings.json` (sinalizado se for um *symlink*, o que colocaria nomes de marketplaces do trabalho neste repo público), `~/.config/xdg-terminals.list` fixando o Alacritty, imagens abrindo no `imv-dir.desktop` (o Omarchy escolhe o `imv.desktop`, que abre só o arquivo clicado, então próxima/anterior não fazem nada), e a sobrescrita de cedilha no `~/.XCompose`, verificada na tabela efetiva que o `xkbcli compile-compose` monta. A verificação da cedilha só roda quando `intl` aparece em qualquer posição da lista de variantes, então uma máquina só ABNT2 fica quieta, enquanto um notebook `br,us` continua sendo verificado: o grupo us dele alcança o `dead_acute` e precisa da sobrescrita.
+- **arquivos locais da máquina**, ausentes em uma máquina nova de propósito: `~/.claude/settings.json` (sinalizado se for um *symlink*, o que colocaria nomes de marketplaces do trabalho neste repo público), `~/.config/xdg-terminals.list` fixando o Alacritty, imagens abrindo no `imv-dir.desktop` (o Omarchy escolhe o `imv.desktop`, que abre só o arquivo clicado, então próxima/anterior não fazem nada), e a sobrescrita de cedilha no `~/.XCompose`, verificada na tabela efetiva que o `xkbcli compile-compose` monta. A verificação da cedilha só roda quando `intl` aparece na variante global ou na de algum teclado, então o ABNT2 embutido do notebook sozinho fica quieto, enquanto um teclado US plugado continua sendo verificado: ele alcança o `dead_acute` e precisa da sobrescrita.
 
 Código de saída 1 quando algo falha, 0 quando está limpo. Não verifica higiene do repo (`git status`, migrações do Omarchy não commitadas); revise isso à mão.
 
@@ -312,24 +312,28 @@ sudo pacman -S lazygit lazydocker
 Nota: se você mantém uma configuração pessoal do Lazygit, crie um symlink para `~/.config/lazygit/config.yml`. Este repositório não inclui um arquivo de configuração do Lazygit por padrão.
 
 ### Layout de teclado por máquina
-Desktop = US international with dead keys. Notebook = ABNT2. Um repositório só, sem ramificação.
+Desktop = US international with dead keys. Notebook = teclado embutido ABNT2, teclado USB externo US international. Um repositório só, sem ramificação.
 
-Nada sobre o layout mora neste repositório. O `default/hypr/input.lua` do Omarchy lê o `/etc/vconsole.conf` e tira o `kb_layout` do `XKBLAYOUT` e o `kb_variant` do `XKBVARIANT`. Esse arquivo é configuração de sistema local da máquina, então cada máquina responde por si.
+Nenhum layout global mora neste repositório. O `default/hypr/input.lua` do Omarchy lê o `/etc/vconsole.conf` e tira o `kb_layout` do `XKBLAYOUT` e o `kb_variant` do `XKBVARIANT`. Esse arquivo é configuração de sistema local da máquina, então cada máquina responde por si.
 
 Configure uma vez por máquina e rode `hyprctl reload`:
 ```sh
 # Desktop: US international with dead keys
 sudo localectl set-x11-keymap us pc105+inet intl terminate:ctrl_alt_bksp
 
-# Notebook: ABNT2 primeiro, US international em segundo
-sudo localectl set-x11-keymap br,us pc105 ",intl" terminate:ctrl_alt_bksp
+# Notebook: ABNT2 embutido
+sudo localectl set-x11-keymap br pc105 "" terminate:ctrl_alt_bksp
 ```
 
 Passe os quatro argumentos. O `localectl` reescreve o bloco X11 inteiro, então omitir modelo ou opções limpa esses campos. Leia o `/etc/vconsole.conf` atual da máquina antes e leve o modelo e as opções dela, em vez de copiar os de outra máquina.
 
-**O campo de variante do `br` fica vazio.** `abnt2` é um *modelo* XKB, não uma variante do `br`: o `xkbcli list` dá ao `br` apenas `nodeadkeys`, `dvorak`, `nativo`, `nativo-us`, `thinkpad`, `thinkpad_nodeadkeys`, `nativo-epo` e `rus`. O `br` base já *é* ABNT2, incluindo a 107ª tecla `<AB11>` (`slash`/`question`) e o ç dedicado no `<AC10>`. Escrever `abnt2,intl` compila sem erro e produz símbolos idênticos byte a byte, mudando só o rótulo do keymap para `pc_br(abnt2)_inet(evdev)`, ou seja, funciona documentando algo falso. Os modelos `abnt2` e `pc105` também compilam idênticos para o `br`, então não vale a pena mexer no modelo.
+**O campo de variante do `br` fica vazio.** `abnt2` é um *modelo* XKB, não uma variante do `br`: o `xkbcli list` dá ao `br` apenas `nodeadkeys`, `dvorak`, `nativo`, `nativo-us`, `thinkpad`, `thinkpad_nodeadkeys`, `nativo-epo` e `rus`. O `br` base já *é* ABNT2, incluindo a 107ª tecla `<AB11>` (`slash`/`question`) e o ç dedicado no `<AC10>`. Escrever `abnt2` como variante compila sem erro e produz símbolos idênticos byte a byte, mudando só o rótulo do keymap para `pc_br(abnt2)_inet(evdev)`, ou seja, funciona documentando algo falso. Os modelos `abnt2` e `pc105` também compilam idênticos para o `br`, então não vale a pena mexer no modelo.
 
-Por isso o `hypr/.config/hypr/input.lua` não define `kb_layout` nem `kb_variant`. Ele ainda define `kb_options`, que o Omarchy **não** lê do `XKBOPTIONS`. O padrão do Omarchy é `compose:caps,shift:both_capslock_cancel`, e ele só acrescenta um alternador de grupo para layouts não latinos. `br` é latino, então um notebook com `br,us` não ganha alternador nenhum a menos que este repositório adicione um. O `grp:alt_space_toggle` é inerte quando há um único layout, então um mesmo valor serve para as duas máquinas.
+Por isso o `hypr/.config/hypr/input.lua` não define `kb_layout` nem `kb_variant` globais. Ele define `kb_options` (o Omarchy **não** lê o `XKBOPTIONS`), igual ao padrão do Omarchy, `compose:caps,shift:both_capslock_cancel`.
+
+**Teclado externo = layout por dispositivo, não um segundo grupo.** O `input.lua` lista os teclados US externos pelo nome e dá a cada um `us`/`intl` com `hl.device`. O teclado embutido mantém o `br` do vconsole, o teclado USB digita US, sem alternador para apertar. O esquema antigo era `br,us` mais `grp:alt_space_toggle`; saiu porque um grupo global precisava ser trocado à mão a cada troca de teclado, e o Omarchy 4.5 usa Alt + Space para ditado. São os mesmos valores do vconsole do desktop, então a regra é inerte lá.
+
+Para adicionar um teclado: `hyprctl devices`, pegue o nome sem `-system-control`/`-consumer-control` e o gêmeo numerado (`-1`, `-2`), e acrescente na lista. Mantenha cada chamada `hl.device` numa linha só, porque o `dotfiles-doctor` procura `^\s*kb_layout` para detectar um layout global fixo. Para verificar: `hyprctl devices -j | jq -c '.keyboards[] | {name, variant}'`.
 
 Para ver o que está ativo:
 ```sh
