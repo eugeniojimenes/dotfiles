@@ -24,6 +24,8 @@ o.bind("SUPER + N", "Editor", { omarchy = "editor" })
 -- rather than rebound here.
 --
 -- btop + lazydocker as two windows of one isolated tmux server. See tmux-sys-tools.sh.
+-- Omarchy 4.5 moved standalone btop ("Activity") onto this key, so unbind it first or both open.
+hl.unbind("SUPER + SHIFT + T")
 o.bind(
   "SUPER + SHIFT + T",
   "System tools (btop + lazydocker)",
