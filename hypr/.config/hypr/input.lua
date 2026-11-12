@@ -24,6 +24,8 @@ hl.config({
 for _, name in ipairs({
   "kingston-hyperx-alloy-fps-mechanical-gaming-keyboard",
   "kingston-hyperx-alloy-fps-mechanical-gaming-keyboard-1",
+  "by-tech-gaming-keyboard",
+  "by-tech-gaming-keyboard-1",
 }) do
   hl.device({ name = name, kb_layout = "us", kb_variant = "intl" })
 end
