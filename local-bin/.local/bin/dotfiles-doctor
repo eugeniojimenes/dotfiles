@@ -213,6 +213,15 @@ else
   repair "omarchy-default-terminal alacritty"
 fi
 
+# SUPER + B goes through `omarchy launch browser`, which opens Omarchy's default. Fresh install = chromium.
+browser=$(omarchy-default-browser 2>/dev/null)
+if [[ $browser == brave ]]; then
+  ok "default browser is Brave"
+else
+  bad "default browser is ${browser:-unknown}, SUPER + B will not open Brave"
+  repair "omarchy-default-browser brave"
+fi
+
 # Omarchy maps images to imv.desktop, which gets only the clicked file, so next/prev have nothing to step to.
 # imv ships imv-dir.desktop for exactly this. Set in mimeapps.list, not by editing imv.desktop: Omarchy
 # migrations re-run omarchy-refresh-applications, which copies its launchers over ~/.local/share/applications.
