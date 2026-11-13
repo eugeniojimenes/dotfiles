@@ -1,0 +1,8 @@
+# History: big, shared between terminals (append, never overwrite), no duplicates or space-prefixed commands.
+HISTSIZE=32768
+HISTFILESIZE=$HISTSIZE
+HISTCONTROL=ignoreboth
+shopt -s histappend
+
+# Hashing off: mise swaps tool paths mid-session and a cached path would go stale.
+set +h

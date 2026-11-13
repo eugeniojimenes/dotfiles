@@ -1,0 +1,55 @@
+# Aliases and small functions.
+
+if command -v eza &>/dev/null; then
+  alias ls='eza -lh --group-directories-first --icons=auto'
+  alias lsa='ls -a'
+  alias lt='eza --tree --level=2 --long --icons --git'
+  alias lta='lt -a'
+fi
+
+# Fuzzy file pick with bat preview; eff opens the pick in the editor, sff scp's the newest-first pick to $1.
+alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+alias eff='$EDITOR "$(ff)"'
+sff() {
+  [[ -n ${1-} ]] || { echo "usage: sff <destination>  (e.g. sff host:/tmp/)"; return 1; }
+  local file
+  file=$(find . -type f -printf '%T@\t%p\n' | sort -rn | cut -f2- | ff) && [[ -n $file ]] && scp "$file" "$1"
+}
+
+# cd falls back to zoxide when the argument is not a directory, and shows where it landed.
+if command -v zoxide &>/dev/null; then
+  alias cd=zd
+  zd() {
+    if (($# == 0)); then
+      builtin cd ~ || return
+    elif [[ -d $1 ]]; then
+      builtin cd "$1" || return
+    else
+      z "$@" || { echo "Error: Directory not found"; return 1; }
+      printf '\U000F17A9 '
+      pwd
+    fi
+  }
+fi
+
+open() { xdg-open "$@" >/dev/null 2>&1 & }
+
+# Directories
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Tools
+alias c='opencode --auto'
+alias cx='printf "\033[2J\033[3J\033[H" && claude --permission-mode auto'
+alias d='docker'
+alias r='rails'
+alias t='tmux attach || tmux new -s Work'
+alias mup='MISE_MINIMUM_RELEASE_AGE=0 mise up'
+n() { command nvim "${@:-.}"; }
+
+# Git
+alias g='git'
+alias gcm='git commit -m'
+alias gcam='git commit -a -m'
+alias gcad='git commit -a --amend'

@@ -1,18 +1,12 @@
 # If not running interactively, don't do anything (leave this at the top of this file)
 [[ $- != *i* ]] && return
 
-# All the default Omarchy aliases and functions
-# (don't mess with these directly, just overwrite them here!)
-# /etc/omarchy.conf is written by omarchy-dev-link. When absent, force the
-# package default instead of preserving a stale inherited dev-link value before
-# we decide which rc file to source.
-if [[ -f /etc/omarchy.conf ]]; then
-  source /etc/omarchy.conf
-  export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
-else
-  export OMARCHY_PATH=/usr/share/omarchy
-fi
-source "$OMARCHY_PATH/default/bash/rc"
+# Shell setup split by concern under ~/.config/bash: environment, history, aliases, tool hooks, then readline.
+for f in env shell aliases init; do
+  # shellcheck source=/dev/null
+  source ~/.config/bash/$f
+done
+bind -f ~/.config/bash/inputrc
 
 # Read the clipboard in nvim, so render-markdown.nvim and treesitter handle what the terminal cannot. Filetype has
 # to be stated: extension is the arg name (`.ruby`, `.json`), which detection mostly misses.

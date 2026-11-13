@@ -1,0 +1,13 @@
+# Environment for interactive shells.
+
+export EDITOR=nvim
+export SUDO_EDITOR=nvim
+# bat as pager for man pages; ansi theme follows the terminal palette.
+export BAT_THEME=ansi
+export MANROFFOPT=-c
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) export PATH="$PATH:$HOME/.local/bin" ;;
+esac

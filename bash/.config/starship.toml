@@ -1,11 +1,7 @@
-# Prompt shape = starship built-in default. No `format` key here, on purpose.
-# Stow places this file at ~/.config/starship.toml, starship's default config path, so it
-# *replaces* Omarchy's own prompt (/usr/share/omarchy/config/starship.toml, compact
-# single-line format) instead of layering on it. Intended. Tables below = Nerd Font Symbols
+# Prompt shape = starship built-in default. No `format` key here, on purpose. Tables below = Nerd Font Symbols
 # preset, supplying glyphs to the default format.
 #
-# Cap how long one module can block the prompt. Starship default = 500ms, long wait when a
-# git or cloud call hangs. Omarchy uses 200ms.
+# Cap how long one module can block the prompt. Starship default = 500ms, long wait when a git or cloud call hangs.
 command_timeout = 200
 
 [aws]
