@@ -1,0 +1,5 @@
+# Space sets the selected device as default, like `d` (which still works).
+# Passed with -c, so ~/.config/wiremix stays empty.
+keybindings = [
+  { key = { Char = " " }, action = "SetDefault" },
+]

@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Super+Space / bar icon. Categories with submenus, and every app listed under them, so typing
+# an app name at the top level launches it directly. Esc in a submenu goes back up, Esc at the top closes.
+# Lines = "label<TAB>action"; app lines add rofi-style icon metadata. fuzzel shows column 1, prints column 2.
+
+dir=~/.config/sway
+
+# Categories and their entries: a monochrome Nerd Font glyph in the label, no image icon. Only apps carry colored
+# icons, so at a glance white = menu entry, color = app.
+entry() { printf '%s  %s\t%s\n' "$1" "$2" "$3"; }
+
+# Submenus use fuzzel-menu.ini, where Left exits with code 10 = back to the root.
+pick() {
+  local conf=$dir/fuzzel.ini hint=
+  [[ $level != root ]] && conf=$dir/fuzzel-menu.ini hint='   ← back'
+  local out rc
+  out=$(fuzzel --dmenu --config "$conf" --with-nth=1 --accept-nth=2 --placeholder "$1$hint")
+  rc=$?
+  # custom-1 also prints the highlighted entry; on Left only "back" counts.
+  if ((rc == 10)); then echo back; else printf '%s' "$out"; fi
+}
+
+apps() {
+  local d f id dirs files=()
+  declare -A seen
+  # XDG data dirs, user dir first: a local .desktop overrides a later one with the same id. Not a fixed
+  # /usr/share: NixOS keeps them under /run/current-system/sw/share and /etc/profiles/per-user, via XDG_DATA_DIRS.
+  IFS=: read -ra dirs <<<"${XDG_DATA_HOME:-$HOME/.local/share}:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+  for d in "${dirs[@]}"; do files+=("$d"/applications/*.desktop); done
+  for f in "${files[@]}"; do
+    [[ -f $f ]] || continue
+    id=${f##*/}
+    [[ -n ${seen[$id]} ]] && continue
+    seen[$id]=1
+    awk -F= -v id="$id" '
+      /^\[/ { main = ($0 == "[Desktop Entry]"); next }
+      !main { next }
+      $1 == "Name" && name == "" { name = substr($0, 6) }
+      $1 == "Icon" { icon = substr($0, 6) }
+      ($1 == "NoDisplay" || $1 == "Hidden") && $2 == "true" { hide = 1 }
+      $1 == "Type" && $2 != "Application" { hide = 1 }
+      END {
+        if (name != "" && !hide)
+          printf "%s\tapp:%s%cicon\037%s\n", name, id, 0, (icon == "" ? "application-x-executable" : icon)
+      }
+    ' "$f"
+  done | sort -f
+}
+
+menu_root() {
+  {
+    entry 󰀻 "Apps  ›" menu:apps
+    entry 󰌌 "Keybindings" "run:$dir/keybindings"
+    entry 󰄀 "Capture  ›" menu:capture
+    entry 󰏘 "Style  ›" menu:style
+    entry 󰒓 "Setup  ›" menu:setup
+    entry 󰔡 "Toggle  ›" menu:toggle
+    entry 󰐥 "System  ›" menu:system
+    apps
+  } | pick 'Search apps and settings'
+}
+
+menu_apps() { apps | pick 'Apps'; }
+
+menu_capture() {
+  {
+    entry 󰩭 "Screenshot (area)" "run:$dir/screenshot area"
+    entry 󰍹 "Screenshot (screen)" "run:$dir/screenshot screen"
+  } | pick 'Capture'
+}
+
+menu_style() {
+  {
+    entry 󰸉 "Background" "run:$dir/wallpaper pick"
+    entry 󰒭 "Next background" "run:$dir/wallpaper next"
+    entry 󰃚 "Terminal opacity  ›" menu:opacity
+  } | pick 'Style'
+}
+
+menu_opacity() {
+  local cur v
+  cur=$(cat "${XDG_STATE_HOME:-$HOME/.local/state}/sway/terminal-opacity" 2>/dev/null || echo 0.92)
+  for v in 1.0 0.98 0.96 0.94 0.92 0.88 0.85 0.80; do
+    entry "$([[ $v == "$cur" ]] && echo 󰄬 || echo 󰝦)" "$(awk -v v="$v" 'BEGIN { printf "%d%%", v * 100 }')" "run:$dir/opacity $v"
+  done | pick 'Terminal opacity'
+}
+
+menu_setup() {
+  {
+    entry 󰖩 "Wi-Fi" "run:$dir/wifi"
+    entry 󰕾 "Sound" "run:$dir/float wiremix -c $dir/wiremix.toml"
+    entry 󰍹 "Display" "run:$dir/display/toggle"
+    entry 󰏫 "Edit Sway config" "run:$dir/float nvim $dir/config"
+    entry 󰏫 "Edit bar" "run:$dir/float nvim $dir/waybar.jsonc"
+    entry 󰑓 "Reload Sway" "run:swaymsg reload"
+  } | pick 'Setup'
+}
+
+menu_toggle() {
+  entry 󰂛 "Do not disturb" "run:$dir/dnd toggle" | pick 'Toggle'
+}
+
+menu_system() {
+  {
+    entry 󰌾 "Lock" "run:$dir/lock/lock"
+    entry 󰤄 "Suspend" "run:systemctl suspend"
+    entry 󰍃 "Exit Sway" "run:swaymsg exit"
+    entry 󰜉 "Reboot" "run:systemctl reboot"
+    entry 󰐥 "Power off" "run:systemctl poweroff"
+  } | pick 'System'
+}
+
+# Walk the tree: "menu:x" opens a submenu, "run:cmd" launches and ends. Esc in a submenu returns to the root.
+level=root
+while :; do
+  choice=$("menu_$level")
+  if [[ -z $choice ]]; then
+    [[ $level == root ]] && exit 0
+    level=root
+    continue
+  fi
+  if [[ $choice == back* ]]; then
+    level=root
+    continue
+  fi
+  case $choice in
+    menu:*) level=${choice#menu:} ;;
+    # Apps by desktop id, handed to gtk-launch as one argument: a .desktop file name never reaches a shell.
+    app:*)
+      setsid -f gtk-launch "${choice#app:}" >/dev/null 2>&1
+      exit 0
+      ;;
+    # Menu entries: commands written in this file, so running them through sh is fine.
+    run:*)
+      setsid -f sh -c "${choice#run:}" >/dev/null 2>&1
+      exit 0
+      ;;
+  esac
+done

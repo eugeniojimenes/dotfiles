@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Wi-Fi picker on fuzzel. Pick a network; the password is asked only for a secured one NetworkManager has
+# no saved profile for.
+
+dir=~/.config/sway
+pick() { fuzzel --dmenu --config "$dir/fuzzel.ini" "$@"; }
+note() { notify-send -a Wi-Fi "Wi-Fi" "$1"; }
+
+radio=$(nmcli -t radio wifi)
+
+list() {
+  if [[ $radio == enabled ]]; then
+    printf '󰖪  Turn Wi-Fi off\t:off\n'
+  else
+    printf '󰖩  Turn Wi-Fi on\t:on\n'
+  fi
+  printf '  Advanced (nmtui)\t:tui\n'
+  [[ $radio == enabled ]] || return
+  # --escape no + SSID last: an SSID with ':' stays whole after the first three fields are cut.
+  nmcli -t --escape no -f IN-USE,SIGNAL,SECURITY,SSID dev wifi list --rescan auto |
+    awk '{
+      line = $0
+      split(line, f, ":")
+      sub(/^[^:]*:[^:]*:[^:]*:/, "", line)
+      if (line == "" || seen[line]++) next
+      printf "%s %3s%%  %s  %s\t%s\n", (f[1] == "*" ? "󰄬" : " "), f[2], (f[3] == "" ? " " : "󰌾"), line, line
+    }'
+}
+
+choice=$(list | pick --with-nth=1 --accept-nth=2 --placeholder 'Wi-Fi') || exit 0
+
+case $choice in
+  "") exit 0 ;;
+  :off) nmcli radio wifi off ;;
+  :on) nmcli radio wifi on ;;
+  :tui) exec "$dir/float" nmtui ;;
+  *)
+    if nmcli -t -f NAME connection show | grep -qxF -- "$choice"; then
+      out=$(nmcli connection up id "$choice" 2>&1)
+    else
+      sec=$(nmcli -t --escape no -f SECURITY,SSID dev wifi list --rescan no |
+        awk -v s="$choice" '{ sec = $0; sub(/:.*/, "", sec); ssid = $0; sub(/^[^:]*:/, "", ssid) } ssid == s { print sec; exit }')
+      pass=
+      if [[ -n $sec ]]; then
+        pass=$(pick --password --prompt-only "Password for $choice: " </dev/null) || exit 0
+      fi
+      # Password over stdin (--ask), never as an argument: argv is readable in /proc by any process of this user.
+      if [[ -n $pass ]]; then
+        out=$(printf '%s\n' "$pass" | nmcli --ask dev wifi connect "$choice" 2>&1)
+      else
+        out=$(nmcli dev wifi connect "$choice" 2>&1)
+      fi
+    fi
+    note "$out"
+    ;;
+esac

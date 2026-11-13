@@ -1,0 +1,70 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 26,
+  "modules-left": ["custom/menu", "sway/workspaces", "sway/mode"],
+  "modules-center": ["clock"],
+  "modules-right": ["custom/dnd", "tray", "network", "wireplumber", "custom/display", "battery"],
+
+  "custom/menu": {
+    "format": "󱓞",
+    "tooltip-format": "Menu (Super+Space)",
+    "on-click": "~/.config/sway/menu"
+  },
+
+  "sway/workspaces": { "disable-scroll": true },
+
+  "clock": {
+    "format": "{:L%a %d %b  %H:%M}",
+    "tooltip-format": "{:%A, %B %d, %Y}",
+    "on-click": "~/.config/sway/calendar/toggle"
+  },
+
+  "network": {
+    "format-wifi": "{icon}",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰤮",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+    "tooltip-format-disconnected": "Desconectado",
+    "on-click": "~/.config/sway/wifi"
+  },
+
+  "wireplumber": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟",
+    "format-icons": ["󰕿", "󰖀", "󰕾"],
+    "tooltip-format": "{node_name}: {volume}%",
+    "on-click": "~/.config/sway/float wiremix -c ~/.config/sway/wiremix.toml",
+    "on-click-right": "swayosd-client --output-volume mute-toggle",
+    "on-scroll-up": "swayosd-client --output-volume raise",
+    "on-scroll-down": "swayosd-client --output-volume lower"
+  },
+
+  "custom/dnd": {
+    "exec": "~/.config/sway/dnd status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 8,
+    "on-click": "~/.config/sway/dnd toggle"
+  },
+
+  "custom/display": {
+    "format": "󰍹",
+    "tooltip-format": "Displays: brightness, scale, text size",
+    "on-click": "~/.config/sway/display/toggle",
+    "on-scroll-up": "swayosd-client --brightness raise && ~/.config/sway/display/refresh",
+    "on-scroll-down": "swayosd-client --brightness lower && ~/.config/sway/display/refresh"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "tooltip-format": "{timeTo}",
+    "states": { "warning": 25, "critical": 10 }
+  },
+
+  "tray": { "spacing": 8 }
+}

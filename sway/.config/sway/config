@@ -1,0 +1,163 @@
+# Sway config for the notebook (Intel iGPU + RTX 3050).
+# Everything lives in this directory: waybar, mako, fuzzel, swaylock and the Quickshell panels are all started with
+# explicit paths, so the stock ~/.config/<app> files are never read. Outside it: ~/.config/xdg-desktop-portal-wlr/sway
+# (screen-share picker), ~/.local/state/sway (wallpaper, terminal opacity), ~/Pictures/Wallpapers (images).
+# /etc/sway/config.d is not included: session-env does the systemd/D-Bus environment import itself.
+# Start: greetd runs `~/.config/sway/start` (GPU order, see that script). Quit: Super+Shift+Escape.
+
+set $mod Mod4
+set $dir ~/.config/sway
+# Alacritty with a translucent background, opacity set from the menu (Style > Terminal opacity). See ./term.
+set $term $dir/term
+# Quickshell lock screen (lock/). Falls back to plain swaylock if it fails to lock within 5s.
+set $lock $dir/lock/lock
+
+font pango:JetBrainsMono Nerd Font 10
+# An app asking for attention (Slack opening a link in Brave on another workspace) gets focus, instead of only
+# turning its workspace red/urgent in the bar.
+focus_on_window_activation focus
+default_border pixel 2
+gaps inner 5
+client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
+client.unfocused #313244 #313244 #cdd6f4 #313244 #313244
+
+### Outputs. Notebook panel = eDP-2. External: `swaymsg -t get_outputs`, then an `output` line per monitor.
+# Background owned by ./wallpaper (restored at startup below). `swaybg_command -` stops Sway spawning its own
+# swaybg on every reload, which would paint a solid color over the image.
+swaybg_command -
+output eDP-2 scale 1
+
+### Input. Built-in ABNT2 = br, listed external keyboards = us/intl, no layout toggle.
+# Not "us/intl for every keyboard, br for the built-in": that needs xkb_variant "" in the override, which sway's
+# config parser rejects, and the built-in silently stayed US. Identifiers: `swaymsg -t get_inputs`.
+input type:keyboard {
+    xkb_layout br
+    xkb_options compose:caps,shift:both_capslock_cancel
+    repeat_delay 600
+    repeat_rate 40
+}
+input "9610:73:BY_Tech_Gaming_Keyboard" {
+    xkb_layout us
+    xkb_variant intl
+}
+input type:touchpad {
+    tap enabled
+    natural_scroll disabled
+    scroll_factor 0.4
+}
+
+### Apps
+bindsym $mod+Return exec $term
+bindsym $mod+Alt+Return exec $term -e $dir/tmux-launch
+bindsym $mod+b exec brave
+bindsym $mod+Shift+b exec brave --incognito
+bindsym $mod+Shift+f exec nautilus
+bindsym $mod+n exec $term -e nvim
+bindsym $mod+space exec $dir/menu
+bindsym $mod+Ctrl+space exec $dir/wallpaper next
+bindsym $mod+Ctrl+Shift+space exec $dir/wallpaper prev
+bindsym $mod+k exec $dir/keybindings
+bindsym $mod+Shift+l exec $lock
+
+### Windows
+bindsym $mod+w kill
+bindsym $mod+q kill
+bindsym $mod+f fullscreen toggle
+bindsym $mod+t floating toggle
+bindsym $mod+j layout toggle split
+bindsym $mod+e layout toggle tabbed split
+floating_modifier $mod normal
+
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Down move down
+
+mode "resize" {
+    bindsym Left resize shrink width 20px
+    bindsym Right resize grow width 20px
+    bindsym Up resize shrink height 20px
+    bindsym Down resize grow height 20px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+### Workspaces: global 1-10, shared by every monitor. Keycodes so ABNT2 and US agree.
+bindcode $mod+10 workspace number 1
+bindcode $mod+11 workspace number 2
+bindcode $mod+12 workspace number 3
+bindcode $mod+13 workspace number 4
+bindcode $mod+14 workspace number 5
+bindcode $mod+15 workspace number 6
+bindcode $mod+16 workspace number 7
+bindcode $mod+17 workspace number 8
+bindcode $mod+18 workspace number 9
+bindcode $mod+19 workspace number 10
+bindcode $mod+Shift+10 move container to workspace number 1; workspace number 1
+bindcode $mod+Shift+11 move container to workspace number 2; workspace number 2
+bindcode $mod+Shift+12 move container to workspace number 3; workspace number 3
+bindcode $mod+Shift+13 move container to workspace number 4; workspace number 4
+bindcode $mod+Shift+14 move container to workspace number 5; workspace number 5
+bindcode $mod+Shift+15 move container to workspace number 6; workspace number 6
+bindcode $mod+Shift+16 move container to workspace number 7; workspace number 7
+bindcode $mod+Shift+17 move container to workspace number 8; workspace number 8
+bindcode $mod+Shift+18 move container to workspace number 9; workspace number 9
+bindcode $mod+Shift+19 move container to workspace number 10; workspace number 10
+bindcode $mod+Shift+Mod1+10 move container to workspace number 1
+bindcode $mod+Shift+Mod1+11 move container to workspace number 2
+bindcode $mod+Shift+Mod1+12 move container to workspace number 3
+bindcode $mod+Shift+Mod1+13 move container to workspace number 4
+bindcode $mod+Shift+Mod1+14 move container to workspace number 5
+bindcode $mod+Shift+Mod1+15 move container to workspace number 6
+bindcode $mod+Shift+Mod1+16 move container to workspace number 7
+bindcode $mod+Shift+Mod1+17 move container to workspace number 8
+bindcode $mod+Shift+Mod1+18 move container to workspace number 9
+bindcode $mod+Shift+Mod1+19 move container to workspace number 10
+bindsym Mod1+Tab workspace back_and_forth
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
+bindsym $mod+Shift+m move workspace to output right
+bindsym $mod+Shift+Mod1+Left move workspace to output left
+bindsym $mod+Shift+Mod1+Right move workspace to output right
+bindsym $mod+s scratchpad show
+bindsym $mod+Mod1+s move scratchpad
+
+### Media, brightness, screenshots
+# swayosd draws the volume/brightness popup.
+bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume raise
+bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume lower
+bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
+bindsym --locked XF86AudioMicMute exec swayosd-client --input-volume mute-toggle
+bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness raise && $dir/display/refresh
+bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness lower && $dir/display/refresh
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym Print exec $dir/screenshot area
+bindsym Shift+Print exec $dir/screenshot screen
+
+### Session
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+Escape exec swaynag -t warning -m 'Exit Sway?' -B 'Exit' 'swaymsg exit'
+
+exec swayidle -w \
+    timeout 300 '$lock' \
+    timeout 330 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep '$lock' \
+    after-resume '$dir/display/reinit'
+exec mako --config $dir/mako
+exec $dir/wallpaper restore
+exec swayosd-server
+
+# TUIs opened from the bar or the menu (float script): floating, centered.
+for_window [app_id="sway-float"] floating enable, resize set 900 600, move position center
+exec $dir/session-env
+
+# Plain exec, not `bar { swaybar_command }`: that one runs without a shell, so ~ never expands and waybar
+# silently never started.
+exec waybar -c $dir/waybar.jsonc -s $dir/waybar.css >$XDG_RUNTIME_DIR/sway-waybar.log 2>&1

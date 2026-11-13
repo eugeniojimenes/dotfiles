@@ -1,0 +1,7 @@
+#!/bin/sh
+# Hand Sway's display to the systemd user manager and D-Bus, so portals (screen sharing) talk to Sway.
+systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
+systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK
+dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
+# Restart so the portal re-reads XDG_CURRENT_DESKTOP and picks sway-portals.conf (ScreenCast = wlr).
+systemctl --user restart xdg-desktop-portal

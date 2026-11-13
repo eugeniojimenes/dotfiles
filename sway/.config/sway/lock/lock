@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Lock the session with the Quickshell lock screen (shell.qml). Used by Super+Shift+L, the menu and swayidle.
+# Returns only once the session is actually locked, or after falling back to swaylock: swayidle's before-sleep waits
+# for this, and the machine must never go to sleep unlocked.
+
+dir=~/.config/sway/lock
+run=${XDG_RUNTIME_DIR:-/tmp}/sway-lock
+qml="quickshell -p $dir/shell.qml"
+
+pgrep -f "$qml" >/dev/null && exit 0   # already locked
+
+rm -rf "$run" && mkdir -m 700 "$run"
+# Screenshots for the blurred backdrop, one per output, taken before the lock covers them. Live only in the
+# 0700 runtime dir and are removed on unlock.
+swaymsg -t get_outputs | jq -r '.[] | select(.active) | .name' | while read -r out; do
+  grim -o "$out" "$run/$out.png" 2>/dev/null
+done
+
+(
+  SWAY_LOCK_SHOTS=$run SWAY_LOCK_MARKER=$run/locked $qml >/dev/null 2>&1
+  rm -rf "$run"
+) &
+
+for _ in $(seq 50); do
+  [[ -e $run/locked ]] && exit 0
+  sleep 0.1
+done
+
+# Quickshell did not lock within 5s: never leave the session open.
+exec swaylock -f -C ~/.config/sway/swaylock

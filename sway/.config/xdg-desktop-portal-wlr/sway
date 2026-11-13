@@ -1,0 +1,7 @@
+# Read by xdg-desktop-portal-wlr when XDG_CURRENT_DESKTOP=sway (session-env sets it).
+# Screen-share picker on fuzzel, same look as the Sway menu: lists monitors and windows.
+[screencast]
+chooser_type=dmenu
+chooser_cmd=/home/callmarx/.config/sway/share-picker
+# Runs once every screencast has ended: notifications back if share-picker hid them.
+exec_after=/home/callmarx/.config/sway/dnd share-off

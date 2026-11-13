@@ -1,0 +1,11 @@
+#!/bin/sh
+# After resume: re-enable external monitors. Sway (wlroots) with the proprietary NVIDIA driver keeps HDMI/DP outputs
+# "active" after a suspend while the screen stays black. disable + enable forces a new
+# modeset, the same thing that brought the LG back by hand. The built-in panel is on the iGPU and never needs it.
+# Needed even with nvidia-suspend/resume enabled: tested 2026-11-12, without this hook the LG stayed black.
+sleep 1
+swaymsg -t get_outputs | jq -r '.[] | select(.active and (.name | test("^(eDP|LVDS|DSI)-") | not)) | .name' |
+  while read -r out; do
+    swaymsg -q output "$out" disable
+    swaymsg -q output "$out" enable
+  done

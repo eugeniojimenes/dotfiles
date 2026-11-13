@@ -1,0 +1,6 @@
+#!/bin/sh
+# Run a TUI in a floating, centered Alacritty (for_window rule on app_id sway-float in config).
+# Same translucent background as the fuzzel menu (1e1e2e at ~95%). Only the background fades, text stays solid.
+exec alacritty --class sway-float \
+  -o 'colors.primary.background="#1e1e2e"' -o 'window.opacity=0.95' -o 'window.padding={x=12,y=10}' \
+  -e "$@"

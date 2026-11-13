@@ -1,0 +1,18 @@
+#!/bin/sh
+# Do not disturb for mako. `dnd toggle` from the menu/bar, `dnd share-on|share-off` from the screen-share hooks,
+# `dnd status` for the waybar module. Every change pokes waybar (signal 8) instead of waybar polling.
+case $1 in
+  toggle) makoctl mode -t dnd >/dev/null ;;
+  share-on) makoctl mode -a screenshare >/dev/null ;;
+  share-off) makoctl mode -r screenshare >/dev/null ;;
+  status)
+    modes=$(makoctl mode)
+    case $modes in
+      *screenshare*) echo '{"text": "󰂛", "tooltip": "Notifications hidden: sharing the whole screen", "class": "share"}' ;;
+      *dnd*) echo '{"text": "󰂛", "tooltip": "Do not disturb (click to turn off)", "class": "dnd"}' ;;
+      *) echo '{"text": ""}' ;;
+    esac
+    exit 0
+    ;;
+esac
+pkill -RTMIN+8 -x waybar

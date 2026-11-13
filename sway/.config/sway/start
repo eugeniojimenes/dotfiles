@@ -1,0 +1,20 @@
+#!/bin/sh
+# Start Sway with the iGPU as primary renderer. wlroots renders on the first device in WLR_DRM_DEVICES; left to
+# itself it took card1 = NVIDIA (proprietary, unsupported), so every frame for the iGPU-wired panel crossed GPUs
+# through CPU copies: high CPU, fan spinning. NVIDIA stays in the list, second, because HDMI-A-1 and DP-1 are
+# wired to it: drop it and external monitors go dark, keep it and the dGPU never sleeps.
+# --unsupported-gpu only silences the warning.
+
+igpu='' dgpu=''
+for card in /sys/class/drm/card[0-9]; do
+  case $(basename "$(readlink -f "$card/device/driver")") in
+    nvidia) dgpu=/dev/dri/${card##*/} ;;
+    *) igpu=/dev/dri/${card##*/} ;;
+  esac
+done
+# Machine with only one GPU: let wlroots pick, nothing to order.
+if [ -n "$igpu" ] && [ -n "$dgpu" ]; then
+  export WLR_DRM_DEVICES=$igpu:$dgpu
+fi
+
+exec sway --unsupported-gpu "$@"

@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# Backend for the Display panel (panel.qml): brightness, scale, laptop screen, text size.
+# The panel only draws; every read and write goes through here, so each piece can be run by hand.
+#
+#   ctl state                     JSON: outputs + current text size
+#   ctl brightness get|set OUT [PCT]
+#   ctl scale OUT S               runtime only, like a swaymsg command (gone on Sway restart)
+#   ctl toggle OUT                laptop screen on/off
+#   ctl text PX                   9..20, terminal font + GTK text scaling
+#
+# Text size anchor: 12px = GTK factor 1.0 = the terminal size already in alacritty.toml, so the default stop changes
+# nothing. Edits the dotfiles alacritty.toml in place.
+
+set -uo pipefail
+
+ALACRITTY=~/.config/alacritty/alacritty.toml
+
+# Built-in panel = kernel backlight; anything else = DDC/CI. The NVIDIA connectors expose no `ddc` link in sysfs, so
+# the bus comes from `ddcutil detect` (~1.5s), matched on the DRM connector name and cached per output for the
+# session. A stale cache (monitor moved ports) fails the read, gets dropped, and the next call detects again.
+ddc_bus() {
+  local cache=${XDG_RUNTIME_DIR:-/tmp}/sway-ddc-$1 bus
+  [[ -s $cache ]] && { cat "$cache"; return; }
+  bus=$(ddcutil detect --terse 2>/dev/null | awk -v out="$1" '
+    /I2C bus:/ { bus = $3; sub(/.*i2c-/, "", bus) }
+    /DRM connector:/ && $3 ~ ("-" out "$") { print bus; exit }')
+  [[ -n $bus ]] && echo "$bus" | tee "$cache"
+}
+
+brightness_get() {
+  local bus cur max
+  if [[ $1 == eDP-* ]]; then
+    brightnessctl -m | awk -F, '{ sub(/%/, "", $4); print $4 }'
+  elif bus=$(ddc_bus "$1"); then
+    read -r _ _ _ cur max < <(ddcutil --bus "$bus" getvcp 10 --brief 2>/dev/null) ||
+      { rm -f "${XDG_RUNTIME_DIR:-/tmp}/sway-ddc-$1"; echo unavailable; return; }
+    [[ -n ${max:-} && $max -gt 0 ]] && echo $((cur * 100 / max)) || echo unavailable
+  else
+    echo unavailable
+  fi
+}
+
+brightness_set() {
+  local bus max
+  if [[ $1 == eDP-* ]]; then
+    brightnessctl -q set "$2%"
+  elif bus=$(ddc_bus "$1"); then
+    read -r _ _ _ _ max < <(ddcutil --bus "$bus" getvcp 10 --brief 2>/dev/null)
+    ddcutil --bus "$bus" --noverify setvcp 10 $(($2 * ${max:-100} / 100)) >/dev/null 2>&1
+  fi
+}
+
+text_px() {
+  local pt
+  pt=$(awk '/^\[font\]/ { f = 1; next } /^\[/ { f = 0 } f && /^size *=/ { print $3; exit }' "$ALACRITTY")
+  echo "${pt:-12}"
+}
+
+text_set() {
+  local px=${1:-0}
+  ((px >= 9 && px <= 20)) || { echo "size 9..20" >&2; exit 2; }
+  # Only the size line inside [font]; the rest of the file is untouched.
+  sed -i -E "/^\[font\]/,/^\[/ s/^size *=.*/size = $px/" "$ALACRITTY"
+  # Quantized: GTK's 11pt interface font lands on a whole point size.
+  gsettings set org.gnome.desktop.interface text-scaling-factor \
+    "$(awk -v px="$px" 'BEGIN { printf "%.4f", int(11 * px / 12 + 0.5) / 11 }')"
+}
+
+# Arguments end up in bash arithmetic and in swaymsg commands, where `;` chains a second command: accept only
+# the shapes the panel sends.
+valid_out() { [[ $1 =~ ^[A-Za-z0-9-]+$ ]] || { echo "bad output name" >&2; exit 2; }; }
+valid_int() { [[ $1 =~ ^[0-9]+$ ]] || { echo "not a number: $1" >&2; exit 2; }; }
+
+case ${1-} in
+  state)
+    swaymsg -t get_outputs | jq -c --argjson text "$(text_px)" '{
+      text: $text,
+      outputs: [.[] | { name, make, model, active, focused, scale,
+                        internal: (.name | test("^(eDP|LVDS|DSI)-")) }]
+    }'
+    ;;
+  brightness)
+    case ${2-} in
+      get) valid_out "$3"; brightness_get "$3" ;;
+      set) valid_out "$3"; valid_int "$4"; brightness_set "$3" "$4" ;;
+    esac
+    ;;
+  scale)
+    valid_out "$2"
+    [[ $3 =~ ^[0-9]+(\.[0-9]+)?$ ]] || { echo "bad scale" >&2; exit 2; }
+    swaymsg -q output "$2" scale "$3"
+    ;;
+  toggle) valid_out "$2"; swaymsg -q output "$2" toggle ;;
+  text) valid_int "${2-}"; text_set "$2" ;;
+  *)
+    sed -n '2,10p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Screen-share picker for xdg-desktop-portal-wlr (chooser_type=dmenu). The portal sends lines like
+# "Monitor: HDMI-A-1" and "Window: <title> (<toplevel id>)" and wants one of them back verbatim. Shown here without
+# the prefix and the id, with an icon; the original line rides along in a hidden second column.
+while IFS= read -r line; do
+  case $line in
+    Monitor:*) printf '󰍹  %s\t%s\n' "${line#Monitor: }" "$line" ;;
+    Window:*)
+      title=${line#Window: }
+      printf '  %s\t%s\n' "${title% (*}" "$line"
+      ;;
+    *) printf '%s\t%s\n' "$line" "$line" ;;
+  esac
+done | fuzzel --dmenu --config ~/.config/sway/fuzzel.ini --with-nth=1 --accept-nth=2 \
+  --placeholder 'Share which screen or window?' | {
+  IFS= read -r choice || exit 1
+  # Whole screen: hide notifications for the duration. A shared window never shows them, nothing to do.
+  # The portal's exec_after (see ~/.config/xdg-desktop-portal-wlr/sway) clears it once every share has ended.
+  [[ $choice == Monitor:* ]] && ~/.config/sway/dnd share-on
+  printf '%s\n' "$choice"
+}

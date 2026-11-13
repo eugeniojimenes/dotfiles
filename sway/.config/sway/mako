@@ -1,0 +1,16 @@
+font=JetBrainsMono Nerd Font 10
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+border-size=2
+padding=10
+default-timeout=5000
+anchor=top-right
+
+# Hidden while a mode is on; they still land in `makoctl history`. Two names so the automatic one never undoes a
+# manual Do not disturb: dnd = menu/bar toggle, screenshare = set by share-picker, cleared by the portal's exec_after.
+[mode=dnd]
+invisible=1
+
+[mode=screenshare]
+invisible=1

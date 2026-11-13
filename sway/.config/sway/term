@@ -1,0 +1,5 @@
+#!/bin/sh
+# Alacritty with the terminal opacity picked in Menu > Style > Terminal opacity (state file, default 0.92).
+# Background alpha only: text stays solid, TUIs with an unset background show the wallpaper through.
+o=$(cat "${XDG_STATE_HOME:-$HOME/.local/state}/sway/terminal-opacity" 2>/dev/null)
+exec alacritty -o "window.opacity=${o:-0.92}" "$@"

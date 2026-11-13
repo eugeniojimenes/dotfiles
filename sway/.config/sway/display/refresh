@@ -1,0 +1,6 @@
+#!/bin/sh
+# After a brightness change from outside the panel (Fn keys, wheel on the bar icon): tell an open panel to re-read.
+# No panel open = nothing to do, and no quickshell process spawned.
+pgrep -f 'quickshell -p .*/sway/display/panel.qml' >/dev/null &&
+  exec quickshell ipc -p ~/.config/sway/display/panel.qml call display refresh >/dev/null 2>&1
+exit 0

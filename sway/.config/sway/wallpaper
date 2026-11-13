@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Background switcher: a folder of images, Super+Ctrl+Space for the next one, a picker in the menu.
+#   wallpaper restore | next | prev | pick | set FILE
+# Images: ~/Pictures/Wallpapers (any depth). Current choice survives restarts in ~/.local/state/sway/wallpaper.
+
+dir=~/Pictures/Wallpapers
+state=${XDG_STATE_HOME:-$HOME/.local/state}/sway/wallpaper
+
+mapfile -t imgs < <(find "$dir" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort)
+current=$(cat "$state" 2>/dev/null)
+
+apply() {
+  [[ -f $1 ]] || return 1
+  mkdir -p "${state%/*}" && printf '%s\n' "$1" >"$state"
+  # New swaybg first, old one killed after, so there is no flash of the solid color in between.
+  local old
+  old=$(pgrep -x swaybg)
+  # Started directly, not through `swaymsg exec "..."`: a file name is never pasted into a shell string.
+  setsid -f swaybg -o '*' -i "$1" -m fill >/dev/null 2>&1
+  sleep 0.3
+  [[ -n $old ]] && kill $old
+}
+
+step() {
+  ((${#imgs[@]})) || exit 1
+  local i
+  for i in "${!imgs[@]}"; do [[ ${imgs[i]} == "$current" ]] && break; done
+  [[ ${imgs[i]} == "$current" ]] || i=-1
+  apply "${imgs[(i + $1 + ${#imgs[@]}) % ${#imgs[@]}]}"
+}
+
+case ${1-} in
+  restore) apply "${current:-${imgs[0]}}" ;;
+  next) step 1 ;;
+  prev) step -1 ;;
+  set) apply "$2" ;;
+  pick)
+    # Thumbnails = the images themselves as fuzzel icons; bigger lines so they are worth looking at.
+    choice=$(for f in "${imgs[@]}"; do
+      name=${f##*/}; name=${name%.*}
+      printf '%s\t%s\0icon\037%s\n' "$name" "$f" "$f"
+    done | fuzzel --dmenu --config ~/.config/sway/fuzzel.ini --with-nth=1 --accept-nth=2 \
+      --font 'JetBrainsMono Nerd Font:size=11' --line-height 72 --lines 6 --width 60 --placeholder 'Background') || exit 0
+    [[ -n $choice ]] && apply "$choice"
+    ;;
+  *) sed -n '2,4p' "$0" | sed 's/^# \?//'; exit 2 ;;
+esac

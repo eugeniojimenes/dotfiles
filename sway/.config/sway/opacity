@@ -1,0 +1,11 @@
+#!/bin/sh
+# Set terminal opacity: live on every open Alacritty window (IPC) and saved for new ones (read by ./term).
+# The saved value survives logout and reboot: ~/.local/state/sway/terminal-opacity.
+case $1 in
+  0.[0-9]* | 1 | 1.0) ;;
+  *) echo "usage: opacity 0.0..1.0" >&2; exit 2 ;;
+esac
+state=${XDG_STATE_HOME:-$HOME/.local/state}/sway/terminal-opacity
+mkdir -p "${state%/*}" && echo "$1" >"$state"
+alacritty msg config -w -1 "window.opacity=$1" 2>/dev/null
+exit 0

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Screenshot to ~/Pictures/screenshot-<date>.png and to the clipboard.
+# area = drag a region with slurp (Esc cancels), screen = the focused output.
+file=$(xdg-user-dir PICTURES)/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
+case ${1:-area} in
+  area) geom=$(slurp) || exit 0; grim -g "$geom" "$file" ;;
+  screen) grim -o "$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')" "$file" ;;
+esac && wl-copy <"$file" && notify-send -a Screenshot -i "$file" "Screenshot saved" "$file"

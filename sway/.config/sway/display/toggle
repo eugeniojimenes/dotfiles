@@ -1,0 +1,3 @@
+#!/bin/sh
+# Waybar monitor icon: open the Display panel, or close it when already open.
+pkill -f 'quickshell -p .*/sway/display/panel.qml' || exec quickshell -p ~/.config/sway/display/panel.qml
