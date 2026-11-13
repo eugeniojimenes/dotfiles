@@ -2,10 +2,8 @@
 
 UI = [uosc](https://github.com/tomasklaen/uosc) by tomasklaen.
 
-Omarchy ships mpv itself (`mpv` + `mpv-mpris` in `omarchy-base.packages`), its own
-`applications/mpv.desktop`, a `mimeapps.list` pointing every `video/*` type at it, and float
-rules in `default/hypr/apps/system.lua`. It ships **no mpv config**, so nothing here layers over
-an Omarchy default and no migration ever rewrites these files. This module is entirely ours.
+mpv itself comes from `nixos/configuration.nix`. Its package ships no user config, so this module is all
+there is.
 
 ## Tracked here
 
@@ -38,15 +36,8 @@ The installer writes `scripts/uosc`, `fonts/uosc_icons.otf`, `fonts/uosc_texture
 current `script-opts/uosc.conf`. It only downloads that conf when the file is absent, so a
 tracked one would win.
 
-AUR alternative:
-
-```sh
-yay -S mpv-uosc
-```
-
-Installs to `/usr/share/mpv/`, needs symlinks into `~/.config/mpv/` to take effect. Prefer the
-installer: a symlink inside a stowed module pointing outside the repo is exactly what `CLAUDE.md`
-warns against. Do not use `mpv-uosc-git`, untouched upstream since 2024-02.
+nixpkgs alternative: `mpvScripts.uosc`, added through an mpv wrapper in `configuration.nix`. Not used: the
+installer keeps uosc next to this config and updates itself.
 
 ## Update uosc
 

@@ -12,10 +12,8 @@ auto_prune = false
 CFLAGS = "-std=gnu17"
 
 [tools]
-# claude, gh, oh-my-pi, opencode: also declared lazy by Omarchy in /etc/mise/conf.d/omarchy-tools.toml. Kept here on
-# purpose so the repo records them; this file wins. Same key names as Omarchy's (oh-my-pi, not github:can1357/oh-my-pi)
-# so each tool has one entry. Agent CLIs auto_update daily but keep mise's default 24h minimum_release_age, unlike
-# Omarchy's "0s": a fresh release waits a day, the window in which compromised npm releases usually get pulled.
+# Agent CLIs auto_update daily but keep mise's default 24h minimum_release_age: a fresh release waits a day, the
+# window in which compromised npm releases usually get pulled.
 claude = { version = "latest", auto_update = true }
 gh = "latest"
 oh-my-pi = { version = "latest", auto_update = true }

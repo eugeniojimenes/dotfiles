@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Health check for this dotfiles repo: stow state, packages, mise tools, external installs, machine-local files.
+# Health check for this dotfiles repo: stow state, commands, mise tools, external installs, machine-local files.
 # Read-only by default. --fix runs the safe repairs (never resolves a stow conflict, that needs eyes on the file).
 # Runs before stow too: ~/dotfiles/local-bin/.local/bin/dotfiles-doctor
 
@@ -61,7 +61,7 @@ for mod in */; do
   if ((rc != 0)); then
     bad "$mod conflict"
     sed 's/^/        /' <<<"$out"
-    note "resolve by hand (real file where a symlink belongs, usually an Omarchy migration), then: stow $mod"
+    note "resolve by hand (real file where a symlink belongs, a tool rewrote it), then: stow $mod"
   elif [[ -n $out ]]; then
     bad "$mod not stowed"
     repair "stow $mod"
@@ -70,36 +70,24 @@ for mod in */; do
   fi
 done
 
-section "packages"
+section "commands"
+# Installed by nixos/configuration.nix; a missing one means the config was edited but not applied.
 missing=()
-for pkg in git stow tmux tree-sitter-cli lazygit lazydocker usage mise starship alacritty mpv curl unzip; do
-  pacman -Qq "$pkg" &>/dev/null || missing+=("$pkg")
+for cmd in git stow tmux tree-sitter lazygit lazydocker mise starship alacritty mpv curl unzip sway waybar fuzzel; do
+  command -v "$cmd" &>/dev/null || missing+=("$cmd")
 done
 if ((${#missing[@]})); then
-  bad "not installed: ${missing[*]}"
-  repair "sudo pacman -S --needed ${missing[*]}"
+  bad "not on PATH: ${missing[*]}"
+  repair "sudo nixos-rebuild switch"
 else
-  ok "all declared packages installed"
-fi
-
-# tmux-sys-tools.sh opens the Docker window through Omarchy's wrapper rather than lazydocker directly:
-# Omarchy 4 stopped granting the root-equivalent docker group, so the wrapper is what reaches the socket
-# (pkexec, or straight through under sudoless Docker). It is an Omarchy internal, undocumented and marked
-# hidden in its own menu metadata, on a 4.0.0.alpha that churns. A rename leaves the window dying at launch
-# with nothing to read, so name the seam here instead.
-if command -v omarchy-launch-docker-tui &>/dev/null; then
-  ok "omarchy-launch-docker-tui"
-else
-  bad "omarchy-launch-docker-tui gone, the docker window in tmux-sys-tools.sh cannot open"
-  note "Omarchy renamed or dropped the wrapper; point tmux-sys-tools.sh at whatever replaced it"
+  ok "all expected commands present"
 fi
 
 section "mise tools"
 if ! command -v mise &>/dev/null; then
   bad "mise not on PATH"
 else
-  # Lazy tools (Omarchy's /etc/mise/conf.d declarations) install on first use, so missing is fine.
-  absent=$(mise ls --missing 2>/dev/null | grep -v '(lazy)')
+  absent=$(mise ls --missing 2>/dev/null)
   if [[ -n $absent ]]; then
     bad "declared tools not installed"
     sed 's/^/        /' <<<"$absent"
@@ -164,35 +152,6 @@ else
   repair "nvim --headless '+Lazy! restore' +qa"
 fi
 
-section "input"
-# input.lua carries no kb_layout/kb_variant; Omarchy's default derives both from /etc/vconsole.conf. That
-# read is Omarchy code, not its documented interface (the manual says to hardcode in input.lua), and this is
-# 4.0.0.alpha. If a release drops it, layout reverts to "us" silently. Same seam as omarchy issue #6878.
-vc_layout=$(sed -n 's/^XKBLAYOUT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
-vc_variant=$(sed -n 's/^XKBVARIANT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
-live_layout=$(hyprctl getoption input:kb_layout 2>/dev/null | sed -n 's/^str: //p')
-
-if [[ -z $live_layout ]]; then
-  : # no Hyprland session to query, nothing to compare
-elif grep -qE '^\s*kb_layout' "$REPO/hypr/.config/hypr/input.lua" 2>/dev/null; then
-  ok "input.lua sets kb_layout directly, vconsole not in play"
-elif [[ -z $vc_layout ]]; then
-  bad "/etc/vconsole.conf has no XKBLAYOUT, so Omarchy falls back to us (omarchy issue #6878)"
-  note "fix: sudo localectl set-x11-keymap <layout> <model> <variant> <options>"
-else
-  live_variant=$(hyprctl getoption input:kb_variant 2>/dev/null | sed -n 's/^str: //p')
-  # Omarchy prepends a us group when the leading layout cannot type Latin, so accept that shape too.
-  for pair in "layout:$live_layout:$vc_layout:us," "variant:$live_variant:$vc_variant:,"; do
-    IFS=: read -r what live vc prefix <<<"$pair"
-    if [[ $live == "$vc" || $live == "$prefix$vc" ]]; then
-      ok "kb_$what ${live:-(empty)} matches vconsole"
-    else
-      bad "kb_$what is ${live:-(empty)}, vconsole says ${vc:-(empty)}"
-      note "Omarchy may have dropped the vconsole read; set kb_$what in input.lua directly"
-    fi
-  done
-fi
-
 section "machine-local files"
 SETTINGS=$HOME/.claude/settings.json
 if [[ -L $SETTINGS ]]; then
@@ -205,26 +164,8 @@ else
   note "fix: ~/.private/private unlock, then re-add marketplaces"
 fi
 
-TERMS=$HOME/.config/xdg-terminals.list
-if [[ -f $TERMS ]] && grep -qx 'Alacritty.desktop' "$TERMS"; then
-  ok "default terminal is Alacritty"
-else
-  bad "default terminal not pinned, Omarchy launchers will open foot"
-  repair "omarchy-default-terminal alacritty"
-fi
-
-# SUPER + B goes through `omarchy launch browser`, which opens Omarchy's default. Fresh install = chromium.
-browser=$(omarchy-default-browser 2>/dev/null)
-if [[ $browser == brave ]]; then
-  ok "default browser is Brave"
-else
-  bad "default browser is ${browser:-unknown}, SUPER + B will not open Brave"
-  repair "omarchy-default-browser brave"
-fi
-
-# Omarchy maps images to imv.desktop, which gets only the clicked file, so next/prev have nothing to step to.
-# imv ships imv-dir.desktop for exactly this. Set in mimeapps.list, not by editing imv.desktop: Omarchy
-# migrations re-run omarchy-refresh-applications, which copies its launchers over ~/.local/share/applications.
+# imv opens only the clicked file; imv-dir.desktop (same package) opens its directory too, so next/prev work.
+# Set in mimeapps.list via xdg-mime; that file is not tracked, apps rewrite it constantly.
 IMAGES="image/png image/jpeg image/gif image/webp image/bmp image/tiff"
 wrong=()
 for t in $IMAGES; do
@@ -237,17 +178,15 @@ else
   ok "images open in imv-dir"
 fi
 
-# Only us(intl) types ć on ' + c and needs the cedilla override. Global variant plus every keyboard's own:
-# the notebook is plain br (real ç key) globally, but input.lua gives an external US keyboard us(intl) per
-# device. Live Hyprland values first, vconsole when outside a session.
-variant=$(hyprctl getoption input:kb_variant 2>/dev/null | sed -n 's/^str: //p')
-[[ -z $variant ]] && variant=$(sed -n 's/^XKBVARIANT=//p' /etc/vconsole.conf 2>/dev/null | tr -d '"')
-variant+=,$(hyprctl devices -j 2>/dev/null | jq -r '[.keyboards[].variant] | join(",")' 2>/dev/null)
-if [[ ,$variant, == *,intl,* ]]; then
-  # Effective table, not a file check: xkbcommon resolves ~/.XCompose and its includes the way fcitx5 does.
+# Only us(intl) types ć on ' + c and needs the cedilla override: checked when the Sway config gives any keyboard the
+# intl variant (the built-in ABNT2 has a real ç key).
+if grep -qE '^\s*xkb_variant\s+intl' "$REPO/sway/.config/sway/config"; then
+  # Effective table, not a file check: xkbcommon resolves ~/.XCompose and its includes.
   # Capture first: grep -q exits on the hit, xkbcli dies on SIGPIPE and pipefail inverts the result.
   compose=$(xkbcli compile-compose 2>/dev/null)
-  if grep -q '^<dead_acute> <c> *: *"ç"' <<<"$compose"; then
+  if [[ -z $compose ]]; then
+    warn "cedilla: xkbcli unavailable, check by typing ' + c"
+  elif grep -q '^<dead_acute> <c> *: *"ç"' <<<"$compose"; then
     ok "cedilla: ' + c types ç"
   else
     bad "cedilla: ' + c types ć"
