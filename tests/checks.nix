@@ -22,4 +22,19 @@ in
     gitleaks
   ]) "cd ${self} && bash tests/static.sh";
 
+  # Writable copy with patched shebangs: the build sandbox has no /usr/bin/env.
+  unit =
+    check "unit"
+      [
+        (pkgs.bats.withLibraries (p: [
+          p.bats-support
+          p.bats-assert
+        ]))
+        pkgs.jq
+      ]
+      ''
+        cp -r ${self} src && chmod -R u+w src && cd src
+        patchShebangs . >/dev/null
+        bats -r tests/unit
+      '';
 }

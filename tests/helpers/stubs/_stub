@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Test double for every command linked to it in this dir. Logs "name args" to $STUBS/calls, then per command:
+#   $STUBS/name.sh   sourced first (custom behaviour, may exit)
+#   $STUBS/name.out  printed      $STUBS/name.rc  exit status, default 0
+# fuzzel and wl-copy also save their stdin to $STUBS/name.stdin. Other stubs never read stdin, so none can hang.
+: "${STUBS:?stub called outside a test}"
+name=${0##*/}
+printf '%s\n' "$name $*" >>"$STUBS/calls"
+case $name in fuzzel | wl-copy) cat >"$STUBS/$name.stdin" ;; esac
+# shellcheck source=/dev/null
+[[ -f $STUBS/$name.sh ]] && source "$STUBS/$name.sh"
+[[ -f $STUBS/$name.out ]] && cat "$STUBS/$name.out"
+exit "$(cat "$STUBS/$name.rc" 2>/dev/null || echo 0)"
