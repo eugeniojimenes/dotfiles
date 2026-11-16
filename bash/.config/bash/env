@@ -11,3 +11,7 @@ case ":$PATH:" in
   *":$HOME/.local/bin:"*) ;;
   *) export PATH="$PATH:$HOME/.local/bin" ;;
 esac
+
+# Private env vars live outside this public repo. Here, not in .bash_profile: Sway starts no login shell, so terminals
+# would miss them. Guarded: a fresh machine has no ~/.private/envs yet. Replace with your own path.
+[[ -f ~/.private/envs ]] && . ~/.private/envs
