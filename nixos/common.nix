@@ -1,8 +1,8 @@
-# NixOS config shared by every machine. Not a stow module. Each machine's /etc/nixos/configuration.nix imports its
-# own hosts/<hostname>.nix, which imports this file; hardware-configuration.nix stays generated in /etc/nixos:
-#   { imports = [ ./hardware-configuration.nix /home/callmarx/dotfiles/nixos/hosts/<hostname>.nix ]; }
-# Channels, no flakes, no home-manager: dotfiles stay on stow, system packages live here.
-# Apply: sudo nixos-rebuild switch. Update: sudo nixos-rebuild switch --upgrade.
+# NixOS config shared by every machine. Not a stow module. flake.nix (repo root) builds one system per
+# hosts/<hostname>/, which imports this file plus that machine's hardware.nix.
+# Flake, pinned nixpkgs (flake.lock), no home-manager: dotfiles stay on stow, system packages live here.
+# Apply: sudo nixos-rebuild switch --flake ~/dotfiles. Update: nix flake update, then the same switch.
+# A flake only sees files git tracks: `git add` a new file before rebuilding.
 # Formatted with nixfmt (official style, RFC 166); one block per top-level option.
 { pkgs, ... }:
 
@@ -42,7 +42,7 @@
 
   nixpkgs.config.allowUnfree = true;
   nix = {
-    # flakes off for the system (channels), on for `nix shell` / `nix search`.
+    # System = flake (flake.nix). nix-shell -p and <nixpkgs> follow the same pinned nixpkgs (nixosSystem sets it).
     settings.experimental-features = [
       "nix-command"
       "flakes"

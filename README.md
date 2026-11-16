@@ -26,19 +26,21 @@ nix-shell -p git --run 'git clone https://github.com/eugeniojimenes/dotfiles.git
 Then [System config](#system-config-nixos), then [Stow](#apply-dotfiles-with-gnu-stow).
 
 ## System config (NixOS)
-`nixos/common.nix` = packages, services, Sway, login, shared by every machine. `nixos/hosts/<hostname>.nix` = what only that machine needs (GPU, hostname), imports `common.nix`. Not a stow module. `/etc/nixos/configuration.nix` imports the host file next to the machine's own `hardware-configuration.nix`:
+`flake.nix` (repo root) = one NixOS system per machine, nixpkgs pinned in `flake.lock`. `nixos/common.nix` = packages, services, Sway, login, shared by every machine. `nixos/hosts/<hostname>/` = what only that machine needs: `default.nix` (GPU, hostname) and `hardware.nix` (its `nixos-generate-config` output). Not a stow module. New machine, after a plain NixOS install:
 ```sh
-echo '{ imports = [ ./hardware-configuration.nix /home/<user>/dotfiles/nixos/hosts/<hostname>.nix ]; }' |
-  sudo tee /etc/nixos/configuration.nix
-sudo nixos-rebuild boot && reboot
+mkdir nixos/hosts/<hostname>
+nixos-generate-config --show-hardware-config > nixos/hosts/<hostname>/hardware.nix
+# write nixos/hosts/<hostname>/default.nix (see hosts/loc-nixos), add it to flake.nix
+git add nixos flake.nix   # a flake only sees files git tracks
+sudo nixos-rebuild boot --flake ~/dotfiles#<hostname> && reboot
 ```
 Day to day:
 ```sh
-sudo nixos-rebuild switch            # after editing nixos/
-sudo nixos-rebuild switch --upgrade  # update packages from the channel
-sudo nixos-rebuild switch --rollback # back to the previous generation
+sudo nixos-rebuild switch --flake ~/dotfiles             # after editing nixos/ (picks the host by hostname)
+nix flake update && sudo nixos-rebuild switch --flake ~/dotfiles   # update packages
+sudo nixos-rebuild switch --rollback                     # back to the previous generation
 ```
-Channels, no flakes, no home-manager: system state lives in `nixos/`, user config in the stow modules below. User name is in `common.nix`; a new machine gets its own `hosts/<hostname>.nix` (see `hosts/loc-nixos.nix`, notebook with Intel + NVIDIA PRIME) and Sway file `sway/.config/sway/hosts/<hostname>`.
+No home-manager: system state lives in `nixos/`, user config in the stow modules below. User name is in `common.nix`; a new machine also gets its Sway file `sway/.config/sway/hosts/<hostname>`.
 
 ## Apply dotfiles with GNU Stow
 Stow manages symlinks from repo into `$HOME`. Move away anything a module would replace first (`~/.bashrc` on a fresh system). Create the shared parents first, or stow folds `~/.local/share` into the `steam` module and every app writes its data into the repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.

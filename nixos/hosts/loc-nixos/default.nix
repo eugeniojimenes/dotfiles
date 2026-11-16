@@ -1,9 +1,12 @@
-# Notebook: Lenovo LOQ 15IRH8, Intel UHD + RTX 3050 Laptop. Everything only this machine needs; the rest in ../common.nix.
-# /etc/nixos/configuration.nix: { imports = [ ./hardware-configuration.nix /home/callmarx/dotfiles/nixos/hosts/loc-nixos.nix ]; }
+# Notebook: Lenovo LOQ 15IRH8, Intel UHD + RTX 3050 Laptop. Everything only this machine needs; the rest in common.nix.
+# hardware.nix = this machine's nixos-generate-config output, kept verbatim (regenerate, never hand-edit).
 { ... }:
 
 {
-  imports = [ ../common.nix ];
+  imports = [
+    ../../common.nix
+    ./hardware.nix
+  ];
 
   networking.hostName = "loc-nixos";
 

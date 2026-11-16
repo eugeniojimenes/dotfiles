@@ -86,7 +86,7 @@ for cmd in git stow tmux tree-sitter lazygit lazydocker mise starship alacritty 
 done
 if ((${#missing[@]})); then
   bad "not on PATH: ${missing[*]}"
-  repair "sudo nixos-rebuild switch"
+  repair "sudo nixos-rebuild switch --flake ~/dotfiles"
 else
   ok "all expected commands present"
 fi
