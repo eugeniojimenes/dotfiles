@@ -58,3 +58,53 @@ SH
   run "$doctor" --bogus
   assert_failure 2
 }
+
+@test "shared parent linked into the repo: flagged" {
+  rmdir "$HOME/.config"
+  ln -s "$REPO/sway/.config" "$HOME/.config"
+  run "$doctor"
+  assert_line '  FAIL  ~/.config is a link into the repo, app data written there lands in git status'
+}
+
+@test "~/.claude/settings.json: real file ok, symlink or absent flagged" {
+  run "$doctor"
+  assert_line '  FAIL  ~/.claude/settings.json absent'
+  mkdir -p "$HOME/.claude"
+  echo '{}' >"$BATS_TEST_TMPDIR/settings.json"
+  ln -s "$BATS_TEST_TMPDIR/settings.json" "$HOME/.claude/settings.json"
+  run "$doctor"
+  assert_line --partial 'FAIL  ~/.claude/settings.json is a symlink'
+  rm "$HOME/.claude/settings.json" && echo '{}' >"$HOME/.claude/settings.json"
+  run "$doctor"
+  assert_line '  ok    ~/.claude/settings.json'
+}
+
+@test "images must open in imv-dir" {
+  run "$doctor"
+  assert_line --partial 'not opening in imv-dir'
+  assert_line '        fix: xdg-mime default imv-dir.desktop image/png image/jpeg image/gif image/webp image/bmp image/tiff'
+  stub xdg-mime imv-dir.desktop
+  run "$doctor"
+  assert_line '  ok    images open in imv-dir'
+}
+
+@test "cedilla: checked on the effective compose table" {
+  stub xkbcli '<dead_acute> <c> :  "ç" ccedilla'
+  run "$doctor"
+  assert_line "  ok    cedilla: ' + c types ç"
+  stub xkbcli '<dead_acute> <c> :  "ć" cacute'
+  run "$doctor"
+  assert_line "  FAIL  cedilla: ' + c types ć"
+  stub xkbcli ''
+  rm "$STUBS/xkbcli.out"
+  run "$doctor"
+  assert_line --partial 'warn  cedilla: xkbcli unavailable'
+}
+
+@test "run through a symlink (stowed into ~/.local/bin): still finds the repo" {
+  mkdir -p "$HOME/.local/bin"
+  ln -s "$doctor" "$HOME/.local/bin/dotfiles-doctor"
+  run "$HOME/.local/bin/dotfiles-doctor"
+  run calls
+  assert_line 'stow -n -v sway'
+}
