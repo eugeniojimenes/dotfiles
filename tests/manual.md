@@ -13,6 +13,12 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Brightness, external monitor | The Display panel slider changes it over DDC/CI. | |
 | Suspend with an external monitor | Suspend and resume with the monitor plugged in. The monitor must come back. Then disable `display/reinit` for one test and note whether it is still needed. | |
 | Screen share | Share the whole screen and then a single window in Google Meet. The wlr portal picker opens and notifications stay hidden while the whole screen is shared. | |
-| Lock screen | `Super + Shift + L` shows the Quickshell lock with the blurred backdrop on every output. The password unlocks it. | 2026-11-16 |
+| Lock screen | `Super + Shift + L` shows the Quickshell lock with the blurred backdrop on every output. The password unlocks it. Same check as spec lock criteria 7 and 8. | 2026-11-16 |
 | Steam on the dGPU | A game started with `prime-run %command%` runs on the NVIDIA card. | |
 | Rollback | Boot a previous generation from the boot menu and check that it starts Sway. | |
+| Spec keybindings | Criterion 10. | |
+| Spec wifi-panel | Criteria 2 to 11. | |
+| Spec sound-panel | Criteria 2 to 10. | |
+| Spec lock | Criteria 7 to 10. Criterion 9: lock, switch to a TTY, kill the Quickshell lock process, and check that the outputs stay covered. | |
+| Spec sys-tools | Criteria 4 to 6. | |
+| Spec dotfiles-doctor | Criterion 12: `dotfiles-doctor` exits 0. | |
