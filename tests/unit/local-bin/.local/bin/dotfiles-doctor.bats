@@ -108,3 +108,27 @@ SH
   run calls
   assert_line 'stow -n -v sway'
 }
+
+@test "pre-commit hook: unset flagged, --fix sets it" {
+  run "$doctor"
+  assert_line '  FAIL  pre-commit hook not enabled, a secret or forbidden term could reach a commit'
+  assert_line "        fix: git -C $REPO config core.hooksPath .githooks"
+  run "$doctor" --fix
+  run calls
+  assert_line "git -C $REPO config core.hooksPath .githooks"
+  stub git .githooks
+  run "$doctor"
+  assert_line '  ok    pre-commit hook enabled'
+}
+
+@test "forbidden-terms list: absent warns without counting as a problem, present ok, content never shown" {
+  stub git .githooks
+  run "$doctor"
+  assert_line '  warn  ~/.private/forbidden-terms absent, term scan skipped by bin/check and the hook'
+  absent=$(grep 'problem(s)' <<<"$output")
+  mkdir -p "$HOME/.private" && echo zorblax >"$HOME/.private/forbidden-terms"
+  run "$doctor"
+  assert_line '  ok    forbidden-terms list'
+  refute_output --partial zorblax
+  [ "$(grep 'problem(s)' <<<"$output")" = "$absent" ]
+}

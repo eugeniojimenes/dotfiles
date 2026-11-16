@@ -81,7 +81,7 @@ done
 section "commands"
 # Installed by nixos/common.nix; a missing one means the config was edited but not applied.
 missing=()
-for cmd in git stow tmux tree-sitter lazygit lazydocker mise starship alacritty mpv curl unzip sway waybar fuzzel; do
+for cmd in git stow tmux tree-sitter lazygit lazydocker mise starship alacritty mpv curl unzip sway waybar fuzzel quickshell age; do
   command -v "$cmd" &>/dev/null || missing+=("$cmd")
 done
 if ((${#missing[@]})); then
@@ -89,6 +89,22 @@ if ((${#missing[@]})); then
   repair "sudo nixos-rebuild switch --flake ~/dotfiles"
 else
   ok "all expected commands present"
+fi
+
+section "leak guard"
+# Versioned hook, but git only runs it once this clone points at it.
+if [[ $(git -C "$REPO" config core.hooksPath) == .githooks ]]; then
+  ok "pre-commit hook enabled"
+else
+  bad "pre-commit hook not enabled, a secret or forbidden term could reach a commit"
+  repair "git -C $REPO config core.hooksPath .githooks"
+fi
+# Without the list, bin/check terms and the hook skip the term scan silently. Warn only: a fresh clone has none.
+if [[ -f $HOME/.private/forbidden-terms ]]; then
+  ok "forbidden-terms list"
+else
+  warn "~/.private/forbidden-terms absent, term scan skipped by bin/check and the hook"
+  note "fix: ~/.private/private unlock"
 fi
 
 section "mise tools"
