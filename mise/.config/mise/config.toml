@@ -16,7 +16,6 @@ CFLAGS = "-std=gnu17"
 # window in which compromised npm releases usually get pulled.
 claude = { version = "latest", auto_update = true }
 gh = "latest"
-oh-my-pi = { version = "latest", auto_update = true }
 glab = "latest"
 go = "latest"
 node = { version = "22", postinstall = "corepack enable; npm install -g neovim" }
