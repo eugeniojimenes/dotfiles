@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.I3
 import Quickshell.Wayland
 
 // Calendar popup for the waybar clock: month grid with ISO week numbers, today
@@ -15,6 +16,24 @@ ShellRoot {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "sway-calendar"
+
+    // Exclusive keyboard focus follows nothing: switching workspace (key or click on another output) would leave every
+    // window without input until this closes. Close with it, like a popup. Sway skips its mouse_warping while a layer
+    // surface holds the keyboard, so a jump to another output warps the cursor here instead.
+    I3IpcListener {
+      subscriptions: ["workspace"]
+      onIpcEvent: event => {
+        if (event.type !== "workspace") return
+        const e = JSON.parse(event.data)
+        if (e.change !== "focus") return
+        if (e.old && e.current && e.old.output !== e.current.output) {
+          const r = e.current.rect
+          Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
+                                   String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
+        }
+        Qt.quit()
+      }
+    }
 
     readonly property color bg: "#f21e1e2e"
     readonly property color fg: "#cdd6f4"
