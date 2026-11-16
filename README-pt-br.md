@@ -76,7 +76,7 @@ stow -D <módulo>   # remove os symlinks do módulo, os arquivos ficam no repo
 
 10. **Steam**: `steam/`. Atalhos de jogos em `~/.local/share/applications/`. Jogo na GPU NVIDIA: opção de lançamento `prime-run %command%`.
 
-11. **Sway**: `sway/.config/sway/`. O desktop inteiro num diretório: config, waybar, mako, menu no fuzzel (`Super + Space`), calendário, painel de tela e tela de bloqueio em Quickshell, troca de papel de parede (`~/Pictures/Wallpapers`), capturas de tela, seletor de Wi-Fi, seletor de compartilhamento de tela (`sway/.config/xdg-desktop-portal-wlr/sway`). Config dividido por assunto em `config.d/`, scripts em `bin/`, configs dos apps em `apps/`. `Super + K` lista todos os atalhos. O `bin/start` põe a GPU integrada primeiro, e a dedicada só cuida das saídas ligadas nela.
+11. **Sway**: `sway/.config/sway/`. O desktop inteiro num diretório: config, waybar, mako, menu no fuzzel (`Super + Space`), calendário, painel de tela, painel de Wi-Fi e tela de bloqueio em Quickshell, troca de papel de parede (`~/Pictures/Wallpapers`), capturas de tela, seletor de compartilhamento de tela (`sway/.config/xdg-desktop-portal-wlr/sway`). Config dividido por assunto em `config.d/`, scripts em `bin/`, configs dos apps em `apps/`. `Super + K` lista todos os atalhos. O `bin/start` põe a GPU integrada primeiro, e a dedicada só cuida das saídas ligadas nela.
 
 12. **tmux**: `tmux/`. Prefixo `Ctrl + \` (ou `Ctrl + b`), `prefix + ?` lista os atalhos. Gerenciador de plugins fora de `~/.config/tmux`:
   ```sh

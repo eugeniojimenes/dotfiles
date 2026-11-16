@@ -87,7 +87,7 @@ menu_opacity() {
 
 menu_setup() {
   {
-    entry 󰖩 "Wi-Fi" "run:$dir/bin/wifi"
+    entry 󰖩 "Wi-Fi" "run:$dir/wifi/toggle"
     entry 󰕾 "Sound" "run:$dir/bin/float wiremix -c $dir/apps/wiremix.toml"
     entry 󰍹 "Display" "run:$dir/display/toggle"
     entry 󰏫 "Edit Sway config" "run:$dir/bin/float nvim $dir/config.d"

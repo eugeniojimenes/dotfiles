@@ -27,7 +27,7 @@
     "format-disconnected": "󰤮",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
     "tooltip-format-disconnected": "Desconectado",
-    "on-click": "~/.config/sway/bin/wifi"
+    "on-click": "~/.config/sway/wifi/toggle"
   },
 
   "wireplumber": {

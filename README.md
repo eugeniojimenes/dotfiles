@@ -76,7 +76,7 @@ stow -D <module>   # remove a module's symlinks, files stay in the repo
 
 10. **Steam**: `steam/`. Game launchers in `~/.local/share/applications/`. Games on the NVIDIA GPU: launch option `prime-run %command%`.
 
-11. **Sway**: `sway/.config/sway/`. Whole desktop in one directory: config, waybar, mako, fuzzel menu (`Super + Space`), Quickshell calendar, display panel and lock screen, wallpaper switcher (`~/Pictures/Wallpapers`), screenshots, Wi-Fi picker, screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). Config split by topic in `config.d/`, scripts in `bin/`, app configs in `apps/`. `Super + K` lists every keybinding. `bin/start` puts the integrated GPU first so the dGPU only drives its own outputs.
+11. **Sway**: `sway/.config/sway/`. Whole desktop in one directory: config, waybar, mako, fuzzel menu (`Super + Space`), Quickshell calendar, display panel, Wi-Fi panel and lock screen, wallpaper switcher (`~/Pictures/Wallpapers`), screenshots, screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). Config split by topic in `config.d/`, scripts in `bin/`, app configs in `apps/`. `Super + K` lists every keybinding. `bin/start` puts the integrated GPU first so the dGPU only drives its own outputs.
 
 12. **tmux**: `tmux/`. Prefix `Ctrl + \` (or `Ctrl + b`), `prefix + ?` lists bindings. Plugin manager outside `~/.config/tmux`:
   ```sh
