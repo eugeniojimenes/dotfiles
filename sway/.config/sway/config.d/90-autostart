@@ -1,0 +1,15 @@
+### Autostart
+exec swayidle -w \
+    timeout 300 '$lock' \
+    timeout 330 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep '$lock' \
+    after-resume '$dir/display/reinit'
+exec mako --config $dir/apps/mako
+exec $dir/bin/wallpaper restore
+exec swayosd-server
+
+exec $dir/bin/session-env
+
+# Plain exec, not `bar { swaybar_command }`: that one runs without a shell, so ~ never expands and waybar
+# silently never started.
+exec waybar -c $dir/apps/waybar.jsonc -s $dir/apps/waybar.css >$XDG_RUNTIME_DIR/sway-waybar.log 2>&1

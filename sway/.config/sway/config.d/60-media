@@ -1,0 +1,24 @@
+### Media, brightness, screenshots
+# swayosd draws the volume/brightness popup.
+#: Volume up
+bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume raise
+#: Volume down
+bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume lower
+#: Mute
+bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
+#: Mute microphone
+bindsym --locked XF86AudioMicMute exec swayosd-client --input-volume mute-toggle
+#: Brightness up
+bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness raise && $dir/display/refresh
+#: Brightness down
+bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness lower && $dir/display/refresh
+#: Play/pause
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+#: Next track
+bindsym --locked XF86AudioNext exec playerctl next
+#: Previous track
+bindsym --locked XF86AudioPrev exec playerctl previous
+#: Screenshot (area)
+bindsym Print exec $dir/bin/screenshot area
+#: Screenshot (screen)
+bindsym Shift+Print exec $dir/bin/screenshot screen

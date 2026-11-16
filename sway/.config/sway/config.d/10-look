@@ -1,0 +1,15 @@
+### Look and outputs
+font pango:JetBrainsMono Nerd Font 10
+# An app asking for attention (Slack opening a link in Brave on another workspace) gets focus, instead of only
+# turning its workspace red/urgent in the bar.
+focus_on_window_activation focus
+default_border pixel 2
+gaps inner 5
+client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
+client.unfocused #313244 #313244 #cdd6f4 #313244 #313244
+
+### Outputs. Notebook panel = eDP-2. External: `swaymsg -t get_outputs`, then an `output` line per monitor.
+# Background owned by bin/wallpaper (restored in 90-autostart). `swaybg_command -` stops Sway spawning its own
+# swaybg on every reload, which would paint a solid color over the image.
+swaybg_command -
+output eDP-2 scale 1

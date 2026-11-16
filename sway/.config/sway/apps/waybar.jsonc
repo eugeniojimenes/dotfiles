@@ -9,7 +9,7 @@
   "custom/menu": {
     "format": "󱓞",
     "tooltip-format": "Menu (Super+Space)",
-    "on-click": "~/.config/sway/menu"
+    "on-click": "~/.config/sway/bin/menu"
   },
 
   "sway/workspaces": { "disable-scroll": true },
@@ -27,7 +27,7 @@
     "format-disconnected": "󰤮",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
     "tooltip-format-disconnected": "Desconectado",
-    "on-click": "~/.config/sway/wifi"
+    "on-click": "~/.config/sway/bin/wifi"
   },
 
   "wireplumber": {
@@ -35,18 +35,18 @@
     "format-muted": "󰝟",
     "format-icons": ["󰕿", "󰖀", "󰕾"],
     "tooltip-format": "{node_name}: {volume}%",
-    "on-click": "~/.config/sway/float wiremix -c ~/.config/sway/wiremix.toml",
+    "on-click": "~/.config/sway/bin/float wiremix -c ~/.config/sway/apps/wiremix.toml",
     "on-click-right": "swayosd-client --output-volume mute-toggle",
     "on-scroll-up": "swayosd-client --output-volume raise",
     "on-scroll-down": "swayosd-client --output-volume lower"
   },
 
   "custom/dnd": {
-    "exec": "~/.config/sway/dnd status",
+    "exec": "~/.config/sway/bin/dnd status",
     "return-type": "json",
     "interval": "once",
     "signal": 8,
-    "on-click": "~/.config/sway/dnd toggle"
+    "on-click": "~/.config/sway/bin/dnd toggle"
   },
 
   "custom/display": {

@@ -11,8 +11,8 @@ entry() { printf '%s  %s\t%s\n' "$1" "$2" "$3"; }
 
 # Submenus use fuzzel-menu.ini, where Left exits with code 10 = back to the root.
 pick() {
-  local conf=$dir/fuzzel.ini hint=
-  [[ $level != root ]] && conf=$dir/fuzzel-menu.ini hint='   ← back'
+  local conf=$dir/apps/fuzzel.ini hint=
+  [[ $level != root ]] && conf=$dir/apps/fuzzel-menu.ini hint='   ← back'
   local out rc
   out=$(fuzzel --dmenu --config "$conf" --with-nth=1 --accept-nth=2 --placeholder "$1$hint")
   rc=$?
@@ -50,7 +50,7 @@ apps() {
 menu_root() {
   {
     entry 󰀻 "Apps  ›" menu:apps
-    entry 󰌌 "Keybindings" "run:$dir/keybindings"
+    entry 󰌌 "Keybindings" "run:$dir/bin/keybindings"
     entry 󰄀 "Capture  ›" menu:capture
     entry 󰏘 "Style  ›" menu:style
     entry 󰒓 "Setup  ›" menu:setup
@@ -64,15 +64,15 @@ menu_apps() { apps | pick 'Apps'; }
 
 menu_capture() {
   {
-    entry 󰩭 "Screenshot (area)" "run:$dir/screenshot area"
-    entry 󰍹 "Screenshot (screen)" "run:$dir/screenshot screen"
+    entry 󰩭 "Screenshot (area)" "run:$dir/bin/screenshot area"
+    entry 󰍹 "Screenshot (screen)" "run:$dir/bin/screenshot screen"
   } | pick 'Capture'
 }
 
 menu_style() {
   {
-    entry 󰸉 "Background" "run:$dir/wallpaper pick"
-    entry 󰒭 "Next background" "run:$dir/wallpaper next"
+    entry 󰸉 "Background" "run:$dir/bin/wallpaper pick"
+    entry 󰒭 "Next background" "run:$dir/bin/wallpaper next"
     entry 󰃚 "Terminal opacity  ›" menu:opacity
   } | pick 'Style'
 }
@@ -81,23 +81,23 @@ menu_opacity() {
   local cur v
   cur=$(cat "${XDG_STATE_HOME:-$HOME/.local/state}/sway/terminal-opacity" 2>/dev/null || echo 0.92)
   for v in 1.0 0.98 0.96 0.94 0.92 0.88 0.85 0.80; do
-    entry "$([[ $v == "$cur" ]] && echo 󰄬 || echo 󰝦)" "$(awk -v v="$v" 'BEGIN { printf "%d%%", v * 100 }')" "run:$dir/opacity $v"
+    entry "$([[ $v == "$cur" ]] && echo 󰄬 || echo 󰝦)" "$(awk -v v="$v" 'BEGIN { printf "%d%%", v * 100 }')" "run:$dir/bin/opacity $v"
   done | pick 'Terminal opacity'
 }
 
 menu_setup() {
   {
-    entry 󰖩 "Wi-Fi" "run:$dir/wifi"
-    entry 󰕾 "Sound" "run:$dir/float wiremix -c $dir/wiremix.toml"
+    entry 󰖩 "Wi-Fi" "run:$dir/bin/wifi"
+    entry 󰕾 "Sound" "run:$dir/bin/float wiremix -c $dir/apps/wiremix.toml"
     entry 󰍹 "Display" "run:$dir/display/toggle"
-    entry 󰏫 "Edit Sway config" "run:$dir/float nvim $dir/config"
-    entry 󰏫 "Edit bar" "run:$dir/float nvim $dir/waybar.jsonc"
+    entry 󰏫 "Edit Sway config" "run:$dir/bin/float nvim $dir/config.d"
+    entry 󰏫 "Edit bar" "run:$dir/bin/float nvim $dir/apps/waybar.jsonc"
     entry 󰑓 "Reload Sway" "run:swaymsg reload"
   } | pick 'Setup'
 }
 
 menu_toggle() {
-  entry 󰂛 "Do not disturb" "run:$dir/dnd toggle" | pick 'Toggle'
+  entry 󰂛 "Do not disturb" "run:$dir/bin/dnd toggle" | pick 'Toggle'
 }
 
 menu_system() {

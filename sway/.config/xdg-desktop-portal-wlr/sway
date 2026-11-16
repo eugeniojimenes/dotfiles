@@ -2,6 +2,6 @@
 # Screen-share picker on fuzzel, same look as the Sway menu: lists monitors and windows.
 [screencast]
 chooser_type=dmenu
-chooser_cmd=/home/callmarx/.config/sway/share-picker
+chooser_cmd=/home/callmarx/.config/sway/bin/share-picker
 # Runs once every screencast has ended: notifications back if share-picker hid them.
-exec_after=/home/callmarx/.config/sway/dnd share-off
+exec_after=/home/callmarx/.config/sway/bin/dnd share-off

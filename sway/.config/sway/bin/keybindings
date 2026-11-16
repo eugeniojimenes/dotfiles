@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Keybindings cheat sheet, read live from the Sway config.
+# Keybindings cheat sheet, read live from the Sway config (main file first: it sets the variables).
 # Picking a line runs that binding's command, so it doubles as a launcher.
 # Title = `#: <text>` comment right above the binding; workspace keys get theirs generated, the rest fall back to the command.
 
-cfg=~/.config/sway/config
+dir=~/.config/sway
 
 # Workspace bindcodes 10..19 = the number row keys 1..0.
 awk '
@@ -34,8 +34,8 @@ awk '
     printf "%-34s %s\t%s\n", key, label, cmd
   }
   { desc = "" }   # a title only covers the line right below it
-' "$cfg" |
-  fuzzel --dmenu --config ~/.config/sway/fuzzel.ini --width 80 --lines 14 \
+' "$dir/config" "$dir"/config.d/* |
+  fuzzel --dmenu --config "$dir/apps/fuzzel.ini" --width 80 --lines 14 \
     --font 'JetBrainsMono Nerd Font:size=10' --with-nth=1 --accept-nth=2 \
     --placeholder 'Keybindings' |
   { read -r cmd && swaymsg -q -- "$cmd"; }

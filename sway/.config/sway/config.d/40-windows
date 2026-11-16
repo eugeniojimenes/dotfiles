@@ -1,0 +1,51 @@
+### Windows
+#: Close window
+bindsym $mod+w kill
+#: Close window
+bindsym $mod+q kill
+#: Fullscreen
+bindsym $mod+f fullscreen toggle
+#: Toggle floating
+bindsym $mod+t floating toggle
+#: Toggle split direction
+bindsym $mod+j layout toggle split
+#: Toggle tabbed layout
+bindsym $mod+e layout toggle tabbed split
+floating_modifier $mod normal
+
+#: Focus left
+bindsym $mod+Left focus left
+#: Focus right
+bindsym $mod+Right focus right
+#: Focus up
+bindsym $mod+Up focus up
+#: Focus down
+bindsym $mod+Down focus down
+#: Move window left
+bindsym $mod+Shift+Left move left
+#: Move window right
+bindsym $mod+Shift+Right move right
+#: Move window up
+bindsym $mod+Shift+Up move up
+#: Move window down
+bindsym $mod+Shift+Down move down
+
+mode "resize" {
+    #: Resize: narrower
+    bindsym Left resize shrink width 20px
+    #: Resize: wider
+    bindsym Right resize grow width 20px
+    #: Resize: shorter
+    bindsym Up resize shrink height 20px
+    #: Resize: taller
+    bindsym Down resize grow height 20px
+    #: Resize: done
+    bindsym Return mode "default"
+    #: Resize: done
+    bindsym Escape mode "default"
+}
+#: Resize mode (arrows, Enter/Esc to leave)
+bindsym $mod+r mode "resize"
+
+# TUIs opened from the bar or the menu (float script): floating, centered.
+for_window [app_id="sway-float"] floating enable, resize set 900 600, move position center

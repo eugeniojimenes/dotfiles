@@ -1,0 +1,28 @@
+### Apps
+#: Terminal
+bindsym $mod+Return exec $term
+#: Tmux
+bindsym $mod+Alt+Return exec $term -e $dir/bin/tmux-launch
+#: Browser
+bindsym $mod+b exec brave
+#: Browser (private)
+bindsym $mod+Shift+b exec brave --incognito
+#: File manager
+bindsym $mod+Shift+f exec nautilus
+#: Editor
+bindsym $mod+n exec $term -e nvim
+# Focus the open dashboard (swaymsg exits 2 on no match), else start it.
+#: System tools (btop + lazydocker)
+bindsym $mod+Shift+t exec swaymsg '[app_id="sys-tools"] focus' || $term --class sys-tools -e $dir/bin/sys-tools
+#: Music
+bindsym $mod+m exec spotify
+#: App menu
+bindsym $mod+space exec $dir/bin/menu
+#: Next wallpaper
+bindsym $mod+Ctrl+space exec $dir/bin/wallpaper next
+#: Previous wallpaper
+bindsym $mod+Ctrl+Shift+space exec $dir/bin/wallpaper prev
+#: Keybindings
+bindsym $mod+k exec $dir/bin/keybindings
+#: Lock screen
+bindsym $mod+Shift+l exec $lock

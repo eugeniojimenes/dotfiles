@@ -27,4 +27,4 @@ for _ in $(seq 50); do
 done
 
 # Quickshell did not lock within 5s: never leave the session open.
-exec swaylock -f -C ~/.config/sway/swaylock
+exec swaylock -f -C ~/.config/sway/apps/swaylock

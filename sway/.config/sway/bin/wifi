@@ -3,7 +3,7 @@
 # no saved profile for.
 
 dir=~/.config/sway
-pick() { fuzzel --dmenu --config "$dir/fuzzel.ini" "$@"; }
+pick() { fuzzel --dmenu --config "$dir/apps/fuzzel.ini" "$@"; }
 note() { notify-send -a Wi-Fi "Wi-Fi" "$1"; }
 
 radio=$(nmcli -t radio wifi)
@@ -33,7 +33,7 @@ case $choice in
   "") exit 0 ;;
   :off) nmcli radio wifi off ;;
   :on) nmcli radio wifi on ;;
-  :tui) exec "$dir/float" nmtui ;;
+  :tui) exec "$dir/bin/float" nmtui ;;
   *)
     if nmcli -t -f NAME connection show | grep -qxF -- "$choice"; then
       out=$(nmcli connection up id "$choice" 2>&1)

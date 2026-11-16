@@ -188,7 +188,7 @@ fi
 
 # Only us(intl) types ć on ' + c and needs the cedilla override: checked when the Sway config gives any keyboard the
 # intl variant (the built-in ABNT2 has a real ç key).
-if grep -qE '^\s*xkb_variant\s+intl' "$REPO/sway/.config/sway/config"; then
+if grep -qrE '^\s*xkb_variant\s+intl' "$REPO/sway/.config/sway/config.d"; then
   # Effective table, not a file check: xkbcommon resolves ~/.XCompose and its includes.
   # Capture first: grep -q exits on the hit, xkbcli dies on SIGPIPE and pipefail inverts the result.
   compose=$(xkbcli compile-compose 2>/dev/null)

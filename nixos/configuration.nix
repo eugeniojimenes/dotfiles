@@ -60,7 +60,7 @@
 
   hardware = {
     graphics.enable = true;
-    # NVIDIA: open kernel module (Ampere), PRIME offload. Intel renders the desktop (sway/start orders the GPUs),
+    # NVIDIA: open kernel module (Ampere), PRIME offload. Intel renders the desktop (sway/bin/start orders the GPUs),
     # the dGPU runs `prime-run <app>` and drives the outputs wired to it (HDMI-A-1, DP-1).
     nvidia = {
       open = true;
@@ -95,9 +95,9 @@
       settings = {
         initial_session = {
           user = "callmarx";
-          command = "/home/callmarx/.config/sway/start";
+          command = "/home/callmarx/.config/sway/bin/start";
         };
-        default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd /home/callmarx/.config/sway/start";
+        default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd /home/callmarx/.config/sway/bin/start";
       };
     };
     pipewire = {

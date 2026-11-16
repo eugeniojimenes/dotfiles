@@ -1,0 +1,53 @@
+### Workspaces: global 1-10, shared by every monitor. Keycodes so ABNT2 and US agree.
+bindcode $mod+10 workspace number 1
+bindcode $mod+11 workspace number 2
+bindcode $mod+12 workspace number 3
+bindcode $mod+13 workspace number 4
+bindcode $mod+14 workspace number 5
+bindcode $mod+15 workspace number 6
+bindcode $mod+16 workspace number 7
+bindcode $mod+17 workspace number 8
+bindcode $mod+18 workspace number 9
+bindcode $mod+19 workspace number 10
+bindcode $mod+Shift+10 move container to workspace number 1; workspace number 1
+bindcode $mod+Shift+11 move container to workspace number 2; workspace number 2
+bindcode $mod+Shift+12 move container to workspace number 3; workspace number 3
+bindcode $mod+Shift+13 move container to workspace number 4; workspace number 4
+bindcode $mod+Shift+14 move container to workspace number 5; workspace number 5
+bindcode $mod+Shift+15 move container to workspace number 6; workspace number 6
+bindcode $mod+Shift+16 move container to workspace number 7; workspace number 7
+bindcode $mod+Shift+17 move container to workspace number 8; workspace number 8
+bindcode $mod+Shift+18 move container to workspace number 9; workspace number 9
+bindcode $mod+Shift+19 move container to workspace number 10; workspace number 10
+bindcode $mod+Shift+Mod1+10 move container to workspace number 1
+bindcode $mod+Shift+Mod1+11 move container to workspace number 2
+bindcode $mod+Shift+Mod1+12 move container to workspace number 3
+bindcode $mod+Shift+Mod1+13 move container to workspace number 4
+bindcode $mod+Shift+Mod1+14 move container to workspace number 5
+bindcode $mod+Shift+Mod1+15 move container to workspace number 6
+bindcode $mod+Shift+Mod1+16 move container to workspace number 7
+bindcode $mod+Shift+Mod1+17 move container to workspace number 8
+bindcode $mod+Shift+Mod1+18 move container to workspace number 9
+bindcode $mod+Shift+Mod1+19 move container to workspace number 10
+#: Former workspace
+bindsym Mod1+Tab workspace back_and_forth
+#: Previous workspace
+bindsym Mod1+Shift+Tab workspace prev
+#: Next workspace
+bindsym $mod+Tab workspace next
+#: Previous workspace
+bindsym $mod+Shift+Tab workspace prev
+#: Move workspace to next monitor
+bindsym $mod+Shift+m move workspace to output right
+#: Move workspace to left monitor
+bindsym $mod+Shift+Mod1+Left move workspace to output left
+#: Move workspace to right monitor
+bindsym $mod+Shift+Mod1+Right move workspace to output right
+#: Move workspace to upper monitor
+bindsym $mod+Shift+Mod1+Up move workspace to output up
+#: Move workspace to lower monitor
+bindsym $mod+Shift+Mod1+Down move workspace to output down
+#: Show scratchpad
+bindsym $mod+s scratchpad show
+#: Move window to scratchpad
+bindsym $mod+Mod1+s move scratchpad

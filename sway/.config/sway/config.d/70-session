@@ -1,0 +1,5 @@
+### Session
+#: Reload Sway config
+bindsym $mod+Shift+c reload
+#: Exit Sway
+bindsym $mod+Shift+Escape exec swaynag -t warning -m 'Exit Sway?' -B 'Exit' 'swaymsg exit'
