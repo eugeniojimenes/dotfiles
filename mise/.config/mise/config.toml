@@ -8,9 +8,6 @@ disable_tools = ["bundler"]
 
 [settings.ruby]
 
-[settings.upgrade]
-auto_prune = false
-
 [env]
 CFLAGS = "-std=gnu17"
 
