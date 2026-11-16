@@ -14,6 +14,7 @@ My personal config files (dotfiles) for NixOS with the Sway compositor. System c
 - [Apply dotfiles with GNU Stow](#apply-dotfiles-with-gnu-stow)
   - [About each module](#about-each-module)
 - [Health check](#health-check)
+- [Tests](#tests)
 - [Cedilla with US keyboard layout](#cedilla-with-us-keyboard-layout)
 - [License](#license)
 - [Code of conduct](#code-of-conduct)
@@ -97,6 +98,17 @@ dotfiles-doctor --fix
 ~/dotfiles/local-bin/.local/bin/dotfiles-doctor   # before local-bin is stowed
 ```
 Stow conflicts (real file where a symlink belongs) are never auto-fixed: diff against the repo first.
+
+## Tests
+`bin/check` runs the test layers through the flake checks, so the tools come from the pinned nixpkgs and nothing needs to be installed. Run it before every commit. The flake only sees tracked files, so `git add` new files first.
+```sh
+bin/check           # everything: static, unit, eval of each host, then the employer-term scan
+bin/check static    # shellcheck, nixfmt and statix, sway -C per host, qmllint, waybar JSON, em-dash sweep, stow dry run, gitleaks
+bin/check unit      # bats tests in tests/unit/, scripts run against stubbed commands
+bin/check terms     # local only: tracked files against the term list in ~/.private, skipped when it is locked
+nix develop         # shell with the same tools, to run one of them by hand
+```
+GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md).
 
 ## Cedilla with US keyboard layout
 US international maps `'` + `c` to ć. Override at the end of `~/.XCompose` (machine-local, not in repo):

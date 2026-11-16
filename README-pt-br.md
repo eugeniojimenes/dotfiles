@@ -14,6 +14,7 @@ Meus arquivos pessoais de configuração (dotfiles) para NixOS com o compositor 
 - [Aplicar os dotfiles com GNU Stow](#aplicar-os-dotfiles-com-gnu-stow)
   - [Sobre cada módulo](#sobre-cada-módulo)
 - [Verificação](#verificação)
+- [Testes](#testes)
 - [Cedilha com teclado US](#cedilha-com-teclado-us)
 - [Licença](#licença)
 - [Código de Conduta](#código-de-conduta)
@@ -97,6 +98,17 @@ dotfiles-doctor --fix
 ~/dotfiles/local-bin/.local/bin/dotfiles-doctor   # antes de dar stow no local-bin
 ```
 Conflito do stow (arquivo real onde devia haver symlink) nunca é corrigido sozinho: compare com o repo antes.
+
+## Testes
+`bin/check` roda as camadas de teste pelos checks do flake, então as ferramentas vêm do nixpkgs fixado e nada precisa ser instalado. Rode antes de cada commit. O flake só enxerga arquivos rastreados, então faça `git add` nos arquivos novos antes.
+```sh
+bin/check           # tudo: static, unit, eval de cada host, depois a busca de termos do empregador
+bin/check static    # shellcheck, nixfmt e statix, sway -C por host, qmllint, JSON do waybar, varredura de em-dash, stow simulado, gitleaks
+bin/check unit      # testes bats em tests/unit/, scripts rodam contra comandos stub
+bin/check terms     # só local: arquivos rastreados contra a lista de termos em ~/.private, pulado quando está trancado
+nix develop         # shell com as mesmas ferramentas, para rodar uma delas na mão
+```
+O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Testes de hardware e de sessão ao vivo ficam em [tests/manual.md](tests/manual.md).
 
 ## Cedilha com teclado US
 O US internacional transforma `'` + `c` em ć. Override no fim do `~/.XCompose` (local da máquina, fora do repo):

@@ -27,6 +27,8 @@ nix flake update                               # move flake.lock to newest nixpk
 mise install
 ```
 
+Tests: `bin/check` (all layers) before every commit; `bin/check static|unit|terms` runs one. Layout and CI in README.md "Tests", hardware checklist `tests/manual.md`.
+
 ## Public repo: no secrets
 
 **IMPORTANT:** This repo is **public**. Never add tokens, API keys, passwords, private SSH/GPG keys, any personal credential to any file here. If a config needs a secret (e.g. env var), reference it by variable name only, set the value outside this repo.

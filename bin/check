@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Run the test layers, logs always shown (-L).
+#   bin/check [all|static|unit|terms]   default all = every flake check (static, unit, eval of each host) + terms
+
+set -uo pipefail
+cd "$(dirname "$(readlink -f "$0")")/.." || exit 1
+
+# Employer terms: list lives encrypted in ~/.private, never in this repo. Prints file:line only, so a hit never puts
+# the term itself in a log.
+terms() {
+  local list=$HOME/.private/forbidden-terms hits rc
+  if [[ ! -f $list ]]; then
+    echo "terms: skipped, $list absent (run ~/.private/private unlock)"
+    return 0
+  fi
+  # A blank line in the list would match every line.
+  hits=$(git grep -nIiF -f <(grep -v '^[[:space:]]*$' "$list"))
+  rc=$?
+  case $rc in
+    0)
+      echo "terms: forbidden term at"
+      cut -d: -f1,2 <<<"$hits"
+      return 1
+      ;;
+    1) echo "terms: clean" ;;
+    *)
+      echo "terms: git grep failed ($rc)" >&2
+      return 1
+      ;;
+  esac
+}
+
+case ${1:-all} in
+  all) nix flake check -L && terms ;;
+  static | unit) nix build -L --no-link ".#checks.x86_64-linux.$1" ;;
+  terms) terms ;;
+  -h | --help) sed -n '2,3p' "$0" | sed 's/^# \?//' ;;
+  *)
+    echo "unknown layer: $1 (try --help)" >&2
+    exit 2
+    ;;
+esac
