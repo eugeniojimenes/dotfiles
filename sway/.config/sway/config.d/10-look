@@ -4,6 +4,8 @@ font pango:JetBrainsMono Nerd Font 10
 # turning its workspace red/urgent in the bar.
 focus_on_window_activation focus
 default_border pixel 2
+# Also exports XCURSOR_THEME/XCURSOR_SIZE to every client Sway starts. GTK apps read cursor-theme from dconf (nixos/).
+seat * xcursor_theme Adwaita 24
 gaps inner 5
 client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
 client.unfocused #313244 #313244 #cdd6f4 #313244 #313244

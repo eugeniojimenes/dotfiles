@@ -139,6 +139,7 @@
         settings."org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
           gtk-theme = "adw-gtk3-dark";
+          cursor-theme = "Adwaita";
           icon-theme = "Yaru-purple";
         };
       }
@@ -189,6 +190,9 @@
     transmission_4-gtk
     yaru-theme
     adw-gtk3 # GTK3 theme, see dconf above
+    # Cursors (and the icon fallback GTK4 apps expect). Already in the closure as a GTK dependency, this only exposes
+    # it; NixOS sets no default cursor theme, so without it Sway draws the old X11 core cursors.
+    adwaita-icon-theme
     # CLI. gh, glab, node, python, ruby, rust, go, uv and claude come from mise.
     git
     tmux
