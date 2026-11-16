@@ -18,7 +18,7 @@ apply() {
   # Started directly, not through `swaymsg exec "..."`: a file name is never pasted into a shell string.
   setsid -f swaybg -o '*' -i "$1" -m fill >/dev/null 2>&1
   sleep 0.3
-  [[ -n $old ]] && kill $old
+  [[ -z $old ]] || kill $old
 }
 
 step() {
