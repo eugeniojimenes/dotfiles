@@ -2,7 +2,7 @@
 
 UI = [uosc](https://github.com/tomasklaen/uosc) by tomasklaen.
 
-mpv itself comes from `nixos/configuration.nix`. Its package ships no user config, so this module is all
+mpv itself comes from `nixos/common.nix`. Its package ships no user config, so this module is all
 there is.
 
 ## Tracked here
@@ -36,7 +36,7 @@ The installer writes `scripts/uosc`, `fonts/uosc_icons.otf`, `fonts/uosc_texture
 current `script-opts/uosc.conf`. It only downloads that conf when the file is absent, so a
 tracked one would win.
 
-nixpkgs alternative: `mpvScripts.uosc`, added through an mpv wrapper in `configuration.nix`. Not used: the
+nixpkgs alternative: `mpvScripts.uosc`, added through an mpv wrapper in `nixos/common.nix`. Not used: the
 installer keeps uosc next to this config and updates itself.
 
 ## Update uosc

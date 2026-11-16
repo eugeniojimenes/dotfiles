@@ -26,19 +26,19 @@ nix-shell -p git --run 'git clone https://github.com/eugeniojimenes/dotfiles.git
 Depois [Configuração do sistema](#configuração-do-sistema-nixos), depois [Stow](#aplicar-os-dotfiles-com-gnu-stow).
 
 ## Configuração do sistema (NixOS)
-`nixos/configuration.nix` = pacotes, serviços, Sway, NVIDIA, login. Não é módulo do stow. `/etc/nixos/configuration.nix` importa ele junto com o `hardware-configuration.nix` da máquina:
+`nixos/common.nix` = pacotes, serviços, Sway, login, comum a todas as máquinas. `nixos/hosts/<hostname>.nix` = o que só aquela máquina precisa (GPU, hostname), importa o `common.nix`. Não é módulo do stow. `/etc/nixos/configuration.nix` importa o arquivo do host junto com o `hardware-configuration.nix` da máquina:
 ```sh
-echo '{ imports = [ ./hardware-configuration.nix /home/<user>/dotfiles/nixos/configuration.nix ]; }' |
+echo '{ imports = [ ./hardware-configuration.nix /home/<user>/dotfiles/nixos/hosts/<hostname>.nix ]; }' |
   sudo tee /etc/nixos/configuration.nix
 sudo nixos-rebuild boot && reboot
 ```
 No dia a dia:
 ```sh
-sudo nixos-rebuild switch            # depois de editar o configuration.nix
+sudo nixos-rebuild switch            # depois de editar o nixos/
 sudo nixos-rebuild switch --upgrade  # atualiza os pacotes pelo canal
 sudo nixos-rebuild switch --rollback # volta para a geração anterior
 ```
-Canais, sem flakes, sem home-manager: o estado do sistema fica no `configuration.nix`, a config do usuário nos módulos do stow abaixo. O arquivo é de um notebook (Intel + NVIDIA PRIME); usuário, hostname e endereços PCI das GPUs estão nele, ajuste antes de usar em outra máquina.
+Canais, sem flakes, sem home-manager: o estado do sistema fica em `nixos/`, a config do usuário nos módulos do stow abaixo. O usuário está no `common.nix`; máquina nova ganha o próprio `hosts/<hostname>.nix` (veja `hosts/loc-nixos.nix`, notebook com Intel + NVIDIA PRIME) e o arquivo do Sway `sway/.config/sway/hosts/<hostname>`.
 
 ## Aplicar os dotfiles com GNU Stow
 O Stow cria symlinks do repo para o `$HOME`. Antes, tire do lugar o que um módulo vai substituir (`~/.bashrc` num sistema novo). Crie antes as pastas compartilhadas, senão o stow transforma `~/.local/share` num link para o módulo `steam` e todo app grava seus dados dentro do repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
@@ -88,7 +88,7 @@ stow -D <módulo>   # remove os symlinks do módulo, os arquivos ficam no repo
 13. **OpenCode**: `opencode/.config/opencode/`. Modelo, plugins, MCP do context7, config da TUI.
 
 ## Verificação
-`dotfiles-doctor` confere estado do stow, comandos que vêm do `configuration.nix`, ferramentas do mise, plugins instalados e arquivos locais da máquina. Só lê por padrão e mostra o reparo de cada problema; `--fix` aplica os seguros.
+`dotfiles-doctor` confere estado do stow, comandos que vêm do `nixos/common.nix`, ferramentas do mise, plugins instalados e arquivos locais da máquina. Só lê por padrão e mostra o reparo de cada problema; `--fix` aplica os seguros.
 ```sh
 dotfiles-doctor
 dotfiles-doctor --fix

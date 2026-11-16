@@ -79,7 +79,7 @@ for mod in */; do
 done
 
 section "commands"
-# Installed by nixos/configuration.nix; a missing one means the config was edited but not applied.
+# Installed by nixos/common.nix; a missing one means the config was edited but not applied.
 missing=()
 for cmd in git stow tmux tree-sitter lazygit lazydocker mise starship alacritty mpv curl unzip sway waybar fuzzel; do
   command -v "$cmd" &>/dev/null || missing+=("$cmd")

@@ -1,25 +1,24 @@
-# NixOS system for the notebook (Lenovo LOQ 15IRH8: Intel UHD + RTX 3050 Laptop). Not a stow module.
-# /etc/nixos/configuration.nix imports it next to the generated hardware-configuration.nix, which stays there:
-#   { imports = [ ./hardware-configuration.nix /home/callmarx/dotfiles/nixos/configuration.nix ]; }
+# NixOS config shared by every machine. Not a stow module. Each machine's /etc/nixos/configuration.nix imports its
+# own hosts/<hostname>.nix, which imports this file; hardware-configuration.nix stays generated in /etc/nixos:
+#   { imports = [ ./hardware-configuration.nix /home/callmarx/dotfiles/nixos/hosts/<hostname>.nix ]; }
 # Channels, no flakes, no home-manager: dotfiles stay on stow, system packages live here.
 # Apply: sudo nixos-rebuild switch. Update: sudo nixos-rebuild switch --upgrade.
 # Formatted with nixfmt (official style, RFC 166); one block per top-level option.
 { pkgs, ... }:
 
 {
-  boot.loader = {
-    systemd-boot = {
-      enable = true;
-      # Every rebuild = new boot entry (rollback). 10 keeps the 1G ESP from filling up.
-      configurationLimit = 10;
+  boot = {
+    loader = {
+      systemd-boot = {
+        enable = true;
+        # Every rebuild = new boot entry (rollback). 10 keeps the 1G ESP from filling up.
+        configurationLimit = 10;
+      };
+      efi.canTouchEfiVariables = true;
     };
-    efi.canTouchEfiVariables = true;
   };
 
-  networking = {
-    hostName = "loc-nixos";
-    networkmanager.enable = true;
-  };
+  networking.networkmanager.enable = true;
 
   time.timeZone = "America/Sao_Paulo";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -60,25 +59,6 @@
 
   hardware = {
     graphics.enable = true;
-    # NVIDIA: open kernel module (Ampere), PRIME offload. Intel renders the desktop (sway/bin/start orders the GPUs),
-    # the dGPU runs `prime-run <app>` and drives the outputs wired to it (HDMI-A-1, DP-1).
-    nvidia = {
-      open = true;
-      # PreserveVideoMemoryAllocations + kernel suspend notifiers (open module >= 595 default), so no
-      # nvidia-suspend/resume services as on Arch. External monitor may still need sway/display/reinit after resume.
-      powerManagement.enable = true;
-      prime = {
-        offload = {
-          enable = true;
-          enableOffloadCmd = true;
-          # Arch's name (nvidia-prime), so Steam launch options carry over.
-          offloadCmdMainProgram = "prime-run";
-        };
-        # lspci 0000:00:02.0 and 0000:01:00.0 as PCI:bus@domain:device:function, decimal.
-        intelBusId = "PCI:0@0:2:0";
-        nvidiaBusId = "PCI:1@0:0:0";
-      };
-    };
     bluetooth.enable = true;
     i2c.enable = true;
   };
@@ -88,7 +68,6 @@
   virtualisation.docker.enable = true;
 
   services = {
-    xserver.videoDrivers = [ "nvidia" ];
     # LUKS passphrase already gates the boot: straight into Sway. Exit Sway = tuigreet.
     greetd = {
       enable = true;
@@ -108,7 +87,6 @@
       extraConfig.pipewire."99-no-x11-bell"."context.properties"."module.x11.bell" = false;
     };
     power-profiles-daemon.enable = true;
-    thermald.enable = true;
     fwupd.enable = true;
     printing.enable = true;
     avahi = {

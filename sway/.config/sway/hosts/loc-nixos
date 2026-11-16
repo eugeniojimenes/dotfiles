@@ -1,0 +1,4 @@
+# Notebook only (Lenovo LOQ, Intel + NVIDIA). Loaded by config after config.d/*, so it can override anything there.
+# Outputs matched by "make model serial" (`swaymsg -t get_outputs -p`), not by connector name: the kernel numbers
+# connectors across both GPUs in driver load order, so the panel was eDP-2 on Arch and is eDP-1 here.
+output "Chimei Innolux Corporation 0x1552 Unknown" scale 1

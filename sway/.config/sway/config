@@ -16,3 +16,5 @@ set $lock $dir/lock/lock
 
 # Pieces load in name order; the variables above must come first. Binding titles (`#:`): see bin/keybindings.
 include config.d/*
+# Machine-specific outputs and inputs. A machine without its file skips it and runs on the shared pieces.
+include hosts/$(hostname)

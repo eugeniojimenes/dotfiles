@@ -26,19 +26,19 @@ nix-shell -p git --run 'git clone https://github.com/eugeniojimenes/dotfiles.git
 Then [System config](#system-config-nixos), then [Stow](#apply-dotfiles-with-gnu-stow).
 
 ## System config (NixOS)
-`nixos/configuration.nix` = packages, services, Sway, NVIDIA, login. Not a stow module. `/etc/nixos/configuration.nix` imports it next to the machine's own `hardware-configuration.nix`:
+`nixos/common.nix` = packages, services, Sway, login, shared by every machine. `nixos/hosts/<hostname>.nix` = what only that machine needs (GPU, hostname), imports `common.nix`. Not a stow module. `/etc/nixos/configuration.nix` imports the host file next to the machine's own `hardware-configuration.nix`:
 ```sh
-echo '{ imports = [ ./hardware-configuration.nix /home/<user>/dotfiles/nixos/configuration.nix ]; }' |
+echo '{ imports = [ ./hardware-configuration.nix /home/<user>/dotfiles/nixos/hosts/<hostname>.nix ]; }' |
   sudo tee /etc/nixos/configuration.nix
 sudo nixos-rebuild boot && reboot
 ```
 Day to day:
 ```sh
-sudo nixos-rebuild switch            # after editing configuration.nix
+sudo nixos-rebuild switch            # after editing nixos/
 sudo nixos-rebuild switch --upgrade  # update packages from the channel
 sudo nixos-rebuild switch --rollback # back to the previous generation
 ```
-Channels, no flakes, no home-manager: system state lives in `configuration.nix`, user config in the stow modules below. The file targets one notebook (Intel + NVIDIA PRIME); user name, hostname and GPU bus IDs are in it, adjust before using elsewhere.
+Channels, no flakes, no home-manager: system state lives in `nixos/`, user config in the stow modules below. User name is in `common.nix`; a new machine gets its own `hosts/<hostname>.nix` (see `hosts/loc-nixos.nix`, notebook with Intel + NVIDIA PRIME) and Sway file `sway/.config/sway/hosts/<hostname>`.
 
 ## Apply dotfiles with GNU Stow
 Stow manages symlinks from repo into `$HOME`. Move away anything a module would replace first (`~/.bashrc` on a fresh system). Create the shared parents first, or stow folds `~/.local/share` into the `steam` module and every app writes its data into the repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
@@ -88,7 +88,7 @@ stow -D <module>   # remove a module's symlinks, files stay in the repo
 13. **OpenCode**: `opencode/.config/opencode/`. Model, plugins, context7 MCP, TUI settings.
 
 ## Health check
-`dotfiles-doctor` checks stow state, commands from `configuration.nix`, mise tools, plugin installs and machine-local files. Read-only by default, prints the repair for each problem; `--fix` applies the safe ones.
+`dotfiles-doctor` checks stow state, commands from `nixos/common.nix`, mise tools, plugin installs and machine-local files. Read-only by default, prints the repair for each problem; `--fix` applies the safe ones.
 ```sh
 dotfiles-doctor
 dotfiles-doctor --fix
