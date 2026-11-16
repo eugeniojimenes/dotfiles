@@ -131,12 +131,14 @@
         gtk3 # gtk-launch, menu app entries
       ];
     };
-    # GTK dark + icons. Defaults only, `gsettings set` still overrides.
+    # GTK dark + icons. Defaults only, `gsettings set` still overrides. color-scheme = GTK4/libadwaita, Chromium; GTK3
+    # ignores it and needs a theme by name: adw-gtk3 (systemPackages) looks like libadwaita. Plain GTK3 ships no
+    # "Adwaita-dark": an unknown name falls back to light Adwaita.
     dconf.profiles.user.databases = [
       {
         settings."org/gnome/desktop/interface" = {
           color-scheme = "prefer-dark";
-          gtk-theme = "Adwaita-dark";
+          gtk-theme = "adw-gtk3-dark";
           icon-theme = "Yaru-purple";
         };
       }
@@ -186,6 +188,7 @@
     nautilus
     transmission_4-gtk
     yaru-theme
+    adw-gtk3 # GTK3 theme, see dconf above
     # CLI. gh, glab, node, python, ruby, rust, go, uv and claude come from mise.
     git
     tmux
