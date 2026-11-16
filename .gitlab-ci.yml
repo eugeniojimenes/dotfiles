@@ -1,0 +1,10 @@
+# GitLab mirror gets every push to GitHub. One job: every flake check (static, unit, eval of each host).
+check:
+  image: nixos/nix:2.35.4
+  rules:
+    - if: $CI_COMMIT_BRANCH == "sway" || $CI_COMMIT_BRANCH == "develop"
+  variables:
+    # Nix refuses a shallow clone as a flake.
+    GIT_DEPTH: "0"
+  script:
+    - nix --extra-experimental-features 'nix-command flakes' flake check -L
