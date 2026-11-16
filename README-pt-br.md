@@ -44,7 +44,7 @@ Canais, sem flakes, sem home-manager: o estado do sistema fica no `configuration
 O Stow cria symlinks do repo para o `$HOME`. Antes, tire do lugar o que um módulo vai substituir (`~/.bashrc` num sistema novo). Crie antes as pastas compartilhadas, senão o stow transforma `~/.local/share` num link para o módulo `steam` e todo app grava seus dados dentro do repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
 ```sh
 cd ~/dotfiles
-stow alacritty bash btop claude-code git lazyvim local-bin mise mpv omp opencode rubocop steam sway tmux
+stow alacritty bash btop claude-code git lazyvim local-bin mise mpv opencode rubocop steam sway tmux
 stow -D <módulo>   # remove os symlinks do módulo, os arquivos ficam no repo
 ```
 
@@ -84,9 +84,8 @@ stow -D <módulo>   # remove os symlinks do módulo, os arquivos ficam no repo
   ```
   Dentro do tmux, `prefix + I` instala os plugins. Snapshots são manuais: `prefix + Ctrl-s` salva, `prefix + Ctrl-r` restaura sessões, layouts e diretórios (nenhum programa é reaberto). `Super + Alt + Return` entra no servidor principal se ninguém estiver conectado, senão abre um independente. Sessões do Neovim: `<leader>qs`.
 
-13. **oh-my-pi (omp)**: `omp/.omp/`. Config e uma extensão de badge de modo para o agente oh-my-pi.
 
-14. **OpenCode**: `opencode/.config/opencode/`. Modelo, plugins, MCP do context7, config da TUI.
+13. **OpenCode**: `opencode/.config/opencode/`. Modelo, plugins, MCP do context7, config da TUI.
 
 ## Verificação
 `dotfiles-doctor` confere estado do stow, comandos que vêm do `configuration.nix`, ferramentas do mise, plugins instalados e arquivos locais da máquina. Só lê por padrão e mostra o reparo de cada problema; `--fix` aplica os seguros.

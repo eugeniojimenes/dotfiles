@@ -4,7 +4,7 @@ Guidance for Claude Code (claude.ai/code) in this repo.
 
 ## What this repo is
 
-Personal dotfiles for NixOS + Sway, managed with **GNU Stow**. Each top-level dir with dot-prefixed contents = Stow module: `alacritty`, `bash`, `btop`, `claude-code`, `git`, `lazyvim`, `local-bin`, `mise`, `mpv`, `omp`, `opencode`, `rubocop`, `steam`, `sway`, `tmux`.
+Personal dotfiles for NixOS + Sway, managed with **GNU Stow**. Each top-level dir with dot-prefixed contents = Stow module: `alacritty`, `bash`, `btop`, `claude-code`, `git`, `lazyvim`, `local-bin`, `mise`, `mpv`, `opencode`, `rubocop`, `steam`, `sway`, `tmux`.
 
 Stow symlinks module contents into `$HOME`, mirroring dir structure. `sway/.config/sway/config` becomes `~/.config/sway/config`.
 
