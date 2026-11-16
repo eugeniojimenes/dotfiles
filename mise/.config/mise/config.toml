@@ -1,6 +1,9 @@
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
 experimental = true
+# mise defaults to compiling Node, Python and Ruby on NixOS (prebuilt binaries need a /lib64 loader). nix-ld provides
+# one (nixos/configuration.nix), so prebuilt works and skips the compilers and -dev libraries NixOS does not have.
+all_compile = false
 disable_tools = ["bundler"]
 
 [settings.ruby]
