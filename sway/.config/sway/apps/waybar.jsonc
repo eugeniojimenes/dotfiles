@@ -35,7 +35,7 @@
     "format-muted": "󰝟",
     "format-icons": ["󰕿", "󰖀", "󰕾"],
     "tooltip-format": "{node_name}: {volume}%",
-    "on-click": "~/.config/sway/bin/float wiremix -c ~/.config/sway/apps/wiremix.toml",
+    "on-click": "~/.config/sway/sound/toggle",
     "on-click-right": "swayosd-client --output-volume mute-toggle",
     "on-scroll-up": "swayosd-client --output-volume raise",
     "on-scroll-down": "swayosd-client --output-volume lower"
