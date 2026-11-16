@@ -252,6 +252,10 @@
     git-filter-repo
     terraform
     openfortivpn
+    # LSP servers for the Claude Code LSP plugins (ruby-lsp comes from the mise Ruby postinstall)
+    gopls
+    lua-language-server
+    pyright
     gnupg # mise verifies Node release signatures
     libxkbcommon # xkbcli: dotfiles-doctor cedilla check
     # Hardware
