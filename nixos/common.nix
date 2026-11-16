@@ -155,17 +155,6 @@
     };
   };
 
-  # File dialogs (Brave, Slack...) open in Nautilus instead of the GTK3 chooser of portal-gtk. Nautilus implements the
-  # FileChooser portal itself but ships no .portal file; the one below declares it. Desktop-keyed file replaces the one
-  # the sway package ships, so its routes are repeated here.
-  xdg.portal.config.sway = {
-    default = "gtk";
-    "org.freedesktop.impl.portal.FileChooser" = "nautilus";
-    "org.freedesktop.impl.portal.ScreenCast" = "wlr";
-    "org.freedesktop.impl.portal.Screenshot" = "wlr";
-    "org.freedesktop.impl.portal.Inhibit" = "none";
-  };
-
   # Electron and Chromium wrappers in nixpkgs go native Wayland with this, no XWayland blur.
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -197,11 +186,6 @@
     nautilus
     transmission_4-gtk
     yaru-theme
-    (runCommandLocal "nautilus-portal" { } ''
-      mkdir -p $out/share/xdg-desktop-portal/portals
-      printf '[portal]\nDBusName=org.gnome.Nautilus\nInterfaces=org.freedesktop.impl.portal.FileChooser\n' \
-        >$out/share/xdg-desktop-portal/portals/nautilus.portal
-    '')
     # CLI. gh, glab, node, python, ruby, rust, go, uv and claude come from mise.
     git
     tmux
