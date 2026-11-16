@@ -26,7 +26,7 @@ REPO=$(cd "$(dirname "$(readlink -f "$0")")/../../.." && pwd) || exit 1
 if [[ -t 1 ]]; then
   R=$'\e[31m' G=$'\e[32m' Y=$'\e[33m' B=$'\e[1m' N=$'\e[0m'
 else
-  R= G= Y= B= N=
+  R='' G='' Y='' B='' N=''
 fi
 
 problems=0
@@ -43,7 +43,7 @@ section() { printf "\n${B}%s${N}\n" "$*"; }
 repair() {
   if ((FIX)); then
     note "running: $*"
-    eval "$@" 2>&1 | sed 's/^/        /'
+    eval "$*" 2>&1 | sed 's/^/        /'
   else
     note "fix: $*"
   fi
@@ -62,7 +62,7 @@ done
 for mod in */; do
   mod=${mod%/}
   # A stow module holds dot-prefixed targets. Skips any plain directory added later.
-  ls -A "$mod" | grep -q '^\.' || continue
+  [[ -n $(find "$mod" -mindepth 1 -maxdepth 1 -name '.*' -print -quit) ]] || continue
   out=$(stow -n -v "$mod" 2>&1)
   rc=$?
   out=$(grep -v '^WARNING: in simulation mode' <<<"$out")
