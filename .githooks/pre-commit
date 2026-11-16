@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Refuse a commit that would publish a forbidden term or a secret. Local only, enabled per clone:
+#   git config core.hooksPath .githooks      (dotfiles-doctor --fix sets it)
+# Git runs hooks from the top of the work tree.
+
+set -uo pipefail
+
+failed=0
+
+# Tracked files against the term list in ~/.private. Skipped, not failed, when the list is absent: CI, fresh clone.
+if ! out=$(bin/check terms); then
+  printf '%s\n' "$out"
+  failed=1
+fi
+
+# Staged changes only. Pinned gitleaks through the flake when none is installed.
+if command -v gitleaks >/dev/null; then
+  gl=(gitleaks)
+else
+  gl=(nix shell --option warn-dirty false --inputs-from . nixpkgs#gitleaks -c gitleaks)
+fi
+"${gl[@]}" git --staged --redact --no-banner -v -l warn || failed=1
+
+if ((failed)); then
+  cat >&2 <<'MSG'
+
+pre-commit: commit refused, a tracked file holds a forbidden term or a secret (file:line above, value hidden).
+If a tool wrote into a stowed file, such as an installer appending to ~/.bashrc, revert it: git checkout <file>
+Otherwise remove the value, keep it outside this public repo and reference it by variable name.
+MSG
+  exit 1
+fi

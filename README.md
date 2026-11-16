@@ -110,6 +110,8 @@ nix develop         # shell with the same tools, to run one of them by hand
 ```
 GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md).
 
+A pre-commit hook in `.githooks/` refuses a commit when a tracked file holds a forbidden term (`bin/check terms`) or the staged changes hold a secret (`gitleaks git --staged`). It prints `file:line`, never the value. Git runs it only once the clone points at it, so enable it per clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does it). Local only: CI runs the same scans through `bin/check`, minus `terms`. Skip once with `git commit --no-verify`.
+
 ## Cedilla with US keyboard layout
 US international maps `'` + `c` to ć. Override at the end of `~/.XCompose` (machine-local, not in repo):
 ```sh

@@ -110,6 +110,8 @@ nix develop         # shell com as mesmas ferramentas, para rodar uma delas na m
 ```
 O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Testes de hardware e de sessão ao vivo ficam em [tests/manual.md](tests/manual.md).
 
+Um hook de pre-commit em `.githooks/` recusa o commit quando um arquivo rastreado tem um termo proibido (`bin/check terms`) ou as mudanças staged têm um segredo (`gitleaks git --staged`). Mostra `arquivo:linha`, nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative por clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` faz isso). Só local: o CI roda as mesmas varreduras pelo `bin/check`, menos `terms`. Pular uma vez: `git commit --no-verify`.
+
 ## Cedilha com teclado US
 O US internacional transforma `'` + `c` em ć. Override no fim do `~/.XCompose` (local da máquina, fora do repo):
 ```sh

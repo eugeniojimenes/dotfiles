@@ -31,6 +31,9 @@ in
           p.bats-assert
         ]))
         pkgs.jq
+        # Hook tests: real git and gitleaks in a temp repo.
+        pkgs.git
+        pkgs.gitleaks
       ]
       ''
         cp -r ${self} src && chmod -R u+w src && cd src
