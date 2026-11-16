@@ -53,12 +53,11 @@ caveman_flag="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.caveman-active"
 if [ -f "$caveman_flag" ] && [ ! -L "$caveman_flag" ]; then
   caveman_mode=$(head -c 64 "$caveman_flag" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]')
   caveman_mode=$(printf '%s' "$caveman_mode" | tr -cd 'a-z0-9-')
-  case "$caveman_mode" in
-    lite|full|ultra|wenyan-lite|wenyan|wenyan-full|wenyan-ultra|commit|review|compress)
-      suffix=$(printf '%s' "$caveman_mode" | tr '[:lower:]' '[:upper:]')
-      parts+=("$(printf '\033[38;5;172m[CAVEMAN:%s]\033[0m' "$suffix")")
-      ;;
-  esac
+  # No allowlist: mode names change between plugin versions (4.x writes "caveman"); sanitized above.
+  if [ -n "$caveman_mode" ]; then
+    suffix=$(printf '%s' "$caveman_mode" | tr '[:lower:]' '[:upper:]')
+    parts+=("$(printf '\033[38;5;172m[CAVEMAN:%s]\033[0m' "$suffix")")
+  fi
 fi
 
 # Ponytail badge. Mirror of caveman block (flag written by ponytail-activate.js).
