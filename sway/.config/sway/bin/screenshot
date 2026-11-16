@@ -1,7 +1,9 @@
 #!/bin/sh
 # Screenshot to ~/Pictures/screenshot-<date>.png and to the clipboard.
 # area = drag a region with slurp (Esc cancels), screen = the focused output.
-file=$(xdg-user-dir PICTURES)/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
+dir=$(xdg-user-dir PICTURES 2>/dev/null) || dir=$HOME/Pictures
+mkdir -p "$dir"
+file=$dir/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
 case ${1:-area} in
   area) geom=$(slurp) || exit 0; grim -g "$geom" "$file" ;;
   screen) grim -o "$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')" "$file" ;;

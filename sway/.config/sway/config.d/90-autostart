@@ -7,6 +7,8 @@ exec swayidle -w \
 exec mako --config $dir/apps/mako
 exec $dir/bin/wallpaper restore
 exec swayosd-server
+# Creates ~/Pictures, ~/Videos... and user-dirs.dirs when missing (fresh home). No-op otherwise.
+exec xdg-user-dirs-update
 
 exec $dir/bin/session-env
 
