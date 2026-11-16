@@ -41,7 +41,7 @@ sudo nixos-rebuild switch --rollback # back to the previous generation
 Channels, no flakes, no home-manager: system state lives in `configuration.nix`, user config in the stow modules below. The file targets one notebook (Intel + NVIDIA PRIME); user name, hostname and GPU bus IDs are in it, adjust before using elsewhere.
 
 ## Apply dotfiles with GNU Stow
-Stow manages symlinks from repo into `$HOME`. Move away anything a module would replace first (`~/.bashrc` on a fresh system).
+Stow manages symlinks from repo into `$HOME`. Move away anything a module would replace first (`~/.bashrc` on a fresh system). Create the shared parents first, or stow folds `~/.local/share` into the `steam` module and every app writes its data into the repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
 ```sh
 cd ~/dotfiles
 stow alacritty bash btop claude-code git lazyvim local-bin mise mpv omp opencode rubocop steam sway tmux

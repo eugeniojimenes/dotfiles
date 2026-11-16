@@ -51,6 +51,14 @@ repair() {
 
 section "stow modules"
 cd "$REPO" || exit 1
+# Shared parents must be real dirs. Stow folds a missing one into a single link to the first module that ships it, so
+# on a fresh home ~/.local/share became steam's dir and every app's data (keyrings, mise, nvim) landed in the repo.
+for d in .config .local .local/share .local/bin .claude; do
+  if [[ -L $HOME/$d && $(readlink -f "$HOME/$d") == "$REPO"/* ]]; then
+    bad "~/$d is a link into the repo, app data written there lands in git status"
+    note "fix: move its untracked contents out, rm the link, mkdir ~/$d, stow -R --no-folding <module>"
+  fi
+done
 for mod in */; do
   mod=${mod%/}
   # A stow module holds dot-prefixed targets. Skips any plain directory added later.
