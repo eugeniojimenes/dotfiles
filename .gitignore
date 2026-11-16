@@ -31,3 +31,7 @@
 !/claude-code/.claude/CLAUDE.md
 !/claude-code/.claude/skills/
 !/claude-code/.claude/statusline-command.sh
+
+# Claude Code syncs the claude.ai account's skills here (the skills/ dir is stowed whole, so they land in the repo).
+# Rewritten on every sync, dir name carries account ids, and org-published skills would arrive the same way.
+/claude-code/.claude/skills/synced/
