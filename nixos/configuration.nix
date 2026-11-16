@@ -64,8 +64,8 @@
     # the dGPU runs `prime-run <app>` and drives the outputs wired to it (HDMI-A-1, DP-1).
     nvidia = {
       open = true;
-      # nvidia-suspend/resume/hibernate + PreserveVideoMemoryAllocations, as on Arch. External monitor still needs
-      # sway/display/reinit after resume.
+      # PreserveVideoMemoryAllocations + kernel suspend notifiers (open module >= 595 default), so no
+      # nvidia-suspend/resume services as on Arch. External monitor may still need sway/display/reinit after resume.
       powerManagement.enable = true;
       prime = {
         offload = {
@@ -104,6 +104,8 @@
       enable = true;
       alsa.enable = true;
       pulse.enable = true;
+      # x11-bell segfaults pipewire whenever Xwayland goes away (session-env exports DISPLAY). No X bell needed.
+      extraConfig.pipewire."99-no-x11-bell"."context.properties"."module.x11.bell" = false;
     };
     power-profiles-daemon.enable = true;
     thermald.enable = true;
@@ -168,7 +170,11 @@
     # fzf key bindings (Ctrl-R, Ctrl-T, Alt-C) from /etc/bashrc; bash/.config/bash/init relies on it.
     fzf.keybindings = true;
     # Prebuilt binaries mise and Mason download (Node, Python, Ruby, rustup, LSPs) expect /lib64/ld-linux-x86-64.so.2.
-    nix-ld.enable = true;
+    # icu on top of the default library set: .NET binaries (Mason's marksman) abort without libicu.
+    nix-ld = {
+      enable = true;
+      libraries = [ pkgs.icu ];
+    };
   };
 
   # Electron and Chromium wrappers in nixpkgs go native Wayland with this, no XWayland blur.
@@ -246,6 +252,8 @@
     git-filter-repo
     terraform
     openfortivpn
+    gnupg # mise verifies Node release signatures
+    libxkbcommon # xkbcli: dotfiles-doctor cedilla check
     # Hardware
     pciutils
     usbutils
