@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Keybindings cheat sheet, read live from the Sway config.
 # Picking a line runs that binding's command, so it doubles as a launcher.
+# Title = `#: <text>` comment right above the binding; workspace keys get theirs generated, the rest fall back to the command.
 
 cfg=~/.config/sway/config
 
@@ -8,6 +9,7 @@ cfg=~/.config/sway/config
 awk '
   # Config variables ($term, $dir...) only exist inside the config: expand them so the command also runs via swaymsg.
   /^\s*set \$/ { name = $2; val = $0; sub(/^\s*set \S+\s+/, "", val); vars[name] = val; next }
+  /^\s*#: / { desc = $0; sub(/^\s*#: /, "", desc); next }
   /^\s*bind(sym|code)/ {
     line = $0
     sub(/^\s*bind(sym|code)\s+/, "", line)
@@ -21,11 +23,17 @@ awk '
       key = substr(key, 1, RSTART - 1 + (substr(key, RSTART, 1) == "+")) (n == 10 ? 0 : n)
     }
     gsub(/\$mod/, "Super", key); gsub(/Mod1/, "Alt", key); gsub(/\+/, " + ", key)
-    label = cmd
-    sub(/^exec\s+/, "", label)
-    gsub(/~\/\.config\/sway\//, "", label)
+    label = desc
+    if (label == "" && match(cmd, /[0-9]+$/)) {
+      n = substr(cmd, RSTART)
+      if (cmd ~ /^workspace number/) label = "Switch to workspace " n
+      else if (cmd ~ /; workspace number/) label = "Move window to workspace " n
+      else if (cmd ~ /^move container to workspace number/) label = "Move window silently to workspace " n
+    }
+    if (label == "") { label = cmd; sub(/^exec\s+/, "", label); gsub(/~\/\.config\/sway\//, "", label) }
     printf "%-34s %s\t%s\n", key, label, cmd
   }
+  { desc = "" }   # a title only covers the line right below it
 ' "$cfg" |
   fuzzel --dmenu --config ~/.config/sway/fuzzel.ini --width 80 --lines 14 \
     --font 'JetBrainsMono Nerd Font:size=10' --with-nth=1 --accept-nth=2 \

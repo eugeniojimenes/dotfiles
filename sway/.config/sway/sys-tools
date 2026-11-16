@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# btop + lazydocker as two windows of one tmux server on its own socket (-L sys-tools): never shows in the primary's
+# `prefix + s`. Fixed socket name, so a second run reattaches instead of stacking servers.
+# Viewer, not workspace. Set once at creation, on the server, so a reattach inherits them:
+#   pane-exited -> kill-server  quitting either TUI closes the lot (any pane: a split opened here closes it too).
+#   unbind C-s / C-r            resurrect loads here too and saves to one dir for every server; a stray save would
+#                               overwrite the primary's snapshot.
+tmux -L sys-tools has-session -t sys-tools 2>/dev/null ||
+  tmux -L sys-tools new-session -d -s sys-tools -n btop btop \; \
+    new-window -d -n docker lazydocker \; \
+    set-hook -g pane-exited kill-server \; \
+    unbind C-s \; unbind C-r
+
+exec tmux -L sys-tools attach -t sys-tools

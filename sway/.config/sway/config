@@ -47,44 +47,81 @@ input type:touchpad {
 }
 
 ### Apps
+#: Terminal
 bindsym $mod+Return exec $term
+#: Tmux
 bindsym $mod+Alt+Return exec $term -e $dir/tmux-launch
+#: Browser
 bindsym $mod+b exec brave
+#: Browser (private)
 bindsym $mod+Shift+b exec brave --incognito
+#: File manager
 bindsym $mod+Shift+f exec nautilus
+#: Editor
 bindsym $mod+n exec $term -e nvim
+# Focus the open dashboard (swaymsg exits 2 on no match), else start it.
+#: System tools (btop + lazydocker)
+bindsym $mod+Shift+t exec swaymsg '[app_id="sys-tools"] focus' || $term --class sys-tools -e $dir/sys-tools
+#: Music
+bindsym $mod+m exec spotify
+#: App menu
 bindsym $mod+space exec $dir/menu
+#: Next wallpaper
 bindsym $mod+Ctrl+space exec $dir/wallpaper next
+#: Previous wallpaper
 bindsym $mod+Ctrl+Shift+space exec $dir/wallpaper prev
+#: Keybindings
 bindsym $mod+k exec $dir/keybindings
+#: Lock screen
 bindsym $mod+Shift+l exec $lock
 
 ### Windows
+#: Close window
 bindsym $mod+w kill
+#: Close window
 bindsym $mod+q kill
+#: Fullscreen
 bindsym $mod+f fullscreen toggle
+#: Toggle floating
 bindsym $mod+t floating toggle
+#: Toggle split direction
 bindsym $mod+j layout toggle split
+#: Toggle tabbed layout
 bindsym $mod+e layout toggle tabbed split
 floating_modifier $mod normal
 
+#: Focus left
 bindsym $mod+Left focus left
+#: Focus right
 bindsym $mod+Right focus right
+#: Focus up
 bindsym $mod+Up focus up
+#: Focus down
 bindsym $mod+Down focus down
+#: Move window left
 bindsym $mod+Shift+Left move left
+#: Move window right
 bindsym $mod+Shift+Right move right
+#: Move window up
 bindsym $mod+Shift+Up move up
+#: Move window down
 bindsym $mod+Shift+Down move down
 
 mode "resize" {
+    #: Resize: narrower
     bindsym Left resize shrink width 20px
+    #: Resize: wider
     bindsym Right resize grow width 20px
+    #: Resize: shorter
     bindsym Up resize shrink height 20px
+    #: Resize: taller
     bindsym Down resize grow height 20px
+    #: Resize: done
     bindsym Return mode "default"
+    #: Resize: done
     bindsym Escape mode "default"
 }
+#: Resize mode (arrows, Enter/Esc to leave)
 bindsym $mod+r mode "resize"
 
 ### Workspaces: global 1-10, shared by every monitor. Keycodes so ABNT2 and US agree.
@@ -118,31 +155,58 @@ bindcode $mod+Shift+Mod1+16 move container to workspace number 7
 bindcode $mod+Shift+Mod1+17 move container to workspace number 8
 bindcode $mod+Shift+Mod1+18 move container to workspace number 9
 bindcode $mod+Shift+Mod1+19 move container to workspace number 10
+#: Former workspace
 bindsym Mod1+Tab workspace back_and_forth
+#: Previous workspace
+bindsym Mod1+Shift+Tab workspace prev
+#: Next workspace
 bindsym $mod+Tab workspace next
+#: Previous workspace
 bindsym $mod+Shift+Tab workspace prev
+#: Move workspace to next monitor
 bindsym $mod+Shift+m move workspace to output right
+#: Move workspace to left monitor
 bindsym $mod+Shift+Mod1+Left move workspace to output left
+#: Move workspace to right monitor
 bindsym $mod+Shift+Mod1+Right move workspace to output right
+#: Move workspace to upper monitor
+bindsym $mod+Shift+Mod1+Up move workspace to output up
+#: Move workspace to lower monitor
+bindsym $mod+Shift+Mod1+Down move workspace to output down
+#: Show scratchpad
 bindsym $mod+s scratchpad show
+#: Move window to scratchpad
 bindsym $mod+Mod1+s move scratchpad
 
 ### Media, brightness, screenshots
 # swayosd draws the volume/brightness popup.
+#: Volume up
 bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume raise
+#: Volume down
 bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume lower
+#: Mute
 bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
+#: Mute microphone
 bindsym --locked XF86AudioMicMute exec swayosd-client --input-volume mute-toggle
+#: Brightness up
 bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness raise && $dir/display/refresh
+#: Brightness down
 bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness lower && $dir/display/refresh
+#: Play/pause
 bindsym --locked XF86AudioPlay exec playerctl play-pause
+#: Next track
 bindsym --locked XF86AudioNext exec playerctl next
+#: Previous track
 bindsym --locked XF86AudioPrev exec playerctl previous
+#: Screenshot (area)
 bindsym Print exec $dir/screenshot area
+#: Screenshot (screen)
 bindsym Shift+Print exec $dir/screenshot screen
 
 ### Session
+#: Reload Sway config
 bindsym $mod+Shift+c reload
+#: Exit Sway
 bindsym $mod+Shift+Escape exec swaynag -t warning -m 'Exit Sway?' -B 'Exit' 'swaymsg exit'
 
 exec swayidle -w \
