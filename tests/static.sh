@@ -70,13 +70,26 @@ qml_lint() {
 # Plain JSON today. Comments added later: strip the `//` lines first.
 waybar_json() { jq empty sway/.config/sway/apps/waybar.jsonc; }
 
-# claude-code/.claude/ = prompt text, em-dash used as a list separator the model reads (see CLAUDE.md).
+# claude-code/.claude/ = prompt text, em-dash used as a list separator the model reads (see docs/claude-code.md).
 em_dash() {
   local hits
   hits=$(grep -rnIP --exclude-dir=.git '\x{2014}' .)
   (($? < 2)) || return 1 # 1 = no match, 2 = grep broke
   hits=$(grep -v '^\./claude-code/\.claude/' <<<"$hits")
   [[ -z $hits ]] || { echo "$hits"; return 1; }
+}
+
+# Human docs come in pairs, <x>.md + <x>.pt-br.md (docs/specs/ excluded: English only). Warns, never fails: only a
+# missing file is checkable here, not drift between the two.
+doc_pairs() {
+  local f
+  for f in docs/*.md harness/*.md; do
+    [[ -e $f ]] || continue
+    case $f in
+      *.pt-br.md) [[ -f ${f%.pt-br.md}.md ]] || echo "warning: $f has no English pair" ;;
+      *) [[ -f ${f%.md}.pt-br.md ]] || echo "warning: $f has no pt-br pair" ;;
+    esac
+  done
 }
 
 # Packaging only (two modules shipping one file, a bad name): live-home state is dotfiles-doctor's job.
@@ -99,6 +112,7 @@ step sway-config sway_config
 step qmllint qml_lint
 step waybar-json waybar_json
 step em-dash em_dash
+step doc-pairs doc_pairs
 step stow stow_dry
 step gitleaks leaks
 

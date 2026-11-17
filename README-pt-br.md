@@ -14,6 +14,7 @@ Meus arquivos pessoais de configuração (dotfiles) para NixOS com o compositor 
 - [Aplicar os dotfiles com GNU Stow](#aplicar-os-dotfiles-com-gnu-stow)
   - [Sobre cada módulo](#sobre-cada-módulo)
 - [Verificação](#verificação)
+- [Documentação](#documentação)
 - [Testes](#testes)
 - [Cedilha com teclado US](#cedilha-com-teclado-us)
 - [Licença](#licença)
@@ -41,7 +42,7 @@ sudo nixos-rebuild switch --flake ~/dotfiles             # depois de editar o ni
 nix flake update && sudo nixos-rebuild switch --flake ~/dotfiles   # atualiza os pacotes
 sudo nixos-rebuild switch --rollback                     # volta para a geração anterior
 ```
-Sem home-manager: o estado do sistema fica em `nixos/`, a config do usuário nos módulos do stow abaixo. O usuário está no `common.nix`; máquina nova também ganha o arquivo do Sway `sway/.config/sway/hosts/<hostname>`.
+Sem home-manager: o estado do sistema fica em `nixos/`, a config do usuário nos módulos do stow abaixo. O usuário está no `common.nix`; máquina nova também ganha o arquivo do Sway `sway/.config/sway/hosts/<hostname>`. Detalhes em [docs/nixos.pt-br.md](docs/nixos.pt-br.md) e [docs/machines.pt-br.md](docs/machines.pt-br.md).
 
 ## Aplicar os dotfiles com GNU Stow
 O Stow cria symlinks do repo para o `$HOME`. Antes, tire do lugar o que um módulo vai substituir (`~/.bashrc` num sistema novo). Crie antes as pastas compartilhadas, senão o stow transforma `~/.local/share` num link para o módulo `steam` e todo app grava seus dados dentro do repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
@@ -58,7 +59,7 @@ stow -D <módulo>   # remove os symlinks do módulo, os arquivos ficam no repo
 
 3. **btop**: `btop/.config/btop/`. Tema Catppuccin Mocha, fundo transparente.
 
-4. **Claude Code**: `claude-code/.claude/`. Config global do Claude Code: `CLAUDE.md` (instruções), skills (`skills/`), `statusline-command.sh`. Estado local da máquina (`settings.json`, `settings.local.json`, memória por projeto) fica fora do repo.
+4. **Claude Code**: `claude-code/.claude/`. Config global do Claude Code: `CLAUDE.md` (instruções), skills (`skills/`), `statusline-command.sh`. Estado local da máquina (`settings.json`, `settings.local.json`, memória por projeto) fica fora do repo, veja [docs/claude-code.pt-br.md](docs/claude-code.pt-br.md).
 
 5. **Git**: `git/`. Saída colorida, `develop` como branch padrão, template de commit inspirado em Conventional Commits.
 
@@ -73,22 +74,23 @@ stow -D <módulo>   # remove os symlinks do módulo, os arquivos ficam no repo
   ```sh
   curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
   ```
-  A uosc se atualiza pelo próprio menu (**Update uosc**). Notas em `mpv/.config/mpv/README.md`.
+  A uosc se atualiza pelo próprio menu (**Update uosc**). Notas em [docs/mpv.pt-br.md](docs/mpv.pt-br.md).
 
 9. **RuboCop**: `rubocop/`. Config global (`~/.rubocop.yml`) com `rubocop-performance`, `rubocop-rails`, `rubocop-rspec`.
 
 10. **Steam**: `steam/`. Atalhos de jogos em `~/.local/share/applications/`. Jogo na GPU NVIDIA: opção de lançamento `prime-run %command%`.
 
-11. **Sway**: `sway/.config/sway/`. O desktop inteiro num diretório: config, waybar, mako, menu no fuzzel (`Super + Space`), calendário, painel de tela, painel de som, painel de Wi-Fi e tela de bloqueio em Quickshell, troca de papel de parede (`~/Pictures/Wallpapers`), capturas de tela, seletor de compartilhamento de tela (`sway/.config/xdg-desktop-portal-wlr/sway`). Config dividido por assunto em `config.d/`, scripts em `bin/`, configs dos apps em `apps/`. `Super + K` lista todos os atalhos. O `bin/start` põe a GPU integrada primeiro, e a dedicada só cuida das saídas ligadas nela.
+11. **Sway**: `sway/.config/sway/`. O desktop inteiro num diretório: config, waybar, mako, menu no fuzzel (`Super + Space`), calendário, painel de tela, painel de som, painel de Wi-Fi e tela de bloqueio em Quickshell, troca de papel de parede (`~/Pictures/Wallpapers`), capturas de tela, seletor de compartilhamento de tela (`sway/.config/xdg-desktop-portal-wlr/sway`). Config dividido por assunto em `config.d/`, scripts em `bin/`, configs dos apps em `apps/`. `Super + K` lista todos os atalhos. O `bin/start` põe a GPU integrada primeiro, e a dedicada só cuida das saídas ligadas nela. Detalhes em [docs/sway.pt-br.md](docs/sway.pt-br.md).
 
 12. **tmux**: `tmux/`. Prefixo `Ctrl + \` (ou `Ctrl + b`), `prefix + ?` lista os atalhos. Gerenciador de plugins fora de `~/.config/tmux`:
   ```sh
   git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
   ```
-  Dentro do tmux, `prefix + I` instala os plugins. Snapshots são manuais: `prefix + Ctrl-s` salva, `prefix + Ctrl-r` restaura sessões, layouts e diretórios (nenhum programa é reaberto). `Super + Alt + Return` entra no servidor principal se ninguém estiver conectado, senão abre um independente. Sessões do Neovim: `<leader>qs`.
-
+  Dentro do tmux, `prefix + I` instala os plugins. Snapshots são manuais: `prefix + Ctrl-s` salva, `prefix + Ctrl-r` restaura sessões, layouts e diretórios (nenhum programa é reaberto). `Super + Alt + Return` entra no servidor principal se ninguém estiver conectado, senão abre um independente. Sessões do Neovim: `<leader>qs`. Detalhes em [docs/tmux.pt-br.md](docs/tmux.pt-br.md).
 
 13. **OpenCode**: `opencode/.config/opencode/`. Modelo, plugins, MCP do context7, config da TUI.
+
+14. **local-bin**: `local-bin/.local/bin/`. Scripts pessoais no `PATH`: `dotfiles-doctor` (veja [Verificação](#verificação)) e `asdf`, um shim que repassa para o mise porque uma CLI do trabalho chama `asdf` direto no código. O stow liga esse módulo arquivo por arquivo, porque `~/.local/bin` também guarda arquivos que não pertencem ao repo (shims do mise).
 
 ## Verificação
 `dotfiles-doctor` confere estado do stow, comandos que vêm do `nixos/common.nix`, ferramentas do mise, plugins instalados e arquivos locais da máquina. Só lê por padrão e mostra o reparo de cada problema; `--fix` aplica os seguros.
@@ -97,7 +99,10 @@ dotfiles-doctor
 dotfiles-doctor --fix
 ~/dotfiles/local-bin/.local/bin/dotfiles-doctor   # antes de dar stow no local-bin
 ```
-Conflito do stow (arquivo real onde devia haver symlink) nunca é corrigido sozinho: compare com o repo antes.
+Conflito do stow (arquivo real onde devia haver symlink) nunca é corrigido sozinho: compare com o repo antes. Detalhes em [docs/dotfiles-doctor.pt-br.md](docs/dotfiles-doctor.pt-br.md).
+
+## Documentação
+Como cada parte funciona e por quê: [docs/](docs/README.pt-br.md) (NixOS, máquinas, Sway, tmux, git, regras do repo público, Claude Code, dotfiles-doctor, mpv). Specs das funcionalidades e os testes que cobrem cada uma, só em inglês: [docs/specs/](docs/specs/README.md).
 
 ## Testes
 `bin/check` roda as camadas de teste pelos checks do flake, então as ferramentas vêm do nixpkgs fixado e nada precisa ser instalado. Rode antes de cada commit. O flake só enxerga arquivos rastreados, então faça `git add` nos arquivos novos antes.
@@ -110,7 +115,7 @@ nix develop         # shell com as mesmas ferramentas, para rodar uma delas na m
 ```
 O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Testes de hardware e de sessão ao vivo ficam em [tests/manual.md](tests/manual.md).
 
-Um hook de pre-commit em `.githooks/` recusa o commit quando um arquivo rastreado tem um termo proibido (`bin/check terms`) ou as mudanças staged têm um segredo (`gitleaks git --staged`). Mostra `arquivo:linha`, nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative por clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` faz isso). Só local: o CI roda as mesmas varreduras pelo `bin/check`, menos `terms`. Pular uma vez: `git commit --no-verify`.
+Um hook de pre-commit em `.githooks/` recusa o commit quando um arquivo rastreado tem um termo proibido (`bin/check terms`) ou as mudanças staged têm um segredo (`gitleaks git --staged`). Mostra `arquivo:linha`, nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative por clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` faz isso). Só local: o CI roda as mesmas varreduras pelo `bin/check`, menos `terms`. Pular uma vez: `git commit --no-verify`. O que cada varredura deixa passar: [docs/public-repo.pt-br.md](docs/public-repo.pt-br.md).
 
 ## Cedilha com teclado US
 O US internacional transforma `'` + `c` em ć. Override no fim do `~/.XCompose` (local da máquina, fora do repo):

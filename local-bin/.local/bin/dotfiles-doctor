@@ -180,7 +180,7 @@ section "machine-local files"
 SETTINGS=$HOME/.claude/settings.json
 if [[ -L $SETTINGS ]]; then
   bad "~/.claude/settings.json is a symlink, so Claude Code writes into the module and private unlock refuses it"
-  note "fix: replace with a real file, see the claude-code notes in CLAUDE.md"
+  note "fix: replace with a real file, see docs/claude-code.md"
 elif [[ -f $SETTINGS ]]; then
   ok "~/.claude/settings.json"
 else

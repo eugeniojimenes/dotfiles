@@ -14,6 +14,7 @@ My personal config files (dotfiles) for NixOS with the Sway compositor. System c
 - [Apply dotfiles with GNU Stow](#apply-dotfiles-with-gnu-stow)
   - [About each module](#about-each-module)
 - [Health check](#health-check)
+- [Docs](#docs)
 - [Tests](#tests)
 - [Cedilla with US keyboard layout](#cedilla-with-us-keyboard-layout)
 - [License](#license)
@@ -41,7 +42,7 @@ sudo nixos-rebuild switch --flake ~/dotfiles             # after editing nixos/ 
 nix flake update && sudo nixos-rebuild switch --flake ~/dotfiles   # update packages
 sudo nixos-rebuild switch --rollback                     # back to the previous generation
 ```
-No home-manager: system state lives in `nixos/`, user config in the stow modules below. User name is in `common.nix`; a new machine also gets its Sway file `sway/.config/sway/hosts/<hostname>`.
+No home-manager: system state lives in `nixos/`, user config in the stow modules below. User name is in `common.nix`; a new machine also gets its Sway file `sway/.config/sway/hosts/<hostname>`. Details in [docs/nixos.md](docs/nixos.md) and [docs/machines.md](docs/machines.md).
 
 ## Apply dotfiles with GNU Stow
 Stow manages symlinks from repo into `$HOME`. Move away anything a module would replace first (`~/.bashrc` on a fresh system). Create the shared parents first, or stow folds `~/.local/share` into the `steam` module and every app writes its data into the repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
@@ -58,7 +59,7 @@ stow -D <module>   # remove a module's symlinks, files stay in the repo
 
 3. **btop**: `btop/.config/btop/`. Catppuccin Mocha theme, transparent background.
 
-4. **Claude Code**: `claude-code/.claude/`. Global Claude Code config: `CLAUDE.md` (instructions), custom skills (`skills/`), `statusline-command.sh`. Machine-local state (`settings.json`, `settings.local.json`, per-project memory) stays out of repo.
+4. **Claude Code**: `claude-code/.claude/`. Global Claude Code config: `CLAUDE.md` (instructions), custom skills (`skills/`), `statusline-command.sh`. Machine-local state (`settings.json`, `settings.local.json`, per-project memory) stays out of repo, see [docs/claude-code.md](docs/claude-code.md).
 
 5. **Git**: `git/`. Colored output, `develop` as default branch, commit message template inspired by Conventional Commits.
 
@@ -73,22 +74,23 @@ stow -D <module>   # remove a module's symlinks, files stay in the repo
   ```sh
   curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
   ```
-  uosc updates itself from its menu (**Update uosc**). Notes in `mpv/.config/mpv/README.md`.
+  uosc updates itself from its menu (**Update uosc**). Notes in [docs/mpv.md](docs/mpv.md).
 
 9. **RuboCop**: `rubocop/`. Global config (`~/.rubocop.yml`) with `rubocop-performance`, `rubocop-rails`, `rubocop-rspec`.
 
 10. **Steam**: `steam/`. Game launchers in `~/.local/share/applications/`. Games on the NVIDIA GPU: launch option `prime-run %command%`.
 
-11. **Sway**: `sway/.config/sway/`. Whole desktop in one directory: config, waybar, mako, fuzzel menu (`Super + Space`), Quickshell calendar, display panel, sound panel, Wi-Fi panel and lock screen, wallpaper switcher (`~/Pictures/Wallpapers`), screenshots, screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). Config split by topic in `config.d/`, scripts in `bin/`, app configs in `apps/`. `Super + K` lists every keybinding. `bin/start` puts the integrated GPU first so the dGPU only drives its own outputs.
+11. **Sway**: `sway/.config/sway/`. Whole desktop in one directory: config, waybar, mako, fuzzel menu (`Super + Space`), Quickshell calendar, display panel, sound panel, Wi-Fi panel and lock screen, wallpaper switcher (`~/Pictures/Wallpapers`), screenshots, screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). Config split by topic in `config.d/`, scripts in `bin/`, app configs in `apps/`. `Super + K` lists every keybinding. `bin/start` puts the integrated GPU first so the dGPU only drives its own outputs. Details in [docs/sway.md](docs/sway.md).
 
 12. **tmux**: `tmux/`. Prefix `Ctrl + \` (or `Ctrl + b`), `prefix + ?` lists bindings. Plugin manager outside `~/.config/tmux`:
   ```sh
   git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
   ```
-  Inside tmux, `prefix + I` installs plugins. Snapshots are manual: `prefix + Ctrl-s` saves, `prefix + Ctrl-r` restores sessions, layouts and cwds (no programs relaunched). `Super + Alt + Return` attaches to the main server when nothing is attached, else opens an independent one. Neovim sessions: `<leader>qs`.
-
+  Inside tmux, `prefix + I` installs plugins. Snapshots are manual: `prefix + Ctrl-s` saves, `prefix + Ctrl-r` restores sessions, layouts and cwds (no programs relaunched). `Super + Alt + Return` attaches to the main server when nothing is attached, else opens an independent one. Neovim sessions: `<leader>qs`. Details in [docs/tmux.md](docs/tmux.md).
 
 13. **OpenCode**: `opencode/.config/opencode/`. Model, plugins, context7 MCP, TUI settings.
+
+14. **local-bin**: `local-bin/.local/bin/`. Personal scripts on `PATH`: `dotfiles-doctor` (see [Health check](#health-check)) and `asdf`, a shim that forwards to mise because a work CLI hardcodes `asdf` calls. Stow links it file by file, since `~/.local/bin` also holds files that do not belong in the repo (mise shims).
 
 ## Health check
 `dotfiles-doctor` checks stow state, commands from `nixos/common.nix`, mise tools, plugin installs and machine-local files. Read-only by default, prints the repair for each problem; `--fix` applies the safe ones.
@@ -97,7 +99,10 @@ dotfiles-doctor
 dotfiles-doctor --fix
 ~/dotfiles/local-bin/.local/bin/dotfiles-doctor   # before local-bin is stowed
 ```
-Stow conflicts (real file where a symlink belongs) are never auto-fixed: diff against the repo first.
+Stow conflicts (real file where a symlink belongs) are never auto-fixed: diff against the repo first. Details in [docs/dotfiles-doctor.md](docs/dotfiles-doctor.md).
+
+## Docs
+How each part works and why: [docs/](docs/README.md) (NixOS, machines, Sway, tmux, git, public repo rules, Claude Code, dotfiles-doctor, mpv). Feature specs and the tests that cover them: [docs/specs/](docs/specs/README.md).
 
 ## Tests
 `bin/check` runs the test layers through the flake checks, so the tools come from the pinned nixpkgs and nothing needs to be installed. Run it before every commit. The flake only sees tracked files, so `git add` new files first.
@@ -110,7 +115,7 @@ nix develop         # shell with the same tools, to run one of them by hand
 ```
 GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md).
 
-A pre-commit hook in `.githooks/` refuses a commit when a tracked file holds a forbidden term (`bin/check terms`) or the staged changes hold a secret (`gitleaks git --staged`). It prints `file:line`, never the value. Git runs it only once the clone points at it, so enable it per clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does it). Local only: CI runs the same scans through `bin/check`, minus `terms`. Skip once with `git commit --no-verify`.
+A pre-commit hook in `.githooks/` refuses a commit when a tracked file holds a forbidden term (`bin/check terms`) or the staged changes hold a secret (`gitleaks git --staged`). It prints `file:line`, never the value. Git runs it only once the clone points at it, so enable it per clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does it). Local only: CI runs the same scans through `bin/check`, minus `terms`. Skip once with `git commit --no-verify`. What each scan misses: [docs/public-repo.md](docs/public-repo.md).
 
 ## Cedilla with US keyboard layout
 US international maps `'` + `c` to ć. Override at the end of `~/.XCompose` (machine-local, not in repo):
