@@ -6,7 +6,9 @@ exec swayidle -w \
     after-resume '$dir/panels/display/reinit'
 exec mako --config $dir/apps/mako
 exec $dir/bin/wallpaper restore
-exec swayosd-server
+# GTK4 without libadwaita: under the adw-gtk3-dark theme (set for GTK3 apps) its popup turns light. Default:dark =
+# the dark look it had before.
+exec env GTK_THEME=Default:dark swayosd-server
 # Creates ~/Pictures, ~/Videos... and user-dirs.dirs when missing (fresh home). No-op otherwise.
 exec xdg-user-dirs-update
 
