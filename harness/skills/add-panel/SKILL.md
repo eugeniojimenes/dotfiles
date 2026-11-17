@@ -11,7 +11,7 @@ Rules: `harness/rules/sway.md`. Why the pattern: `docs/sway.md` "Panels". Skelet
 
 1. Spec first: `docs/specs/<name>-panel.md` (format `docs/specs/README.md`). Criterion 1 = qmllint (`Test: tests/static.sh: qmllint`); behaviour criteria mostly `Test: manual`. Copy the shared ones from `docs/specs/wifi-panel.md`: icon click opens and second click closes; Esc closes; outside click or workspace switch closes, cursor moves to centre of other output.
 2. `sway/.config/sway/<name>/toggle` + `shell.qml` from `references/panel.md`. Keep: full-screen transparent `PanelWindow`, `WlrLayer.Overlay`, `WlrKeyboardFocus.Exclusive`, namespace `sway-<name>`, `I3IpcListener` block verbatim, outside `MouseArea` → `Qt.quit()`, card `MouseArea` swallowing clicks, Esc → `Qt.quit()`.
-3. Data: Quickshell services first (`Quickshell.Networking`, `Quickshell.Bluetooth`, `Quickshell.Services.Pipewire`...); external command via `Process` only when no service exists. Anything that polls runs only while panel open.
+3. Async flow (connect, pair, wait for a result) = logic in `<name>/flow.js`, tested through `qmltestrunner` (`harness/rules/tests.md`). Data: Quickshell services first (`Quickshell.Networking`, `Quickshell.Bluetooth`, `Quickshell.Services.Pipewire`...); external command via `Process` only when no service exists. Anything that polls runs only while panel open.
 4. Wire: waybar module `on-click` in `apps/waybar.jsonc`, menu entry in `bin/menu`. New external command = package in `nixos/common.nix` `programs.sway.extraPackages`.
 5. `tests/manual.md`: row `Spec <name>-panel | Criteria N to M.` under each host.
 6. `git add`, `bin/check static` (qmllint resolves types, shellcheck toggle, waybar JSON), `bin/check`.

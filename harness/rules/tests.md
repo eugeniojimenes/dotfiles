@@ -19,6 +19,7 @@ Spec format + criterion mapping: `docs/specs/README.md`. Run: `bin/check [static
 - Run real script, never a copy. External commands = stubs: `ln -s _stub tests/helpers/stubs/<cmd>`. Canned behaviour: `stub <name> [--rc N] [output]`, custom logic `$STUBS/<name>.sh`. Assert on `calls`.
 - Hardcoded system path a test must fake = env override with real default, `${DRM_SYSFS:-/sys/class/drm}` style, plus one-line comment. Production behaviour unchanged.
 - Unit sandbox: no network, no Wayland, shebangs patched. Needs those = `manual`.
+- Panel logic worth a test (async flows, state machines) = plain JS beside the QML (`.pragma library`, state passed in, enums mapped to booleans in QML), QtTest file next to its bats wrapper, one `@test` per test function via `qmltestrunner -input <file>.qml <case>::<fn>` (`QT_QPA_PLATFORM=offscreen`). Example: `tests/unit/sway/.config/sway/bluetooth/flow.{qml,bats}`.
 - Spec criterion ends with exactly one form per test: `Test: tests/unit/<path>.bats: "<exact @test name>"`, `Test: tests/static.sh: <step>`, `Test: manual`. Rename a `@test` = update the spec line.
 - `manual` criterion = row in `tests/manual.md` under each host it applies to. Pass = owner writes date.
 - New static step: function + `step <name> <fn>` in `tests/static.sh`. Non-zero = fail; warning-only steps print and return 0. New tool = add to the `static` tool list in `tests/checks.nix`.

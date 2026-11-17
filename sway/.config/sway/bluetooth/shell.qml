@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.I3
 import Quickshell.Wayland
+import "flow.js" as Flow
 
 // Bluetooth panel for the waybar Bluetooth icon: paired devices (click connects or disconnects) and nearby ones (click
 // pairs, trusts, connects), straight from BlueZ (Quickshell.Bluetooth). Power switch in the header. Esc or a click
@@ -56,38 +57,20 @@ ShellRoot {
     readonly property var nearby: all.filter(d => !d.paired && !d.bonded && d.deviceName !== "")
       .sort((a, b) => a.name.localeCompare(b.name))
     readonly property var rows: on ? paired.concat(nearby) : []
-    property var joining: null         // device the user picked to connect; close once it is connected
+    // Click, pair and connect state, driven by flow.js.
+    property var joining: null         // device the user picked to connect
+    property bool fresh: false         // joining came from Nearby: stays open once connected
     property bool connecting: false    // joining reached Connecting, so a fall back to Disconnected = failure
     property string failure: ""
+
+    function closePanel() { Qt.quit() }
 
     function busy(d) {
       return d.pairing || d.state === BluetoothDeviceState.Connecting || d.state === BluetoothDeviceState.Disconnecting
     }
 
-    function pick(d) {
-      failure = ""
-      if (busy(d)) return
-      if (d.connected) {
-        joining = null
-        d.disconnect()
-        return
-      }
-      joining = d
-      connecting = false
-      if (d.paired || d.bonded) d.connect()
-      else d.pair()   // onPairedChanged below trusts and connects it
-    }
-
-    function forget(d) {
-      if (joining === d) joining = null
-      d.forget()
-    }
-
-    function fail(msg) {
-      failure = msg
-      joining = null
-      connecting = false
-    }
+    function pick(d) { Flow.pick(win, d, busy(d)) }
+    function forget(d) { Flow.forget(win, d) }
 
     // BlueZ icon names (audio-headset, input-keyboard...) to Nerd Font glyphs.
     function glyph(d) {
@@ -109,21 +92,13 @@ ShellRoot {
     Connections {
       target: win.joining
       ignoreUnknownSignals: true
-      function onPairedChanged() {
-        if (!win.joining.paired) return
-        win.joining.trusted = true
-        win.joining.connect()
-      }
-      function onPairingChanged() {
-        if (!win.joining.pairing && !win.joining.paired)
-          win.fail("Pairing failed, a device that asks for a code needs Advanced (bluetoothctl)")
-      }
+      function onPairedChanged() { Flow.pairedChanged(win) }
+      function onPairingChanged() { Flow.pairingChanged(win) }
       function onStateChanged() {
         const s = win.joining.state
-        if (s === BluetoothDeviceState.Connecting) win.connecting = true
-        else if (s === BluetoothDeviceState.Disconnected && win.connecting) win.fail("Connection failed")
+        Flow.stateChanged(win, s === BluetoothDeviceState.Connecting, s === BluetoothDeviceState.Disconnected)
       }
-      function onConnectedChanged() { if (win.joining.connected) Qt.quit() }
+      function onConnectedChanged() { Flow.connectedChanged(win) }
     }
 
     MouseArea {
