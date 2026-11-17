@@ -1,50 +1,20 @@
 import QtQuick
 import Quickshell
-import Quickshell.I3
 import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Wayland
 import "flow.js" as Flow
+import "../common"
 
 // Wi-Fi panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
 // password prompt for a secured network with no saved profile. Esc or a click outside closes it. One process per
 // open, like the calendar: the scanner runs only while the panel is up.
 ShellRoot {
-  PanelWindow {
+  PanelShell {
     id: win
 
-    anchors { top: true; bottom: true; left: true; right: true }
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "sway-wifi"
 
-    // Exclusive keyboard focus follows nothing: switching workspace (key or click on another output) would leave every
-    // window without input until this closes. Close with it, like a popup. Sway skips its mouse_warping while a layer
-    // surface holds the keyboard, so a jump to another output warps the cursor here instead.
-    I3IpcListener {
-      subscriptions: ["workspace"]
-      onIpcEvent: event => {
-        if (event.type !== "workspace") return
-        const e = JSON.parse(event.data)
-        if (e.change !== "focus") return
-        if (e.old && e.current && e.old.output !== e.current.output) {
-          const r = e.current.rect
-          Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
-                                   String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
-        }
-        Qt.quit()
-      }
-    }
-
-    readonly property color bg: "#f21e1e2e"
-    readonly property color fg: "#cdd6f4"
-    readonly property color dim: "#6c7086"
-    readonly property color accent: "#89b4fa"
-    readonly property color error: "#f38ba8"
-    readonly property color track: "#313244"
-    readonly property string font: "JetBrainsMono Nerd Font"
     readonly property var bars: ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
 
     readonly property var device: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
@@ -72,11 +42,6 @@ ShellRoot {
       running: Networking.wifiEnabled
       command: ["nmcli", "-t", "-f", "SSID", "device", "wifi", "list", "--rescan", "auto"]
       stdout: SplitParser {}
-    }
-
-    MouseArea {
-      anchors.fill: parent
-      onClicked: Qt.quit()
     }
 
     Rectangle {
@@ -310,20 +275,9 @@ ShellRoot {
 
         Rectangle { width: parent.width; height: 1; color: win.track }
 
-        Text {
+        AdvancedLink {
           text: "  Advanced (nmtui)"
-          color: advMouse.containsMouse ? win.fg : win.dim
-          font.family: win.font
-          font.pixelSize: 13
-          MouseArea {
-            id: advMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: {
-              Quickshell.execDetached([Quickshell.env("HOME") + "/.config/sway/bin/float", "nmtui"])
-              Qt.quit()
-            }
-          }
+          command: ["nmtui"]
         }
       }
     }

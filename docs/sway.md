@@ -10,6 +10,7 @@ The whole desktop lives in one directory, `sway/.config/sway/`, which stow links
 - `bin/` holds the scripts that bindings, waybar and the menu run.
 - `apps/` holds the configs for waybar, mako, fuzzel, swaylock and wiremix.
 - `bluetooth/`, `calendar/`, `display/`, `lock/`, `sound/` and `wifi/` are Quickshell panels.
+- `common/` holds what the panels share: `PanelShell.qml`, `Theme.qml` and `AdvancedLink.qml`.
 
 One file lives outside that directory: `sway/.config/xdg-desktop-portal-wlr/sway`, the screen-share picker config.
 
@@ -38,6 +39,8 @@ The panels are Quickshell windows. Each panel has a `toggle` script that kills t
 A panel is a full-screen transparent `PanelWindow` on the overlay layer with exclusive keyboard focus. Esc closes it, and so does a click outside the visible card.
 
 Exclusive keyboard focus does not follow a workspace switch. Switching workspace by key or by a click on another output would leave every window without input until the panel closed. So each panel listens to Sway's workspace events through `I3IpcListener` and closes itself on a focus change, the way a popup would. Sway also skips its own mouse warping while a layer surface holds the keyboard, so when the switch moves to another output the panel moves the cursor to the center of the new workspace before it quits.
+
+All of this lives once in `common/PanelShell.qml`, and every panel except the lock screen is a `PanelShell` with its own card. `common/Theme.qml` holds the colours and the font, and `common/AdvancedLink.qml` is the footer link that opens a panel's full TUI in a floating terminal. A fix to the shared behaviour goes there, so it reaches every panel at once.
 
 ## Terminal opacity and text size
 

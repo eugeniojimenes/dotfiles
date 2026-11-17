@@ -1,46 +1,18 @@
 import QtQuick
 import Quickshell
-import Quickshell.I3
 import Quickshell.Wayland
 import "calendar.js" as Cal
+import "../common"
 
 // Calendar popup for the waybar clock: month grid with ISO week numbers, today
 // marked, year progress. Esc, a click outside or clicking the clock again closes it. Arrows and the wheel step
 // months, Up/Down step years, Home goes back to today. One process per open: nothing runs while it is closed.
 ShellRoot {
-  PanelWindow {
+  PanelShell {
     id: win
 
-    anchors { top: true; bottom: true; left: true; right: true }
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "sway-calendar"
 
-    // Exclusive keyboard focus follows nothing: switching workspace (key or click on another output) would leave every
-    // window without input until this closes. Close with it, like a popup. Sway skips its mouse_warping while a layer
-    // surface holds the keyboard, so a jump to another output warps the cursor here instead.
-    I3IpcListener {
-      subscriptions: ["workspace"]
-      onIpcEvent: event => {
-        if (event.type !== "workspace") return
-        const e = JSON.parse(event.data)
-        if (e.change !== "focus") return
-        if (e.old && e.current && e.old.output !== e.current.output) {
-          const r = e.current.rect
-          Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
-                                   String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
-        }
-        Qt.quit()
-      }
-    }
-
-    readonly property color bg: "#f21e1e2e"
-    readonly property color fg: "#cdd6f4"
-    readonly property color dim: "#6c7086"
-    readonly property color accent: "#89b4fa"
-    readonly property string font: "JetBrainsMono Nerd Font"
 
     readonly property var months: ["January", "February", "March", "April", "May", "June", "July", "August",
                                    "September", "October", "November", "December"]
@@ -64,12 +36,6 @@ ShellRoot {
     // Date math in calendar.js (tested there).
     readonly property var cells: Cal.cells(viewYear, viewMonth)
     readonly property real yearDone: Cal.yearDone(today)
-
-    // Anywhere outside the card closes.
-    MouseArea {
-      anchors.fill: parent
-      onClicked: Qt.quit()
-    }
 
     Rectangle {
       id: card

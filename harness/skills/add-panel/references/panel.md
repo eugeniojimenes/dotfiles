@@ -1,6 +1,6 @@
 # Panel skeleton
 
-Cut from `sway/.config/sway/wifi/shell.qml`. Replace `<name>`. Colors = Catppuccin Mocha, same as the other panels.
+Cut from `sway/.config/sway/wifi/shell.qml`. Replace `<name>`. Colours come from `common/Theme.qml` through `PanelShell` (`win.fg`, `win.accent`...).
 
 `sway/.config/sway/<name>/toggle` (mode 755):
 
@@ -15,48 +15,16 @@ pkill -f 'quickshell -p .*/sway/<name>/shell.qml' || exec quickshell -p ~/.confi
 ```qml
 import QtQuick
 import Quickshell
-import Quickshell.I3
 import Quickshell.Wayland
+import "../common"
 
 // <Name> panel for the waybar <icon>: <what it shows>. Esc or a click outside closes it. One process per open: nothing
 // runs once it is closed.
 ShellRoot {
-  PanelWindow {
+  PanelShell {              // common/PanelShell.qml: overlay, outside click + workspace switch close, theme
     id: win
 
-    anchors { top: true; bottom: true; left: true; right: true }
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "sway-<name>"
-
-    // Exclusive keyboard focus follows nothing: switching workspace would leave every window without input until this
-    // closes. Close with it, like a popup. Sway skips mouse_warping while a layer surface holds the keyboard, so a jump
-    // to another output warps the cursor here instead.
-    I3IpcListener {
-      subscriptions: ["workspace"]
-      onIpcEvent: event => {
-        if (event.type !== "workspace") return
-        const e = JSON.parse(event.data)
-        if (e.change !== "focus") return
-        if (e.old && e.current && e.old.output !== e.current.output) {
-          const r = e.current.rect
-          Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
-                                   String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
-        }
-        Qt.quit()
-      }
-    }
-
-    readonly property color bg: "#f21e1e2e"
-    readonly property color fg: "#cdd6f4"
-    readonly property color accent: "#89b4fa"
-
-    MouseArea {             // click outside the card closes
-      anchors.fill: parent
-      onClicked: Qt.quit()
-    }
 
     Rectangle {
       id: card
@@ -64,7 +32,7 @@ ShellRoot {
       anchors.rightMargin: 8
       y: 34                 // below waybar
       width: 380
-      height: 200
+      height: content.implicitHeight + 32
       radius: 12
       color: win.bg
       border.color: win.accent
@@ -77,7 +45,20 @@ ShellRoot {
         Keys.onPressed: event => { if (event.key === Qt.Key_Escape) Qt.quit() }
       }
 
-      // content
+      Column {
+        id: content
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
+        spacing: 12
+
+        // content
+
+        Rectangle { width: parent.width; height: 1; color: win.track }
+
+        AdvancedLink {      // only when a full TUI exists
+          text: "󰒓  Advanced (<tui>)"
+          command: ["<tui>"]
+        }
+      }
     }
   }
 }

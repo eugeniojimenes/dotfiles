@@ -1,51 +1,21 @@
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
-import Quickshell.I3
 import Quickshell.Io
 import Quickshell.Wayland
 import "flow.js" as Flow
+import "../common"
 
 // Bluetooth panel for the waybar Bluetooth icon: paired devices (click connects or disconnects) and nearby ones (click
 // pairs, trusts, connects), straight from BlueZ (Quickshell.Bluetooth). Power switch in the header. Esc or a click
 // outside closes. One process per open, like the calendar: BlueZ ends the scan when this client goes away.
 // No pairing agent here: a device that asks for a PIN or passkey goes through Advanced (bluetoothctl).
 ShellRoot {
-  PanelWindow {
+  PanelShell {
     id: win
 
-    anchors { top: true; bottom: true; left: true; right: true }
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "sway-bluetooth"
 
-    // Exclusive keyboard focus follows nothing: switching workspace (key or click on another output) would leave every
-    // window without input until this closes. Close with it, like a popup. Sway skips its mouse_warping while a layer
-    // surface holds the keyboard, so a jump to another output warps the cursor here instead.
-    I3IpcListener {
-      subscriptions: ["workspace"]
-      onIpcEvent: event => {
-        if (event.type !== "workspace") return
-        const e = JSON.parse(event.data)
-        if (e.change !== "focus") return
-        if (e.old && e.current && e.old.output !== e.current.output) {
-          const r = e.current.rect
-          Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
-                                   String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
-        }
-        Qt.quit()
-      }
-    }
-
-    readonly property color bg: "#f21e1e2e"
-    readonly property color fg: "#cdd6f4"
-    readonly property color dim: "#6c7086"
-    readonly property color accent: "#89b4fa"
-    readonly property color error: "#f38ba8"
-    readonly property color track: "#313244"
-    readonly property string font: "JetBrainsMono Nerd Font"
 
     // Quickshell 0.3 qmltypes names the property type BluetoothAdapter, the class qs::bluetooth::BluetoothAdapter: lint
     // cannot match them. Works at runtime.
@@ -112,11 +82,6 @@ ShellRoot {
         Flow.stateChanged(win, s === BluetoothDeviceState.Connecting, s === BluetoothDeviceState.Disconnected)
       }
       function onConnectedChanged() { Flow.connectedChanged(win) }
-    }
-
-    MouseArea {
-      anchors.fill: parent
-      onClicked: Qt.quit()
     }
 
     Rectangle {
@@ -352,20 +317,9 @@ ShellRoot {
 
         Rectangle { width: parent.width; height: 1; color: win.track }
 
-        Text {
+        AdvancedLink {
           text: "󰒓  Advanced (bluetoothctl)"
-          color: advMouse.containsMouse ? win.fg : win.dim
-          font.family: win.font
-          font.pixelSize: 13
-          MouseArea {
-            id: advMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: {
-              Quickshell.execDetached([Quickshell.env("HOME") + "/.config/sway/bin/float", "bluetoothctl"])
-              Qt.quit()
-            }
-          }
+          command: ["bluetoothctl"]
         }
       }
     }

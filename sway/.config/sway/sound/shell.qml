@@ -1,47 +1,18 @@
 import QtQuick
 import Quickshell
-import Quickshell.I3
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
+import "../common"
 
 // Sound panel for the waybar volume icon: output and input volume, mute and live level, default device pick, and
 // per-app volume, straight from PipeWire (Quickshell.Services.Pipewire). Volume stops at 100%. Arrows step the output
 // volume, M mutes it, Esc or a click outside closes. One process per open, like the calendar.
 ShellRoot {
-  PanelWindow {
+  PanelShell {
     id: win
 
-    anchors { top: true; bottom: true; left: true; right: true }
-    color: "transparent"
-    exclusionMode: ExclusionMode.Ignore
-    WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     WlrLayershell.namespace: "sway-sound"
 
-    // Exclusive keyboard focus follows nothing: switching workspace (key or click on another output) would leave every
-    // window without input until this closes. Close with it, like a popup. Sway skips its mouse_warping while a layer
-    // surface holds the keyboard, so a jump to another output warps the cursor here instead.
-    I3IpcListener {
-      subscriptions: ["workspace"]
-      onIpcEvent: event => {
-        if (event.type !== "workspace") return
-        const e = JSON.parse(event.data)
-        if (e.change !== "focus") return
-        if (e.old && e.current && e.old.output !== e.current.output) {
-          const r = e.current.rect
-          Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
-                                   String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
-        }
-        Qt.quit()
-      }
-    }
-
-    readonly property color bg: "#f21e1e2e"
-    readonly property color fg: "#cdd6f4"
-    readonly property color dim: "#6c7086"
-    readonly property color accent: "#89b4fa"
-    readonly property color track: "#313244"
-    readonly property string font: "JetBrainsMono Nerd Font"
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
@@ -57,11 +28,6 @@ ShellRoot {
 
     // Volume and mute are only valid on nodes bound by a tracker.
     PwObjectTracker { objects: win.all }
-
-    MouseArea {
-      anchors.fill: parent
-      onClicked: Qt.quit()
-    }
 
     // Icon (click = mute), name, slider, percentage; optional live level bar under the slider.
     component VolumeRow: Column {
@@ -303,21 +269,9 @@ ShellRoot {
 
         Rectangle { width: parent.width; height: 1; color: win.track }
 
-        Text {
+        AdvancedLink {
           text: "󰒓  Advanced (wiremix)"
-          color: advMouse.containsMouse ? win.fg : win.dim
-          font.family: win.font
-          font.pixelSize: 13
-          MouseArea {
-            id: advMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: {
-              const dir = Quickshell.env("HOME") + "/.config/sway"
-              Quickshell.execDetached([dir + "/bin/float", "wiremix", "-c", dir + "/apps/wiremix.toml"])
-              Qt.quit()
-            }
-          }
+          command: ["wiremix", "-c", Quickshell.env("HOME") + "/.config/sway/apps/wiremix.toml"]
         }
       }
     }

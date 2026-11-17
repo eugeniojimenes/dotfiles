@@ -1,0 +1,3 @@
+singleton Theme Theme.qml
+PanelShell PanelShell.qml
+AdvancedLink AdvancedLink.qml

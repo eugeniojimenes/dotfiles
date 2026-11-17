@@ -10,6 +10,7 @@ O desktop inteiro fica numa pasta só, `sway/.config/sway/`, que o stow liga em 
 - `bin/` tem os scripts que os atalhos, o waybar e o menu rodam.
 - `apps/` tem as configs do waybar, mako, fuzzel, swaylock e wiremix.
 - `bluetooth/`, `calendar/`, `display/`, `lock/`, `sound/` e `wifi/` são painéis Quickshell.
+- `common/` guarda o que os painéis compartilham: `PanelShell.qml`, `Theme.qml` e `AdvancedLink.qml`.
 
 Um arquivo fica fora dessa pasta: `sway/.config/xdg-desktop-portal-wlr/sway`, a config do seletor de compartilhamento de tela.
 
@@ -38,6 +39,8 @@ Os painéis são janelas Quickshell. Cada painel tem um script `toggle` que mata
 Um painel é uma `PanelWindow` transparente de tela cheia na camada overlay, com foco exclusivo do teclado. Esc fecha o painel, e um clique fora do card visível também.
 
 O foco exclusivo do teclado não acompanha a troca de workspace. Trocar de workspace pelo teclado ou por um clique em outra saída deixaria todas as janelas sem entrada até o painel fechar. Por isso cada painel escuta os eventos de workspace do Sway pelo `I3IpcListener` e se fecha quando o foco muda, como faria um popup. O Sway também pula o próprio reposicionamento do mouse enquanto uma layer surface segura o teclado, então quando a troca vai para outra saída o painel move o cursor para o centro do novo workspace antes de sair.
+
+Tudo isso fica uma vez só em `common/PanelShell.qml`, e todo painel, menos a tela de bloqueio, é um `PanelShell` com o seu próprio card. O `common/Theme.qml` guarda as cores e a fonte, e o `common/AdvancedLink.qml` é o link do rodapé que abre a TUI completa do painel num terminal flutuante. Uma correção no comportamento compartilhado vai ali, e chega a todos os painéis de uma vez.
 
 ## Opacidade e tamanho do texto do terminal
 
