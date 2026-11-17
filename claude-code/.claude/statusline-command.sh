@@ -9,7 +9,7 @@ used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 # Shorten home directory to ~/
 case "$cwd" in
   "$HOME") short_cwd="~/" ;;
-  "$HOME"/*) short_cwd="~/${cwd#$HOME/}" ;;
+  "$HOME"/*) short_cwd="~/${cwd#"$HOME"/}" ;;
   *) short_cwd="$cwd" ;;
 esac
 

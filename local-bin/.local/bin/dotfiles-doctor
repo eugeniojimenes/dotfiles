@@ -222,4 +222,4 @@ if ((problems)); then
   printf "\n${R}%d problem(s)${N}%s\n" "$problems" "$( ((FIX)) || echo ', re-run with --fix to apply the safe repairs')"
   exit 1
 fi
-printf "\n${G}all checks passed${N}\n"
+printf '\n%s\n' "${G}all checks passed${N}"

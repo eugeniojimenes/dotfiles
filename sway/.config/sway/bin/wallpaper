@@ -18,6 +18,7 @@ apply() {
   # Started directly, not through `swaymsg exec "..."`: a file name is never pasted into a shell string.
   setsid -f swaybg -o '*' -i "$1" -m fill >/dev/null 2>&1
   sleep 0.3
+  # shellcheck disable=SC2086 # one PID per word: pgrep may list several swaybg
   [[ -z $old ]] || kill $old
 }
 

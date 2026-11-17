@@ -15,7 +15,7 @@ for card in "${DRM_SYSFS:-/sys/class/drm}"/card[0-9]; do
 done
 # Machine with only one GPU: let wlroots pick, nothing to order.
 if [ -n "$igpu" ] && [ -n "$dgpu" ]; then
-  export WLR_DRM_DEVICES=$igpu:$dgpu
+  export WLR_DRM_DEVICES="$igpu:$dgpu"
 fi
 
 exec sway --unsupported-gpu "$@"
