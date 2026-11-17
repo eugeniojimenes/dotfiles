@@ -13,4 +13,6 @@ How the parts of this repo work and why they are set up the way they are. Instal
 - [mpv.md](mpv.md): uosc install and updates.
 - [specs/](specs/README.md): feature specs and the tests that cover them (English only).
 
+Screenshots and GIFs live in the separate repo [dotfiles-media](https://github.com/eugeniojimenes/dotfiles-media), so old versions never add to this repo's size. `docs/media.json` lists each one with its alt text and the files it shows.
+
 Instructions for AI agents are in [AGENTS.md](../AGENTS.md) and [harness/](../harness/README.md).

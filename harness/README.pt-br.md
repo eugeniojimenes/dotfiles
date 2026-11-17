@@ -25,6 +25,7 @@ As regras e skills são escritas em inglês, no estilo comprimido descrito no `A
 | `add-keybinding` | Adicionar um atalho do Sway com título e checagem de conflito. |
 | `add-panel` | Adicionar um painel Quickshell seguindo o padrão dos painéis existentes. |
 | `new-feature` | Entregar uma funcionalidade começando pela spec: critérios, testes, código, docs. |
+| `update-media` | Achar screenshots e GIFs desatualizados ou faltando, capturar com nomes privados desfocados e publicar no `dotfiles-media`. |
 
 ## Qual ferramenta lê o quê
 

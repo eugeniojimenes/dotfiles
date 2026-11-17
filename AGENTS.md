@@ -13,6 +13,7 @@ Personal dotfiles, NixOS + Sway, managed with GNU Stow. **Public**: GitHub `orig
 - `claude-code/.claude/` = owner's **global** Claude Code config (stow module into `~/.claude/`). Not this project's harness. Do not edit unless asked.
 - `THIRD-PARTY.md` = files copied from other projects + licenses (Catppuccin themes, MIT). Copy something in = add it there with license text.
 - Human docs: `README.md` (install, use), `docs/` (how and why), `docs/specs/` (feature specs), `tests/manual.md` (hardware checklist).
+- Screenshots and GIFs: files in public repo `eugeniojimenes/dotfiles-media`, never committed here (binary history). Here: manifest `docs/media.json` + image lines. Skill `update-media`.
 
 ## Commands
 
