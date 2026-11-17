@@ -25,3 +25,5 @@ Each criterion ends with one of these:
 - `Test: manual` when the behaviour needs real hardware or a live Wayland session. A manual criterion must also appear in `tests/manual.md`, under each host it applies to.
 
 A criterion may name more than one test. A behaviour with no test and no manual entry is not a criterion yet. Either write the test or add the manual check.
+
+The `spec-tests` step of `bin/check static` reads every `Test:` reference in these files and fails when the bats file or the exact `@test` name is missing, or when the static step does not exist. A renamed test therefore breaks the check instead of leaving its criterion pointing at nothing.

@@ -141,6 +141,21 @@ doc_pairs() {
   done
 }
 
+# Every `Test:` reference in docs/specs points at something that exists: a bats file holding that exact @test name, or
+# a step of this file. A renamed @test would otherwise leave its criterion pointing at nothing.
+spec_tests() {
+  local ref file name rc=0
+  while IFS= read -r ref; do
+    file=${ref%%: *} name=${ref#*: \"} name=${name%\"}
+    # sed: a name holding `$` is written `\$` in the bats source.
+    [[ -f $file ]] && sed 's/\\\$/$/g' "$file" | grep -qF "@test \"$name\"" || { echo "missing: $ref" && rc=1; }
+  done < <(grep -ohP '`tests/unit/[^`]+\.bats: "[^"]+"`' docs/specs/*.md | tr -d '`')
+  while IFS= read -r ref; do
+    grep -qx "step ${ref#*: } .*" "${BASH_SOURCE[0]}" || { echo "missing: $ref" && rc=1; }
+  done < <(grep -ohP '`tests/static\.sh: [a-z-]+`' docs/specs/*.md | tr -d '`')
+  return "$rc"
+}
+
 # `nix fmt` would change nothing: treefmt (treefmt.nix) on a writable copy, the diff shown when it would.
 format_check() {
   local src=$tmp/fmt d
@@ -175,6 +190,7 @@ step panels-load panels_load
 step json json
 step em-dash em_dash
 step doc-pairs doc_pairs
+step spec-tests spec_tests
 step stow stow_dry
 step gitleaks leaks
 
