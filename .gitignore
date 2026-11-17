@@ -12,6 +12,11 @@
 # Harness links (harness/README.md).
 !/.claude/rules
 !/.claude/skills
+# Same for the other agents' dirs: tools write runtime files there (Cursor's mcp.json, for one).
+/.cursor/*
+!/.cursor/rules
+/.agents/*
+!/.agents/skills
 
 # uosc ships own Lua tree plus ~17 MB prebuilt `ziggy` binaries (linux, darwin, windows .exe).
 # No place in a public repo: no checksums, no provenance, two of three never run here.

@@ -23,7 +23,12 @@ shell_files() {
 
 # warning and up: style notes (quoting a known-single word, A && B || C after a printf) are noise here.
 # SC2088: `~` inside quotes is display text in these scripts, never a path to expand.
-shellcheck_all() { shell_files | xargs -d '\n' shellcheck -S warning -e SC2088; }
+# Bash startup files have no shebang. SC1090/SC1091: they source files by runtime path (~/.private/envs).
+shellcheck_all() {
+  shell_files | xargs -d '\n' shellcheck -S warning -e SC2088 &&
+    shellcheck -S warning -s bash -e SC2088,SC1090,SC1091 bash/.bashrc bash/.bash_profile \
+      bash/.config/bash/{env,shell,aliases,init} tests/helpers/common.bash
+}
 
 # hardware.nix = nixos-generate-config output, committed verbatim.
 nix_format() {
@@ -67,8 +72,8 @@ qml_lint() {
     --unqualified disable --comma disable --uncreatable-type disable --signal-handler-parameters disable
 }
 
-# Plain JSON today. Comments added later: strip the `//` lines first.
-waybar_json() { jq empty sway/.config/sway/apps/waybar.jsonc; }
+# waybar config is plain JSON today. Comments added later: strip the `//` lines first.
+json() { jq empty sway/.config/sway/apps/waybar.jsonc docs/media.json; }
 
 # claude-code/.claude/ = prompt text, em-dash used as a list separator the model reads (see docs/claude-code.md).
 em_dash() {
@@ -79,10 +84,11 @@ em_dash() {
   [[ -z $hits ]] || { echo "$hits"; return 1; }
 }
 
-# Human docs come in pairs, <x>.md + <x>.pt-br.md (docs/specs/ excluded: English only). Warns, never fails: only a
-# missing file is checkable here, not drift between the two.
+# Human docs come in pairs, <x>.md + <x>.pt-br.md (docs/specs/ excluded: English only), root README-pt-br.md the odd
+# name out. Warns, never fails: only a missing file is checkable here, not drift between the two.
 doc_pairs() {
   local f
+  [[ -f README.md && -f README-pt-br.md ]] || echo "warning: README.md or README-pt-br.md missing"
   for f in docs/*.md harness/*.md; do
     [[ -e $f ]] || continue
     case $f in
@@ -110,7 +116,7 @@ step shellcheck shellcheck_all
 step nix-format nix_format
 step sway-config sway_config
 step qmllint qml_lint
-step waybar-json waybar_json
+step json json
 step em-dash em_dash
 step doc-pairs doc_pairs
 step stow stow_dry
