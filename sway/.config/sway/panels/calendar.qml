@@ -11,21 +11,22 @@ ShellRoot {
   PanelShell {
     id: win
 
-    WlrLayershell.namespace: "sway-calendar"
-
-
-    readonly property var months: ["January", "February", "March", "April", "May", "June", "July", "August",
-                                   "September", "October", "November", "December"]
-    readonly property var weekdays: ["M", "T", "W", "T", "F", "S", "S"]
+    readonly property list<string> months: ["January", "February", "March", "April", "May", "June", "July",
+                                            "August", "September", "October", "November", "December"]
+    readonly property list<string> weekdays: ["M", "T", "W", "T", "F", "S", "S"]
 
     property date today: new Date()
     property int viewYear: today.getFullYear()
     property int viewMonth: today.getMonth()
 
+    // Date math in calendar.mjs (tested there).
+    readonly property var cells: Cal.cells(viewYear, viewMonth)
+    readonly property real yearDone: Cal.yearDone(today)
+
     function step(delta) {
-      const v = Cal.step(viewYear, viewMonth, delta)
-      viewYear = v.year
-      viewMonth = v.month
+      const next = Cal.step(viewYear, viewMonth, delta)
+      viewYear = next.year
+      viewMonth = next.month
     }
 
     function goToday() {
@@ -33,9 +34,7 @@ ShellRoot {
       viewMonth = today.getMonth()
     }
 
-    // Date math in calendar.mjs (tested there).
-    readonly property var cells: Cal.cells(viewYear, viewMonth)
-    readonly property real yearDone: Cal.yearDone(today)
+    WlrLayershell.namespace: "sway-calendar"
 
     Rectangle {
       id: card
@@ -88,7 +87,7 @@ ShellRoot {
             color: win.fg
             font.family: win.font
             font.pixelSize: 18
-            MouseArea { anchors.fill: parent; anchors.margins: -6; onClicked: win.step(-1) }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; anchors.margins: -6; onClicked: win.step(-1) }
           }
 
           Text {
@@ -98,7 +97,7 @@ ShellRoot {
             font.family: win.font
             font.pixelSize: 16
             font.bold: true
-            MouseArea { anchors.fill: parent; onClicked: win.goToday() }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: win.goToday() }
           }
 
           Text {
@@ -108,7 +107,7 @@ ShellRoot {
             color: win.fg
             font.family: win.font
             font.pixelSize: 18
-            MouseArea { anchors.fill: parent; anchors.margins: -6; onClicked: win.step(1) }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; anchors.margins: -6; onClicked: win.step(1) }
           }
         }
 

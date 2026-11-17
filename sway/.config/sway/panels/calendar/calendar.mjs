@@ -1,33 +1,39 @@
-// Date math of the calendar panel. ES module apart from the QML (isolated), so tests/unit checks it on fixed dates (year edges,
-// week 53, DST) instead of whatever today is.
+// Calendar panel date math, kept out of calendar.qml so tests/unit can check it on fixed dates (year edges, week 53,
+// DST) instead of whatever today is. Months are 0-based, as in JavaScript's Date: 0 = January.
 
-// Month `delta` away from year/month (month 0-based), across year edges both ways.
+// The month `delta` months away, crossing year edges both ways: step(2026, 11, 1) = { year: 2027, month: 0 }.
 export function step(year, month, delta) {
-  var m = month + delta;
-  return { year: year + Math.floor(m / 12), month: ((m % 12) + 12) % 12 };
+  const total = month + delta;
+  return { year: year + Math.floor(total / 12), month: ((total % 12) + 12) % 12 };
 }
 
-// ISO 8601 week: weeks start on Monday, week 1 holds the year's first Thursday. UTC, so DST cannot shift the day.
-export function isoWeek(d) {
-  var t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
-  return Math.ceil(((t - new Date(Date.UTC(t.getUTCFullYear(), 0, 1))) / 86400000 + 1) / 7);
+// ISO 8601 week number: weeks start on Monday, week 1 holds the year's first Thursday. So the Thursday of `date`'s
+// week decides the year, and its position in that year gives the week. UTC, so a DST change cannot shift the day.
+export function isoWeek(date) {
+  const thursday = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const weekday = thursday.getUTCDay() || 7; // Monday 1 .. Sunday 7
+  thursday.setUTCDate(thursday.getUTCDate() + 4 - weekday);
+  const january1 = new Date(Date.UTC(thursday.getUTCFullYear(), 0, 1));
+  const dayOfYear = (thursday - january1) / 86400000 + 1;
+  return Math.ceil(dayOfYear / 7);
 }
 
 export function sameDay(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
-// 6 weeks x 7 days from the Monday on or before the 1st. Noon, so a DST change at midnight cannot shift a day.
+// The 42 days the grid shows: 6 weeks from the Monday on or before the 1st. Each at noon, so a DST change at midnight
+// cannot move a day into the next cell.
 export function cells(year, month) {
-  var offset = (new Date(year, month, 1, 12).getDay() + 6) % 7;
-  var out = [];
-  for (var i = 0; i < 42; i++) out.push(new Date(year, month, 1 - offset + i, 12));
-  return out;
+  const daysBeforeFirst = (new Date(year, month, 1, 12).getDay() + 6) % 7; // Monday 0 .. Sunday 6
+  const days = [];
+  for (let i = 0; i < 42; i++) days.push(new Date(year, month, 1 - daysBeforeFirst + i, 12));
+  return days;
 }
 
-// Share of the year gone by at `now`, 0..1.
+// Share of the year gone by at `now`, from 0 to 1.
 export function yearDone(now) {
-  var start = new Date(now.getFullYear(), 0, 1);
-  return (now - start) / (new Date(now.getFullYear() + 1, 0, 1) - start);
+  const start = new Date(now.getFullYear(), 0, 1);
+  const end = new Date(now.getFullYear() + 1, 0, 1);
+  return (now - start) / (end - start);
 }

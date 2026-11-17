@@ -1,81 +1,91 @@
-// Click, pair and connect flow of the Bluetooth panel. ES module apart from the QML (isolated: sees nothing of the
-// panel but what is passed in), so tests/unit drives it with fake devices in BlueZ's event order. `p` = the panel:
-// joining, fresh, connecting, failure, closePanel(), connectAfterPair(d). Device state arrives as booleans: the
-// BluetoothDeviceState enum stays in ../bluetooth.qml.
+// Bluetooth panel logic, kept out of bluetooth.qml so tests/unit can replay BlueZ's events in their real order.
+//
+// `panel` = bluetooth.qml: fields joining, fresh, connecting, failure; methods closePanel(), connectAfterPair(device).
+// `device` = a Quickshell Bluetooth device (or a fake one in tests). Its state arrives as booleans: the
+// BluetoothDeviceState enum stays in bluetooth.qml.
+//
+// Fields while the user joins a device:
+//   joining      the device the user picked, null when nothing is in flight
+//   fresh        it came from Nearby: pair first, and keep the panel open afterwards
+//   connecting   BlueZ reported Connecting, so falling back to Disconnected means the connection failed
+// A paired device closes the panel once connected, like Wi-Fi. A new one stays open and shows under My devices.
 
 export const PAIR_FAILED =
   "Pairing failed. Put the device in pairing mode, or use Advanced (bluetoothctl) if it asks for a code";
 export const CONNECT_FAILED = "Connection failed";
 
-export function mine(d) {
-  return d.paired || d.bonded;
+export function isPaired(device) {
+  return device.paired || device.bonded;
 }
 
-// Row click or Enter. busy = pairing, connecting or disconnecting: ignored.
-export function pick(p, d, busy) {
-  p.failure = "";
+// Click or Enter on a device. `busy` (pairing, connecting or disconnecting) = ignored. A connected device
+// disconnects, a paired one connects, a new one pairs.
+export function pick(panel, device, busy) {
+  panel.failure = "";
   if (busy) return;
-  if (d.connected) {
-    p.joining = null;
-    d.disconnect();
+  if (device.connected) {
+    panel.joining = null;
+    device.disconnect();
     return;
   }
-  p.joining = d;
-  p.connecting = false;
-  p.fresh = !mine(d);
-  if (p.fresh) d.pair();
-  else d.connect();
+  panel.joining = device;
+  panel.connecting = false;
+  panel.fresh = !isPaired(device);
+  if (panel.fresh) device.pair();
+  else device.connect();
 }
 
-export function forget(p, d) {
-  if (p.joining === d) p.joining = null;
-  d.forget();
+export function forget(panel, device) {
+  if (panel.joining === device) panel.joining = null;
+  device.forget();
 }
 
-export function fail(p, msg) {
-  p.failure = msg;
-  p.joining = null;
-  p.connecting = false;
+export function showFailure(panel, message) {
+  panel.failure = message;
+  panel.joining = null;
+  panel.connecting = false;
 }
 
-// Paired device connected: close, like Wi-Fi. New device: stay open, it shows under My devices. BlueZ cancels a
-// pairing whose caller left the bus (create_bond_req_exit), and the link comes up mid-pairing: closing on `connected`
-// killed the pair.
-export function settle(p) {
-  var d = p.joining;
-  if (!d || !d.connected || d.pairing || !mine(d)) return;
-  if (!p.fresh) p.closePanel();
-  p.joining = null;
-  p.connecting = false;
+// The joined device is paired and connected: done. Not on `connected` alone: the link comes up in the middle of a
+// pairing, and BlueZ cancels a pairing whose caller left the bus, so closing then killed the pair.
+function finishIfConnected(panel) {
+  const device = panel.joining;
+  if (!device || !device.connected || device.pairing || !isPaired(device)) return;
+  if (!panel.fresh) panel.closePanel();
+  panel.joining = null;
+  panel.connecting = false;
 }
 
-// Pair() done: trust (reconnects on its own later) and connect the profiles. Not d.connect(): Quickshell refuses it
-// while the pairing link is up ("already connected"), and that link drops a moment later with no audio profile.
-export function paired(p) {
-  var d = p.joining;
-  d.trusted = true;
-  p.connectAfterPair(d);
-  settle(p);
+// Pairing done: trust the device (it reconnects on its own later) and connect its profiles. Not device.connect():
+// Quickshell refuses it while the pairing link is up ("already connected"), and that link drops a moment later with
+// no audio profile.
+function afterPairing(panel) {
+  const device = panel.joining;
+  device.trusted = true;
+  panel.connectAfterPair(device);
+  finishIfConnected(panel);
 }
 
-// Signal handlers for the joining device. BlueZ sets Paired before its Pair() reply ends `pairing`.
-export function pairedChanged(p) {
-  var d = p.joining;
-  if (d.paired && !d.pairing) paired(p);
+// Signal handlers for `panel.joining`, called by bluetooth.qml.
+
+// BlueZ sets Paired before its Pair() reply ends `pairing`.
+export function pairedChanged(panel) {
+  const device = panel.joining;
+  if (device.paired && !device.pairing) afterPairing(panel);
 }
 
-export function pairingChanged(p) {
-  var d = p.joining;
-  if (d.pairing) return;
-  if (d.paired) paired(p);
-  else fail(p, PAIR_FAILED);
+export function pairingChanged(panel) {
+  const device = panel.joining;
+  if (device.pairing) return;
+  if (device.paired) afterPairing(panel);
+  else showFailure(panel, PAIR_FAILED);
 }
 
-export function stateChanged(p, connecting, disconnected) {
-  if (connecting) p.connecting = true;
-  else if (disconnected && p.connecting) fail(p, CONNECT_FAILED);
+export function stateChanged(panel, { connecting, disconnected }) {
+  if (connecting) panel.connecting = true;
+  else if (disconnected && panel.connecting) showFailure(panel, CONNECT_FAILED);
 }
 
-export function connectedChanged(p) {
-  settle(p);
+export function connectedChanged(panel) {
+  finishIfConnected(panel);
 }

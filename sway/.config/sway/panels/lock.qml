@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pam
 import Quickshell.Wayland
+import "common"
 
 // Lock screen: ext-session-lock, PAM, blurred backdrop, clock, password field.
 // Backdrop = per-output screenshots the `lock` script takes with grim right before locking.
@@ -16,11 +17,11 @@ ShellRoot {
   readonly property string marker: Quickshell.env("SWAY_LOCK_MARKER")
   readonly property bool dry: Quickshell.env("SWAY_LOCK_DRY") === "1"   // parse/run without locking, for testing
 
-  readonly property color fg: "#cdd6f4"
-  readonly property color dim: "#a6adc8"
-  readonly property color accent: "#89b4fa"
-  readonly property color error: "#f38ba8"
-  readonly property string font: "JetBrainsMono Nerd Font"
+  readonly property color fg: Theme.fg
+  readonly property color dim: "#a6adc8" // brighter than Theme.dim: read over a blurred photo
+  readonly property color accent: Theme.accent
+  readonly property color error: Theme.error
+  readonly property string font: Theme.font
 
   property string password: ""
   property bool checking: false

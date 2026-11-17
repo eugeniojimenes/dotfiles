@@ -11,9 +11,6 @@ ShellRoot {
   PanelShell {
     id: win
 
-    WlrLayershell.namespace: "sway-sound"
-
-
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
     readonly property var all: Pipewire.nodes.values.filter(n => n.audio)
@@ -22,9 +19,11 @@ ShellRoot {
     // Playback streams only: recording streams (a mic in use) are Stream/Input/Audio.
     readonly property var apps: all.filter(n => n.isStream && n.properties["media.class"] === "Stream/Output/Audio")
 
-    function label(n) { return n.description || n.nickname || n.name }
-    function appLabel(n) { return n.properties["application.name"] || label(n) }
-    function setVolume(n, v) { if (n && n.audio) n.audio.volume = Math.max(0, Math.min(1, v)) }
+    function label(node) { return node.description || node.nickname || node.name }
+    function appLabel(node) { return node.properties["application.name"] || label(node) }
+    function setVolume(node, volume) { if (node && node.audio) node.audio.volume = Math.max(0, Math.min(1, volume)) }
+
+    WlrLayershell.namespace: "sway-sound"
 
     // Volume and mute are only valid on nodes bound by a tracker.
     PwObjectTracker { objects: win.all }
@@ -32,9 +31,10 @@ ShellRoot {
     // Icon (click = mute), name, slider, percentage; optional live level bar under the slider.
     component VolumeRow: Column {
       id: vr
+
       required property var node
       property string name: ""
-      property var icons: ["󰕿", "󰖀", "󰕾"]
+      property list<string> icons: ["󰕿", "󰖀", "󰕾"]
       property string mutedIcon: "󰝟"
       property bool meter: false
       readonly property real vol: node && node.audio ? node.audio.volume : 0
@@ -64,7 +64,7 @@ ShellRoot {
           color: vr.muted ? win.dim : win.fg
           font.family: win.font
           font.pixelSize: 16
-          MouseArea { anchors.fill: parent; anchors.margins: -4; onClicked: if (vr.node) vr.node.audio.muted = !vr.muted }
+          MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; anchors.margins: -4; onClicked: if (vr.node) vr.node.audio.muted = !vr.muted }
         }
 
         Rectangle {
@@ -96,6 +96,7 @@ ShellRoot {
 
           MouseArea {
             anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
             anchors.margins: -8
             function apply(mouse) { win.setVolume(vr.node, (mouse.x - 8) / bar.width) }
             onPressed: mouse => apply(mouse)
@@ -139,6 +140,7 @@ ShellRoot {
     // Devices of one kind, the default one checked; click makes it the default.
     component DeviceList: Column {
       id: dl
+
       required property var nodes
       required property var current
       property bool isSink: true
@@ -170,6 +172,7 @@ ShellRoot {
           MouseArea {
             id: devMouse
             anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
             hoverEnabled: true
             onClicked: {
               if (dl.isSink) Pipewire.preferredDefaultAudioSink = parent.modelData

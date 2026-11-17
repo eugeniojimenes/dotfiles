@@ -13,25 +13,27 @@ ShellRoot {
   PanelShell {
     id: win
 
-    WlrLayershell.namespace: "sway-wifi"
-
-    readonly property var bars: ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
+    readonly property list<string> bars: ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
 
     readonly property var device: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
-    readonly property var networks: device ? Flow.listed(device.networks.values) : []
+    readonly property var networks: device ? Flow.visibleNetworks(device.networks.values) : []
     readonly property bool scanning: scan.running
+
     // Pick, password and connect state, driven by flow.mjs.
     property var asking: null          // network whose password row is open
     property string failure: ""
     property var joining: null         // network the user picked; close once it connects
 
     function closePanel() { Qt.quit() }
-    function pick(n) { Flow.pick(win, n) }
+    function pick(network) { Flow.pick(win, network) }
 
-    function psk(n) {
-      return n.security === WifiSecurityType.WpaPsk || n.security === WifiSecurityType.Wpa2Psk
-        || n.security === WifiSecurityType.Sae
+    // WPA/WPA2 personal or SAE: a password typed in the panel can connect it.
+    function takesPassword(network) {
+      return network.security === WifiSecurityType.WpaPsk || network.security === WifiSecurityType.Wpa2Psk
+        || network.security === WifiSecurityType.Sae
     }
+
+    WlrLayershell.namespace: "sway-wifi"
 
     Binding { target: win.device; property: "scannerEnabled"; value: true; when: win.device !== null }
 
@@ -138,7 +140,7 @@ ShellRoot {
               Behavior on x { NumberAnimation { duration: 120 } }
             }
 
-            MouseArea { anchors.fill: parent; onClicked: Networking.wifiEnabled = !Networking.wifiEnabled }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Networking.wifiEnabled = !Networking.wifiEnabled }
           }
         }
 
@@ -162,6 +164,7 @@ ShellRoot {
 
           delegate: Column {
             id: row
+
             required property var modelData
             required property int index
             readonly property var net: modelData
@@ -170,9 +173,12 @@ ShellRoot {
             Connections {
               target: row.net
               function onConnectionFailed(reason) {
-                Flow.failed(win, row.net, reason === ConnectionFailReason.NoSecrets, win.psk(row.net))
+                Flow.connectFailed(win, row.net, {
+                  missingPassword: reason === ConnectionFailReason.NoSecrets,
+                  takesPassword: win.takesPassword(row.net),
+                })
               }
-              function onConnectedChanged() { Flow.connectedChanged(win, row.net) }
+              function onConnectedChanged() { Flow.closeWhenPickedIsUp(win, row.net) }
             }
 
             Rectangle {
@@ -221,6 +227,7 @@ ShellRoot {
               MouseArea {
                 id: rowMouse
                 anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
                 hoverEnabled: true
                 onClicked: { list.currentIndex = row.index; win.pick(row.net) }
               }
@@ -249,9 +256,9 @@ ShellRoot {
                 font.family: win.font
                 font.pixelSize: 13
                 onVisibleChanged: if (visible) { text = ""; forceActiveFocus() }
-                Keys.onEscapePressed: Flow.cancel(win)
-                Keys.onReturnPressed: Flow.submit(win, row.net, text)
-                Keys.onEnterPressed: Flow.submit(win, row.net, text)
+                Keys.onEscapePressed: Flow.cancelPassword(win)
+                Keys.onReturnPressed: Flow.submitPassword(win, row.net, text)
+                Keys.onEnterPressed: Flow.submitPassword(win, row.net, text)
 
                 Text {
                   anchors.verticalCenter: parent.verticalCenter

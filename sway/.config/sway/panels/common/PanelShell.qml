@@ -3,16 +3,11 @@ import Quickshell
 import Quickshell.I3
 import Quickshell.Wayland
 
-// What every popup panel shares: full-screen transparent overlay holding the keyboard, a click anywhere outside the
-// card closes, and a workspace switch closes. Each panel sets WlrLayershell.namespace ("sway-<name>"), draws its card
-// and handles its keys (Esc included). Theme colours re-exported, so panels write `win.fg`.
+// The window every popup panel is built on: a transparent overlay over the whole screen that holds the keyboard.
+// It closes on a click anywhere outside the panel's card and on a workspace switch. Each panel only sets
+// WlrLayershell.namespace ("sway-<name>"), draws its card and handles its own keys (Esc included).
+// Theme colours are re-exported here, so panels write `win.fg` instead of importing Theme.
 PanelWindow {
-  anchors { top: true; bottom: true; left: true; right: true }
-  color: "transparent"
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.layer: WlrLayer.Overlay
-  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
   readonly property color bg: Theme.bg
   readonly property color fg: Theme.fg
   readonly property color dim: Theme.dim
@@ -21,19 +16,26 @@ PanelWindow {
   readonly property color track: Theme.track
   readonly property string font: Theme.font
 
-  // Exclusive keyboard focus follows nothing: switching workspace (key or click on another output) would leave every
-  // window without input until this closes. Close with it, like a popup. Sway skips its mouse_warping while a layer
-  // surface holds the keyboard, so a jump to another output warps the cursor here instead.
+  anchors { top: true; bottom: true; left: true; right: true }
+  color: "transparent"
+  exclusionMode: ExclusionMode.Ignore
+  WlrLayershell.layer: WlrLayer.Overlay
+  WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+
+  // Exclusive keyboard focus does not follow a workspace switch: every window would stay without input until the
+  // panel closed. So the panel closes with the switch, like a popup. Sway skips its own mouse warping while a layer
+  // surface holds the keyboard, so when the switch lands on another output the cursor is moved here.
   I3IpcListener {
     subscriptions: ["workspace"]
     onIpcEvent: event => {
       if (event.type !== "workspace") return
-      const e = JSON.parse(event.data)
-      if (e.change !== "focus") return
-      if (e.old && e.current && e.old.output !== e.current.output) {
-        const r = e.current.rect
+      const change = JSON.parse(event.data)
+      if (change.change !== "focus") return
+      if (change.old && change.current && change.old.output !== change.current.output) {
+        const rect = change.current.rect
         Quickshell.execDetached(["swaymsg", "seat", "-", "cursor", "set",
-                                 String(Math.round(r.x + r.width / 2)), String(Math.round(r.y + r.height / 2))])
+                                 String(Math.round(rect.x + rect.width / 2)),
+                                 String(Math.round(rect.y + rect.height / 2))])
       }
       Qt.quit()
     }

@@ -1,11 +1,12 @@
 import QtQuick
 import Quickshell
 
-// Footer link to the full TUI of a panel: opens `command` in a floating terminal (bin/float), then closes the panel.
-// `command` = argv after float, e.g. ["nmtui"].
+// Link at the bottom of a panel, e.g. "󰒓  Advanced (nmtui)". A click opens the full program in a floating terminal
+// (bin/float) and closes the panel. Use: AdvancedLink { text: "...  Advanced (nmtui)"; command: ["nmtui"] }
 Text {
   id: link
-  required property var command
+
+  required property list<string> command
 
   color: area.containsMouse ? Theme.fg : Theme.dim
   font.family: Theme.font
@@ -14,6 +15,7 @@ Text {
   MouseArea {
     id: area
     anchors.fill: parent
+    cursorShape: Qt.PointingHandCursor
     hoverEnabled: true
     onClicked: {
       Quickshell.execDetached([Quickshell.env("HOME") + "/.config/sway/bin/float"].concat(link.command))

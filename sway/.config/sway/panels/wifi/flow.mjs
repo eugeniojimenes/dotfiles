@@ -1,54 +1,65 @@
-// Pick, password and connect flow of the Wi-Fi panel. ES module apart from the QML (isolated), so tests/unit drives it with fake
-// networks. `p` = the panel: asking, joining, failure, closePanel(). Network enums stay in ../wifi.qml: they arrive here
-// as booleans.
+// Wi-Fi panel logic, kept out of wifi.qml so tests/unit can run it with fake networks.
+//
+// `panel` = wifi.qml: fields joining, asking, failure; method closePanel().
+// `network` = a Quickshell network (or a fake one in tests).
+//
+// States, read from the panel's fields:
+//   idle      joining = null, asking = null
+//   joining   connect sent for `joining`, waiting for NetworkManager
+//   asking    password row open under `asking`
+// The panel closes once the network in `joining` is up.
 
 export const WRONG_PASSWORD = "Wrong password";
 export const ENTERPRISE = "Enterprise network: use Advanced (nmtui)";
 export const FAILED = "Connection failed";
 
-// Connected first, then strongest. Unnamed (hidden) networks left out: nothing to show or type for them.
-export function listed(nets) {
-  return nets
-    .filter((n) => n.name !== "")
-    .sort((a, b) => b.connected - a.connected || b.signalStrength - a.signalStrength);
+// Networks to show: the connected one first, then by signal. Hidden networks (no name) are left out.
+export function visibleNetworks(networks) {
+  return networks
+    .filter((network) => network.name !== "")
+    .sort((a, b) => {
+      if (a.connected !== b.connected) return a.connected ? -1 : 1;
+      return b.signalStrength - a.signalStrength;
+    });
 }
 
-// Row click or Enter. Saved profile or open network: connects with no prompt; otherwise NetworkManager fails with
-// NoSecrets and failed() opens the password row.
-export function pick(p, n) {
-  p.failure = "";
-  if (n.connected || n.stateChanging) return;
-  p.joining = n;
-  n.connect();
+// Click or Enter on a network. A saved or open network connects with no prompt. Any other answers through
+// connectFailed(), which opens the password row.
+export function pick(panel, network) {
+  panel.failure = "";
+  if (network.connected || network.stateChanging) return;
+  panel.joining = network;
+  network.connect();
 }
 
-// psk = WPA/WPA2 personal or SAE: a password row can fix it. Anything else missing a secret is enterprise.
-export function failed(p, n, noSecrets, psk) {
-  if (noSecrets && psk) {
-    p.asking = n;
-    p.failure = n.known ? WRONG_PASSWORD : "";
+// NetworkManager refused the connection. missingPassword: it had no secret, or the saved one was refused.
+// takesPassword: WPA/WPA2 personal or SAE, so a password row can fix it. Anything else is enterprise.
+export function connectFailed(panel, network, { missingPassword, takesPassword }) {
+  if (missingPassword && takesPassword) {
+    panel.asking = network;
+    panel.failure = network.known ? WRONG_PASSWORD : "";
   } else {
-    p.failure = noSecrets ? ENTERPRISE : FAILED;
+    panel.failure = missingPassword ? ENTERPRISE : FAILED;
   }
-  p.joining = null;
+  panel.joining = null;
 }
 
-// Enter in the password row. Empty = ignored.
-export function submit(p, n, password) {
+// Enter in the password row. An empty password is ignored.
+export function submitPassword(panel, network, password) {
   if (password === "") return;
-  p.failure = "";
-  p.joining = n;
-  p.asking = null;
-  n.connectWithPsk(password);
+  panel.failure = "";
+  panel.joining = network;
+  panel.asking = null;
+  network.connectWithPsk(password);
 }
 
-// Esc in the password row: row closes, panel stays.
-export function cancel(p) {
-  p.asking = null;
-  p.failure = "";
+// Esc in the password row: the row closes, the panel stays.
+export function cancelPassword(panel) {
+  panel.asking = null;
+  panel.failure = "";
 }
 
-// Close once the network the user picked is up, like a menu. Another network connecting does not count.
-export function connectedChanged(p, n) {
-  if (n.connected && p.joining === n) p.closePanel();
+// A network came up. Close only if it is the one the user picked.
+export function closeWhenPickedIsUp(panel, network) {
+  if (network.connected && panel.joining === network) panel.closePanel();
 }

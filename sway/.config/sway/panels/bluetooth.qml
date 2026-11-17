@@ -14,20 +14,19 @@ ShellRoot {
   PanelShell {
     id: win
 
-    WlrLayershell.namespace: "sway-bluetooth"
-
-
     // Quickshell 0.3 qmltypes names the property type BluetoothAdapter, the class qs::bluetooth::BluetoothAdapter: lint
     // cannot match them. Works at runtime.
     readonly property var adapter: Bluetooth.defaultAdapter // qmllint disable unresolved-type
     readonly property bool on: adapter !== null && adapter.enabled
     readonly property var all: adapter ? adapter.devices.values : []
-    readonly property var paired: all.filter(d => d.paired || d.bonded)
-      .sort((a, b) => (b.connected - a.connected) || a.name.localeCompare(b.name))
+    // Connected first, then by name.
+    readonly property var paired: all.filter(d => Flow.isPaired(d))
+      .sort((a, b) => a.connected !== b.connected ? (a.connected ? -1 : 1) : a.name.localeCompare(b.name))
     // No deviceName = BlueZ only knows the address: nothing to recognise the device by.
-    readonly property var nearby: all.filter(d => !d.paired && !d.bonded && d.deviceName !== "")
+    readonly property var nearby: all.filter(d => !Flow.isPaired(d) && d.deviceName !== "")
       .sort((a, b) => a.name.localeCompare(b.name))
     readonly property var rows: on ? paired.concat(nearby) : []
+
     // Click, pair and connect state, driven by flow.mjs.
     property var joining: null         // device the user picked to connect
     property bool fresh: false         // joining came from Nearby: stays open once connected
@@ -36,37 +35,40 @@ ShellRoot {
 
     function closePanel() { Qt.quit() }
 
-    function busy(d) {
-      return d.pairing || d.state === BluetoothDeviceState.Connecting || d.state === BluetoothDeviceState.Disconnecting
+    function busy(device) {
+      return device.pairing || device.state === BluetoothDeviceState.Connecting
+        || device.state === BluetoothDeviceState.Disconnecting
     }
 
-    function pick(d) { Flow.pick(win, d, busy(d)) }
-    function forget(d) { Flow.forget(win, d) }
+    function pick(device) { Flow.pick(win, device, busy(device)) }
+    function forget(device) { Flow.forget(win, device) }
 
-    // Device1.Connect straight over D-Bus, see flow.mjs paired(). A failed reply = non-zero exit.
-    function connectAfterPair(d) {
-      profiles.command = ["busctl", "--system", "--timeout=30", "call", "org.bluez", d.dbusPath, "org.bluez.Device1",
-                          "Connect"]
+    // Device1.Connect straight over D-Bus, see afterPairing() in flow.mjs. A failed reply = non-zero exit.
+    function connectAfterPair(device) {
+      profiles.command = ["busctl", "--system", "--timeout=30", "call", "org.bluez", device.dbusPath,
+                          "org.bluez.Device1", "Connect"]
       profiles.running = true
     }
 
-    Process {
-      id: profiles
-      onExited: code => { if (code !== 0) Flow.fail(win, Flow.CONNECT_FAILED) }
+    // BlueZ icon names (audio-headset, input-keyboard...) to Nerd Font glyphs.
+    function glyph(device) {
+      const icon = device.icon
+      if (icon.startsWith("audio-headset")) return "󰋎"
+      if (icon.startsWith("audio-headphones")) return "󰋋"
+      if (icon.startsWith("audio")) return "󰓃"
+      if (icon === "input-keyboard") return "󰌌"
+      if (icon === "input-mouse" || icon === "input-tablet") return "󰍽"
+      if (icon === "input-gaming") return "󰊴"
+      if (icon === "phone") return "󰏲"
+      if (icon === "computer") return "󰌢"
+      return "󰂯"
     }
 
-    // BlueZ icon names (audio-headset, input-keyboard...) to Nerd Font glyphs.
-    function glyph(d) {
-      const i = d.icon
-      if (i.startsWith("audio-headset")) return "󰋎"
-      if (i.startsWith("audio-headphones")) return "󰋋"
-      if (i.startsWith("audio")) return "󰓃"
-      if (i === "input-keyboard") return "󰌌"
-      if (i === "input-mouse" || i === "input-tablet") return "󰍽"
-      if (i === "input-gaming") return "󰊴"
-      if (i === "phone") return "󰏲"
-      if (i === "computer") return "󰌢"
-      return "󰂯"
+    WlrLayershell.namespace: "sway-bluetooth"
+
+    Process {
+      id: profiles
+      onExited: code => { if (code !== 0) Flow.showFailure(win, Flow.CONNECT_FAILED) }
     }
 
     // Scan only while open and on. Not stopped on close: BlueZ drops a discovery session when its client exits.
@@ -78,8 +80,11 @@ ShellRoot {
       function onPairedChanged() { Flow.pairedChanged(win) }
       function onPairingChanged() { Flow.pairingChanged(win) }
       function onStateChanged() {
-        const s = win.joining.state
-        Flow.stateChanged(win, s === BluetoothDeviceState.Connecting, s === BluetoothDeviceState.Disconnected)
+        const state = win.joining.state
+        Flow.stateChanged(win, {
+          connecting: state === BluetoothDeviceState.Connecting,
+          disconnected: state === BluetoothDeviceState.Disconnected,
+        })
       }
       function onConnectedChanged() { Flow.connectedChanged(win) }
     }
@@ -178,7 +183,7 @@ ShellRoot {
               Behavior on x { NumberAnimation { duration: 120 } }
             }
 
-            MouseArea { anchors.fill: parent; onClicked: win.adapter.enabled = !win.adapter.enabled }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: win.adapter.enabled = !win.adapter.enabled }
           }
         }
 
@@ -204,6 +209,7 @@ ShellRoot {
 
           delegate: Column {
             id: row
+
             required property var modelData
             required property int index
             readonly property var dev: modelData
@@ -230,6 +236,7 @@ ShellRoot {
               MouseArea {
                 id: rowMouse
                 anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
                 hoverEnabled: true
                 onClicked: { list.currentIndex = row.index; win.pick(row.dev) }
               }
@@ -295,6 +302,7 @@ ShellRoot {
                   MouseArea {
                     id: forgetMouse
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
                     anchors.margins: -4
                     hoverEnabled: true
                     onClicked: win.forget(row.dev)

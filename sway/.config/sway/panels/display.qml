@@ -11,12 +11,10 @@ ShellRoot {
   PanelShell {
     id: win
 
-    WlrLayershell.namespace: "sway-display"
-
     readonly property string ctl: Quickshell.env("HOME") + "/.config/sway/panels/display/ctl"
 
-    readonly property var scales: [1, 1.25, 1.6, 2]
-    readonly property var textStops: [9, 10, 11, 12, 14, 16, 20]
+    readonly property list<real> scales: [1, 1.25, 1.6, 2]
+    readonly property list<int> textStops: [9, 10, 11, 12, 14, 16, 20]
 
     property var outputs: []
     property int current: -1
@@ -31,8 +29,8 @@ ShellRoot {
       action.running = true
     }
 
-    function select(i) {
-      current = (i + outputs.length) % outputs.length
+    function select(index) {
+      current = (index + outputs.length) % outputs.length
       brightness = -1
       loadingBrightness = true
       brightRead.command = [ctl, "brightness", "get", outputs[current].name]
@@ -43,6 +41,8 @@ ShellRoot {
       brightness = Math.max(1, Math.min(100, Math.round(pct)))
       writeDelay.restart()
     }
+
+    WlrLayershell.namespace: "sway-display"
 
     Process {
       id: stateRead
@@ -159,6 +159,7 @@ ShellRoot {
         MouseArea {
           id: hover
           anchors.fill: parent
+          cursorShape: Qt.PointingHandCursor
           hoverEnabled: true
           onClicked: parent.pressed()
         }
@@ -184,7 +185,7 @@ ShellRoot {
             color: win.fg
             font.family: win.font
             font.pixelSize: 18
-            MouseArea { anchors.fill: parent; anchors.margins: -6; onClicked: win.select(win.current - 1) }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; anchors.margins: -6; onClicked: win.select(win.current - 1) }
           }
 
           Column {
@@ -214,7 +215,7 @@ ShellRoot {
             color: win.fg
             font.family: win.font
             font.pixelSize: 18
-            MouseArea { anchors.fill: parent; anchors.margins: -6; onClicked: win.select(win.current + 1) }
+            MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; anchors.margins: -6; onClicked: win.select(win.current + 1) }
           }
         }
 
@@ -253,6 +254,7 @@ ShellRoot {
 
             MouseArea {
               anchors.fill: parent
+              cursorShape: Qt.PointingHandCursor
               anchors.margins: -8
               enabled: win.brightness >= 0
               onPressed: mouse => win.setBrightness((mouse.x - 8) / bar.width * 100)

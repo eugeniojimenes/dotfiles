@@ -76,7 +76,7 @@ TestCase {
     var p = panel(), d = device(true)
     Flow.pick(p, d, false)
     compare(d.calls, ["connect"])
-    Flow.stateChanged(p, true, false)
+    Flow.stateChanged(p, { connecting: true, disconnected: false })
     d.connected = true
     Flow.connectedChanged(p)
     compare(p.closed, 1)
@@ -85,8 +85,8 @@ TestCase {
   function test_paired_device_connect_fails() {
     var p = panel(), d = device(true)
     Flow.pick(p, d, false)
-    Flow.stateChanged(p, true, false)
-    Flow.stateChanged(p, false, true)
+    Flow.stateChanged(p, { connecting: true, disconnected: false })
+    Flow.stateChanged(p, { connecting: false, disconnected: true })
     compare(p.failure, Flow.CONNECT_FAILED)
     compare(p.closed, 0)
     compare(p.joining, null)

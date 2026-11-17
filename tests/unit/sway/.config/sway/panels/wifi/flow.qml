@@ -26,7 +26,7 @@ TestCase {
   function test_list_connected_first_then_signal_hidden_left_out() {
     var nets = [network("weak", { signalStrength: 0.2 }), network("", { signalStrength: 0.9 }),
                 network("strong", { signalStrength: 0.8 }), network("home", { connected: true, signalStrength: 0.4 })]
-    compare(names(Flow.listed(nets)), ["home", "strong", "weak"])
+    compare(names(Flow.visibleNetworks(nets)), ["home", "strong", "weak"])
   }
 
   function test_saved_network_connects_and_closes() {
@@ -34,38 +34,38 @@ TestCase {
     Flow.pick(p, n)
     compare(n.calls, ["connect"])
     other.connected = true
-    Flow.connectedChanged(p, other)
+    Flow.closeWhenPickedIsUp(p, other)
     compare(p.closed, 0)
     n.connected = true
-    Flow.connectedChanged(p, n)
+    Flow.closeWhenPickedIsUp(p, n)
     compare(p.closed, 1)
   }
 
   function test_new_psk_network_asks_then_connects() {
     var p = panel(), n = network("cafe")
     Flow.pick(p, n)
-    Flow.failed(p, n, true, true)
+    Flow.connectFailed(p, n, { missingPassword: true, takesPassword: true })
     compare(p.asking, n)
     compare(p.failure, "")
     compare(p.joining, null)
-    Flow.submit(p, n, "")
+    Flow.submitPassword(p, n, "")
     compare(n.calls, ["connect"])
-    Flow.submit(p, n, "s3cret")
+    Flow.submitPassword(p, n, "s3cret")
     compare(n.calls, ["connect", "psk:s3cret"])
     compare(p.asking, null)
     compare(p.joining, n)
     n.connected = true
-    Flow.connectedChanged(p, n)
+    Flow.closeWhenPickedIsUp(p, n)
     compare(p.closed, 1)
   }
 
   function test_saved_network_refused_secret_says_wrong_password() {
     var p = panel(), n = network("home", { known: true })
     Flow.pick(p, n)
-    Flow.failed(p, n, true, true)
+    Flow.connectFailed(p, n, { missingPassword: true, takesPassword: true })
     compare(p.asking, n)
     compare(p.failure, Flow.WRONG_PASSWORD)
-    Flow.cancel(p)
+    Flow.cancelPassword(p)
     compare(p.asking, null)
     compare(p.failure, "")
     compare(p.closed, 0)
@@ -74,13 +74,13 @@ TestCase {
   function test_enterprise_and_other_failures() {
     var p = panel(), n = network("corp")
     Flow.pick(p, n)
-    Flow.failed(p, n, true, false)
+    Flow.connectFailed(p, n, { missingPassword: true, takesPassword: false })
     compare(p.failure, Flow.ENTERPRISE)
     compare(p.asking, null)
     compare(p.joining, null)
     Flow.pick(p, n)
     compare(p.failure, "")
-    Flow.failed(p, n, false, true)
+    Flow.connectFailed(p, n, { missingPassword: false, takesPassword: true })
     compare(p.failure, Flow.FAILED)
     compare(p.closed, 0)
   }
