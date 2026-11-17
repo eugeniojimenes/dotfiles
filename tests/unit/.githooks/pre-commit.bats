@@ -8,7 +8,7 @@ setup() {
   git config --global user.name t && git config --global user.email t@t
   r=$BATS_TEST_TMPDIR/repo
   mkdir -p "$r/bin" "$r/.githooks" "$HOME/.private"
-  cp "$REPO/bin/check" "$r/bin/" && cp "$REPO/.githooks/pre-commit" "$r/.githooks/"
+  cp "$REPO/bin/check" "$r/bin/" && cp "$REPO/.githooks/pre-commit" "$REPO/.githooks/commit-msg" "$r/.githooks/"
   cd "$r" && git init -q && git config core.hooksPath .githooks
   git add . && git commit -qm base
   echo zorblax >"$HOME/.private/forbidden-terms"
@@ -34,7 +34,7 @@ fake_token() { printf 'ghp_%s' "$(printf 'a1B2c3D4e5%.0s' 1 2 3 4 | cut -c1-36)"
   assert_failure
   assert_line 'notes:2'
   assert_output --partial 'git checkout <file>'
-  refute_output --partial -i zorblax
+  [[ ${output,,} != *zorblax* ]]
   [ "$(git rev-list --count HEAD)" -eq 1 ]
 }
 
@@ -50,4 +50,38 @@ fake_token() { printf 'ghp_%s' "$(printf 'a1B2c3D4e5%.0s' 1 2 3 4 | cut -c1-36)"
   echo zorblax >notes && git add notes
   run git commit -qm clean
   assert_success
+}
+
+@test "term staged, then cleaned in the work tree only: commit refused" {
+  echo 'see zorblax' >notes && git add notes
+  echo clean >notes
+  run git commit -qm staged
+  assert_failure
+  assert_line 'notes:1'
+  [ "$(git rev-list --count HEAD)" -eq 1 ]
+}
+
+@test "term only in an unstaged edit: commit allowed" {
+  echo clean >notes && git add notes && git commit -qm notes
+  echo 'see zorblax' >notes
+  echo other >other && git add other
+  run git commit -qm other
+  assert_success
+}
+
+@test "term in a staged path: commit refused, path never shown" {
+  echo hi >"Zorblax-notes" && git add "Zorblax-notes"
+  run git commit -qm path
+  assert_failure
+  assert_output --partial 'forbidden term in a path, see: git ls-files | sed -n'
+  [[ ${output,,} != *zorblax* ]]
+}
+
+@test "term in the commit message: commit refused, term never shown" {
+  echo hello >notes && git add notes
+  run git commit -qm 'fix for ZORBLAX'
+  assert_failure
+  assert_output --partial 'commit-msg: commit refused'
+  [[ ${output,,} != *zorblax* ]]
+  [ "$(git rev-list --count HEAD)" -eq 1 ]
 }

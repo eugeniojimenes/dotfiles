@@ -21,7 +21,7 @@ Personal dotfiles, NixOS + Sway, managed with GNU Stow. **Public**: GitHub `orig
 stow <module>            # from repo root ~/dotfiles
 stow -D <module>         # remove a module's symlinks
 bin/check                # all test layers, before every commit
-bin/check static|unit|terms
+bin/check static|unit|terms   # terms --cached = staged (pre-commit), --message FILE = commit-msg
 nix develop              # shell with the check tools
 nix build .#nixosConfigurations.loc-nixos.config.system.build.toplevel
 nix store diff-closures /run/current-system ./result
@@ -35,7 +35,7 @@ dotfiles-doctor [--fix]                        # health check, --fix = safe repa
 
 - **No secrets** in any file: tokens, API keys, passwords, private SSH/GPG keys, any credential. Config needs a secret = reference env var by name, value set outside repo. `~/.private` = private repo holding them: name it, never its payload contents or the tool that writes it. See `docs/public-repo.md`.
 - **No employer detail** anywhere: company name, internal tool and repo names, internal paths, engine or service names, marketplace names. Applies to code, comments, docs, harness, skills, examples, commit messages. Workaround comment needs no proper noun: "a work CLI hardcodes `asdf` calls".
-- Pre-commit hook stays enabled (`git config core.hooksPath .githooks`; `dotfiles-doctor --fix` sets it). Never `git commit --no-verify` without owner approval for that commit. Hook refuses = fix cause. Tool wrote into stowed file = `git checkout <file>`.
+- Hooks (pre-commit, commit-msg) stay enabled (`git config core.hooksPath .githooks`; `dotfiles-doctor --fix` sets it). Never `git commit --no-verify` without owner approval for that commit. Hook refuses = fix cause. Tool wrote into stowed file = `git checkout <file>`.
 - Term scan output = `file:line` only. Never print, write or guess `~/.private/forbidden-terms` content.
 - `bin/check` passes before every commit.
 - Flake sees git-tracked files only: `git add` new files before any `nix` command or `bin/check`.

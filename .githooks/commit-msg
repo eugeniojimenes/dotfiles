@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Commit messages are public too: refuse one holding a term from the list in ~/.private. Term never printed.
+# Enabled with pre-commit (same core.hooksPath).
+
+bin/check terms --message "$1" >/dev/null && exit 0
+echo 'commit-msg: commit refused, the message holds a forbidden term (term hidden). Reword it, then commit again.' >&2
+exit 1

@@ -141,12 +141,12 @@ O `bin/check` roda as camadas de teste pelos checks do flake. As ferramentas vê
 bin/check           # tudo: static, unit, eval de cada host, depois a busca de termos do empregador
 bin/check static    # shellcheck, nixfmt e statix, sway -C por host, qmllint, JSON do waybar, varredura de em-dash, pares de docs, stow simulado, gitleaks
 bin/check unit      # testes bats em tests/unit/, scripts rodam contra comandos stub
-bin/check terms     # só local: arquivos rastreados contra a lista de termos em ~/.private, pulado quando está trancado
+bin/check terms     # só local: arquivos e caminhos rastreados contra a lista de termos em ~/.private, pulado quando está trancado
 nix develop         # shell com as mesmas ferramentas, para rodar uma delas na mão
 ```
 O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Os testes de hardware e de sessão ao vivo estão em [tests/manual.md](tests/manual.md), e as specs das funcionalidades, que dizem o que cada teste cobre, estão em [docs/specs/](docs/specs/README.md) (só em inglês).
 
-O hook de pre-commit em `.githooks/` recusa o commit quando um arquivo rastreado tem um termo proibido (`bin/check terms`) ou as mudanças em stage têm um segredo (`gitleaks git --staged`). Ele mostra `arquivo:linha` e nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative em cada clone com `git config core.hooksPath .githooks` (o `dotfiles-doctor --fix` faz o mesmo). O hook roda só na máquina local, e o CI roda as mesmas buscas pelo `bin/check`, menos `terms`. Para pular uma vez, use `git commit --no-verify`. O [docs/public-repo.pt-br.md](docs/public-repo.pt-br.md) lista o que cada busca deixa passar.
+O hook de pre-commit em `.githooks/` recusa o commit quando um arquivo ou caminho em stage tem um termo proibido (`bin/check terms --cached`) ou as mudanças em stage têm um segredo (`gitleaks git --staged`). O hook commit-msg ao lado faz a mesma busca de termos na mensagem do commit. Ele mostra `arquivo:linha` e nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative em cada clone com `git config core.hooksPath .githooks` (o `dotfiles-doctor --fix` faz o mesmo). O hook roda só na máquina local, e o CI roda as mesmas buscas pelo `bin/check`, menos `terms`. Para pular uma vez, use `git commit --no-verify`. O [docs/public-repo.pt-br.md](docs/public-repo.pt-br.md) lista o que cada busca deixa passar.
 
 ## Cedilha com teclado US
 O layout US internacional transforma `'` seguido de `c` em ć. Para ter ç, acrescente um override no fim do `~/.XCompose`, que é local da máquina e fica fora do repo:

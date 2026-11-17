@@ -7,8 +7,9 @@ set -uo pipefail
 
 failed=0
 
-# Tracked files against the term list in ~/.private. Skipped, not failed, when the list is absent: CI, fresh clone.
-if ! out=$(bin/check terms); then
+# Staged files and paths against the term list in ~/.private. Skipped, not failed, when the list is absent: CI, fresh
+# clone. The commit message gets the same scan in commit-msg.
+if ! out=$(bin/check terms --cached); then
   printf '%s\n' "$out"
   failed=1
 fi
@@ -24,7 +25,7 @@ fi
 if ((failed)); then
   cat >&2 <<'MSG'
 
-pre-commit: commit refused, a tracked file holds a forbidden term or a secret (file:line above, value hidden).
+pre-commit: commit refused, a staged file or path holds a forbidden term or a secret (file:line above, value hidden).
 If a tool wrote into a stowed file, such as an installer appending to ~/.bashrc, revert it: git checkout <file>
 Otherwise remove the value, keep it outside this public repo and reference it by variable name.
 MSG

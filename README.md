@@ -141,12 +141,12 @@ A stow conflict (a real file where a symlink belongs) is never fixed automatical
 bin/check           # everything: static, unit, eval of each host, then the employer-term scan
 bin/check static    # shellcheck, nixfmt and statix, sway -C per host, qmllint, waybar JSON, em-dash sweep, doc pairs, stow dry run, gitleaks
 bin/check unit      # bats tests in tests/unit/, scripts run against stubbed commands
-bin/check terms     # local only: tracked files against the term list in ~/.private, skipped when it is locked
+bin/check terms     # local only: tracked files and paths against the term list in ~/.private, skipped when it is locked
 nix develop         # shell with the same tools, to run one of them by hand
 ```
 GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md), and the feature specs that list what each test covers are in [docs/specs/](docs/specs/README.md).
 
-The pre-commit hook in `.githooks/` refuses a commit when a tracked file holds a forbidden term (`bin/check terms`) or the staged changes hold a secret (`gitleaks git --staged`). It prints `file:line` and never the value. Git only runs it once the clone points at it, so enable it in each clone with `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does the same). The hook runs locally only, and CI runs the same scans through `bin/check`, except `terms`. To skip it once, use `git commit --no-verify`. [docs/public-repo.md](docs/public-repo.md) lists what each scan misses.
+The pre-commit hook in `.githooks/` refuses a commit when a staged file or path holds a forbidden term (`bin/check terms --cached`) or the staged changes hold a secret (`gitleaks git --staged`). The commit-msg hook next to it does the same term check on the commit message. It prints `file:line` and never the value. Git only runs it once the clone points at it, so enable it in each clone with `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does the same). The hook runs locally only, and CI runs the same scans through `bin/check`, except `terms`. To skip it once, use `git commit --no-verify`. [docs/public-repo.md](docs/public-repo.md) lists what each scan misses.
 
 ## Cedilla with US keyboard layout
 The US international layout turns `'` followed by `c` into ć. To get ç, add an override at the end of `~/.XCompose`, which is machine-local and not in the repo:

@@ -22,11 +22,11 @@ Alguns arquivos ficam fora porque ferramentas gravam detalhes do trabalho neles:
 
 Duas buscas procuram vazamentos.
 
-`bin/check terms` faz grep em todo arquivo rastreado pelos termos de `~/.private/forbidden-terms`, uma lista guardada criptografada no repo privado e nunca commitada aqui. Ele mostra só `file:line` para cada ocorrência, então o termo em si nunca aparece num log. Quando a lista não existe, como no CI ou num clone novo, a busca é pulada com um aviso e não falha.
+`bin/check terms` faz grep em todo arquivo e caminho rastreado pelos termos de `~/.private/forbidden-terms`, uma lista guardada criptografada no repo privado e nunca commitada aqui. Ele mostra só `file:line` para cada ocorrência num arquivo, e para uma ocorrência num caminho só o número da linha dele em `git ls-files`, então o termo em si nunca aparece num log. `bin/check terms --cached` varre a versão em stage em vez da árvore de trabalho, e `bin/check terms --message FILE` varre uma mensagem de commit. Quando a lista não existe, como no CI ou num clone novo, a busca é pulada com um aviso e não falha.
 
 O `gitleaks` procura segredos. `bin/check static` (local e no CI) varre a árvore inteira com `gitleaks dir`, e o hook de pre-commit varre as mudanças em stage com `gitleaks git --staged`. Os valores aparecem mascarados na saída.
 
-O hook de pre-commit em `.githooks/pre-commit` roda as duas buscas antes de cada commit e recusa o commit quando encontra algo. O git só roda o hook depois que o clone aponta para ele, então ative uma vez por clone com `git config core.hooksPath .githooks`. `dotfiles-doctor --fix` faz o mesmo. O hook roda só localmente. O comportamento dele está listado em [specs/pre-commit.md](specs/pre-commit.md).
+O hook de pre-commit em `.githooks/pre-commit` roda as duas buscas nas mudanças em stage antes de cada commit e recusa o commit quando encontra algo. O hook commit-msg em `.githooks/commit-msg` roda a busca de termos na mensagem do commit, que também é pública. O git só roda o hook depois que o clone aponta para ele, então ative uma vez por clone com `git config core.hooksPath .githooks`. `dotfiles-doctor --fix` faz o mesmo. O hook roda só localmente. O comportamento dele está listado em [specs/pre-commit.md](specs/pre-commit.md).
 
 Quando o hook recusa um commit porque uma ferramenta escreveu num arquivo linkado pelo stow, como um instalador que adiciona um bloco no `~/.bashrc`, reverta esse arquivo com `git checkout <file>`. Nos outros casos, remova o valor e guarde ele fora do repo. Pular o hook com `git commit --no-verify` é possível, mas só com aprovação explícita do dono para aquele commit.
 
@@ -36,7 +36,7 @@ Quando o hook recusa um commit porque uma ferramenta escreveu num arquivo linkad
 - A busca de termos só encontra os termos da lista. Um nome interno novo precisa entrar na lista antes de a busca saber dele.
 - A busca de termos não roda no CI nem numa máquina onde o `~/.private` está bloqueado. O `dotfiles-doctor` avisa quando a lista não existe.
 - O hook não roda quando não está ativado no clone, nem quando um commit usa `--no-verify`.
-- Nada varre as mensagens de commit.
+- O hook commit-msg verifica as mensagens de commit só contra os termos. O gitleaks não varre as mensagens.
 
 ## Reescrita do histórico de agosto de 2026
 
