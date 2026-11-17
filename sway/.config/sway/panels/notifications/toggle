@@ -1,0 +1,4 @@
+#!/bin/sh
+# Bell click, Super+Ctrl+comma, menu: open the notification centre, or close it. It lives in the always-running daemon
+# (../notifications.qml), so this asks it over IPC instead of starting a process like the other panels' toggles.
+exec quickshell ipc -p ~/.config/sway/panels/notifications.qml call notifications toggleCenter

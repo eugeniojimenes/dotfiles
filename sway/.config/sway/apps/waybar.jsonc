@@ -8,7 +8,7 @@
     "custom/record",
     "custom/idle",
     "custom/nightlight",
-    "custom/dnd",
+    "custom/notifications",
     "tray",
     "network",
     "bluetooth",
@@ -66,12 +66,13 @@
     "on-scroll-down": "swayosd-client --output-volume lower"
   },
 
-  "custom/dnd": {
+  "custom/notifications": {
     "exec": "~/.config/sway/bin/dnd status",
     "return-type": "json",
     "interval": "once",
     "signal": 8,
-    "on-click": "~/.config/sway/bin/dnd toggle"
+    "on-click": "~/.config/sway/panels/notifications/toggle",
+    "on-click-middle": "~/.config/sway/bin/dnd toggle"
   },
 
   "custom/idle": {

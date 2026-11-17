@@ -52,3 +52,33 @@ export function overflow(ids, showing, max = HISTORY_MAX) {
   if (extra <= 0) return [];
   return ids.filter((id) => !showing.includes(id)).slice(0, extra);
 }
+
+// Whether a notification goes to the history at all: poweralertd's charge state changes are noise there too.
+export function keep(n) {
+  return !(n.appName === "poweralertd" && n.urgency !== 2);
+}
+
+// Arrival time for the centre: "now", "5 min", "2 h", then the clock time ("09:41") from 12 h on, which is enough for a
+// history that only lives for the session. `then` and `now` in ms.
+export function ago(then, now) {
+  const min = Math.floor((now - then) / 60000);
+  if (min < 1) return "now";
+  if (min < 60) return `${min} min`;
+  if (min < 720) return `${Math.floor(min / 60)} h`;
+  const d = new Date(then);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+// Waybar bell (JSON for the custom module): crossed out while a mode hides popups, the reason in the tooltip, and the
+// number of notifications that arrived since the centre was last opened.
+export function bell(modes, unread) {
+  const count = unread > 0 ? ` ${unread}` : "";
+  const open = " (click: notifications, middle click: do not disturb)";
+  if (modes.includes("recording"))
+    return { text: `󰂛${count}`, tooltip: `Notifications hidden: recording the screen${open}`, class: "share" };
+  if (modes.includes("screenshare"))
+    return { text: `󰂛${count}`, tooltip: `Notifications hidden: sharing the whole screen${open}`, class: "share" };
+  if (modes.includes("dnd")) return { text: `󰂛${count}`, tooltip: `Do not disturb${open}`, class: "dnd" };
+  if (unread > 0) return { text: `󰂚${count}`, tooltip: `${unread} new${open}`, class: "unread" };
+  return { text: "󰂚", tooltip: `No new notifications${open}`, class: "idle" };
+}

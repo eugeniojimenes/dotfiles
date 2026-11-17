@@ -51,4 +51,32 @@ TestCase {
     compare(Notify.overflow([1, 2, 3, 4], [], 2), [1, 2])
     compare(Notify.overflow([1, 2, 3, 4], [1], 2), [2, 3])
   }
+
+  function test_keep() {
+    compare(Notify.keep(n("Slack", 1, -1)), true)
+    compare(Notify.keep(n("poweralertd", 1, -1)), false)
+    compare(Notify.keep(n("poweralertd", 2, -1)), true)
+  }
+
+  // Local time, no TZ needed: only differences and the clock of a Date built here.
+  function test_ago() {
+    var now = new Date(2026, 10, 17, 21, 30).getTime()
+    compare(Notify.ago(now - 20000, now), "now")
+    compare(Notify.ago(now - 5 * 60000, now), "5 min")
+    compare(Notify.ago(now - 59 * 60000, now), "59 min")
+    compare(Notify.ago(now - 2 * 3600000 - 60000, now), "2 h")
+    compare(Notify.ago(new Date(2026, 10, 17, 8, 5).getTime(), now), "08:05")
+  }
+
+  function test_bell() {
+    compare(Notify.bell([], 0).class, "idle")
+    compare(Notify.bell([], 0).text, "󰂚")
+    compare(Notify.bell([], 3).class, "unread")
+    compare(Notify.bell([], 3).text, "󰂚 3")
+    compare(Notify.bell(["dnd"], 2).class, "dnd")
+    compare(Notify.bell(["dnd"], 2).text, "󰂛 2")
+    compare(Notify.bell(["dnd", "screenshare"], 0).class, "share")
+    verify(Notify.bell(["dnd", "screenshare"], 0).tooltip.indexOf("sharing") >= 0)
+    verify(Notify.bell(["screenshare", "recording"], 0).tooltip.indexOf("recording") >= 0)
+  }
 }

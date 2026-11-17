@@ -1,4 +1,6 @@
 ### Apps
+#: Notification centre
+bindsym $mod+Ctrl+comma exec $dir/panels/notifications/toggle
 #: Clipboard history
 bindsym $mod+v exec $dir/bin/clipboard pick
 #: Emoji picker

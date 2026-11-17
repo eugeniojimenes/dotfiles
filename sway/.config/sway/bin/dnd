@@ -1,7 +1,7 @@
 #!/bin/sh
 # Do not disturb for the notification daemon (panels/notifications.qml). `dnd toggle` from the menu/bar,
 # `dnd share-on|share-off` from the screen-share hooks, `dnd record-on|record-off` from bin/record, `dnd status` for the
-# waybar module. Modes go over Quickshell IPC. Every change pokes waybar (signal 8) instead of waybar polling.
+# waybar bell. Modes go over Quickshell IPC. Every change pokes waybar (signal 8) instead of waybar polling.
 qs() { quickshell ipc -p ~/.config/sway/panels/notifications.qml call notifications "$@"; }
 case $1 in
   toggle) qs modeToggle dnd >/dev/null ;;
@@ -9,15 +9,9 @@ case $1 in
   share-off) qs modeOff screenshare >/dev/null ;;
   record-on) qs modeOn recording >/dev/null ;;
   record-off) qs modeOff recording >/dev/null ;;
+  # The bell's JSON comes from the daemon (notify.mjs `bell`): mode, unread count. Daemon down: nothing to show.
   status)
-    # Daemon down: no modes, plain text.
-    modes=$(qs modes 2>/dev/null)
-    case $modes in
-      *recording*) echo '{"text": "󰂛", "tooltip": "Notifications hidden: recording the screen", "class": "share"}' ;;
-      *screenshare*) echo '{"text": "󰂛", "tooltip": "Notifications hidden: sharing the whole screen", "class": "share"}' ;;
-      *dnd*) echo '{"text": "󰂛", "tooltip": "Do not disturb (click to turn off)", "class": "dnd"}' ;;
-      *) echo '{"text": ""}' ;;
-    esac
+    qs status 2>/dev/null || echo '{"text": ""}'
     exit 0
     ;;
 esac

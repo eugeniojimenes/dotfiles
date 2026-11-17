@@ -5,36 +5,13 @@ setup() {
   QS="quickshell ipc -p $HOME/.config/sway/panels/notifications.qml call notifications"
 }
 
-@test "status: no mode gives empty text" {
-  stub quickshell ''
+@test "status: the daemon's bell JSON, as it comes" {
+  stub quickshell '{"text":"󰂚 2","tooltip":"2 new","class":"unread"}'
   run "$SWAY/bin/dnd" status
   assert_success
-  run jq -e '.text == ""' <<<"$output"
-  assert_success
-}
-
-@test "status: dnd mode gives the dnd class" {
-  stub quickshell dnd
-  run "$SWAY/bin/dnd" status
-  assert_success
-  run jq -e '.class == "dnd"' <<<"$output"
-  assert_success
-}
-
-@test "status: screenshare wins over dnd" {
-  stub quickshell 'dnd screenshare'
-  run "$SWAY/bin/dnd" status
-  assert_success
-  run jq -e '.class == "share"' <<<"$output"
-  assert_success
-}
-
-@test "status: recording hides like a screen share, with its own tooltip" {
-  stub quickshell 'dnd recording'
-  run "$SWAY/bin/dnd" status
-  assert_success
-  run jq -e '.class == "share" and (.tooltip | test("recording"))' <<<"$output"
-  assert_success
+  assert_output '{"text":"󰂚 2","tooltip":"2 new","class":"unread"}'
+  run calls
+  assert_output "$QS status"
 }
 
 @test "status: never pokes waybar" {

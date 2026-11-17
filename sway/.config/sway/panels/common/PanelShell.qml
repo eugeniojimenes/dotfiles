@@ -7,7 +7,16 @@ import Quickshell.Wayland
 // It closes on a click anywhere outside the panel's card and on a workspace switch. Each panel only sets
 // WlrLayershell.namespace ("sway-<name>"), draws its card and handles its own keys (Esc included).
 // Theme colours are re-exported here, so panels write `win.fg` instead of importing Theme.
+// Closing quits the process (one process per open). A panel inside a long-running process (the notification centre) sets
+// keepAlive and handles dismissed() instead; its own keys call win.dismiss() too.
 PanelWindow {
+  property bool keepAlive: false
+  signal dismissed()
+  function dismiss() {
+    if (keepAlive) dismissed()
+    else Qt.quit()
+  }
+
   readonly property color bg: Theme.bg
   readonly property color fg: Theme.fg
   readonly property color dim: Theme.dim
@@ -37,7 +46,7 @@ PanelWindow {
                                  String(Math.round(rect.x + rect.width / 2)),
                                  String(Math.round(rect.y + rect.height / 2))])
       }
-      Qt.quit()
+      dismiss()
     }
   }
 
@@ -45,6 +54,6 @@ PanelWindow {
   // swallows its own clicks with a MouseArea of its own.
   MouseArea {
     anchors.fill: parent
-    onClicked: Qt.quit()
+    onClicked: dismiss()
   }
 }

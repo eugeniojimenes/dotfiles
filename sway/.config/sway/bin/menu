@@ -52,6 +52,7 @@ menu_root() {
   {
     entry 󰀻 "Apps  ›" menu:apps
     entry 󰌌 "Keybindings" "run:$dir/bin/keybindings"
+    entry 󰂚 "Notifications" "run:$dir/panels/notifications/toggle"
     entry 󰅌 "Clipboard history" "run:$dir/bin/clipboard pick"
     entry 󰞅 "Emoji" "run:$dir/bin/emoji"
     entry 󰄀 "Capture  ›" menu:capture

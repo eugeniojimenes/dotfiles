@@ -11,8 +11,9 @@ import "common"
 // focused output. Always running, started by ./notifications/run (sway autostart), unlike the other panels.
 // Rules (what pops up, for how long, modes, history cap) live in notifications/notify.mjs. bin/dnd drives the modes
 // over Quickshell IPC: `quickshell ipc -p <this file> call notifications <function>`.
-// Every notification stays tracked after its popup is gone, up to Notify.HISTORY_MAX: the notification centre lists
-// them and can still run their actions.
+// Every notification stays tracked after its popup is gone, up to Notify.HISTORY_MAX: the notification centre (below,
+// toggled by ./notifications/toggle) lists them and can still run their actions. Modes survive a restart of this process
+// through a file in $XDG_RUNTIME_DIR; the waybar bell (`dnd status`) is poked on every change.
 ShellRoot {
   id: root
 
@@ -24,13 +25,38 @@ ShellRoot {
   // one was critical (then it stays until clicked, red border).
   property int hiddenCount: 0
   property bool hiddenCritical: false
+  property bool centerOpen: false
+  property real seenAt: Date.now()   // last time the centre was opened
+  readonly property int unread: kept.filter(id => (arrived[id] ?? 0) > seenAt).length
+
+  onUnreadChanged: poke()
+  onModesChanged: {
+    poke()
+    modesFile.setText(modes.join(" "))
+  }
+
+  // Waybar bell, signal 8 (see bin/dnd).
+  function poke() { Quickshell.execDetached(["pkill", "-RTMIN+8", "-f", "^waybar "]) }
+
+  // Ones the history does not keep (transient, poweralertd state changes) end with their popup.
+  function ephemeral(n) { return n.transient || !Notify.keep({ appName: n.appName, urgency: n.urgency }) }
+
+  function openCenter() {
+    seenAt = Date.now()
+    popups = []
+    closeHidden()
+    centerOpen = true
+  }
 
   function closeHidden() {
     hiddenCount = 0
     hiddenCritical = false
   }
 
-  function hidePopup(n) { popups = popups.filter(p => p !== n) }
+  function hidePopup(n) {
+    popups = popups.filter(p => p !== n)
+    if (ephemeral(n) && n.tracked) n.expire()
+  }
 
   function forget(n) {
     hidePopup(n)
@@ -54,7 +80,8 @@ ShellRoot {
 
     onNotification: n => {
       n.tracked = true
-      root.arrived[n.id] = Date.now()
+      // A reload's carry-overs keep no time and do not count as new.
+      root.arrived[n.id] = n.lastGeneration ? root.seenAt - 1 : Date.now()
       root.kept = root.kept.filter(id => id !== n.id).concat([n.id])
       n.closed.connect(() => root.forget(n))
       // Carried over by a Quickshell reload (keepOnReload): back in the history, never a popup again.
@@ -66,8 +93,7 @@ ShellRoot {
         if (n.urgency === NotificationUrgency.Critical) root.hiddenCritical = true
         hiddenTimer.restart()
       }
-      // A transient one only lives as long as its popup.
-      if (n.transient && !root.popups.includes(n)) n.expire()
+      if (root.ephemeral(n) && !root.popups.includes(n)) n.expire()
       root.trim()
     }
   }
@@ -79,9 +105,27 @@ ShellRoot {
     onTriggered: if (!root.hiddenCritical) root.closeHidden()
   }
 
+  FileView {
+    id: modesFile
+    path: Quickshell.env("XDG_RUNTIME_DIR") + "/sway-notification-modes"
+    blockLoading: true
+    atomicWrites: false
+    printErrors: false
+  }
+
+  Component.onCompleted: {
+    const saved = modesFile.text().trim()
+    if (saved !== "") modes = saved.split(" ").filter(m => Notify.MODES.includes(m))
+  }
+
   IpcHandler {
     target: "notifications"
 
+    function status(): string { return JSON.stringify(Notify.bell(root.modes, root.unread)) }
+    function toggleCenter(): void {
+      if (root.centerOpen) root.centerOpen = false
+      else root.openCenter()
+    }
     function modes(): string { return root.modes.join(" ") }
     function modeOn(name: string): void { root.modes = Notify.setMode(root.modes, name, "on") }
     function modeOff(name: string): void { root.modes = Notify.setMode(root.modes, name, "off") }
@@ -313,6 +357,294 @@ ShellRoot {
                           hoverEnabled: true
                           cursorShape: Qt.PointingHandCursor
                           onClicked: parent.modelData.invoke()
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Notification centre: every kept notification, newest first, with its time and actions. Built on PanelShell like the
+  // popup panels (outside click, Esc, workspace switch close it), but this process stays: keepAlive.
+  LazyLoader {
+    active: root.centerOpen
+
+    PanelShell {
+      id: win
+
+      // Kept notifications, newest first. `root.kept` in the binding: re-read on every arrival and close.
+      readonly property var items: {
+        const ids = root.kept
+        return server.trackedNotifications.values.filter(n => ids.includes(n.id))
+                                                 .sort((a, b) => (root.arrived[b.id] ?? 0) - (root.arrived[a.id] ?? 0))
+      }
+      readonly property string hiddenBy: root.modes.includes("screenshare") ? "screenshare"
+                                         : root.modes.includes("recording") ? "recording" : ""
+      property real now: Date.now()
+
+      keepAlive: true
+      onDismissed: root.centerOpen = false
+      WlrLayershell.namespace: "sway-notification-centre"
+
+      Timer {
+        interval: 30000
+        repeat: true
+        running: true
+        onTriggered: win.now = Date.now()
+      }
+
+      Rectangle {
+        id: centreCard
+
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        y: 34
+        width: 420
+        height: Math.min(centreContent.implicitHeight + 32, win.height - 34 - 20)
+        radius: 12
+        color: win.bg
+        border.color: win.accent
+        border.width: 2
+
+        MouseArea { anchors.fill: parent }
+
+        Item {
+          focus: true
+          Keys.onPressed: event => { if (event.key === Qt.Key_Escape) win.dismiss() }
+        }
+
+        component Chip: Rectangle {
+          property string label
+          property bool active
+          signal pressed
+
+          width: chipText.implicitWidth + 16
+          height: 26
+          radius: 8
+          color: active ? win.accent : (chipArea.containsMouse ? win.track : "transparent")
+          border.color: active ? win.accent : win.track
+          border.width: 1
+
+          Text {
+            id: chipText
+            anchors.centerIn: parent
+            text: parent.label
+            color: parent.active ? "#1e1e2e" : win.fg
+            font.family: win.font
+            font.pixelSize: 11
+            font.bold: parent.active
+          }
+          MouseArea {
+            id: chipArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: parent.pressed()
+          }
+        }
+
+        Column {
+          id: centreContent
+          anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
+          spacing: 12
+
+          Item {
+            width: parent.width
+            height: 26
+            Text {
+              anchors.verticalCenter: parent.verticalCenter
+              text: "Notifications"
+              color: win.fg
+              font.family: win.font
+              font.pixelSize: 15
+              font.bold: true
+            }
+            Row {
+              anchors.right: parent.right
+              spacing: 6
+              Chip {
+                label: "󰂛  Do not disturb"
+                active: root.modes.includes("dnd")
+                onPressed: root.modes = Notify.setMode(root.modes, "dnd", "toggle")
+              }
+              Chip {
+                label: "Clear"
+                active: false
+                visible: win.items.length > 0
+                onPressed: {
+                  for (const n of win.items.slice()) n.dismiss()
+                }
+              }
+            }
+          }
+
+          // A share or recording mode left on (say, the daemon restarted mid-share and missed the end): one click
+          // brings the popups back.
+          Row {
+            visible: win.hiddenBy !== ""
+            spacing: 8
+            Text {
+              anchors.verticalCenter: parent.verticalCenter
+              text: win.hiddenBy === "screenshare" ? "Popups hidden while sharing the screen"
+                                                   : "Popups hidden while recording the screen"
+              color: win.error
+              font.family: win.font
+              font.pixelSize: 11
+            }
+            Chip {
+              label: "Show popups"
+              active: false
+              onPressed: root.modes = Notify.setMode(root.modes, win.hiddenBy, "off")
+            }
+          }
+
+          Text {
+            visible: win.items.length === 0
+            text: "No notifications"
+            color: win.dim
+            font.family: win.font
+            font.pixelSize: 12
+          }
+
+          Flickable {
+            visible: win.items.length > 0
+            width: parent.width
+            height: Math.min(list.implicitHeight, win.height * 0.7)
+            contentHeight: list.implicitHeight
+            clip: true
+
+            Column {
+              id: list
+              width: parent.width
+              spacing: 8
+
+              Repeater {
+                model: win.items
+
+                Rectangle {
+                  id: entry
+
+                  required property var modelData
+                  readonly property var n: modelData
+                  readonly property var defaultAction: n.actions.find(a => a.identifier === "default") ?? null
+                  readonly property var buttons: n.actions.filter(a => a.identifier !== "default")
+
+                  width: list.width
+                  height: row.implicitHeight + 20
+                  radius: 8
+                  color: entryArea.containsMouse && defaultAction ? win.track : "transparent"
+                  border.color: n.urgency === NotificationUrgency.Critical ? win.error : win.track
+                  border.width: 1
+
+                  // Click = the default action (the app takes over, so the centre closes).
+                  MouseArea {
+                    id: entryArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: entry.defaultAction ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    // Close first: invoking a non-resident notification destroys this entry, and the handler with it.
+                    onClicked: {
+                      const action = entry.defaultAction
+                      if (!action) return
+                      win.dismiss()
+                      action.invoke()
+                    }
+                  }
+
+                  Row {
+                    id: row
+                    x: 10
+                    y: 10
+                    width: parent.width - 20
+                    spacing: 10
+
+                    IconImage {
+                      readonly property string src: entry.n.image !== "" ? entry.n.image
+                                                    : (entry.n.appIcon !== "" ? Quickshell.iconPath(entry.n.appIcon, true) : "")
+                      visible: src !== ""
+                      source: src
+                      implicitSize: 28
+                    }
+
+                    Column {
+                      width: parent.width - (parent.children[0].visible ? 38 : 0)
+                      spacing: 3
+
+                      Item {
+                        width: parent.width
+                        height: meta.implicitHeight
+                        Text {
+                          id: meta
+                          width: parent.width - 24
+                          text: [entry.n.appName, Notify.ago(root.arrived[entry.n.id] ?? win.now, win.now)]
+                                .filter(s => s !== "").join("  ·  ")
+                          color: win.dim
+                          font.family: win.font
+                          font.pixelSize: 10
+                          elide: Text.ElideRight
+                        }
+                        // Dismiss this one.
+                        Text {
+                          anchors.right: parent.right
+                          text: "󰅖"
+                          color: closeArea.containsMouse ? win.fg : win.dim
+                          font.family: win.font
+                          font.pixelSize: 13
+                          MouseArea {
+                            id: closeArea
+                            anchors.fill: parent
+                            anchors.margins: -6
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: entry.n.dismiss()
+                          }
+                        }
+                      }
+                      Text {
+                        width: parent.width
+                        text: entry.n.summary
+                        color: win.fg
+                        font.family: win.font
+                        font.pixelSize: 12
+                        font.bold: true
+                        wrapMode: Text.Wrap
+                        maximumLineCount: 2
+                        elide: Text.ElideRight
+                      }
+                      Text {
+                        width: parent.width
+                        text: entry.n.body
+                        visible: text !== ""
+                        textFormat: Text.StyledText
+                        color: win.fg
+                        font.family: win.font
+                        font.pixelSize: 11
+                        wrapMode: Text.Wrap
+                        maximumLineCount: 4
+                        elide: Text.ElideRight
+                      }
+                      Flow {
+                        width: parent.width
+                        visible: entry.buttons.length > 0
+                        spacing: 6
+                        Repeater {
+                          model: entry.buttons
+                          Chip {
+                            required property var modelData
+                            label: modelData.text
+                            active: false
+                            onPressed: {
+                              const action = modelData
+                              win.dismiss()
+                              action.invoke()
+                            }
+                          }
                         }
                       }
                     }

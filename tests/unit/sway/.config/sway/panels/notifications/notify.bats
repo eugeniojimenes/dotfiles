@@ -18,3 +18,6 @@ qt() {
 @test "timeout: sender's value, 5 s by default, never for critical or 0" { qt test_timeout; }
 @test "modes: on, off and toggle per name, unknown names ignored" { qt test_set_mode; }
 @test "history cap: oldest let go first, never one on screen" { qt test_overflow; }
+@test "history: poweralertd state changes never kept, its warnings are" { qt test_keep; }
+@test "time in the centre: now, minutes, hours, then the clock" { qt test_ago; }
+@test "bar bell: mode wins (recording, share, dnd), else the unread count" { qt test_bell; }
