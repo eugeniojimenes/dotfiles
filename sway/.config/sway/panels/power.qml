@@ -6,7 +6,7 @@ import Quickshell.Wayland
 import "power/power.mjs" as Power
 import "common"
 
-// Power panel for the waybar battery icon: charge, time left or to full, power draw, battery health, the
+// Power panel for the waybar battery icon (menu Setup › Power too): charge, time left or to full, power draw, battery health, the
 // power-profiles-daemon profile, and the charge limit (UPower charge threshold, Lenovo conservation mode here).
 // Left/Right step the profile. Esc or a click outside closes it. One process per open: nothing runs once it is closed.
 ShellRoot {
@@ -131,8 +131,10 @@ ShellRoot {
         width: parent.width - 36
         spacing: 16
 
-        // Charge: icon, percentage, state and estimate, bar, draw and health.
+        // Charge: icon, percentage, state and estimate, bar, draw and health. Only with a laptop battery: on a desktop
+        // UPower's display device reads 0% with an unknown state, which would draw an empty red battery.
         Column {
+          visible: win.battery !== null
           width: parent.width
           spacing: 8
 

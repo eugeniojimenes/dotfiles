@@ -20,6 +20,9 @@ Estes ficam em arquivos compartilhados hoje e só importam no notebook. Verifiqu
 - A ordem das GPUs em `sway/.config/sway/bin/start` não faz nada numa máquina com uma GPU só.
 - O bloco `input` do touchpad não faz nada numa máquina sem touchpad.
 - As ferramentas de monitoramento de GPU AMD (`amdgpu_top`, `rocm-smi`) vão no arquivo de host do desktop.
+- Suporte a bateria: UPower com `criticalPowerAction`, `poweralertd` em `config.d/90-autostart`, as regras do poweralertd em `apps/mako` e o módulo de bateria da waybar. Sem bateria eles não fazem nada; confira que o módulo de bateria fica escondido. O painel de energia esconde a parte de carga e o limite de carga quando não há bateria de notebook, e abre por Setup › Power.
+- O cabeçalho do `bin/record` diz que não há driver VA-API instalado. Isso vale para a GPU Intel do notebook; uma GPU AMD tem VA-API pelo Mesa, então `h264_vaapi` vira uma opção lá se o x264 em dois monitores grandes pesar demais na CPU.
+- A correção do microfone interno está no arquivo de host do notebook. Confira o microfone do desktop com o mesmo teste de gravação antes de dar por encerrado.
 
 ## Adicionando uma máquina
 
