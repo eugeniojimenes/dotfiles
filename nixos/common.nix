@@ -166,8 +166,13 @@
     };
   };
 
-  # Electron and Chromium wrappers in nixpkgs go native Wayland with this, no XWayland blur.
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables = {
+    # Electron and Chromium wrappers in nixpkgs go native Wayland with this, no XWayland blur.
+    NIXOS_OZONE_WL = "1";
+    # NixOS default = nano (mkDefault). Session-wide, not only bash/.config/bash/env: the tmux server started from
+    # Sway and anything it runs (Claude Code Ctrl+G) never source an interactive bashrc.
+    EDITOR = "nvim";
+  };
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
