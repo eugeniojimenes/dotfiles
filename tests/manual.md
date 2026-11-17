@@ -8,6 +8,7 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | --- | --- | --- |
 | Wi-Fi | Connect to a known network, then to a new one with a password, from the Wi-Fi panel. | |
 | Sound | Play audio on the speakers and on headphones. Switch the output in the sound panel and change the volume. | |
+| Internal microphone | With the mic at 100%, `pw-record /tmp/mic.wav` while speaking for 5 seconds (Ctrl+C to stop), then `pw-play /tmp/mic.wav`: the voice is clear, not distorted. A Google Meet call sounds clean to the other side. | |
 | Bluetooth | Pair a device and play audio through it. | |
 | Brightness, built-in panel | Fn keys and the Display panel slider both change it. | |
 | Brightness, external monitor | The Display panel slider changes it over DDC/CI. | |

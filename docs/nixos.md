@@ -22,6 +22,7 @@ The notebook is a Lenovo LOQ with Intel UHD graphics and an RTX 3050 Laptop GPU.
 - `hardware.nvidia.powerManagement.enable` for suspend.
 - `i915` in the initrd. Connector names (`eDP-1`, `DP-1`, `HDMI-A-1` and so on) come from one counter shared by both GPUs, in the order their drivers load. Without this line a race between the two drivers sometimes renamed the built-in panel. Loading `i915` first fixes the order on every boot, and as a side effect the LUKS prompt shows at native resolution.
 - `services.xserver.videoDrivers = [ "nvidia" ]` and `thermald` (Intel CPU thermal management).
+- A copy of PipeWire's `analog-input-internal-mic.conf` in `/etc/alsa-card-profile` that pins `Internal Mic Boost` at 0 dB. The stock file adds the boost to the microphone volume, so 100% meant +60 dB of gain and the built-in mic clipped on room noise alone. Apps with automatic gain, such as Google Meet, push the volume to 100%. With the boost pinned, 100% is +30 dB from the `Capture` control alone. PipeWire reads `/etc/alsa-card-profile` before its own files, and the build fails if a PipeWire update renames the section, so the fix cannot silently stop working.
 
 ## Login
 

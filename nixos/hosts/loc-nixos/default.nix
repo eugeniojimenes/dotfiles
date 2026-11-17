@@ -1,6 +1,6 @@
 # Notebook: Lenovo LOQ 15IRH8, Intel UHD + RTX 3050 Laptop. Everything only this machine needs; the rest in common.nix.
 # hardware.nix = this machine's nixos-generate-config output, kept verbatim (regenerate, never hand-edit).
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -41,6 +41,18 @@
       };
     };
   };
+
+  # Internal mic (Realtek ALC257): the stock ACP path merges "Internal Mic Boost" (+30 dB) into the source volume, so
+  # 100% = +60 dB and the mic clips on room noise; apps with auto gain (Meet) push it to 100%. Boost pinned at 0 dB
+  # (volume = zero): 100% = +30 dB, the Capture element alone. PipeWire reads /etc/alsa-card-profile before its own.
+  environment.etc."alsa-card-profile/mixer/paths/analog-input-internal-mic.conf".source =
+    pkgs.runCommand "analog-input-internal-mic.conf" { }
+      ''
+        sed '/^\[Element Internal Mic Boost\]/,/^$/ s/^volume = merge$/volume = zero/' \
+          ${pkgs.pipewire}/share/alsa-card-profile/mixer/paths/analog-input-internal-mic.conf >$out
+        # Fails the build if upstream renames the section: the override would silently do nothing.
+        sed -n '/^\[Element Internal Mic Boost\]/,/^$/p' $out | grep -qx 'volume = zero'
+      '';
 
   services = {
     xserver.videoDrivers = [ "nvidia" ];
