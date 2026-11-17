@@ -75,7 +75,7 @@ Language pairs:
 ## Specs and tests
 
 - Spec `docs/specs/<feature>.md` when a change creates a script, a panel or a stow module, or changes behaviour of an existing one. Config tweaks and small fixes: test only, no spec. Format + criterion-to-test mapping: `docs/specs/README.md`. Spec changes in same commit as behaviour.
-- Touched script without tests gets one in same commit (`float`, `session-env` = static-only by decision).
+- Touched script without tests gets one in same commit (`float`, `session-env`, panel `toggle`s = static-only by decision: a test would restate the command).
 - Layout: `tests/static.sh` (static layer), `tests/unit/<module path mirrored>/<script>.bats`, `tests/helpers/` (stubs), `tests/checks.nix` (flake checks), `tests/manual.md` (hardware, per host).
 - Manual criterion = also listed in `tests/manual.md` under each host it applies to.
 
