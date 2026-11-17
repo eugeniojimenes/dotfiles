@@ -92,6 +92,28 @@
       pulse.enable = true;
       # x11-bell segfaults pipewire whenever Xwayland goes away (session-env exports DISPLAY). No X bell needed.
       extraConfig.pipewire."99-no-x11-bell"."context.properties"."module.x11.bell" = false;
+      wireplumber.extraConfig = {
+        # KEF LSX II LT (USB speaker): when the host stops its stream after idle, the firmware stops answering control
+        # requests (`usb_set_interface -110`) and only a replug brings it back. Never suspended; matches nothing else.
+        "51-kef-lsx-no-suspend"."monitor.alsa.rules" = [
+          {
+            matches = [ { "node.name" = "~alsa_output.usb-KEF_LSX_II_LT.*"; } ];
+            actions.update-props."session.suspend-timeout-seconds" = 0;
+          }
+        ];
+        # Bluetooth audio: WirePlumber connects no profile on its own by default (bluez5.auto-connect = []), so a
+        # speaker or receiver that connects only part of its profiles stays silent until reconnected. A2DP both ways.
+        # The headset mic (HFP) is untouched: WirePlumber switches to it when an app opens the microphone.
+        "51-bluez-a2dp-autoconnect"."monitor.bluez.rules" = [
+          {
+            matches = [ { "device.name" = "~bluez_card.*"; } ];
+            actions.update-props."bluez5.auto-connect" = [
+              "a2dp_sink"
+              "a2dp_source"
+            ];
+          }
+        ];
+      };
     };
     power-profiles-daemon.enable = true;
     # Battery levels for poweralertd (notifications, sway autostart) and the action at 2%. Default HybridSleep needs a
