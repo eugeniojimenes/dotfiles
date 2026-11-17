@@ -199,6 +199,7 @@
     neovim
     stow
     age
+    gitleaks # ~/.private snapshot scans for secrets before archiving
     mise
     curl
     wget
