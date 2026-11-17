@@ -15,6 +15,8 @@
         configurationLimit = 10;
       };
       efi.canTouchEfiVariables = true;
+      # Menu shown 1 s instead of 5: enough to tap an arrow key for an older generation, any key stops the countdown.
+      timeout = 1;
     };
   };
 

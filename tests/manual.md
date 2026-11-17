@@ -17,7 +17,7 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Battery warnings | On battery below 20%, a "power level low" notification with a red border shows, also with Do not disturb on. Plugging the charger shows nothing. `upower -i /org/freedesktop/UPower/devices/DisplayDevice` lists `warning-level`. | |
 | Polkit agent | `pkexec true` opens a dark password dialog, and the right password returns with exit 0. | |
 | Steam on the dGPU | A game started with `prime-run %command%` runs on the NVIDIA card. | |
-| Rollback | Boot a previous generation from the boot menu and check that it starts Sway. | |
+| Rollback | The boot menu shows for 1 second: press an arrow key to stop the countdown, boot a previous generation and check that it starts Sway. | |
 | Spec keybindings | Criterion 10. | |
 | Spec wifi-panel | Criteria 2, 4 to 7 and 9 to 11. | |
 | Spec calendar-panel | Criteria 2 and 5 to 8. Check a month whose 1st is a Monday and the week numbers around New Year. | |

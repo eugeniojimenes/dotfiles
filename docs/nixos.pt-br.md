@@ -51,7 +51,7 @@ O NixOS não define tema de cursor padrão, então o Sway desenhava os cursores 
 
 ## Gerações e coleta de lixo
 
-Cada rebuild cria uma nova geração e uma nova entrada de boot, e é isso que torna o rollback possível: `sudo nixos-rebuild switch --rollback`, ou escolha uma entrada mais antiga no menu de boot. O systemd-boot mantém 10 entradas para a ESP de 1 GB não encher.
+Cada rebuild cria uma nova geração e uma nova entrada de boot, e é isso que torna o rollback possível: `sudo nixos-rebuild switch --rollback`, ou escolha uma entrada mais antiga no menu de boot. O systemd-boot mantém 10 entradas para a ESP de 1 GB não encher. O menu aparece por 1 segundo em vez de 5; apertar uma seta nesse segundo para a contagem.
 
 Gerações antigas mantêm toda a closure delas no disco. O `nix.gc` roda toda semana e apaga gerações com mais de 30 dias. A deduplicação do store usa `nix.optimise.automatic`, que cria hard links entre arquivos idênticos num timer. O `auto-optimise-store` faria o mesmo durante cada build e deixaria cada build mais lento.
 

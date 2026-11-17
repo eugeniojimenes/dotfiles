@@ -51,7 +51,7 @@ NixOS sets no default cursor theme, so Sway drew the old X11 core cursors. `adwa
 
 ## Generations and garbage collection
 
-Every rebuild creates a new generation and a new boot entry, which is what makes rollback possible: `sudo nixos-rebuild switch --rollback`, or pick an older entry in the boot menu. systemd-boot keeps 10 entries so the 1 GB ESP does not fill up.
+Every rebuild creates a new generation and a new boot entry, which is what makes rollback possible: `sudo nixos-rebuild switch --rollback`, or pick an older entry in the boot menu. systemd-boot keeps 10 entries so the 1 GB ESP does not fill up. The menu shows for 1 second instead of 5; pressing an arrow key in that second stops the countdown.
 
 Old generations keep their whole closure on disk. `nix.gc` runs weekly and deletes generations older than 30 days. Store deduplication uses `nix.optimise.automatic`, which hard-links identical files on a timer. `auto-optimise-store` would do the same during every build and make each build slower.
 
