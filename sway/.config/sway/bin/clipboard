@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Clipboard history with cliphist. Spec: docs/specs/clipboard-history.md.
+#   clipboard watch   store every copy (sway autostart)
+#   clipboard pick    fuzzel over the history, newest first; the pick goes back on the clipboard (Super+V)
+#   clipboard clear   forget everything (menu System)
+# History lives in $XDG_RUNTIME_DIR (memory): gone at logout. Copies a password manager marks as sensitive are never
+# stored (wl-paste passes CLIPBOARD_STATE=sensitive and cliphist skips them).
+
+db=${XDG_RUNTIME_DIR:-/tmp}/cliphist/db
+mkdir -p "${db%/*}"
+
+case ${1-} in
+  watch) exec wl-paste --watch cliphist -db-path "$db" store ;;
+  pick)
+    # cliphist lines = "<id>\t<preview>": preview shown and matched, the whole line handed back to decode.
+    # Wider and taller than the menu (44 x 12): long copies stay readable.
+    line=$(cliphist -db-path "$db" -preview-width 110 list |
+      fuzzel --dmenu --config ~/.config/sway/apps/fuzzel.ini --width 100 --lines 18 --with-nth=2 --match-nth=2 \
+        --placeholder 'Clipboard history') || exit 0
+    [[ -n $line ]] || exit 0
+    cliphist -db-path "$db" decode <<<"$line" | wl-copy
+    ;;
+  clear) cliphist -db-path "$db" wipe ;;
+  *)
+    sed -n '3,5p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

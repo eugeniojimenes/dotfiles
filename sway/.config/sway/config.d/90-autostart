@@ -2,6 +2,8 @@
 # swayidle: lock at 5 min, screens off at 5.5 min, lock before sleep. bin/idle toggle = stay awake.
 exec $dir/bin/idle start
 exec mako --config $dir/apps/mako
+# Clipboard history (bin/clipboard pick = Super+V), kept in memory for the session.
+exec $dir/bin/clipboard watch
 # Battery warnings from UPower as notifications. -S = laptop battery and AC only, no headset or mouse batteries.
 exec poweralertd -S
 # polkit authentication agent: without one, every action that asks for the admin password fails outright.

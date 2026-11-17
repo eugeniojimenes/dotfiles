@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Emoji picker: fuzzel over Unicode's list, searched by English name. The pick is typed into the focused window
+# (wtype) and left on the clipboard. Super+period. Spec: docs/specs/emoji-picker.md.
+# List = emoji-test.txt from the unicode-emoji package (nixos/common.nix links /share/unicode); fully-qualified lines
+# only, so every emoji shows once in its standard form, skin tones as their own entries.
+
+list=${EMOJI_LIST:-/run/current-system/sw/share/unicode/emoji/emoji-test.txt}
+
+# "1F600 ; fully-qualified # 😀 E1.0 grinning face" -> "😀  grinning face"
+pick=$(sed -n 's/^[^#]*; fully-qualified *# \([^ ]*\) E[0-9.]* \(.*\)/\1  \2/p' "$list" |
+  fuzzel --dmenu --config ~/.config/sway/apps/fuzzel.ini --placeholder 'Emoji') || exit 0
+emoji=${pick%%  *}
+[[ -n $emoji ]] || exit 0
+printf "%s" "$emoji" | wl-copy
+wtype "$emoji"

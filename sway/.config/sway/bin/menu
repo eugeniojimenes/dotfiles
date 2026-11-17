@@ -51,6 +51,8 @@ menu_root() {
   {
     entry 󰀻 "Apps  ›" menu:apps
     entry 󰌌 "Keybindings" "run:$dir/bin/keybindings"
+    entry 󰅌 "Clipboard history" "run:$dir/bin/clipboard pick"
+    entry 󰞅 "Emoji" "run:$dir/bin/emoji"
     entry 󰄀 "Capture  ›" menu:capture
     entry 󰏘 "Style  ›" menu:style
     entry 󰒓 "Setup  ›" menu:setup
@@ -122,6 +124,7 @@ menu_power() {
 menu_system() {
   {
     entry 󰌾 "Lock" "run:$dir/panels/lock/lock"
+    entry 󰎟 "Clear clipboard history" "run:$dir/bin/clipboard clear"
     entry 󰤄 "Suspend" "run:systemctl suspend"
     entry 󰍃 "Exit Sway" "run:swaymsg exit"
     entry 󰜉 "Reboot" "run:systemctl reboot"

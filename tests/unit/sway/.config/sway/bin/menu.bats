@@ -64,3 +64,17 @@ launched() { calls | sed -n 's/^setsid -f sh -c //p'; }
   grep -q $'󰄬  balanced\t' "$STUBS/fuzzel.stdin"
   [[ $(launched) == 'powerprofilesctl set performance' ]]
 }
+
+@test "root: Clipboard history and Emoji run their scripts, System clears the history" {
+  answers '@Clipboard history'
+  run "$SWAY/bin/menu"
+  [[ $(launched) == "$HOME/.config/sway/bin/clipboard pick" ]]
+  : >"$STUBS/calls"
+  answers @Emoji
+  run "$SWAY/bin/menu"
+  [[ $(launched) == "$HOME/.config/sway/bin/emoji" ]]
+  : >"$STUBS/calls"
+  answers @System '@Clear clipboard history'
+  run "$SWAY/bin/menu"
+  [[ $(launched) == "$HOME/.config/sway/bin/clipboard clear" ]]
+}

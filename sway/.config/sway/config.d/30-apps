@@ -1,4 +1,8 @@
 ### Apps
+#: Clipboard history
+bindsym $mod+v exec $dir/bin/clipboard pick
+#: Emoji picker
+bindsym $mod+period exec $dir/bin/emoji
 #: Terminal
 bindsym $mod+Return exec $term
 #: Tmux

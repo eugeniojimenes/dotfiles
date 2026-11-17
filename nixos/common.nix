@@ -145,6 +145,10 @@
         polkit_gnome
         poweralertd
         gammastep # bin/nightlight
+        cliphist # bin/clipboard
+        # bin/emoji: wtype types the pick, unicode-emoji is the list (pathsToLink below).
+        wtype
+        unicode-emoji
         playerctl
         brightnessctl
         ddcutil
@@ -196,8 +200,12 @@
       EDITOR = "nvim";
     };
 
-    # polkit_gnome ships its agent in libexec/, which NixOS does not link into /run/current-system/sw by default.
-    pathsToLink = [ "/libexec" ];
+    # Not linked into /run/current-system/sw by default: libexec/ = polkit_gnome's agent, share/unicode = the emoji
+    # list for bin/emoji.
+    pathsToLink = [
+      "/libexec"
+      "/share/unicode"
+    ];
 
     systemPackages = with pkgs; [
       # Apps

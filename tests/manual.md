@@ -28,6 +28,8 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Spec screen-recording | Criteria 11 to 13. | |
 | Spec stay-awake | Criterion 6. | |
 | Spec night-light | Criterion 5. | |
+| Spec clipboard-history | Criterion 6. | |
+| Spec emoji-picker | Criterion 5. | |
 | Spec power-panel | Criteria 2, 3 and 5 to 8. Check the charge limit on AC: with it on, the battery stops charging below 100%. | |
 | Spec sys-tools | Criteria 4 to 6. | |
 | Spec dotfiles-doctor | Criterion 12: `dotfiles-doctor` exits 0. | |
