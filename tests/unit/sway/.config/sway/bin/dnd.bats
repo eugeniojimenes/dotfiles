@@ -37,7 +37,7 @@ setup() { load "${BATS_TEST_DIRNAME%/tests/unit/*}/tests/helpers/common"; }
   for arg in toggle share-on share-off; do run "$SWAY/bin/dnd" "$arg"; done
   run calls
   assert_output "$(printf '%s\n' \
-    'makoctl mode -t dnd' 'pkill -RTMIN+8 -x waybar' \
-    'makoctl mode -a screenshare' 'pkill -RTMIN+8 -x waybar' \
-    'makoctl mode -r screenshare' 'pkill -RTMIN+8 -x waybar')"
+    'makoctl mode -t dnd' 'pkill -RTMIN+8 -f ^waybar ' \
+    'makoctl mode -a screenshare' 'pkill -RTMIN+8 -f ^waybar ' \
+    'makoctl mode -r screenshare' 'pkill -RTMIN+8 -f ^waybar ')"
 }

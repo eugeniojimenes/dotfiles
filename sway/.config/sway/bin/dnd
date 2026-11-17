@@ -15,4 +15,5 @@ case $1 in
     exit 0
     ;;
 esac
-pkill -RTMIN+8 -x waybar
+# -f on the command line: the NixOS wrapper renames the process to .waybar-wrapped, so -x waybar never matched.
+pkill -RTMIN+8 -f '^waybar '
