@@ -36,6 +36,10 @@ O `display/reinit` roda depois de voltar da suspensão. Com o driver proprietár
 
 O UPower (`nixos/common.nix`) acompanha a bateria e desliga a máquina em 2%. A ação padrão dele é hybrid sleep, que precisa de um dispositivo de swap, e esta máquina só tem zram. O `poweralertd`, iniciado em `config.d/90-autostart`, transforma os níveis do UPower em notificações: baixa em 20%, crítica em 5%. Ele também manda uma notificação a cada mudança de estado da carga, como ligar o carregador. O `apps/mako` esconde essas e mostra os avisos com borda vermelha até receberem um clique, inclusive enquanto o Não perturbe ou um compartilhamento de tela esconde todo o resto.
 
+## Agente polkit
+
+O `polkit-gnome-authentication-agent-1`, iniciado em `config.d/90-autostart`, mostra a janela de senha quando um app pede ao polkit uma ação de administrador, como formatar um disco no GNOME Disks ou abrir uma pasta como administrador no Nautilus. Sem um agente na sessão essas ações falham na hora. O NixOS guarda o agente no diretório `libexec/` do pacote, então o `nixos/common.nix` adiciona `/libexec` em `environment.pathsToLink` e o Sway o inicia a partir de `/run/current-system/sw/libexec`.
+
 ## Painéis
 
 Os painéis são janelas Quickshell. Cada painel tem um script `toggle` que mata o painel em execução ou inicia um novo, então um clique no ícone dele no waybar ou na entrada do menu abre e fecha o painel. Enquanto um painel está aberto, um scanner ou listener roda; quando ele fecha, nada continua rodando.

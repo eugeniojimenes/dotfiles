@@ -15,6 +15,7 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Screen share | Share the whole screen and then a single window in Google Meet. The wlr portal picker opens and notifications stay hidden while the whole screen is shared. | |
 | Lock screen | `Super + Shift + L` shows the Quickshell lock with the blurred backdrop on every output. The password unlocks it. Same check as spec lock criteria 7 and 8. | 2026-11-16 |
 | Battery warnings | On battery below 20%, a "power level low" notification with a red border shows, also with Do not disturb on. Plugging the charger shows nothing. `upower -i /org/freedesktop/UPower/devices/DisplayDevice` lists `warning-level`. | |
+| Polkit agent | `pkexec true` opens a dark password dialog, and the right password returns with exit 0. | |
 | Steam on the dGPU | A game started with `prime-run %command%` runs on the NVIDIA card. | |
 | Rollback | Boot a previous generation from the boot menu and check that it starts Sway. | |
 | Spec keybindings | Criterion 10. | |

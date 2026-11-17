@@ -138,6 +138,9 @@
         ffmpeg-headless
         wl-clipboard
         libnotify
+        # Password dialog for polkit (gnome-disks, Nautilus admin, pkexec), started by Sway from
+        # /run/current-system/sw/libexec (pathsToLink below).
+        polkit_gnome
         poweralertd
         playerctl
         brightnessctl
@@ -173,14 +176,6 @@
     };
   };
 
-  environment.sessionVariables = {
-    # Electron and Chromium wrappers in nixpkgs go native Wayland with this, no XWayland blur.
-    NIXOS_OZONE_WL = "1";
-    # NixOS default = nano (mkDefault). Session-wide, not only bash/.config/bash/env: the tmux server started from
-    # Sway and anything it runs (Claude Code Ctrl+G) never source an interactive bashrc.
-    EDITOR = "nvim";
-  };
-
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     nerd-fonts.caskaydia-mono
@@ -189,89 +184,102 @@
     noto-fonts-color-emoji
   ];
 
-  environment.systemPackages = with pkgs; [
-    # Apps
-    brave
-    google-chrome
-    slack
-    postman
-    dbeaver-bin
-    spotify
-    obs-studio
-    mpv
-    obsidian
-    libreoffice
-    typora
-    evince
-    xournalpp
-    imv
-    pinta
-    nautilus
-    transmission_4-gtk
-    yaru-theme
-    adw-gtk3 # GTK3 theme, see dconf above
-    # Cursors (and the icon fallback GTK4 apps expect). Already in the closure as a GTK dependency, this only exposes
-    # it; NixOS sets no default cursor theme, so without it Sway draws the old X11 core cursors.
-    adwaita-icon-theme
-    # CLI. gh, glab, node, python, ruby, rust, go, uv and claude come from mise.
-    git
-    tmux
-    neovim
-    stow
-    age
-    gitleaks # ~/.private snapshot scans for secrets before archiving
-    mise
-    curl
-    wget
-    unzip
-    unrar
-    zstd
-    file
-    tree
-    btop
-    htop
-    bat
-    eza
-    fd
-    ripgrep
-    fzf
-    zoxide
-    starship
-    lazygit
-    lazydocker
-    jq
-    gum
-    tlrc
-    yt-dlp
-    imagemagick
-    fastfetch
-    typst
-    pandoc
-    yq-go
-    xmlstarlet
-    # Dev: gcc for treesitter parsers and Rust linking, clang-tools for clangd.
-    gcc
-    gnumake
-    cmake
-    clang-tools
-    tree-sitter
-    git-filter-repo
-    terraform
-    openfortivpn
-    # LSP servers for the Claude Code LSP plugins (ruby-lsp comes from the mise Ruby postinstall)
-    gopls
-    lua-language-server
-    pyright
-    gnupg # mise verifies Node release signatures
-    libxkbcommon # xkbcli: dotfiles-doctor cedilla check
-    xdg-user-dirs # ~/Pictures and friends (sway autostart), xdg-user-dir for screenshots
-    # Hardware
-    pciutils
-    usbutils
-    stress-ng
-    memtester
-    dmidecode
-  ];
+  environment = {
+    sessionVariables = {
+      # Electron and Chromium wrappers in nixpkgs go native Wayland with this, no XWayland blur.
+      NIXOS_OZONE_WL = "1";
+      # NixOS default = nano (mkDefault). Session-wide, not only bash/.config/bash/env: the tmux server started from
+      # Sway and anything it runs (Claude Code Ctrl+G) never source an interactive bashrc.
+      EDITOR = "nvim";
+    };
+
+    # polkit_gnome ships its agent in libexec/, which NixOS does not link into /run/current-system/sw by default.
+    pathsToLink = [ "/libexec" ];
+
+    systemPackages = with pkgs; [
+      # Apps
+      brave
+      google-chrome
+      slack
+      postman
+      dbeaver-bin
+      spotify
+      obs-studio
+      mpv
+      obsidian
+      libreoffice
+      typora
+      evince
+      xournalpp
+      imv
+      pinta
+      nautilus
+      transmission_4-gtk
+      yaru-theme
+      adw-gtk3 # GTK3 theme, see dconf above
+      # Cursors (and the icon fallback GTK4 apps expect). Already in the closure as a GTK dependency, this only exposes
+      # it; NixOS sets no default cursor theme, so without it Sway draws the old X11 core cursors.
+      adwaita-icon-theme
+      # CLI. gh, glab, node, python, ruby, rust, go, uv and claude come from mise.
+      git
+      tmux
+      neovim
+      stow
+      age
+      gitleaks # ~/.private snapshot scans for secrets before archiving
+      mise
+      curl
+      wget
+      unzip
+      unrar
+      zstd
+      file
+      tree
+      btop
+      htop
+      bat
+      eza
+      fd
+      ripgrep
+      fzf
+      zoxide
+      starship
+      lazygit
+      lazydocker
+      jq
+      gum
+      tlrc
+      yt-dlp
+      imagemagick
+      fastfetch
+      typst
+      pandoc
+      yq-go
+      xmlstarlet
+      # Dev: gcc for treesitter parsers and Rust linking, clang-tools for clangd.
+      gcc
+      gnumake
+      cmake
+      clang-tools
+      tree-sitter
+      git-filter-repo
+      terraform
+      openfortivpn
+      # LSP servers for the Claude Code LSP plugins (ruby-lsp comes from the mise Ruby postinstall)
+      gopls
+      lua-language-server
+      pyright
+      gnupg # mise verifies Node release signatures
+      libxkbcommon # xkbcli: dotfiles-doctor cedilla check
+      xdg-user-dirs # ~/Pictures and friends (sway autostart), xdg-user-dir for screenshots
+      # Hardware
+      pciutils
+      usbutils
+      stress-ng
+      memtester
+      dmidecode
+    ];
+  };
 
   # Release of the first install. Never bump on upgrades: pins state formats (databases, paths), not versions.
   system.stateVersion = "26.05";
