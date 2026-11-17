@@ -94,6 +94,7 @@ menu_setup() {
     entry 󰂯 "Bluetooth" "run:$dir/panels/bluetooth/toggle"
     entry 󰕾 "Sound" "run:$dir/panels/sound/toggle"
     entry 󰍹 "Display" "run:$dir/panels/display/toggle"
+    entry 󰁹 "Power" "run:$dir/panels/power/toggle"
     entry 󰏫 "Edit Sway config" "run:$dir/bin/float nvim $dir/config.d"
     entry 󰏫 "Edit bar" "run:$dir/bin/float nvim $dir/apps/waybar.jsonc"
     entry 󰑓 "Reload Sway" "run:swaymsg reload"
@@ -101,7 +102,21 @@ menu_setup() {
 }
 
 menu_toggle() {
-  entry 󰂛 "Do not disturb" "run:$dir/bin/dnd toggle" | pick 'Toggle'
+  {
+    entry 󰂛 "Do not disturb" "run:$dir/bin/dnd toggle"
+    entry 󰅶 "Stay awake" "run:$dir/bin/idle toggle"
+    entry 󰖔 "Night light" "run:$dir/bin/nightlight toggle"
+    entry 󰾅 "Power profile  ›" menu:power
+  } | pick 'Toggle'
+}
+
+# power-profiles-daemon; the waybar module follows the change over D-Bus by itself.
+menu_power() {
+  local cur p
+  cur=$(powerprofilesctl get 2>/dev/null)
+  for p in power-saver balanced performance; do
+    entry "$([[ $p == "$cur" ]] && echo 󰄬 || echo 󰝦)" "$p" "run:powerprofilesctl set $p"
+  done | pick 'Power profile'
 }
 
 menu_system() {

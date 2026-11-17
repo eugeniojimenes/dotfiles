@@ -36,6 +36,7 @@ window#waybar {
 #bluetooth,
 #wireplumber,
 #battery,
+#power-profiles-daemon,
 #tray,
 #custom-display {
   padding: 0 10px;
@@ -70,6 +71,25 @@ window#waybar {
 #custom-record {
   padding: 0 10px;
   color: #f38ba8;
+}
+
+#custom-idle,
+#custom-nightlight {
+  padding: 0 10px;
+  color: #f9e2af;
+}
+
+/* Power profile colour: saver green, balanced plain, performance orange. */
+#power-profiles-daemon.power-saver {
+  color: #a6e3a1;
+}
+
+#power-profiles-daemon.balanced {
+  color: #a6adc8;
+}
+
+#power-profiles-daemon.performance {
+  color: #fab387;
 }
 
 #custom-dnd {

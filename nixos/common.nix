@@ -144,6 +144,7 @@
         # /run/current-system/sw/libexec (pathsToLink below).
         polkit_gnome
         poweralertd
+        gammastep # bin/nightlight
         playerctl
         brightnessctl
         ddcutil

@@ -15,6 +15,7 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Screen share | Share the whole screen and then a single window in Google Meet. The wlr portal picker opens and notifications stay hidden while the whole screen is shared. | |
 | Lock screen | `Super + Shift + L` shows the Quickshell lock with the blurred backdrop on every output. The password unlocks it. Same check as spec lock criteria 7 and 8. | 2026-11-16 |
 | Battery warnings | On battery below 20%, a "power level low" notification with a red border shows, also with Do not disturb on. Plugging the charger shows nothing. `upower -i /org/freedesktop/UPower/devices/DisplayDevice` lists `warning-level`. | |
+| Power profile | A click on the bar icon cycles power-saver (green leaf), balanced (grey heart pulse) and performance (orange bolt), and Toggle › Power profile in the menu sets one. `powerprofilesctl get` agrees with the icon after each change. `Fn + Q` moves the icon between power-saver and balanced about 2 seconds after the key; its third step (firmware performance) leaves it on balanced. | |
 | Polkit agent | `pkexec true` opens a dark password dialog, and the right password returns with exit 0. | |
 | Steam on the dGPU | A game started with `prime-run %command%` runs on the NVIDIA card. | |
 | Rollback | The boot menu shows for 1 second: press an arrow key to stop the countdown, boot a previous generation and check that it starts Sway. | |
@@ -25,6 +26,9 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Spec bluetooth-panel | Criteria 2 to 14. Pair a device that needs no code (headphones), then one that asks for a code through Advanced. | |
 | Spec lock | Criteria 7 to 10. Criterion 9: lock, switch to a TTY, kill the Quickshell lock process, and check that the outputs stay covered. | |
 | Spec screen-recording | Criteria 11 to 13. | |
+| Spec stay-awake | Criterion 6. | |
+| Spec night-light | Criterion 5. | |
+| Spec power-panel | Criteria 2, 3 and 5 to 8. Check the charge limit on AC: with it on, the battery stops charging below 100%. | |
 | Spec sys-tools | Criteria 4 to 6. | |
 | Spec dotfiles-doctor | Criterion 12: `dotfiles-doctor` exits 0. | |
 | Spec pre-commit | Criterion 5: with no `gitleaks` on `PATH`, commit a scratch change and reset it. The hook passes and takes about a second warm. | |

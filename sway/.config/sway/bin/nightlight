@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Night light by hand, nothing automatic: warm screen at 4000 K. Spec: docs/specs/night-light.md.
+#   nightlight toggle   on <-> off (Super+Ctrl+N, menu Toggle, bar icon click)
+#   nightlight status   JSON for the waybar module (signal 11): icon only while on
+# gammastep -O holds the gamma ramps while it runs; when it ends, the screen goes back to normal.
+
+match='(^|/)gammastep -m wayland -O'
+
+case ${1-} in
+  toggle)
+    if pgrep -f "$match" >/dev/null; then
+      pkill -f "$match"
+    else
+      setsid -f gammastep -m wayland -O 4000 >/dev/null 2>&1
+    fi
+    # -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
+    pkill -RTMIN+11 -f '^waybar '
+    ;;
+  status)
+    if pgrep -f "$match" >/dev/null; then
+      echo '{"text": "󰖔", "tooltip": "Night light (click to turn off)", "class": "on"}'
+    else
+      echo '{"text": ""}'
+    fi
+    ;;
+  *)
+    sed -n '3,4p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

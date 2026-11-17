@@ -6,12 +6,15 @@
   "modules-center": ["clock"],
   "modules-right": [
     "custom/record",
+    "custom/idle",
+    "custom/nightlight",
     "custom/dnd",
     "tray",
     "network",
     "bluetooth",
     "wireplumber",
     "custom/display",
+    "power-profiles-daemon",
     "battery"
   ],
 
@@ -71,6 +74,32 @@
     "on-click": "~/.config/sway/bin/dnd toggle"
   },
 
+  "custom/idle": {
+    "exec": "~/.config/sway/bin/idle status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 10,
+    "on-click": "~/.config/sway/bin/idle toggle"
+  },
+
+  "custom/nightlight": {
+    "exec": "~/.config/sway/bin/nightlight status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 11,
+    "on-click": "~/.config/sway/bin/nightlight toggle"
+  },
+
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Power profile: {profile} (click to change)",
+    "format-icons": {
+      "power-saver": "󰌪",
+      "balanced": "󰗶",
+      "performance": "󱐋"
+    }
+  },
+
   "custom/record": {
     "exec": "~/.config/sway/bin/record status",
     "return-type": "json",
@@ -92,8 +121,9 @@
     "format-charging": "󰂄 {capacity}%",
     "format-plugged": "󰚥 {capacity}%",
     "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-    "tooltip-format": "{timeTo}",
-    "states": { "warning": 25, "critical": 10 }
+    "tooltip-format": "{timeTo} (click for the power panel)",
+    "states": { "warning": 25, "critical": 10 },
+    "on-click": "~/.config/sway/panels/power/toggle"
   },
 
   "tray": { "spacing": 8 }

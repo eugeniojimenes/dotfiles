@@ -1,9 +1,6 @@
 ### Autostart
-exec swayidle -w \
-    timeout 300 '$lock' \
-    timeout 330 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-    before-sleep '$lock' \
-    after-resume '$dir/panels/display/reinit'
+# swayidle: lock at 5 min, screens off at 5.5 min, lock before sleep. bin/idle toggle = stay awake.
+exec $dir/bin/idle start
 exec mako --config $dir/apps/mako
 # Battery warnings from UPower as notifications. -S = laptop battery and AC only, no headset or mouse batteries.
 exec poweralertd -S

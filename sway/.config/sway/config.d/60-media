@@ -22,6 +22,8 @@ bindsym --locked XF86AudioPrev exec playerctl previous
 bindsym Print exec $dir/bin/screenshot area
 #: Screenshot (screen)
 bindsym Shift+Print exec $dir/bin/screenshot screen
+#: Night light (again to turn off)
+bindsym $mod+Ctrl+n exec $dir/bin/nightlight toggle
 #: Record area (again to stop)
 bindsym Ctrl+Print exec $dir/bin/record area
 #: Record screen (again to stop)

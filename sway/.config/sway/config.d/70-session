@@ -1,4 +1,6 @@
 ### Session
+#: Stay awake: no lock or screen off when idle (again to undo)
+bindsym $mod+Ctrl+i exec $dir/bin/idle toggle
 #: Reload Sway config
 bindsym $mod+Shift+c reload
 #: Exit Sway

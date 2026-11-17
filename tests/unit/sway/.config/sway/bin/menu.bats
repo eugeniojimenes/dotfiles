@@ -44,3 +44,23 @@ launched() { calls | sed -n 's/^setsid -f sh -c //p'; }
   [[ $(calls | grep -c '^fuzzel ') == 3 ]]
   [[ -z $(launched) ]]
 }
+
+@test "Toggle > Stay awake and Night light run their toggles" {
+  answers @Toggle '@Stay awake'
+  run "$SWAY/bin/menu"
+  assert_success
+  [[ $(launched) == "$HOME/.config/sway/bin/idle toggle" ]]
+  : >"$STUBS/calls"
+  answers @Toggle '@Night light'
+  run "$SWAY/bin/menu"
+  [[ $(launched) == "$HOME/.config/sway/bin/nightlight toggle" ]]
+}
+
+@test "Toggle > Power profile: current one checked, pick sets it" {
+  stub powerprofilesctl balanced
+  answers @Toggle '@Power profile' @performance
+  run "$SWAY/bin/menu"
+  assert_success
+  grep -q $'󰄬  balanced\t' "$STUBS/fuzzel.stdin"
+  [[ $(launched) == 'powerprofilesctl set performance' ]]
+}
