@@ -150,7 +150,6 @@
         swaylock
         waybar
         fuzzel
-        mako
         quickshell
         swayosd
         wiremix

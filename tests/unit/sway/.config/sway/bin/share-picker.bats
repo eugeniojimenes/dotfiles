@@ -21,7 +21,7 @@ setup() {
   assert_success
   assert_output 'Monitor: HDMI-A-1'
   run calls
-  assert_line 'makoctl mode -a screenshare'
+  assert_line "quickshell ipc -p $HOME/.config/sway/panels/notifications.qml call notifications modeOn screenshare"
 }
 
 @test "window picked: line returned, notifications untouched" {
@@ -30,7 +30,7 @@ setup() {
   assert_success
   assert_output 'Window: Notes (draft) - Editor (42)'
   run calls
-  refute_line --partial makoctl
+  refute_line --partial 'call notifications'
 }
 
 @test "picker closed: exit 1, portal cancels the share" {

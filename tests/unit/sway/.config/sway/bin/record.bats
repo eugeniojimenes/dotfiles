@@ -6,6 +6,7 @@ setup() {
   # wf-recorder writes the file named by its last argument, then exits as if stopped.
   echo 'echo video >"${@: -1}"' >"$STUBS/wf-recorder.sh"
   PIDFILE=$XDG_RUNTIME_DIR/sway-record.pid
+  QS="quickshell ipc -p $HOME/.config/sway/panels/notifications.qml call notifications"
 }
 
 teardown() { [[ -z ${REC-} ]] || kill -9 "$REC" 2>/dev/null || true; }
@@ -45,14 +46,14 @@ fake_recording() {
 @test "while recording: notifications hidden and floating box, both undone at the end" {
   stub slurp '0,0 5x5'
   # Recording lasts until the box has started, so its kill below always finds it.
-  echo 'until grep -q ^quickshell "$STUBS/calls"; do sleep 0.01; done; echo video >"${@: -1}"' >"$STUBS/wf-recorder.sh"
+  echo 'until grep -q recording.qml "$STUBS/calls"; do sleep 0.01; done; echo video >"${@: -1}"' >"$STUBS/wf-recorder.sh"
   run "$SWAY/bin/record" area
   assert_success
-  run grep -E '^(makoctl|wf-recorder|quickshell|notify-send) ' "$STUBS/calls"
-  assert_line --index 0 'makoctl mode -a recording'
+  run grep -E '^(wf-recorder|quickshell|notify-send) ' "$STUBS/calls"
+  assert_line --index 0 "$QS modeOn recording"
   assert_line --index 1 --regexp '^wf-recorder '
   assert_line --index 2 "quickshell -p $SWAY/bin/../panels/recording.qml"
-  assert_line --index 3 'makoctl mode -r recording'
+  assert_line --index 3 "$QS modeOff recording"
   # Last: the saved notification is not hidden by the recording mode.
   assert_line --index 4 --regexp '^notify-send -a Recording Recording saved '
 }
@@ -64,7 +65,7 @@ fake_recording() {
   run calls
   refute_line --partial wf-recorder
   refute_line --partial notify-send
-  refute_line --partial makoctl
+  refute_line --partial 'call notifications'
 }
 
 @test "screen: focused output, video only" {
@@ -117,7 +118,7 @@ fake_recording() {
   assert_output ''
   run calls
   assert_line --regexp '^notify-send -a Recording -u critical Recording failed '
-  assert_line 'makoctl mode -r recording'
+  assert_line "$QS modeOff recording"
 }
 
 @test "no argument: usage, exit 2" {

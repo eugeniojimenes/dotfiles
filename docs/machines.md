@@ -20,7 +20,7 @@ These are in shared files today and only matter on the notebook. Check each one 
 - The GPU ordering in `sway/.config/sway/bin/start` does nothing on a machine with one GPU.
 - The touchpad `input` block does nothing on a machine without a touchpad.
 - AMD GPU monitoring tools (`amdgpu_top`, `rocm-smi`) belong in the desktop host file.
-- Battery support: UPower with `criticalPowerAction`, `poweralertd` in `config.d/90-autostart`, the poweralertd rules in `apps/mako` and waybar's battery module. Without a battery they do nothing; check that the battery module stays hidden. The power panel hides its charge section and the charge limit without a laptop battery and opens from Setup › Power.
+- Battery support: UPower with `criticalPowerAction`, `poweralertd` in `config.d/90-autostart`, the poweralertd rules in `panels/notifications/notify.mjs` and waybar's battery module. Without a battery they do nothing; check that the battery module stays hidden. The power panel hides its charge section and the charge limit without a laptop battery and opens from Setup › Power.
 - The `bin/record` header says no VA-API driver is installed. That is the notebook's Intel GPU; an AMD GPU gets VA-API from Mesa, so `h264_vaapi` becomes an option there if x264 on two large monitors costs too much CPU.
 - The internal microphone fix lives in the notebook's host file. Check the desktop's microphone with the same recording test before calling it done.
 

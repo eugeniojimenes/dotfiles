@@ -76,6 +76,6 @@ Image line in a doc: `![<alt in that doc's language>](<url><file>)`, `url` from 
 - Media committed into this repo: stays in history forever. Only `docs/media.json` and image lines belong here.
 - `pkill -f '<pattern>'` from a shell whose command line holds the pattern kills the agent shell. Close panels with their toggle; stop wf-recorder with `timeout -s INT`.
 - A workspace switch closes every panel (I3IpcListener). Capture on the current workspace.
-- `dnd share-on` hides notifications but shows the bell in waybar: in a screenshot, use `makoctl mode` directly. A later `dnd` call or a waybar restart during capture brings the bell back.
+- `dnd share-on` hides notifications but shows the bell in waybar: in a screenshot, call the daemon directly: `quickshell ipc -p ~/.config/sway/panels/notifications.qml call notifications modeOn screenshare`. A later `dnd` call or a waybar restart during capture brings the bell back.
 - The unmasked capture is read by the model to place masks. Keep it in the scratchpad only, delete it after (step 9).
 - Squashing the media repo history to drop old versions: force push, owner decides. Old raw URLs then 404, and so do images in older commits of this repo.

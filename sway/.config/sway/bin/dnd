@@ -1,15 +1,17 @@
 #!/bin/sh
-# Do not disturb for mako. `dnd toggle` from the menu/bar, `dnd share-on|share-off` from the screen-share hooks,
-# `dnd record-on|record-off` from bin/record, `dnd status` for the waybar module. Every change pokes waybar (signal 8)
-# instead of waybar polling.
+# Do not disturb for the notification daemon (panels/notifications.qml). `dnd toggle` from the menu/bar,
+# `dnd share-on|share-off` from the screen-share hooks, `dnd record-on|record-off` from bin/record, `dnd status` for the
+# waybar module. Modes go over Quickshell IPC. Every change pokes waybar (signal 8) instead of waybar polling.
+qs() { quickshell ipc -p ~/.config/sway/panels/notifications.qml call notifications "$@"; }
 case $1 in
-  toggle) makoctl mode -t dnd >/dev/null ;;
-  share-on) makoctl mode -a screenshare >/dev/null ;;
-  share-off) makoctl mode -r screenshare >/dev/null ;;
-  record-on) makoctl mode -a recording >/dev/null ;;
-  record-off) makoctl mode -r recording >/dev/null ;;
+  toggle) qs modeToggle dnd >/dev/null ;;
+  share-on) qs modeOn screenshare >/dev/null ;;
+  share-off) qs modeOff screenshare >/dev/null ;;
+  record-on) qs modeOn recording >/dev/null ;;
+  record-off) qs modeOff recording >/dev/null ;;
   status)
-    modes=$(makoctl mode)
+    # Daemon down: no modes, plain text.
+    modes=$(qs modes 2>/dev/null)
     case $modes in
       *recording*) echo '{"text": "󰂛", "tooltip": "Notifications hidden: recording the screen", "class": "share"}' ;;
       *screenshare*) echo '{"text": "󰂛", "tooltip": "Notifications hidden: sharing the whole screen", "class": "share"}' ;;

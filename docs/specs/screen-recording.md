@@ -1,6 +1,6 @@
 # Screen recording
 
-Files: `sway/.config/sway/bin/record`, bound in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/bin/menu`, shown by the `custom/record` module in `sway/.config/sway/apps/waybar.jsonc` and by the floating box `sway/.config/sway/panels/recording.qml`. Notifications are hidden through `sway/.config/sway/bin/dnd` and the `recording` mode in `sway/.config/sway/apps/mako`.
+Files: `sway/.config/sway/bin/record`, bound in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/bin/menu`, shown by the `custom/record` module in `sway/.config/sway/apps/waybar.jsonc` and by the floating box `sway/.config/sway/panels/recording.qml`. Notifications are hidden through `sway/.config/sway/bin/dnd` and the `recording` mode of `sway/.config/sway/panels/notifications.qml`.
 
 ## Purpose
 
@@ -14,7 +14,7 @@ Files: `sway/.config/sway/bin/record`, bound in `sway/.config/sway/config.d/60-m
 4. While a recording runs, `record area`, `record screen` and `record stop` send SIGINT to it, so wf-recorder finishes the file, and no new recording starts. Test: `tests/unit/sway/.config/sway/bin/record.bats: "running: start or stop interrupts it, nothing new starts"`
 5. `record status` prints the waybar JSON: a red icon with class `recording` while a recording runs, empty text otherwise. A stale PID file whose process is not wf-recorder counts as not running. Test: `tests/unit/sway/.config/sway/bin/record.bats: "status: icon only while wf-recorder runs, stale PID ignored"`
 6. Waybar gets signal 9 when a recording starts and when it ends, so the icon follows without polling. Test: `tests/unit/sway/.config/sway/bin/record.bats: "area: slurp region, MP4 in the XDG videos dir, saved notification"`
-7. While a recording runs, notifications are hidden: `dnd record-on` sets the mako mode `recording` before wf-recorder starts, and `dnd record-off` removes it when wf-recorder ends, before the saved or failed notification. Test: `tests/unit/sway/.config/sway/bin/record.bats: "while recording: notifications hidden and floating box, both undone at the end"`
+7. While a recording runs, notifications are hidden: `dnd record-on` turns on the notification mode `recording` before wf-recorder starts, and `dnd record-off` removes it when wf-recorder ends, before the saved or failed notification. Test: `tests/unit/sway/.config/sway/bin/record.bats: "while recording: notifications hidden and floating box, both undone at the end"`
 8. The floating box (`panels/recording.qml`) starts with the recording and is killed when it ends. Test: `tests/unit/sway/.config/sway/bin/record.bats: "while recording: notifications hidden and floating box, both undone at the end"`
 9. `dnd status` shows the hidden-notifications icon with a recording tooltip while the `recording` mode is on. Test: `tests/unit/sway/.config/sway/bin/dnd.bats: "status: recording hides like a screen share, with its own tooltip"`
 10. When wf-recorder fails, the partial file is removed and a critical notification says so. Test: `tests/unit/sway/.config/sway/bin/record.bats: "wf-recorder fails: file removed, failure notification"`

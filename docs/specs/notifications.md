@@ -1,0 +1,22 @@
+# Notifications
+
+Files: `sway/.config/sway/panels/notifications.qml` (Quickshell daemon and popups), `sway/.config/sway/panels/notifications/notify.mjs` (rules), `sway/.config/sway/panels/notifications/run` (started by `sway/.config/sway/config.d/90-autostart`), `sway/.config/sway/bin/dnd` (modes and the waybar bell).
+
+## Purpose
+
+The daemon owns the freedesktop notification service in place of mako and draws the popups. It keeps each notification with its time and actions after the popup is gone, so a notification centre can list them. During a whole-screen share or a screen recording, popups are replaced by one card that only says how many notifications arrived and why they are hidden. Do not disturb hides everything, and battery warnings always get through.
+
+## Acceptance criteria
+
+1. The daemon file parses, every type, property and import resolves against Qt and Quickshell, and Quickshell loads it in a headless Sway. Test: `tests/static.sh: qmllint`, `tests/static.sh: panels-load`
+2. A new notification shows its popup when no mode is on. During a whole-screen share or a recording it is counted in the hidden-notifications card instead, and with Do not disturb on nothing shows, even during a share. poweralertd's normal notifications (charge state changes) never show, and its critical ones (battery warnings) show through any mode. Test: `tests/unit/sway/.config/sway/panels/notifications/notify.bats: "delivery: share and recording hide behind the card, dnd silences, battery warnings pass any mode"`
+3. The hidden-notifications card says "New notification" or "N new notifications", followed by "hidden while you share your screen" or, during a recording only, "hidden while you record the screen". It never shows an app name, title or text. Test: `tests/unit/sway/.config/sway/panels/notifications/notify.bats: "hidden card text: count, and the reason (share wins over recording)"`
+4. A popup stays for the sender's timeout, 5 seconds when the sender leaves it to the server, and until clicked when the sender asks for no timeout or the notification is critical. Test: `tests/unit/sway/.config/sway/panels/notifications/notify.bats: "timeout: sender's value, 5 s by default, never for critical or 0"`
+5. Modes `dnd`, `screenshare` and `recording` are independent: turning one on or off never changes another, and unknown names are ignored. Test: `tests/unit/sway/.config/sway/panels/notifications/notify.bats: "modes: on, off and toggle per name, unknown names ignored"`
+6. At most 50 notifications are kept after their popup is gone; beyond that the oldest are let go, never one still on screen. Test: `tests/unit/sway/.config/sway/panels/notifications/notify.bats: "history cap: oldest let go first, never one on screen"`
+7. `dnd toggle`, `share-on`, `share-off`, `record-on` and `record-off` change the matching mode over Quickshell IPC and then send waybar signal 8. Test: `tests/unit/sway/.config/sway/bin/dnd.bats: "toggle, share-on, share-off, record-on, record-off: mode change over IPC, then waybar signal 8"`
+8. `dnd status` shows the bell crossed out with a tooltip naming the mode (recording, then screen share, then Do not disturb), and empty text when no mode is on or the daemon is down. Test: `tests/unit/sway/.config/sway/bin/dnd.bats: "status: recording hides like a screen share, with its own tooltip"`, `tests/unit/sway/.config/sway/bin/dnd.bats: "status: daemon down gives empty text"`
+9. Popups sit in the top right corner of the focused output as a deck: the newest in front with the app name, summary, body (simple markup) and the app icon or image, older ones behind it with their top edges showing, up to three. A critical popup has a red border. With the pointer over the deck it fans out into a list, and no popup times out until the pointer leaves. Test: manual
+10. A left click runs the default action, or closes the popup when there is none; a right click dismisses the notification; other actions show as buttons that run them. Test: manual
+11. If the daemon crashes, `run` starts it again within seconds, and nothing else answers for the notification service in the meantime (mako is not installed). Test: manual
+12. During a whole-screen share, a new notification shows only the hidden-notifications card, which counts up with each one, closes on any click and after 5 seconds, and stays with a red border when one of them is critical. The notification itself is kept for the notification centre. Test: manual

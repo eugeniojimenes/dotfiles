@@ -59,7 +59,7 @@ dir=$(xdg-user-dir VIDEOS 2>/dev/null) || dir=$HOME/Videos
 mkdir -p "$dir"
 file=$dir/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4
 
-# Sway cannot keep a surface out of the capture: notifications hidden (mako mode, see bin/dnd) instead of recorded.
+# Sway cannot keep a surface out of the capture: notifications hidden (mode, see bin/dnd) instead of recorded.
 "$bin/dnd" record-on
 wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 &
 rec=$!
