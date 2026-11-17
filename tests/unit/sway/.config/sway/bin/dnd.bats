@@ -6,21 +6,24 @@ setup() { load "${BATS_TEST_DIRNAME%/tests/unit/*}/tests/helpers/common"; }
   stub makoctl default
   run "$SWAY/bin/dnd" status
   assert_success
-  [[ $(jq -r .text <<<"$output") == "" ]]
+  run jq -e '.text == ""' <<<"$output"
+  assert_success
 }
 
 @test "status: dnd mode gives the dnd class" {
   stub makoctl $'default\ndnd'
   run "$SWAY/bin/dnd" status
   assert_success
-  [[ $(jq -r .class <<<"$output") == dnd ]]
+  run jq -e '.class == "dnd"' <<<"$output"
+  assert_success
 }
 
 @test "status: screenshare wins over dnd" {
   stub makoctl $'dnd\nscreenshare'
   run "$SWAY/bin/dnd" status
   assert_success
-  [[ $(jq -r .class <<<"$output") == share ]]
+  run jq -e '.class == "share"' <<<"$output"
+  assert_success
 }
 
 @test "status: never pokes waybar" {

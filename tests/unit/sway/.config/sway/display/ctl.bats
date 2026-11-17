@@ -112,6 +112,14 @@ cache() { echo "$XDG_RUNTIME_DIR/sway-ddc-$1"; }
   assert_output 'gsettings set org.gnome.desktop.interface text-scaling-factor 1.0000'
 }
 
+@test "brightness without get or set: usage, exit 2" {
+  for sub in '' foo; do
+    run "$SWAY/display/ctl" brightness $sub eDP-1
+    assert_failure 2
+    assert_line --partial 'ctl brightness get|set OUT [PCT]'
+  done
+}
+
 @test "text: outside 9..20 or not a number: exit 2, file untouched" {
   run "$SWAY/display/ctl" text 21
   assert_failure 2

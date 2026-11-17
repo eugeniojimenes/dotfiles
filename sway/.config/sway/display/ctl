@@ -83,6 +83,7 @@ case ${1-} in
     case ${2-} in
       get) valid_out "$3"; brightness_get "$3" ;;
       set) valid_out "$3"; valid_int "$4"; brightness_set "$3" "$4" ;;
+      *) sed -n '2,10p' "$0" | sed 's/^# \?//'; exit 2 ;;
     esac
     ;;
   scale)

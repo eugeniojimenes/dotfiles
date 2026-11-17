@@ -31,7 +31,7 @@ setup() { load "${BATS_TEST_DIRNAME%/tests/unit/*}/tests/helpers/common"; }
 }
 
 @test "out of range or not a number: exit 2, nothing saved or sent" {
-  for v in 2 1.5 abc .5 ''; do
+  for v in 2 1.5 abc .5 '' 0. 0.5x 0.5.5; do
     run "$SWAY/bin/opacity" "$v"
     assert_failure 2
   done
