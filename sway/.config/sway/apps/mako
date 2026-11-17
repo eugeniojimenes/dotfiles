@@ -14,3 +14,13 @@ invisible=1
 
 [mode=screenshare]
 invisible=1
+
+# poweralertd (battery): every charge state change is a normal notification, kept out of sight. Low, critical and
+# action-level warnings are critical: shown through dnd and screenshare, and stay until clicked.
+[app-name=poweralertd urgency=normal]
+invisible=1
+
+[app-name=poweralertd urgency=critical]
+invisible=0
+default-timeout=0
+border-color=#f38ba8

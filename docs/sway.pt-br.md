@@ -32,6 +32,10 @@ O greetd roda o `bin/start` (o caminho fica em `nixos/common.nix`). O script def
 
 O `display/reinit` roda depois de voltar da suspensão. Com o driver proprietário da NVIDIA, o Sway mantém as saídas externas marcadas como ativas depois de uma suspensão enquanto a tela continua preta. Desativar e reativar cada saída externa força um novo modeset. Isso ainda é necessário com o suporte de suspensão da NVIDIA ativado: em 2026-11-12 o monitor externo ficou preto sem o hook.
 
+## Avisos de bateria
+
+O UPower (`nixos/common.nix`) acompanha a bateria e desliga a máquina em 2%. A ação padrão dele é hybrid sleep, que precisa de um dispositivo de swap, e esta máquina só tem zram. O `poweralertd`, iniciado em `config.d/90-autostart`, transforma os níveis do UPower em notificações: baixa em 20%, crítica em 5%. Ele também manda uma notificação a cada mudança de estado da carga, como ligar o carregador. O `apps/mako` esconde essas e mostra os avisos com borda vermelha até receberem um clique, inclusive enquanto o Não perturbe ou um compartilhamento de tela esconde todo o resto.
+
 ## Painéis
 
 Os painéis são janelas Quickshell. Cada painel tem um script `toggle` que mata o painel em execução ou inicia um novo, então um clique no ícone dele no waybar ou na entrada do menu abre e fecha o painel. Enquanto um painel está aberto, um scanner ou listener roda; quando ele fecha, nada continua rodando.

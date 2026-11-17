@@ -92,6 +92,12 @@
       extraConfig.pipewire."99-no-x11-bell"."context.properties"."module.x11.bell" = false;
     };
     power-profiles-daemon.enable = true;
+    # Battery levels for poweralertd (notifications, sway autostart) and the action at 2%. Default HybridSleep needs a
+    # swap device; zram only here, so power off.
+    upower = {
+      enable = true;
+      criticalPowerAction = "PowerOff";
+    };
     fwupd.enable = true;
     printing.enable = true;
     avahi = {
@@ -132,6 +138,7 @@
         ffmpeg-headless
         wl-clipboard
         libnotify
+        poweralertd
         playerctl
         brightnessctl
         ddcutil

@@ -5,6 +5,8 @@ exec swayidle -w \
     before-sleep '$lock' \
     after-resume '$dir/panels/display/reinit'
 exec mako --config $dir/apps/mako
+# Battery warnings from UPower as notifications. -S = laptop battery and AC only, no headset or mouse batteries.
+exec poweralertd -S
 exec $dir/bin/wallpaper restore
 # GTK4 without libadwaita: under the adw-gtk3-dark theme (set for GTK3 apps) its popup turns light. Default:dark =
 # the dark look it had before.
