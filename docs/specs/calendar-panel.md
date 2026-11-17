@@ -1,6 +1,6 @@
 # Calendar panel
 
-Files: `sway/.config/sway/calendar/shell.qml` (Quickshell), `sway/.config/sway/calendar/calendar.js` (date math), `sway/.config/sway/calendar/toggle` (run by a click on the waybar clock).
+Files: `sway/.config/sway/calendar/shell.qml` (Quickshell), `sway/.config/sway/calendar/calendar.mjs` (date math), `sway/.config/sway/calendar/toggle` (run by a click on the waybar clock).
 
 ## Purpose
 

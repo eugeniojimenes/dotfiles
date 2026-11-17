@@ -1,8 +1,8 @@
 import QtQuick
 import QtTest
-import "../../../../../../sway/.config/sway/calendar/calendar.js" as Cal
+import "../../../../../../sway/.config/sway/calendar/calendar.mjs" as Cal
 
-// calendar.js on fixed dates. Run one function at a time by calendar.bats (TZ set there).
+// calendar.mjs on fixed dates. Run one function at a time by calendar.bats (TZ set there).
 TestCase {
   name: "calendar"
 

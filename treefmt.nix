@@ -39,8 +39,8 @@ pkgs.treefmt.withConfig {
         includes = [ "*.toml" ];
       };
 
-      # CSS, JSON, YAML, the opencode plugins. Width and indent from .editorconfig. Not the panels' .js files
-      # (`.pragma library` is QML, not JS) and not files a tool rewrites (lazy-lock.json, lazyvim.json).
+      # CSS, JSON, YAML, JS modules (panel logic, opencode plugins). Width and indent from .editorconfig. Not files a tool
+      # rewrites (lazy-lock.json, lazyvim.json).
       prettier = {
         command = "${pkgs.prettier}/bin/prettier";
         options = [ "--write" ];

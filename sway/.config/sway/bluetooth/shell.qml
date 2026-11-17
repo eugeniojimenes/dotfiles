@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Io
 import Quickshell.Wayland
-import "flow.js" as Flow
+import "flow.mjs" as Flow
 import "common"
 
 // Bluetooth panel for the waybar Bluetooth icon: paired devices (click connects or disconnects) and nearby ones (click
@@ -28,7 +28,7 @@ ShellRoot {
     readonly property var nearby: all.filter(d => !d.paired && !d.bonded && d.deviceName !== "")
       .sort((a, b) => a.name.localeCompare(b.name))
     readonly property var rows: on ? paired.concat(nearby) : []
-    // Click, pair and connect state, driven by flow.js.
+    // Click, pair and connect state, driven by flow.mjs.
     property var joining: null         // device the user picked to connect
     property bool fresh: false         // joining came from Nearby: stays open once connected
     property bool connecting: false    // joining reached Connecting, so a fall back to Disconnected = failure
@@ -43,7 +43,7 @@ ShellRoot {
     function pick(d) { Flow.pick(win, d, busy(d)) }
     function forget(d) { Flow.forget(win, d) }
 
-    // Device1.Connect straight over D-Bus, see flow.js paired(). A failed reply = non-zero exit.
+    // Device1.Connect straight over D-Bus, see flow.mjs paired(). A failed reply = non-zero exit.
     function connectAfterPair(d) {
       profiles.command = ["busctl", "--system", "--timeout=30", "call", "org.bluez", d.dbusPath, "org.bluez.Device1",
                           "Connect"]

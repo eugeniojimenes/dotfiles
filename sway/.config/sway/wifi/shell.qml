@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Wayland
-import "flow.js" as Flow
+import "flow.mjs" as Flow
 import "common"
 
 // Wi-Fi panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
@@ -20,7 +20,7 @@ ShellRoot {
     readonly property var device: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
     readonly property var networks: device ? Flow.listed(device.networks.values) : []
     readonly property bool scanning: scan.running
-    // Pick, password and connect state, driven by flow.js.
+    // Pick, password and connect state, driven by flow.mjs.
     property var asking: null          // network whose password row is open
     property string failure: ""
     property var joining: null         // network the user picked; close once it connects

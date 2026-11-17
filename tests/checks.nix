@@ -32,7 +32,7 @@ in
           p.bats-assert
         ]))
         pkgs.jq
-        # qmltestrunner: panel logic kept in plain JS (bluetooth/flow.js), run offscreen.
+        # qmltestrunner: panel logic kept in ES modules (bluetooth/flow.mjs), run offscreen.
         pkgs.qt6.qtdeclarative
         # Hook tests: real git and gitleaks in a temp repo.
         pkgs.git

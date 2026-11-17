@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# bluetooth/flow.js through qmltestrunner (QtTest, offscreen platform: no Wayland, no BlueZ). One @test per function
+# bluetooth/flow.mjs through qmltestrunner (QtTest, offscreen platform: no Wayland, no BlueZ). One @test per function
 # in flow.qml, so spec criteria name them like any other bats test.
 
 setup() {

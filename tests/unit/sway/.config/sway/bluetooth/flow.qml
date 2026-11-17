@@ -1,8 +1,8 @@
 import QtQuick
 import QtTest
-import "../../../../../../sway/.config/sway/bluetooth/flow.js" as Flow
+import "../../../../../../sway/.config/sway/bluetooth/flow.mjs" as Flow
 
-// flow.js against fake devices, events fed in the order BlueZ sends them. Run one function at a time by flow.bats.
+// flow.mjs against fake devices, events fed in the order BlueZ sends them. Run one function at a time by flow.bats.
 TestCase {
   name: "flow"
 

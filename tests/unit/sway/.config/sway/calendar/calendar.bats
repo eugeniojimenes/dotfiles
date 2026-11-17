@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# calendar/calendar.js through qmltestrunner (QtTest, offscreen: no Wayland). One @test per function in calendar.qml.
+# calendar/calendar.mjs through qmltestrunner (QtTest, offscreen: no Wayland). One @test per function in calendar.qml.
 
 setup() {
   load "${BATS_TEST_DIRNAME%/tests/unit/*}/tests/helpers/common"

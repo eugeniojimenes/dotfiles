@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import "calendar.js" as Cal
+import "calendar.mjs" as Cal
 import "common"
 
 // Calendar popup for the waybar clock: month grid with ISO week numbers, today
@@ -33,7 +33,7 @@ ShellRoot {
       viewMonth = today.getMonth()
     }
 
-    // Date math in calendar.js (tested there).
+    // Date math in calendar.mjs (tested there).
     readonly property var cells: Cal.cells(viewYear, viewMonth)
     readonly property real yearDone: Cal.yearDone(today)
 

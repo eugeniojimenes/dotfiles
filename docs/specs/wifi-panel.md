@@ -1,6 +1,6 @@
 # Wi-Fi panel
 
-Files: `sway/.config/sway/wifi/shell.qml` (Quickshell), `sway/.config/sway/wifi/flow.js` (pick, password and connect flow), `sway/.config/sway/wifi/toggle` (run by a click on the waybar network icon and by the menu entry Setup > Wi-Fi).
+Files: `sway/.config/sway/wifi/shell.qml` (Quickshell), `sway/.config/sway/wifi/flow.mjs` (pick, password and connect flow), `sway/.config/sway/wifi/toggle` (run by a click on the waybar network icon and by the menu entry Setup > Wi-Fi).
 
 ## Purpose
 

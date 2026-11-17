@@ -1,6 +1,6 @@
 # Bluetooth panel
 
-Files: `sway/.config/sway/bluetooth/shell.qml` (Quickshell), `sway/.config/sway/bluetooth/flow.js` (click, pair and connect logic, plain JS so it runs under `qmltestrunner`), `sway/.config/sway/bluetooth/toggle` (run by a click on the waybar Bluetooth icon and by the menu entry Setup > Bluetooth), the `bluetooth` module in `sway/.config/sway/apps/waybar.jsonc`.
+Files: `sway/.config/sway/bluetooth/shell.qml` (Quickshell), `sway/.config/sway/bluetooth/flow.mjs` (click, pair and connect logic, plain JS so it runs under `qmltestrunner`), `sway/.config/sway/bluetooth/toggle` (run by a click on the waybar Bluetooth icon and by the menu entry Setup > Bluetooth), the `bluetooth` module in `sway/.config/sway/apps/waybar.jsonc`.
 
 ## Purpose
 

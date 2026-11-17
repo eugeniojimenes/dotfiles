@@ -59,7 +59,7 @@ Three audiences:
 - **Human docs** (`README*`, `docs/**`, `docs/specs/**`, `harness/README*`, `tests/manual.md`), owner's rule verbatim: "Plain English, full sentences, no AI tell language. Avoid em dashes, "not just X but Y", bold labels on every bullet, filler openers, and words like "durable", "seam", "artifact" where a normal word works. Do not append a clause that vouches for a fact instead of explaining it, asserting that something is intentional, earned or no accident ("and not by luck", "by design"). State the fact, and give the reason in its own sentence when the reason matters. Do not hard wrap. One paragraph or bullet is one line, however long. Only code blocks keep their own line breaks." Owner exception: README module list keeps bold module names (main doc, scanned by eye).
 - **Code comments**: compressed like agent text. Wrap at ~120 (`colorcolumn = "120"` in `lazyvim/.config/nvim/lua/config/options.lua`).
 
-- **Code format**: `nix fmt` (treefmt.nix): nixfmt, shfmt (style from `.editorconfig`: 2 spaces, `case` indented, `&&`/`||` end the line), stylua (`lazyvim/.config/nvim/stylua.toml`), taplo, prettier (CSS/JSON/YAML/mjs/tsx; `.jsonc` without trailing commas). Not formatted: `hardware.nix`, `lazy-lock.json`, `lazyvim.json`, panel `.js` (`.pragma library`). Run before commit; never hand-align code the formatter undoes.
+- **Code format**: `nix fmt` (treefmt.nix): nixfmt, shfmt (style from `.editorconfig`: 2 spaces, `case` indented, `&&`/`||` end the line), stylua (`lazyvim/.config/nvim/stylua.toml`), taplo, prettier (CSS/JSON/YAML/mjs/tsx; `.jsonc` without trailing commas). Not formatted: `hardware.nix`, `lazy-lock.json`, `lazyvim.json`. Run before commit; never hand-align code the formatter undoes.
 
 Everywhere:
 

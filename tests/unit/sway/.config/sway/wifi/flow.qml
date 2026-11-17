@@ -1,8 +1,8 @@
 import QtQuick
 import QtTest
-import "../../../../../../sway/.config/sway/wifi/flow.js" as Flow
+import "../../../../../../sway/.config/sway/wifi/flow.mjs" as Flow
 
-// wifi/flow.js against fake networks, NetworkManager's answers fed by hand. Run one function at a time by flow.bats.
+// wifi/flow.mjs against fake networks, NetworkManager's answers fed by hand. Run one function at a time by flow.bats.
 TestCase {
   name: "flow"
 
