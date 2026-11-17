@@ -15,6 +15,9 @@
     # NVIDIA) come from one counter across GPUs in load order, so a race renamed the panel. Bonus: native-res LUKS
     # prompt.
     initrd.kernelModules = [ "i915" ];
+    # DDR5 SPD temperature sensor: its resume fails (`spd5118 ... failed to resume async: error -6`) and the error
+    # flashes on the console when the lid opens. Only a RAM temperature reading is lost.
+    blacklistedKernelModules = [ "spd5118" ];
   };
 
   hardware = {
