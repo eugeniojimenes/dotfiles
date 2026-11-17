@@ -36,21 +36,17 @@ ShellRoot {
 
     WlrLayershell.namespace: "sway-calendar"
 
-    Rectangle {
+    PanelCard {
       id: card
 
+      anchors.right: undefined
       anchors.horizontalCenter: parent.horizontalCenter
-      y: 34
       // Whole card 20% bigger, grown from its top edge so it stays right under the clock. Text is distance-field
       // rendered, so it stays sharp when scaled.
-      scale: 1.2
+      zoom: 1.2
       transformOrigin: Item.Top
       width: content.implicitWidth + 40
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
 
       // Swallows clicks so they do not reach the close-on-outside area, and turns the wheel into month steps.
       MouseArea {

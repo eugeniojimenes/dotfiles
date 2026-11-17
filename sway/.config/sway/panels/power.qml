@@ -60,22 +60,12 @@ ShellRoot {
       onRunningChanged: if (!running) win.readLimit()
     }
 
-    Rectangle {
+    PanelCard {
       id: card
 
-      anchors.right: parent.right
-      anchors.rightMargin: 10
-      y: 34
-      scale: 1.2
-      transformOrigin: Item.TopRight
+      zoom: 1.2
       width: 300
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
-
-      MouseArea { anchors.fill: parent }
 
       Item {
         focus: true
@@ -84,13 +74,6 @@ ShellRoot {
           else if (event.key === Qt.Key_Left) win.stepProfile(-1)
           else if (event.key === Qt.Key_Right) win.stepProfile(1)
         }
-      }
-
-      component Label: Text {
-        color: win.dim
-        font.family: win.font
-        font.pixelSize: 11
-        font.capitalization: Font.AllUppercase
       }
 
       Column {
@@ -148,9 +131,8 @@ ShellRoot {
           }
 
           Text {
-            text: [win.dev.changeRate > 0 ? win.dev.changeRate.toFixed(1) + " W" : "",
-                   win.battery && win.battery.healthSupported ? "health " + Math.round(win.battery.healthPercentage) + "%" : ""]
-                  .filter(s => s !== "").join("  ·  ")
+            text: Power.detail(win.dev.changeRate,
+                               win.battery && win.battery.healthSupported ? win.battery.healthPercentage : null)
             visible: text !== ""
             color: win.dim
             font.family: win.font
@@ -162,7 +144,7 @@ ShellRoot {
         Column {
           width: parent.width
           spacing: 8
-          Label { text: "󰓅  Power profile" }
+          SectionLabel { text: "󰓅  Power profile" }
           Row {
             spacing: 6
             Repeater {
@@ -188,7 +170,7 @@ ShellRoot {
           visible: win.limitSupported
           width: parent.width
           spacing: 8
-          Label { text: "󰂃  Charge limit" }
+          SectionLabel { text: "󰂃  Charge limit" }
           Chip {
             label: win.limitEnabled ? "On" : "Off"
             active: win.limitEnabled

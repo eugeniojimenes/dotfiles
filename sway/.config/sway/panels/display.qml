@@ -99,22 +99,12 @@ ShellRoot {
       onRunningChanged: if (!running) stateRead.running = true
     }
 
-    Rectangle {
+    PanelCard {
       id: card
 
-      anchors.right: parent.right
-      anchors.rightMargin: 10
-      y: 34
-      scale: 1.2
-      transformOrigin: Item.TopRight
+      zoom: 1.2
       width: 300
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
-
-      MouseArea { anchors.fill: parent }
 
       Item {
         focus: true
@@ -125,13 +115,6 @@ ShellRoot {
           else if (event.key === Qt.Key_Up && win.brightness >= 0) win.setBrightness(win.brightness + 5)
           else if (event.key === Qt.Key_Down && win.brightness >= 0) win.setBrightness(win.brightness - 5)
         }
-      }
-
-      component Label: Text {
-        color: win.dim
-        font.family: win.font
-        font.pixelSize: 11
-        font.capitalization: Font.AllUppercase
       }
 
       Column {
@@ -196,7 +179,7 @@ ShellRoot {
           Item {
             width: parent.width
             height: 14
-            Label { text: "󰃠  Brightness" }
+            SectionLabel { text: "󰃠  Brightness" }
             Text {
               anchors.right: parent.right
               text: win.loadingBrightness ? "…" : (win.brightness >= 0 ? win.brightness + "%" : "unavailable")
@@ -237,7 +220,7 @@ ShellRoot {
         Column {
           width: parent.width
           spacing: 8
-          Label { text: "󰍉  Scale" }
+          SectionLabel { text: "󰍉  Scale" }
           Row {
             spacing: 6
             Repeater {
@@ -256,7 +239,7 @@ ShellRoot {
           visible: win.hasLaptopToggle
           width: parent.width
           spacing: 8
-          Label { text: "󰌢  Laptop screen" }
+          SectionLabel { text: "󰌢  Laptop screen" }
           Chip {
             readonly property var laptop: win.outputs.find(o => o.internal)
             label: laptop && laptop.active ? "Turn off" : "Turn on"
@@ -269,7 +252,7 @@ ShellRoot {
         Column {
           width: parent.width
           spacing: 8
-          Label { text: "󰛖  Text size" }
+          SectionLabel { text: "󰛖  Text size" }
           Flow {
             width: parent.width
             spacing: 6

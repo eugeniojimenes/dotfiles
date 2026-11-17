@@ -16,3 +16,4 @@ qt() {
 @test "duration: hours and minutes, under a minute, no estimate" { qt test_duration; }
 @test "status line per UPower state, with the estimate when there is one" { qt test_status; }
 @test "battery glyph: eleven steps, plug glyphs on AC, clamped" { qt test_icon; }
+@test "detail line: draw while above zero, health when reported" { qt test_detail; }

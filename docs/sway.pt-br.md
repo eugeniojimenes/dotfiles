@@ -10,7 +10,7 @@ O desktop inteiro fica numa pasta só, `sway/.config/sway/`, que o stow liga em 
 - `bin/` tem os scripts que os atalhos, o waybar e o menu rodam.
 - `apps/` tem as configs do waybar, fuzzel, swaylock e wiremix.
 - `panels/` guarda os painéis Quickshell e a tela de bloqueio. Cada um tem um arquivo de entrada no topo (`wifi.qml`, `bluetooth.qml`, `sound.qml`, `display.qml`, `calendar.qml`, `lock.qml`) e um diretório com o mesmo nome com os seus scripts e a sua lógica (`toggle`, `flow.mjs`, `display/ctl`, `lock/lock`).
-- `panels/common/` guarda o que os painéis compartilham: `PanelShell.qml`, `Theme.qml`, `AdvancedLink.qml` e `Chip.qml`, o botão pequeno usado pelos painéis.
+- `panels/common/` guarda o que os painéis compartilham: `PanelShell.qml`, `Theme.qml`, `AdvancedLink.qml`, `Chip.qml` (o botão pequeno), `PanelCard.qml` (o card abaixo da barra em que todo painel popup se desenha) e `SectionLabel.qml` (os títulos pequenos de seção). Display, power e calendar desenham o card 20% maior (`zoom: 1.2`); wifi, bluetooth, sound e a central de notificações ficam no tamanho normal, porque as listas deles podem crescer.
 
 Um arquivo fica fora dessa pasta: `sway/.config/xdg-desktop-portal-wlr/sway`, a config do seletor de compartilhamento de tela.
 

@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
 import "common"
+import "sound/sound.mjs" as Sound
 
 // Sound panel for the waybar volume icon: output and input volume, mute and live level, default device pick, and
 // per-app volume, straight from PipeWire (Quickshell.Services.Pipewire). Volume stops at 100%. Arrows step the output
@@ -13,15 +14,16 @@ ShellRoot {
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
-    readonly property var all: Pipewire.nodes.values.filter(n => n.audio)
-    readonly property var sinks: all.filter(n => n.isSink && !n.isStream)
-    readonly property var sources: all.filter(n => !n.isSink && !n.isStream)
-    // Playback streams only: recording streams (a mic in use) are Stream/Input/Audio.
-    readonly property var apps: all.filter(n => n.isStream && n.properties["media.class"] === "Stream/Output/Audio")
+    readonly property var all: Pipewire.nodes.values.filter(node => node.audio)
+    // Lists and names: sound/sound.mjs (tested).
+    readonly property var lists: Sound.devices(all)
+    readonly property var sinks: lists.outputs
+    readonly property var sources: lists.inputs
+    readonly property var apps: lists.apps
 
-    function label(node) { return node.description || node.nickname || node.name }
-    function appLabel(node) { return node.properties["application.name"] || label(node) }
-    function setVolume(node, volume) { if (node && node.audio) node.audio.volume = Math.max(0, Math.min(1, volume)) }
+    function label(node) { return Sound.label(node) }
+    function appLabel(node) { return Sound.appLabel(node) }
+    function setVolume(node, volume) { if (node && node.audio) node.audio.volume = Sound.clampVolume(volume) }
 
     WlrLayershell.namespace: "sway-sound"
 
@@ -190,20 +192,13 @@ ShellRoot {
       font.bold: true
     }
 
-    Rectangle {
+    PanelCard {
       id: card
 
-      anchors.right: parent.right
       anchors.rightMargin: 8
-      y: 34
       width: 380
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
 
-      MouseArea { anchors.fill: parent }   // swallows clicks so they do not reach the close-on-outside area
 
       Item {
         focus: true

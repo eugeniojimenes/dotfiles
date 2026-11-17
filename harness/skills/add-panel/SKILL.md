@@ -31,5 +31,5 @@ Rules: `harness/rules/sway.md`. Why the pattern: `docs/sway.md` "Panels". Skelet
 - `pkill -f '<pattern>'` from `bash -c` whose command line holds the same pattern kills the agent shell. Use the toggle script.
 - `Bluetooth.defaultAdapter` (Quickshell 0.3) trips qmllint `unresolved-type`: qmltypes names the type without its C++ namespace. Line-level `// qmllint disable unresolved-type` on that line only, never a global disable.
 - An import leaving the entry file's dir (`import "../common"` from a subdir entry) passes qmllint but Quickshell says "PanelShell is not a type" and the panel never opens (happened 2026-11-17). From a component in `panels/<name>/`, `import "../common"` is fine: it stays inside `panels/` (notifications/ does it).
-- Buttons: `Chip` from `common/` (label, active, onPressed), never a local copy. Entry files stay at top of `panels/`.
+- Buttons: `Chip` from `common/` (label, active, onPressed); card: `PanelCard` (width, height, `zoom: 1.2` for a small panel worth enlarging); section titles: `SectionLabel`. Never a local copy. Entry files stay at top of `panels/`.
 - qmllint false positives already disabled in `tests/static.sh` (`unqualified`, `comma`, `uncreatable-type`, `signal-handler-parameters`); anything else it reports = real.

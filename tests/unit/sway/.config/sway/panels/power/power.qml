@@ -33,4 +33,11 @@ TestCase {
     compare(Power.icon(0.97, true), Power.icon(1, true))
     compare(Power.icon(1.5, false), Power.icon(1, false))
   }
+
+  function test_detail() {
+    compare(Power.detail(11.53, 98.4), "11.5 W  ·  health 98%")
+    compare(Power.detail(0, 98.4), "health 98%")
+    compare(Power.detail(7, null), "7.0 W")
+    compare(Power.detail(0, null), "")
+  }
 }

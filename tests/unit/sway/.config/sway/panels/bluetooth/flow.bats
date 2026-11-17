@@ -22,3 +22,4 @@ qt() {
 @test "connected device: click disconnects, panel stays open" { qt test_connected_device_disconnects; }
 @test "busy device: click ignored" { qt test_busy_device_ignored; }
 @test "forget: pairing removed, flow dropped" { qt test_forget; }
+@test "lists: my devices connected first then by name, nearby by name and only with a name" { qt test_lists; }

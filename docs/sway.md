@@ -10,7 +10,7 @@ The whole desktop lives in one directory, `sway/.config/sway/`, which stow links
 - `bin/` holds the scripts that bindings, waybar and the menu run.
 - `apps/` holds the configs for waybar, fuzzel, swaylock and wiremix.
 - `panels/` holds the Quickshell panels and the lock screen. Each one has an entry file at the top (`wifi.qml`, `bluetooth.qml`, `sound.qml`, `display.qml`, `calendar.qml`, `lock.qml`) and a directory of the same name with its scripts and logic (`toggle`, `flow.mjs`, `display/ctl`, `lock/lock`).
-- `panels/common/` holds what the panels share: `PanelShell.qml`, `Theme.qml`, `AdvancedLink.qml` and `Chip.qml`, the small button the panels use.
+- `panels/common/` holds what the panels share: `PanelShell.qml`, `Theme.qml`, `AdvancedLink.qml`, `Chip.qml` (the small button), `PanelCard.qml` (the card under the bar that every popup panel draws on) and `SectionLabel.qml` (the small section titles). display, power and calendar draw their card 20% bigger (`zoom: 1.2`); wifi, bluetooth, sound and the notification centre stay at normal size, since their lists can grow long.
 
 One file lives outside that directory: `sway/.config/xdg-desktop-portal-wlr/sway`, the screen-share picker config.
 

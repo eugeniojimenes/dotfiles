@@ -34,20 +34,12 @@ LazyLoader {
       onTriggered: win.now = Date.now()
     }
 
-    Rectangle {
+    PanelCard {
       id: card
 
-      anchors.right: parent.right
-      anchors.rightMargin: 10
-      y: 34
       width: 420
       height: Math.min(content.implicitHeight + 32, win.height - 34 - 20)
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
 
-      MouseArea { anchors.fill: parent }
 
       Item {
         focus: true

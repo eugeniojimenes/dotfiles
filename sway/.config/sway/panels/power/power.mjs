@@ -41,3 +41,12 @@ export function icon(fraction, plugged) {
   const step = Math.max(0, Math.min(10, Math.round(fraction * 10)));
   return (plugged ? onAc : discharging)[step];
 }
+
+// Line under the charge bar: draw in watts while above zero, battery health when the battery reports it (null when it
+// does not): "11.5 W  ·  health 98%". "" when neither.
+export function detail(changeRate, health) {
+  const parts = [];
+  if (changeRate > 0) parts.push(`${changeRate.toFixed(1)} W`);
+  if (health !== null) parts.push(`health ${Math.round(health)}%`);
+  return parts.join("  ·  ");
+}

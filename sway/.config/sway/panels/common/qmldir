@@ -2,3 +2,5 @@ singleton Theme Theme.qml
 PanelShell PanelShell.qml
 AdvancedLink AdvancedLink.qml
 Chip Chip.qml
+PanelCard PanelCard.qml
+SectionLabel SectionLabel.qml

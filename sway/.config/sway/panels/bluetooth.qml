@@ -19,12 +19,9 @@ ShellRoot {
     readonly property var adapter: Bluetooth.defaultAdapter // qmllint disable unresolved-type
     readonly property bool on: adapter !== null && adapter.enabled
     readonly property var all: adapter ? adapter.devices.values : []
-    // Connected first, then by name.
-    readonly property var paired: all.filter(d => Flow.isPaired(d))
-      .sort((a, b) => a.connected !== b.connected ? (a.connected ? -1 : 1) : a.name.localeCompare(b.name))
-    // No deviceName = BlueZ only knows the address: nothing to recognise the device by.
-    readonly property var nearby: all.filter(d => !Flow.isPaired(d) && d.deviceName !== "")
-      .sort((a, b) => a.name.localeCompare(b.name))
+    // Lists and their order: flow.mjs (tested).
+    readonly property var paired: Flow.myDevices(all)
+    readonly property var nearby: Flow.nearbyDevices(all)
     readonly property var rows: on ? paired.concat(nearby) : []
 
     // Click, pair and connect state, driven by flow.mjs.
@@ -89,20 +86,13 @@ ShellRoot {
       function onConnectedChanged() { Flow.connectedChanged(win) }
     }
 
-    Rectangle {
+    PanelCard {
       id: card
 
-      anchors.right: parent.right
       anchors.rightMargin: 8
-      y: 34
       width: 380
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
 
-      MouseArea { anchors.fill: parent }   // swallows clicks so they do not reach the close-on-outside area
 
       Item {
         focus: true

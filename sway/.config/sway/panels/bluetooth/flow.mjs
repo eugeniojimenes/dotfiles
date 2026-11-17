@@ -18,6 +18,22 @@ export function isPaired(device) {
   return device.paired || device.bonded;
 }
 
+// My devices: the paired ones, connected first, then by name.
+export function myDevices(devices) {
+  return devices.filter(isPaired).sort((a, b) => {
+    if (a.connected !== b.connected) return a.connected ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
+}
+
+// Nearby: unpaired ones that have a name, by name. Without deviceName BlueZ only knows the address: nothing to
+// recognise the device by.
+export function nearbyDevices(devices) {
+  return devices
+    .filter((device) => !isPaired(device) && device.deviceName !== "")
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 // Click or Enter on a device. `busy` (pairing, connecting or disconnecting) = ignored. A connected device
 // disconnects, a paired one connects, a new one pairs.
 export function pick(panel, device, busy) {

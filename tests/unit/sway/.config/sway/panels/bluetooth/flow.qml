@@ -115,4 +115,17 @@ TestCase {
     compare(d.calls, ["connect", "forget"])
     compare(p.joining, null)
   }
+
+  function test_lists() {
+    var all = [
+      { name: "Speaker", deviceName: "Speaker", paired: true, bonded: true, connected: false },
+      { name: "Headset", deviceName: "Headset", paired: true, bonded: true, connected: true },
+      { name: "Mouse", deviceName: "Mouse", paired: false, bonded: true, connected: false },
+      { name: "TV", deviceName: "TV", paired: false, bonded: false, connected: false },
+      { name: "AA:BB", deviceName: "", paired: false, bonded: false, connected: false },
+      { name: "Phone", deviceName: "Phone", paired: false, bonded: false, connected: false }
+    ]
+    compare(Flow.myDevices(all).map(function (d) { return d.name }), ["Headset", "Mouse", "Speaker"])
+    compare(Flow.nearbyDevices(all).map(function (d) { return d.name }), ["Phone", "TV"])
+  }
 }

@@ -26,19 +26,11 @@ ShellRoot {
 
     WlrLayershell.namespace: "sway-<name>"
 
-    Rectangle {
+    PanelCard {             // common/PanelCard.qml: under the bar, right edge, swallows clicks
       id: card
-      anchors.right: parent.right
-      anchors.rightMargin: 8
-      y: 34                 // below waybar
+
       width: 380
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
-
-      MouseArea { anchors.fill: parent }   // swallows clicks so they do not reach the close-on-outside area
 
       Item {
         focus: true

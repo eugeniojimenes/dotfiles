@@ -46,20 +46,13 @@ ShellRoot {
       stdout: SplitParser {}
     }
 
-    Rectangle {
+    PanelCard {
       id: card
 
-      anchors.right: parent.right
       anchors.rightMargin: 8
-      y: 34
       width: 380
       height: content.implicitHeight + 32
-      radius: 12
-      color: win.bg
-      border.color: win.accent
-      border.width: 2
 
-      MouseArea { anchors.fill: parent }   // swallows clicks so they do not reach the close-on-outside area
 
       Item {
         focus: win.asking === null
