@@ -1,0 +1,25 @@
+# Bluetooth panel
+
+Files: `sway/.config/sway/bluetooth/shell.qml` (Quickshell), `sway/.config/sway/bluetooth/toggle` (run by a click on the waybar Bluetooth icon and by the menu entry Setup > Bluetooth), the `bluetooth` module in `sway/.config/sway/apps/waybar.jsonc`.
+
+## Purpose
+
+The panel connects and disconnects paired Bluetooth devices, pairs new ones that need no code, and turns the adapter on and off. It reads BlueZ through `Quickshell.Bluetooth` and scans for nearby devices only while it is open. The panel registers no pairing agent, so a device that asks for a PIN or a passkey is paired through `bluetoothctl` behind the Advanced entry.
+
+## Acceptance criteria
+
+1. The panel file parses, and every type, property and import resolves against Qt and Quickshell. Test: `tests/static.sh: qmllint`
+2. A click on the waybar Bluetooth icon opens the panel, and a second click closes it. Test: manual
+3. The waybar icon shows whether the adapter is off, on, or connected to a device. With a connected device that reports its battery, the icon also shows the battery percentage. Test: manual
+4. The switch in the header turns the adapter on and off. With the adapter off the panel says "Bluetooth is off", with the adapter blocked by rfkill it says "Bluetooth is blocked", and without an adapter it says "No Bluetooth adapter". Test: manual
+5. While the panel is open and the adapter is on, it scans for nearby devices and shows "Searching…". The scan stops when the panel closes. Test: manual
+6. "My devices" lists the paired devices, connected ones first and then by name. A device that reports its battery shows the percentage. Test: manual
+7. "Nearby" lists the unpaired devices that have a name, sorted by name. Test: manual
+8. A click on a paired device that is not connected connects it, and the panel closes once the device is connected. A click on a connected device disconnects it and the panel stays open. Test: manual
+9. A click on a nearby device pairs it, marks it as trusted and connects it. The panel closes once the device is connected. Test: manual
+10. A failed pairing shows "Pairing failed, a device that asks for a code needs Advanced (bluetoothctl)". A failed connection shows "Connection failed". Test: manual
+11. Hovering a paired device shows a forget button, and a click on it removes the pairing. Delete does the same for the selected paired device. Test: manual
+12. Up and Down move the selection, Enter acts on the selected device as a click would, and Esc closes the panel. Test: manual
+13. A click outside the panel or a workspace switch closes it. When the switch lands on another output, the cursor moves to the centre of that output. Test: manual
+14. "Advanced (bluetoothctl)" opens `bluetoothctl` in a floating terminal. Test: manual
+15. The menu entry Setup > Bluetooth runs the panel's toggle script. Test: `tests/unit/sway/.config/sway/bin/menu.bats: "Setup > Bluetooth runs the bluetooth panel toggle"`

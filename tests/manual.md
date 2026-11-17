@@ -19,6 +19,7 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Spec keybindings | Criterion 10. | |
 | Spec wifi-panel | Criteria 2 to 11. | |
 | Spec sound-panel | Criteria 2 to 10. | |
+| Spec bluetooth-panel | Criteria 2 to 14. Pair a device that needs no code (headphones), then one that asks for a code through Advanced. | |
 | Spec lock | Criteria 7 to 10. Criterion 9: lock, switch to a TTY, kill the Quickshell lock process, and check that the outputs stay covered. | |
 | Spec sys-tools | Criteria 4 to 6. | |
 | Spec dotfiles-doctor | Criterion 12: `dotfiles-doctor` exits 0. | |

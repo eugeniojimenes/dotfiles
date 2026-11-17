@@ -9,7 +9,7 @@ O desktop inteiro fica numa pasta só, `sway/.config/sway/`, que o stow liga em 
 - `hosts/<hostname>` tem as linhas `output` daquela máquina. Carrega por último para poder sobrescrever as partes compartilhadas, e um arquivo ausente é pulado. Veja [machines.pt-br.md](machines.pt-br.md).
 - `bin/` tem os scripts que os atalhos, o waybar e o menu rodam.
 - `apps/` tem as configs do waybar, mako, fuzzel, swaylock e wiremix.
-- `calendar/`, `display/`, `lock/`, `sound/` e `wifi/` são painéis Quickshell.
+- `bluetooth/`, `calendar/`, `display/`, `lock/`, `sound/` e `wifi/` são painéis Quickshell.
 
 Um arquivo fica fora dessa pasta: `sway/.config/xdg-desktop-portal-wlr/sway`, a config do seletor de compartilhamento de tela.
 

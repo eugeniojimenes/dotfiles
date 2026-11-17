@@ -1,7 +1,8 @@
 # Sway config for the notebook (Intel iGPU + RTX 3050).
 # Whole desktop in this directory, every app started with an explicit path so stock ~/.config/<app> is never read:
 #   config.d/  this config, split by topic   bin/  scripts the bindings, bar and menu run
-#   apps/      waybar, mako, fuzzel, swaylock, wiremix   calendar/ display/ lock/ sound/ wifi/  Quickshell panels
+#   apps/      waybar, mako, fuzzel, swaylock, wiremix
+#   bluetooth/ calendar/ display/ lock/ sound/ wifi/  Quickshell panels
 # Outside it: ~/.config/xdg-desktop-portal-wlr/sway (screen-share picker), ~/.local/state/sway (wallpaper, terminal
 # opacity), ~/Pictures/Wallpapers (images).
 # /etc/sway/config.d is not included: bin/session-env does the systemd/D-Bus environment import itself.

@@ -9,7 +9,7 @@ The whole desktop lives in one directory, `sway/.config/sway/`, which stow links
 - `hosts/<hostname>` holds that machine's `output` lines. It loads last so it can override the shared pieces, and a missing file is skipped. See [machines.md](machines.md).
 - `bin/` holds the scripts that bindings, waybar and the menu run.
 - `apps/` holds the configs for waybar, mako, fuzzel, swaylock and wiremix.
-- `calendar/`, `display/`, `lock/`, `sound/` and `wifi/` are Quickshell panels.
+- `bluetooth/`, `calendar/`, `display/`, `lock/`, `sound/` and `wifi/` are Quickshell panels.
 
 One file lives outside that directory: `sway/.config/xdg-desktop-portal-wlr/sway`, the screen-share picker config.
 

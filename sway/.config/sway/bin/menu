@@ -88,6 +88,7 @@ menu_opacity() {
 menu_setup() {
   {
     entry 󰖩 "Wi-Fi" "run:$dir/wifi/toggle"
+    entry 󰂯 "Bluetooth" "run:$dir/bluetooth/toggle"
     entry 󰕾 "Sound" "run:$dir/sound/toggle"
     entry 󰍹 "Display" "run:$dir/display/toggle"
     entry 󰏫 "Edit Sway config" "run:$dir/bin/float nvim $dir/config.d"

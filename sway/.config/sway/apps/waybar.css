@@ -33,6 +33,7 @@ window#waybar {
 
 #clock,
 #network,
+#bluetooth,
 #wireplumber,
 #battery,
 #tray,
@@ -55,6 +56,8 @@ window#waybar {
 }
 
 #network.disconnected,
+#bluetooth.off,
+#bluetooth.disabled,
 #wireplumber.muted {
   color: #6c7086;
 }
