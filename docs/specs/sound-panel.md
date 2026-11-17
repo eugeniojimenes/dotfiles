@@ -8,7 +8,7 @@ The panel controls PipeWire directly: output and input volume, mute, the default
 
 ## Acceptance criteria
 
-1. The panel file parses, and every type, property and import resolves against Qt and Quickshell. Test: `tests/static.sh: qmllint`
+1. The panel file parses, every type, property and import resolves against Qt and Quickshell, and Quickshell loads it in a headless Sway. Test: `tests/static.sh: qmllint`, `tests/static.sh: panels-load`
 2. A click on the waybar volume icon opens the panel, and a second click closes it. Test: manual
 3. The Output and Input sections each show the default device with its name, a volume slider, the volume in percent and a live level bar. When a section has no device it says "No output device" or "No input device". Test: manual
 4. Clicking a slider sets the volume, and the mouse wheel steps it by 5%. Volume stays between 0% and 100%. Test: manual

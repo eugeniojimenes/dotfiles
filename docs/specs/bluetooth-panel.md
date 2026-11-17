@@ -8,7 +8,7 @@ The panel connects and disconnects paired Bluetooth devices, pairs new ones that
 
 ## Acceptance criteria
 
-1. The panel file parses, and every type, property and import resolves against Qt and Quickshell. Test: `tests/static.sh: qmllint`
+1. The panel file parses, every type, property and import resolves against Qt and Quickshell, and Quickshell loads it in a headless Sway. Test: `tests/static.sh: qmllint`, `tests/static.sh: panels-load`
 2. A click on the waybar Bluetooth icon opens the panel, and a second click closes it. Test: manual
 3. The waybar icon shows whether the adapter is off, on, or connected to a device. With a connected device that reports its battery, the icon also shows the battery percentage. Test: manual
 4. The switch in the header turns the adapter on and off. With the adapter off the panel says "Bluetooth is off", with the adapter blocked by rfkill it says "Bluetooth is blocked", and without an adapter it says "No Bluetooth adapter". Test: manual

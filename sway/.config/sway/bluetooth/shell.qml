@@ -4,7 +4,7 @@ import Quickshell.Bluetooth
 import Quickshell.Io
 import Quickshell.Wayland
 import "flow.js" as Flow
-import "../common"
+import "common"
 
 // Bluetooth panel for the waybar Bluetooth icon: paired devices (click connects or disconnects) and nearby ones (click
 // pairs, trusts, connects), straight from BlueZ (Quickshell.Bluetooth). Power switch in the header. Esc or a click

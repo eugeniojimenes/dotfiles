@@ -139,7 +139,7 @@ A stow conflict (a real file where a symlink belongs) is never fixed automatical
 `bin/check` runs the test layers through the flake checks. The tools come from the pinned nixpkgs, so nothing needs to be installed. Run it before every commit. The flake only sees tracked files, so `git add` new files first.
 ```sh
 bin/check           # everything: static, unit, eval of each host, then the employer-term scan
-bin/check static    # shellcheck, nixfmt and statix, sway -C per host, qmllint, waybar JSON, em-dash sweep, doc pairs, stow dry run, gitleaks
+bin/check static    # shellcheck, nixfmt and statix, sway -C per host, qmllint, panels loaded in headless Sway, waybar JSON, em-dash sweep, doc pairs, stow dry run, gitleaks
 bin/check unit      # bats tests in tests/unit/, scripts run against stubbed commands
 bin/check terms     # local only: tracked files and paths against the term list in ~/.private, skipped when it is locked
 nix develop         # shell with the same tools, to run one of them by hand

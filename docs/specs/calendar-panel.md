@@ -8,7 +8,7 @@ The panel shows a month grid with ISO week numbers under the waybar clock, marks
 
 ## Acceptance criteria
 
-1. The panel file parses, and every type, property and import resolves against Qt and Quickshell. Test: `tests/static.sh: qmllint`
+1. The panel file parses, every type, property and import resolves against Qt and Quickshell, and Quickshell loads it in a headless Sway. Test: `tests/static.sh: qmllint`, `tests/static.sh: panels-load`
 2. A click on the waybar clock opens the panel, and a second click closes it. Test: manual
 3. The grid has six weeks starting on the Monday on or before the 1st of the month, with one day per cell even across a DST change. Test: `tests/unit/sway/.config/sway/calendar/calendar.bats: "grid: 6 weeks from the Monday on or before the 1st"`, `tests/unit/sway/.config/sway/calendar/calendar.bats: "grid: one day per cell across a DST change"`
 4. Each row starts with its ISO 8601 week number, so the last days of December can belong to week 1 and the first days of January to week 52 or 53. Test: `tests/unit/sway/.config/sway/calendar/calendar.bats: "ISO week numbers at year edges, week 53 included"`

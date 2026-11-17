@@ -22,4 +22,5 @@ Why behind each: `docs/sway.md`. Skills: `add-keybinding`, `add-panel`.
 - New external command = package in `nixos/common.nix` (`programs.sway.extraPackages`) + stub in `tests/helpers/stubs/` when a test reaches it.
 - Notebook-only behaviour (`display/reinit`, GPU order in `bin/start`, touchpad block) listed in `docs/machines.md`: keep list current.
 - `display/ctl` edits `alacritty/.config/alacritty/alacritty.toml` in place: diff there after text-size change = expected.
-- Check: `bin/check static` (`sway -C` per host, `qmllint`, waybar JSON, shellcheck), `bin/check unit`.
+- Check: `bin/check static` (`sway -C` per host, `qmllint`, `panels-load` = each panel loaded by Quickshell in headless Sway, waybar JSON, shellcheck), `bin/check unit`.
+- Quickshell refuses imports outside the panel's own dir (qmllint does not): each panel dir has `common -> ../common` symlink, `import "common"`. Never `import "../common"`.

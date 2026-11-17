@@ -4,7 +4,7 @@ import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Wayland
 import "flow.js" as Flow
-import "../common"
+import "common"
 
 // Wi-Fi panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
 // password prompt for a secured network with no saved profile. Esc or a click outside closes it. One process per

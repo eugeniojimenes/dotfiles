@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import "../common"
+import "common"
 
 // Display panel for the waybar monitor icon: brightness, scale, laptop screen on/off and
 // text size, per monitor (chevrons switch between them). Drawing only; all reads and writes go through ./ctl.

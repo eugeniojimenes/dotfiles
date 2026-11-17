@@ -16,7 +16,7 @@ pkill -f 'quickshell -p .*/sway/<name>/shell.qml' || exec quickshell -p ~/.confi
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import "../common"
+import "common"           // symlink: ln -s ../common <name>/common
 
 // <Name> panel for the waybar <icon>: <what it shows>. Esc or a click outside closes it. One process per open: nothing
 // runs once it is closed.

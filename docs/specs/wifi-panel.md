@@ -8,7 +8,7 @@ The panel lists Wi-Fi networks live from NetworkManager and connects to one with
 
 ## Acceptance criteria
 
-1. The panel file parses, and every type, property and import resolves against Qt and Quickshell. Test: `tests/static.sh: qmllint`
+1. The panel file parses, every type, property and import resolves against Qt and Quickshell, and Quickshell loads it in a headless Sway. Test: `tests/static.sh: qmllint`, `tests/static.sh: panels-load`
 2. A click on the waybar network icon opens the panel, and a second click closes it. Test: manual
 3. Networks are listed with the connected one first and the rest by signal strength. Hidden networks with no name are left out. Test: `tests/unit/sway/.config/sway/wifi/flow.bats: "list: connected first, then by signal, hidden networks left out"`
 4. While the panel is open it scans for networks and shows "Searching…" until the scan ends, then "Scanned". Test: manual

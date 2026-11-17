@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import "calendar.js" as Cal
-import "../common"
+import "common"
 
 // Calendar popup for the waybar clock: month grid with ISO week numbers, today
 // marked, year progress. Esc, a click outside or clicking the clock again closes it. Arrows and the wheel step

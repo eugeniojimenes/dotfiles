@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
-import "../common"
+import "common"
 
 // Sound panel for the waybar volume icon: output and input volume, mute and live level, default device pick, and
 // per-app volume, straight from PipeWire (Quickshell.Services.Pipewire). Volume stops at 100%. Arrows step the output

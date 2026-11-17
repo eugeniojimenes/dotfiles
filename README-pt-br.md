@@ -139,7 +139,7 @@ Um conflito do stow (um arquivo real onde devia haver um symlink) nunca é corri
 O `bin/check` roda as camadas de teste pelos checks do flake. As ferramentas vêm do nixpkgs fixado, então nada precisa ser instalado. Rode antes de cada commit. O flake só enxerga arquivos rastreados, então faça `git add` nos arquivos novos antes.
 ```sh
 bin/check           # tudo: static, unit, eval de cada host, depois a busca de termos do empregador
-bin/check static    # shellcheck, nixfmt e statix, sway -C por host, qmllint, JSON do waybar, varredura de em-dash, pares de docs, stow simulado, gitleaks
+bin/check static    # shellcheck, nixfmt e statix, sway -C por host, qmllint, painéis carregados num Sway headless, JSON do waybar, varredura de em-dash, pares de docs, stow simulado, gitleaks
 bin/check unit      # testes bats em tests/unit/, scripts rodam contra comandos stub
 bin/check terms     # só local: arquivos e caminhos rastreados contra a lista de termos em ~/.private, pulado quando está trancado
 nix develop         # shell com as mesmas ferramentas, para rodar uma delas na mão

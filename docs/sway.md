@@ -40,7 +40,7 @@ A panel is a full-screen transparent `PanelWindow` on the overlay layer with exc
 
 Exclusive keyboard focus does not follow a workspace switch. Switching workspace by key or by a click on another output would leave every window without input until the panel closed. So each panel listens to Sway's workspace events through `I3IpcListener` and closes itself on a focus change, the way a popup would. Sway also skips its own mouse warping while a layer surface holds the keyboard, so when the switch moves to another output the panel moves the cursor to the center of the new workspace before it quits.
 
-All of this lives once in `common/PanelShell.qml`, and every panel except the lock screen is a `PanelShell` with its own card. `common/Theme.qml` holds the colours and the font, and `common/AdvancedLink.qml` is the footer link that opens a panel's full TUI in a floating terminal. A fix to the shared behaviour goes there, so it reaches every panel at once.
+All of this lives once in `common/PanelShell.qml`, and every panel except the lock screen is a `PanelShell` with its own card. Quickshell only loads files from the directory of the panel it runs, so each panel directory has a `common` symlink to `../common` and imports `"common"`. A plain `import "../common"` passes qmllint but fails in Quickshell, which is why `bin/check static` also starts every panel in a headless Sway (step `panels-load`). `common/Theme.qml` holds the colours and the font, and `common/AdvancedLink.qml` is the footer link that opens a panel's full TUI in a floating terminal. A fix to the shared behaviour goes there, so it reaches every panel at once.
 
 ## Terminal opacity and text size
 

@@ -72,6 +72,49 @@ qml_lint() {
     --unqualified disable --comma disable --uncreatable-type disable --signal-handler-parameters disable
 }
 
+# Each panel with a toggle, loaded for real by Quickshell in a headless Sway (pixman, no GPU, no seat). qmllint follows
+# plain QML import rules; Quickshell does not (it refuses imports outside the panel's own dir), so only a real load
+# proves the panel starts. Pass = "Configuration Loaded" in its log; D-Bus and PipeWire errors on the way are expected
+# here. Lock left out: it would lock this session.
+panels_load() {
+  local run=$tmp/qsrun dir qml q sock='' rc=0 sp _
+  mkdir -p "$run" && chmod 700 "$run"
+  printf 'output HEADLESS-1 resolution 1920x1080\n' >"$tmp/sway.cfg"
+  env -i PATH="$PATH" HOME="$tmp/home" XDG_RUNTIME_DIR="$run" WLR_BACKENDS=headless WLR_RENDERER=pixman \
+    WLR_LIBINPUT_NO_DEVICES=1 DBUS_SESSION_BUS_ADDRESS=disabled: sway -c "$tmp/sway.cfg" >"$tmp/sway.log" 2>&1 &
+  sp=$!
+  for _ in $(seq 100); do
+    for sock in "$run"/sway-ipc.*; do [[ -S $sock ]] && break 2; done
+    sock=''
+    sleep 0.1
+  done
+  [[ -n $sock ]] || { cat "$tmp/sway.log"; kill "$sp"; return 1; }
+  for dir in sway/.config/sway/*/; do
+    [[ -f $dir/toggle ]] || continue
+    qml=$dir$(grep -o '[a-z]*\.qml' "$dir/toggle" | head -1)
+    env -i PATH="$PATH" HOME="$tmp/home" XDG_RUNTIME_DIR="$run" WAYLAND_DISPLAY=wayland-1 SWAYSOCK="$sock" \
+      QT_QPA_PLATFORM=wayland quickshell -p "$PWD/$qml" >"$tmp/qs.log" 2>&1 &
+    q=$!
+    for _ in $(seq 100); do
+      grep -q 'Configuration Loaded' "$tmp/qs.log" && break
+      kill -0 "$q" 2>/dev/null || break
+      sleep 0.1
+    done
+    kill "$q" 2>/dev/null
+    wait "$q" 2>/dev/null
+    if grep -q 'Configuration Loaded' "$tmp/qs.log"; then
+      echo "ok   $qml"
+    else
+      echo "FAIL $qml"
+      grep -E 'ERROR|caused' "$tmp/qs.log"
+      rc=1
+    fi
+  done
+  kill "$sp"
+  wait "$sp" 2>/dev/null
+  return $rc
+}
+
 # waybar config is plain JSON today. Comments added later: strip the `//` lines first.
 json() { jq empty sway/.config/sway/apps/waybar.jsonc docs/media.json; }
 
@@ -116,6 +159,7 @@ step shellcheck shellcheck_all
 step nix-format nix_format
 step sway-config sway_config
 step qmllint qml_lint
+step panels-load panels_load
 step json json
 step em-dash em_dash
 step doc-pairs doc_pairs
