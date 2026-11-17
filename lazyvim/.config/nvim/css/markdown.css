@@ -22,7 +22,8 @@
   --tn-border: #292e42;
 }
 
-html, body {
+html,
+body {
   background: var(--tn-bg) !important;
   color: var(--tn-fg);
 }
@@ -45,7 +46,9 @@ html, body {
   color: var(--tn-blue);
   text-decoration: none;
 }
-.markdown-body a:hover { text-decoration: underline; }
+.markdown-body a:hover {
+  text-decoration: underline;
+}
 
 .markdown-body h1,
 .markdown-body h2,
@@ -61,20 +64,32 @@ html, body {
 }
 .markdown-body h1 {
   font-size: 2em;
-  padding-bottom: .35em;
+  padding-bottom: 0.35em;
   border-bottom: 1px solid var(--tn-border);
   color: var(--tn-magenta);
 }
 .markdown-body h2 {
   font-size: 1.5em;
-  padding-bottom: .3em;
+  padding-bottom: 0.3em;
   border-bottom: 1px solid var(--tn-border);
   color: var(--tn-blue);
 }
-.markdown-body h3 { font-size: 1.25em; color: var(--tn-cyan); }
-.markdown-body h4 { font-size: 1em; color: var(--tn-green); }
-.markdown-body h5 { font-size: .9em; color: var(--tn-yellow); }
-.markdown-body h6 { font-size: .85em; color: var(--tn-comment); }
+.markdown-body h3 {
+  font-size: 1.25em;
+  color: var(--tn-cyan);
+}
+.markdown-body h4 {
+  font-size: 1em;
+  color: var(--tn-green);
+}
+.markdown-body h5 {
+  font-size: 0.9em;
+  color: var(--tn-yellow);
+}
+.markdown-body h6 {
+  font-size: 0.85em;
+  color: var(--tn-comment);
+}
 
 .markdown-body p,
 .markdown-body ul,
@@ -91,25 +106,33 @@ html, body {
 .markdown-body ol {
   padding-left: 2em;
 }
-.markdown-body li + li { margin-top: .25em; }
-.markdown-body li::marker { color: var(--tn-magenta); }
+.markdown-body li + li {
+  margin-top: 0.25em;
+}
+.markdown-body li::marker {
+  color: var(--tn-magenta);
+}
 
 .markdown-body blockquote {
   margin: 0 0 16px;
   padding: 0 1em;
   color: var(--tn-fg-dark);
-  border-left: .3em solid var(--tn-magenta);
+  border-left: 0.3em solid var(--tn-magenta);
   background: var(--tn-bg-dark);
   border-radius: 0 6px 6px 0;
 }
-.markdown-body blockquote > :first-child { margin-top: .6em; }
-.markdown-body blockquote > :last-child  { margin-bottom: .6em; }
+.markdown-body blockquote > :first-child {
+  margin-top: 0.6em;
+}
+.markdown-body blockquote > :last-child {
+  margin-bottom: 0.6em;
+}
 
 .markdown-body code,
 .markdown-body tt {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   font-size: 85%;
-  padding: .2em .4em;
+  padding: 0.2em 0.4em;
   background: var(--tn-bg-code);
   color: var(--tn-orange);
   border-radius: 6px;
@@ -184,13 +207,18 @@ html, body {
   box-shadow: inset 0 -1px 0 var(--tn-fg-gutter);
 }
 
-.markdown-body .task-list-item { list-style-type: none; }
-.markdown-body .task-list-item input { margin: 0 .35em .25em -1.4em; vertical-align: middle; }
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+.markdown-body .task-list-item input {
+  margin: 0 0.35em 0.25em -1.4em;
+  vertical-align: middle;
+}
 
 .markdown-body mark {
   background: var(--tn-yellow);
   color: var(--tn-bg);
-  padding: 0 .2em;
+  padding: 0 0.2em;
   border-radius: 3px;
 }
 
@@ -210,10 +238,20 @@ html, body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--tn-bg); }
-::-webkit-scrollbar-thumb { background: var(--tn-fg-gutter); border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: var(--tn-comment); }
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--tn-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--tn-fg-gutter);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tn-comment);
+}
 
 /* page.css caps the outer wrapper at 900px; this file is served as _static/markdown.css, loaded after it */
 #page-ctn {

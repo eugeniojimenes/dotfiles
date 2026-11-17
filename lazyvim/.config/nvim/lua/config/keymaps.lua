@@ -4,11 +4,13 @@
 
 local map = vim.keymap.set
 
-map("n", "<TAB>",   "<cmd>BufferLineCycleNext<cr>",    { desc = "Next Buffer" }) -- goes to the next buffer
-map("n", "<S-TAB>", "<cmd>BufferLineCyclePrev<cr>",    { desc = "Prev Buffer" }) -- goes to the prev buffer
-map("n", "<C-q>",   function() Snacks.bufdelete() end, { desc = "Delete current buffer" })
-map("n", "<leader>bD", "<CMD>bd<CR>",                  { desc = "Delete Buffer and Window" })
-map("n", "<C-x>",      "<CMD>bd<CR>",                  { desc = "Delete Buffer and Window" })
+map("n", "<TAB>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next Buffer" }) -- goes to the next buffer
+map("n", "<S-TAB>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" }) -- goes to the prev buffer
+map("n", "<C-q>", function()
+  Snacks.bufdelete()
+end, { desc = "Delete current buffer" })
+map("n", "<leader>bD", "<CMD>bd<CR>", { desc = "Delete Buffer and Window" })
+map("n", "<C-x>", "<CMD>bd<CR>", { desc = "Delete Buffer and Window" })
 
 -- Jump by bufferline position, not buffer number: `<leader>b0` = leftmost tab, `<leader>b1` the next.
 -- `go_to(n, true)` and `get_elements()` both index bufferline's ordered list, so pins and `[B`/`]B` moves
@@ -18,20 +20,27 @@ local buffer_jumps = {}
 for i = 0, 9 do
   buffer_jumps[#buffer_jumps + 1] = {
     "<leader>b" .. i,
-    function() require("bufferline").go_to(i + 1, true) end,
+    function()
+      require("bufferline").go_to(i + 1, true)
+    end,
     desc = function()
       local el = require("bufferline").get_elements().elements[i + 1]
-      if not el then return "(none)" end
+      if not el then
+        return "(none)"
+      end
       local rel = vim.fn.fnamemodify(el.path or "", ":~:.")
-      if rel == "" then return el.name or "[No Name]" end
+      if rel == "" then
+        return el.name or "[No Name]"
+      end
       return #rel > 40 and vim.fn.pathshorten(rel) or rel
     end,
   }
 end
 require("which-key").add(buffer_jumps)
 
-
-map("n", "<C-f>", function() Snacks.picker.pick("files") end, { desc = "Find Files" })
+map("n", "<C-f>", function()
+  Snacks.picker.pick("files")
+end, { desc = "Find Files" })
 
 -- `gr` (LSP references) re-globs and re-parses every .rb in the workspace on each call
 -- (8824 files and ~25s in a work repo) because ruby-lsp deliberately does not keep references in
@@ -39,4 +48,6 @@ map("n", "<C-f>", function() Snacks.picker.pick("files") end, { desc = "Find Fil
 -- no receiver typing, so ripgrep is about as accurate and finishes in a tenth of a second. `gr`
 -- stays on the LSP, which is genuinely semantic for constants; this is the fast sibling.
 -- Shadows built-in `gR` (virtual replace mode).
-map({ "n", "x" }, "gR", function() Snacks.picker.grep_word() end, { desc = "References (ripgrep)" })
+map({ "n", "x" }, "gR", function()
+  Snacks.picker.grep_word()
+end, { desc = "References (ripgrep)" })

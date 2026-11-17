@@ -84,8 +84,12 @@
   color: #e0af68;
 }
 
-.hljs-emphasis { font-style: italic; }
-.hljs-strong   { font-weight: 700; }
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
 
 .hljs-deletion {
   color: #f7768e;

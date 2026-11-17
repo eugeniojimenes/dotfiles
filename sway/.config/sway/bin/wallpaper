@@ -37,11 +37,15 @@ case ${1-} in
   pick)
     # Thumbnails = the images themselves as fuzzel icons; bigger lines so they are worth looking at.
     choice=$(for f in "${imgs[@]}"; do
-      name=${f##*/}; name=${name%.*}
+      name=${f##*/}
+      name=${name%.*}
       printf '%s\t%s\0icon\037%s\n' "$name" "$f" "$f"
     done | fuzzel --dmenu --config ~/.config/sway/apps/fuzzel.ini --with-nth=1 --accept-nth=2 \
       --font 'JetBrainsMono Nerd Font:size=11' --line-height 72 --lines 6 --width 60 --placeholder 'Background') || exit 0
     [[ -n $choice ]] && apply "$choice"
     ;;
-  *) sed -n '2,4p' "$0" | sed 's/^# \?//'; exit 2 ;;
+  *)
+    sed -n '2,4p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
 esac

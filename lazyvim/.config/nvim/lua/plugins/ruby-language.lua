@@ -13,10 +13,7 @@ local formatter = vim.g.lazyvim_ruby_formatter
 local function mise_cmd(cmd)
   if vim.fn.executable("mise") ~= 1 then
     vim.schedule(function()
-      vim.notify(
-        "[ruby] `mise` is not on PATH, using global tooling, project bundle ignored",
-        vim.log.levels.WARN
-      )
+      vim.notify("[ruby] `mise` is not on PATH, using global tooling, project bundle ignored", vim.log.levels.WARN)
     end)
     return cmd
   end

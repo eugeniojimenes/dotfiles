@@ -8,16 +8,16 @@ used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
 # Shorten home directory to ~/
 case "$cwd" in
-  "$HOME")    short_cwd="~/" ;;
-  "$HOME"/*)  short_cwd="~/${cwd#$HOME/}" ;;
-  *)          short_cwd="$cwd" ;;
+  "$HOME") short_cwd="~/" ;;
+  "$HOME"/*) short_cwd="~/${cwd#$HOME/}" ;;
+  *) short_cwd="$cwd" ;;
 esac
 
 # Git branch (skip optional locks to avoid conflicts)
 branch=""
 if git -C "$cwd" rev-parse --is-inside-work-tree &>/dev/null 2>&1; then
-  branch=$(git -C "$cwd" -c core.hooksPath=/dev/null symbolic-ref --short HEAD 2>/dev/null \
-           || git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
+  branch=$(git -C "$cwd" -c core.hooksPath=/dev/null symbolic-ref --short HEAD 2>/dev/null ||
+    git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
 fi
 
 # Build output
@@ -39,11 +39,11 @@ fi
 if [ -n "$used" ]; then
   used_int=$(printf '%.0f' "$used")
   if [ "$used_int" -ge 80 ]; then
-    color='\033[31m'   # red
+    color='\033[31m' # red
   elif [ "$used_int" -ge 50 ]; then
-    color='\033[33m'   # yellow
+    color='\033[33m' # yellow
   else
-    color='\033[32m'   # green
+    color='\033[32m' # green
   fi
   parts+=("$(printf "${color}ctx:%d%%\033[0m" "$used_int")")
 fi
@@ -66,7 +66,7 @@ if [ -f "$ponytail_flag" ] && [ ! -L "$ponytail_flag" ]; then
   ponytail_mode=$(head -c 64 "$ponytail_flag" 2>/dev/null | tr -d '\n\r' | tr '[:upper:]' '[:lower:]')
   ponytail_mode=$(printf '%s' "$ponytail_mode" | tr -cd 'a-z0-9-')
   case "$ponytail_mode" in
-    lite|full|ultra)
+    lite | full | ultra)
       suffix=$(printf '%s' "$ponytail_mode" | tr '[:lower:]' '[:upper:]')
       parts+=("$(printf '\033[38;5;108m[PONYTAIL:%s]\033[0m' "$suffix")")
       ;;
