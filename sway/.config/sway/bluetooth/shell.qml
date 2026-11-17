@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.I3
+import Quickshell.Io
 import Quickshell.Wayland
 import "flow.js" as Flow
 
@@ -71,6 +72,18 @@ ShellRoot {
 
     function pick(d) { Flow.pick(win, d, busy(d)) }
     function forget(d) { Flow.forget(win, d) }
+
+    // Device1.Connect straight over D-Bus, see flow.js paired(). A failed reply = non-zero exit.
+    function connectAfterPair(d) {
+      profiles.command = ["busctl", "--system", "--timeout=30", "call", "org.bluez", d.dbusPath, "org.bluez.Device1",
+                          "Connect"]
+      profiles.running = true
+    }
+
+    Process {
+      id: profiles
+      onExited: code => { if (code !== 0) Flow.fail(win, Flow.CONNECT_FAILED) }
+    }
 
     // BlueZ icon names (audio-headset, input-keyboard...) to Nerd Font glyphs.
     function glyph(d) {

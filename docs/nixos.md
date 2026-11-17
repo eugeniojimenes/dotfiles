@@ -39,6 +39,10 @@ The portals come from the defaults of the NixOS Sway module: `xdg-desktop-portal
 
 Nautilus as the FileChooser backend was tried and dropped. At startup the portal activates Nautilus, and Nautilus calls the portal back while it is still starting, so both wait on each other for 25 seconds. Every GTK app started during that window hung, and waybar died at login.
 
+## Bluetooth
+
+No Bluetooth pairing agent runs, since the Sway panel does not register one. Without an agent BlueZ keeps the adapter non-bondable, so a pairing works but is never stored: `bluetoothctl info` shows `Bonded: no`, and the device has to pair again after its first disconnect. `hardware.bluetooth.settings.General.AlwaysPairable = true` keeps the adapter bondable. Devices that ask for a PIN or a passkey still need an agent, which `bluetoothctl` provides.
+
 ## Theme and cursor
 
 Dark mode is set through dconf defaults, which `gsettings set` can still override. `color-scheme = "prefer-dark"` covers GTK4, libadwaita and Chromium. GTK3 ignores that key and needs a theme by name. Plain GTK3 does not ship an `Adwaita-dark` theme, and an unknown theme name falls back to light Adwaita, which is why the file chooser and other GTK3 apps stayed light. `adw-gtk3-dark` (from the `adw-gtk3` package) makes GTK3 apps look like libadwaita apps.

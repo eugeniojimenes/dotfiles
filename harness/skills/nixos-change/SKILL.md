@@ -39,4 +39,5 @@ Rules: `harness/rules/nixos.md`. Why: `docs/nixos.md`.
 - Connector names renamed by GPU driver load race: `i915` in initrd on the notebook. Match outputs by make/model/serial.
 - `auto-optimise-store` slows every build; `nix.optimise.automatic` is the timer variant.
 - `system.stateVersion` never bumps.
+- `hardware.bluetooth.settings` change: switch rewrites `/etc/bluetooth/main.conf` but does not restart bluetoothd. Owner runs `sudo systemctl restart bluetooth` (drops connected devices), then check `bluetoothctl show`.
 - Agent never runs `sudo`.

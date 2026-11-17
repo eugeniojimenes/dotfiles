@@ -14,8 +14,9 @@ TestCase {
   }
 
   function panel() {
-    var p = { joining: null, fresh: false, connecting: false, failure: "", closed: 0 }
+    var p = { joining: null, fresh: false, connecting: false, failure: "", closed: 0, afterPair: [] }
     p.closePanel = function () { p.closed++ }
+    p.connectAfterPair = function (d) { p.afterPair.push(d) }
     return p
   }
 
@@ -34,7 +35,9 @@ TestCase {
     d.pairing = false
     Flow.pairingChanged(p)
     verify(d.trusted)
-    compare(d.calls, ["pair", "connect"])
+    // Quickshell's connect() is a no-op while the pairing link is up: the connect goes around it.
+    compare(d.calls, ["pair"])
+    compare(p.afterPair, [d])
     compare(p.closed, 0)
     compare(p.joining, null)
     compare(p.failure, "")
@@ -48,6 +51,7 @@ TestCase {
     d.paired = true
     d.pairing = false
     Flow.pairingChanged(p)
+    compare(p.afterPair, [d])
     compare(p.joining, d)
     d.connected = true
     Flow.connectedChanged(p)

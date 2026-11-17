@@ -59,7 +59,12 @@
 
   hardware = {
     graphics.enable = true;
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      # No pairing agent runs (the Sway panel has none). Without one BlueZ keeps the adapter non-bondable, so a pairing
+      # is never stored (Bonded: no) and a headset drops it on the first disconnect.
+      settings.General.AlwaysPairable = true;
+    };
     i2c.enable = true;
   };
 

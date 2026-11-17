@@ -2,7 +2,7 @@
 
 Como as partes deste repo funcionam e por que estão configuradas assim. Instalação e uso no dia a dia estão no [README](../README-pt-br.md). Cada página tem uma versão em inglês ao lado (`<página>.md`).
 
-- [nixos.pt-br.md](nixos.pt-br.md): estrutura do flake, o host do notebook, login, portals, tema, gerações e coleta de lixo.
+- [nixos.pt-br.md](nixos.pt-br.md): estrutura do flake, o host do notebook, login, portals, pareamento Bluetooth, tema, gerações e coleta de lixo.
 - [machines.pt-br.md](machines.pt-br.md): o que é configurado por máquina e como adicionar uma nova.
 - [sway.pt-br.md](sway.pt-br.md): a estrutura da pasta do Sway, títulos dos atalhos, ordem das GPUs, retorno da suspensão, painéis Quickshell.
 - [tmux.pt-br.md](tmux.pt-br.md): local do gerenciador de plugins, descrições dos atalhos, snapshots manuais, servidores extras.

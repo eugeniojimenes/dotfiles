@@ -1,9 +1,10 @@
 .pragma library
 // Click, pair and connect flow of the Bluetooth panel. Plain JS, apart from the QML, so tests/unit drives it with fake
-// devices in BlueZ's event order. `p` = the panel: joining, fresh, connecting, failure, closePanel(). Device state
+// devices in BlueZ's event order. `p` = the panel: joining, fresh, connecting, failure, closePanel(),
+// connectAfterPair(d). Device state
 // arrives as booleans: the BluetoothDeviceState enum stays in shell.qml.
 
-var PAIR_FAILED = "Pairing failed, a device that asks for a code needs Advanced (bluetoothctl)"
+var PAIR_FAILED = "Pairing failed. Put the device in pairing mode, or use Advanced (bluetoothctl) if it asks for a code"
 var CONNECT_FAILED = "Connection failed"
 
 function mine(d) { return d.paired || d.bonded }
@@ -46,11 +47,12 @@ function settle(p) {
   p.connecting = false
 }
 
-// Pair() done: trust (reconnects on its own later) and connect the profiles.
+// Pair() done: trust (reconnects on its own later) and connect the profiles. Not d.connect(): Quickshell refuses it
+// while the pairing link is up ("already connected"), and that link drops a moment later with no audio profile.
 function paired(p) {
   var d = p.joining
   d.trusted = true
-  d.connect()
+  p.connectAfterPair(d)
   settle(p)
 }
 

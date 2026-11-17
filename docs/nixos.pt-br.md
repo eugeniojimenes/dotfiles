@@ -39,6 +39,10 @@ Os portals vêm dos padrões do módulo Sway do NixOS: o `xdg-desktop-portal-wlr
 
 O Nautilus como backend do FileChooser foi testado e abandonado. Na inicialização o portal ativa o Nautilus, e o Nautilus chama o portal de volta enquanto ainda está iniciando, então os dois ficam esperando um pelo outro por 25 segundos. Todo app GTK aberto nesse intervalo travava, e o waybar morria no login.
 
+## Bluetooth
+
+Nenhum agente de pareamento Bluetooth roda, porque o painel do Sway não registra um. Sem agente, o BlueZ deixa o adaptador sem bonding: o pareamento funciona mas nunca fica salvo, o `bluetoothctl info` mostra `Bonded: no` e o aparelho precisa parear de novo depois da primeira desconexão. `hardware.bluetooth.settings.General.AlwaysPairable = true` mantém o bonding ligado. Aparelhos que pedem PIN ou senha ainda precisam de um agente, que o `bluetoothctl` fornece.
+
 ## Tema e cursor
 
 O modo escuro é definido por padrões do dconf, que o `gsettings set` ainda pode sobrescrever. `color-scheme = "prefer-dark"` cobre GTK4, libadwaita e Chromium. O GTK3 ignora essa chave e precisa de um tema pelo nome. O GTK3 puro não vem com um tema `Adwaita-dark`, e um nome de tema desconhecido cai no Adwaita claro, e era por isso que o seletor de arquivos e outros apps GTK3 continuavam claros. O `adw-gtk3-dark` (do pacote `adw-gtk3`) deixa os apps GTK3 com a cara dos apps libadwaita.

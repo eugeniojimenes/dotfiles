@@ -14,7 +14,7 @@ qt() {
   assert_output --partial "PASS   : qmltestrunner::flow::$1()"
 }
 
-@test "new device: link up mid-pairing never closes the panel, connect only after Pair()" { qt test_new_device_pairing; }
+@test "new device: link up mid-pairing never closes the panel, connect over D-Bus after Pair()" { qt test_new_device_pairing; }
 @test "new device: connected after pairing, panel stays open" { qt test_new_device_connects_later; }
 @test "new device: pairing fails, message shown, nothing connected" { qt test_pairing_fails; }
 @test "paired device: panel closes once connected" { qt test_paired_device_closes_once_connected; }
