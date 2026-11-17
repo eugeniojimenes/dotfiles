@@ -7,12 +7,16 @@ padding=10
 default-timeout=5000
 anchor=top-right
 
-# Hidden while a mode is on; they still land in `makoctl history`. Two names so the automatic one never undoes a
-# manual Do not disturb: dnd = menu/bar toggle, screenshare = set by share-picker, cleared by the portal's exec_after.
+# Hidden while a mode is on; they still land in `makoctl history`. One name per source so an automatic one never undoes
+# a manual Do not disturb: dnd = menu/bar toggle, screenshare = set by share-picker, cleared by the portal's exec_after,
+# recording = bin/record.
 [mode=dnd]
 invisible=1
 
 [mode=screenshare]
+invisible=1
+
+[mode=recording]
 invisible=1
 
 # poweralertd (battery): every charge state change is a normal notification, kept out of sight. Low, critical and

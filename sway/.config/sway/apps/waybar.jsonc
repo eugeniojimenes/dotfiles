@@ -4,7 +4,16 @@
   "height": 26,
   "modules-left": ["custom/menu", "sway/workspaces", "sway/mode"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/dnd", "tray", "network", "bluetooth", "wireplumber", "custom/display", "battery"],
+  "modules-right": [
+    "custom/record",
+    "custom/dnd",
+    "tray",
+    "network",
+    "bluetooth",
+    "wireplumber",
+    "custom/display",
+    "battery"
+  ],
 
   "custom/menu": {
     "format": "󱓞",
@@ -60,6 +69,14 @@
     "interval": "once",
     "signal": 8,
     "on-click": "~/.config/sway/bin/dnd toggle"
+  },
+
+  "custom/record": {
+    "exec": "~/.config/sway/bin/record status",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 9,
+    "on-click": "~/.config/sway/bin/record stop"
   },
 
   "custom/display": {

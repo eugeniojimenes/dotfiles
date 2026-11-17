@@ -67,6 +67,11 @@ window#waybar {
   color: #a6e3a1;
 }
 
+#custom-record {
+  padding: 0 10px;
+  color: #f38ba8;
+}
+
 #custom-dnd {
   padding: 0 10px;
   color: #f9e2af;

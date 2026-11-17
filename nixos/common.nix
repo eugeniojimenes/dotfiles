@@ -133,7 +133,7 @@
         alacritty
         grim
         slurp
-        # Screen recording for README media (harness skill update-media): wf-recorder, then ffmpeg to GIF.
+        # Screen recording: bin/record, and README media (harness skill update-media: wf-recorder, then ffmpeg to GIF).
         wf-recorder
         ffmpeg-headless
         wl-clipboard

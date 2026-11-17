@@ -1,4 +1,4 @@
-### Media, brightness, screenshots
+### Media, brightness, screenshots, recording
 # swayosd draws the volume/brightness popup.
 #: Volume up
 bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume raise
@@ -22,3 +22,7 @@ bindsym --locked XF86AudioPrev exec playerctl previous
 bindsym Print exec $dir/bin/screenshot area
 #: Screenshot (screen)
 bindsym Shift+Print exec $dir/bin/screenshot screen
+#: Record area (again to stop)
+bindsym Ctrl+Print exec $dir/bin/record area
+#: Record screen (again to stop)
+bindsym Ctrl+Shift+Print exec $dir/bin/record screen

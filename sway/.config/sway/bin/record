@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# Screen recording to <XDG videos>/recording-<date>.mp4 with wf-recorder. Spec: docs/specs/screen-recording.md.
+#   record area               drag a region with slurp (Esc cancels)
+#   record screen             the focused output
+#   record stop | status      status = JSON for the waybar module (signal 9)
+# While it runs: notifications hidden, a floating box (panels/recording.qml) shows the time.
+# A start while a recording runs stops it instead: the same key starts and stops. Video only, no audio.
+# x264 on the CPU: wf-recorder only encodes damaged frames, so load stays low, and no VA-API driver is installed.
+
+pidfile=${XDG_RUNTIME_DIR:-/tmp}/sway-record.pid
+bin=${0%/*}
+
+# -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
+poke() { pkill -RTMIN+9 -f '^waybar '; }
+
+# PID file alone is not enough: after a crash the PID may belong to another process by now.
+running() {
+  local pid
+  pid=$(cat "$pidfile" 2>/dev/null) || return 1
+  [[ $pid =~ ^[0-9]+$ && $(cat "/proc/$pid/comm" 2>/dev/null) == wf-recorder ]]
+}
+
+# SIGINT = wf-recorder's Ctrl+C: it finishes the MP4 and exits.
+stop() { running && kill -INT "$(cat "$pidfile")"; }
+
+case ${1-} in
+  status)
+    if running; then
+      echo '{"text": "󰑋", "tooltip": "Recording (click to stop)", "class": "recording"}'
+    else
+      echo '{"text": ""}'
+    fi
+    exit 0
+    ;;
+  stop)
+    stop
+    exit 0
+    ;;
+  area | screen) ;;
+  *)
+    sed -n '3,7p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac
+
+if running; then
+  stop
+  exit 0
+fi
+
+args=()
+if [[ $1 == area ]]; then
+  geom=$(slurp) || exit 0
+  args+=(-g "$geom")
+else
+  args+=(-o "$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')")
+fi
+dir=$(xdg-user-dir VIDEOS 2>/dev/null) || dir=$HOME/Videos
+mkdir -p "$dir"
+file=$dir/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4
+
+# Sway cannot keep a surface out of the capture: notifications hidden (mako mode, see bin/dnd) instead of recorded.
+"$bin/dnd" record-on
+wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 &
+rec=$!
+echo "$rec" >"$pidfile"
+poke
+# Floating box with the elapsed time, click = stop. Part of the video when it sits inside the recorded area.
+quickshell -p "$bin/../panels/recording.qml" >/dev/null 2>&1 &
+box=$!
+wait "$rec"
+rc=$?
+kill "$box" 2>/dev/null
+rm -f "$pidfile"
+poke
+"$bin/dnd" record-off
+
+if ((rc == 0)) && [[ -s $file ]]; then
+  notify-send -a Recording "Recording saved" "$file"
+else
+  rm -f "$file"
+  notify-send -a Recording -u critical "Recording failed" "wf-recorder exit $rc"
+fi

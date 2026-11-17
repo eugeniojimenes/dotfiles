@@ -32,9 +32,13 @@ O greetd roda o `bin/start` (o caminho fica em `nixos/common.nix`). O script def
 
 O `display/reinit` roda depois de voltar da suspensão. Com o driver proprietário da NVIDIA, o Sway mantém as saídas externas marcadas como ativas depois de uma suspensão enquanto a tela continua preta. Desativar e reativar cada saída externa força um novo modeset. Isso ainda é necessário com o suporte de suspensão da NVIDIA ativado: em 2026-11-12 o monitor externo ficou preto sem o hook.
 
+## Gravação de tela
+
+O `bin/record` grava uma região (`Ctrl + Print`) ou a tela em foco (`Ctrl + Shift + Print`) num MP4 em `~/Videos`. O menu Capture tem as mesmas duas opções. O vídeo não tem áudio. Enquanto grava, uma caixinha no canto inferior direito mostra o tempo decorrido, e as notificações ficam escondidas, como num compartilhamento de tela. O Sway não tem como deixar uma janela ou notificação fora da captura, então a caixa aparece no vídeo quando a área gravada inclui aquele canto, e uma notificação também apareceria. Apertar a tecla de novo, escolher qualquer entrada de gravação, ou clicar na caixa ou no ícone vermelho da barra para a gravação. O wf-recorder codifica com x264 na CPU. Ele só codifica os quadros que mudaram, então a carga fica baixa, e o notebook não tem driver VA-API instalado para a GPU Intel. A spec é [docs/specs/screen-recording.md](specs/screen-recording.md).
+
 ## Avisos de bateria
 
-O UPower (`nixos/common.nix`) acompanha a bateria e desliga a máquina em 2%. A ação padrão dele é hybrid sleep, que precisa de um dispositivo de swap, e esta máquina só tem zram. O `poweralertd`, iniciado em `config.d/90-autostart`, transforma os níveis do UPower em notificações: baixa em 20%, crítica em 5%. Ele também manda uma notificação a cada mudança de estado da carga, como ligar o carregador. O `apps/mako` esconde essas e mostra os avisos com borda vermelha até receberem um clique, inclusive enquanto o Não perturbe ou um compartilhamento de tela esconde todo o resto.
+O UPower (`nixos/common.nix`) acompanha a bateria e desliga a máquina em 2%. A ação padrão dele é hybrid sleep, que precisa de um dispositivo de swap, e esta máquina só tem zram. O `poweralertd`, iniciado em `config.d/90-autostart`, transforma os níveis do UPower em notificações: baixa em 20%, crítica em 5%. Ele também manda uma notificação a cada mudança de estado da carga, como ligar o carregador. O `apps/mako` esconde essas e mostra os avisos com borda vermelha até receberem um clique, inclusive enquanto o Não perturbe, um compartilhamento de tela ou uma gravação esconde todo o resto.
 
 ## Agente polkit
 

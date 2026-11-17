@@ -66,6 +66,9 @@ menu_capture() {
   {
     entry 󰩭 "Screenshot (area)" "run:$dir/bin/screenshot area"
     entry 󰍹 "Screenshot (screen)" "run:$dir/bin/screenshot screen"
+    # Any of these while recording stops it (bin/record).
+    entry 󰑋 "Record area" "run:$dir/bin/record area"
+    entry 󰑋 "Record screen" "run:$dir/bin/record screen"
   } | pick 'Capture'
 }
 

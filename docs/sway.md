@@ -32,9 +32,13 @@ greetd runs `bin/start` (the path is set in `nixos/common.nix`). The script sets
 
 `display/reinit` runs after resume. With the proprietary NVIDIA driver, Sway keeps the external outputs marked active after a suspend while the screen stays black. Disabling and enabling each external output forces a new modeset. This is still needed with NVIDIA's suspend support enabled: on 2026-11-12 the external monitor stayed black without the hook.
 
+## Screen recording
+
+`bin/record` records a region (`Ctrl + Print`) or the focused screen (`Ctrl + Shift + Print`) to an MP4 in `~/Videos`. The Capture menu has the same two. The video has no audio. While it records, a small box in the bottom-right corner shows the elapsed time, and notifications are hidden, as during a screen share. Sway has no way to keep a window or a notification out of the capture, so the box shows up in the video when the recorded area includes that corner, and a notification would too. Pressing either key again, picking any record entry, or clicking the box or the red icon in the bar stops the recording. wf-recorder encodes with x264 on the CPU. It only encodes frames that changed, so the load stays low, and the notebook has no VA-API driver installed for the Intel GPU. The spec is [docs/specs/screen-recording.md](specs/screen-recording.md).
+
 ## Battery warnings
 
-UPower (`nixos/common.nix`) tracks the battery and powers the machine off at 2%. Its default action is hybrid sleep, which needs a swap device, and this machine only has zram. `poweralertd`, started in `config.d/90-autostart`, turns UPower's levels into notifications: low at 20%, critical at 5%. It also sends a notification on every charge state change, such as plugging in the charger. `apps/mako` hides those and shows the warnings with a red border until they are clicked, including while Do not disturb or a screen share hides everything else.
+UPower (`nixos/common.nix`) tracks the battery and powers the machine off at 2%. Its default action is hybrid sleep, which needs a swap device, and this machine only has zram. `poweralertd`, started in `config.d/90-autostart`, turns UPower's levels into notifications: low at 20%, critical at 5%. It also sends a notification on every charge state change, such as plugging in the charger. `apps/mako` hides those and shows the warnings with a red border until they are clicked, including while Do not disturb, a screen share or a recording hides everything else.
 
 ## Polkit agent
 
