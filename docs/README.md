@@ -12,3 +12,5 @@ How the parts of this repo work and why they are set up the way they are. Instal
 - [dotfiles-doctor.md](dotfiles-doctor.md): what the health check looks at and how it reads stow.
 - [mpv.md](mpv.md): uosc install and updates.
 - [specs/](specs/README.md): feature specs and the tests that cover them (English only).
+
+Instructions for AI agents are in [AGENTS.md](../AGENTS.md) and [harness/](../harness/README.md).

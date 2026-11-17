@@ -8,7 +8,10 @@
 # settings.local.json here for this project, and its permission entries name work tools verbatim.
 # Was covered only by ~/.config/git/ignore, which is machine-local and untracked, so a fresh
 # machine showed the file as untracked in a public repo. Allow-list anything that earns tracking.
-/.claude/
+/.claude/*
+# Harness links (harness/README.md).
+!/.claude/rules
+!/.claude/skills
 
 # uosc ships own Lua tree plus ~17 MB prebuilt `ziggy` binaries (linux, darwin, windows .exe).
 # No place in a public repo: no checksums, no provenance, two of three never run here.

@@ -12,3 +12,5 @@ Como as partes deste repo funcionam e por que estão configuradas assim. Instala
 - [dotfiles-doctor.pt-br.md](dotfiles-doctor.pt-br.md): o que o health check verifica e como ele lê o stow.
 - [mpv.pt-br.md](mpv.pt-br.md): instalação e atualização da uosc.
 - [specs/](specs/README.md): specs das funcionalidades e os testes que as cobrem (só em inglês).
+
+As instruções para agentes de IA estão em [AGENTS.md](../AGENTS.md) e [harness/](../harness/README.pt-br.md).

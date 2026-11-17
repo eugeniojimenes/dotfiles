@@ -14,7 +14,7 @@ Um comentário que explica por que um contorno existe não precisa de nome próp
 
 Alguns arquivos ficam fora porque ferramentas gravam detalhes do trabalho neles:
 
-- `/.claude/` na raiz do repo é ignorado. O Claude Code grava `settings.local.json` ali para este projeto, e as entradas de permissão dele citam ferramentas do trabalho pelo nome.
+- `/.claude/` na raiz do repo é ignorado, menos os links do harness `.claude/rules` e `.claude/skills`. O Claude Code grava `settings.local.json` ali para este projeto, e as entradas de permissão dele citam ferramentas do trabalho pelo nome.
 - `claude-code/.claude/` ignora tudo menos os arquivos que o módulo entrega. Veja [claude-code.pt-br.md](claude-code.pt-br.md), que também explica por que o `settings.json` não é mais rastreado.
 - A identidade git do trabalho vem de um arquivo em `~/.private`, veja [git.pt-br.md](git.pt-br.md).
 

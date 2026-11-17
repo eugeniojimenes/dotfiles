@@ -14,7 +14,7 @@ A comment that explains why a workaround exists does not need a proper noun. "A 
 
 Some files are kept out on purpose because tools write work details into them:
 
-- `/.claude/` at the repo root is ignored. Claude Code writes `settings.local.json` there for this project, and its permission entries name work tools verbatim.
+- `/.claude/` at the repo root is ignored, except the harness links `.claude/rules` and `.claude/skills`. Claude Code writes `settings.local.json` there for this project, and its permission entries name work tools verbatim.
 - `claude-code/.claude/` ignores everything except the files the module ships. See [claude-code.md](claude-code.md), which also explains why `settings.json` is no longer tracked.
 - The work git identity comes from a file in `~/.private`, see [git.md](git.md).
 

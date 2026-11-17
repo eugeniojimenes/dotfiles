@@ -63,7 +63,7 @@ Everywhere:
 - No AI tells: "moreover", "furthermore", "additionally", "however", "it is worth noting", one-line dramatic pauses, filler adjectives ("crucial", "robust", "seamless", "comprehensive"), "leverage" where "use" works.
 - Markdown never hard-wrapped.
 - Exception: `claude-code/.claude/` = prompt text, em-dash is a list separator the model reads. Leave as is, excluded from sweep.
-- Sweep (also a `bin/check static` step): `git ls-files -z ':!claude-code/.claude' | xargs -0 grep -nP '\x{2014}'`
+- Sweep (also a `bin/check static` step): `git ls-files -z ':!claude-code/.claude' | xargs -0 grep -nP -d skip '\x{2014}'` (`-d skip`: harness links are dirs)
 
 Language pairs:
 
