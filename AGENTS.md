@@ -23,6 +23,7 @@ stow -D <module>         # remove a module's symlinks
 bin/check                # all test layers, before every commit
 bin/check static|unit|terms   # terms --cached = staged (pre-commit), --message FILE = commit-msg
 nix develop              # shell with the check tools
+nix fmt                  # format whole repo (treefmt.nix), static step `format` fails on drift
 nix build .#nixosConfigurations.loc-nixos.config.system.build.toplevel
 nix store diff-closures /run/current-system ./result
 sudo nixos-rebuild switch --flake ~/dotfiles   # owner runs it; host picked by hostname
@@ -57,6 +58,8 @@ Three audiences:
 - **Agent text** (`AGENTS.md`, `CLAUDE.md`, `harness/rules/**`, `harness/skills/**`): compressed, caveman `full`. Drop articles, filler, hedging, pleasantries. Fragments fine. Short synonyms. `=` and `:` over spelled-out copulas. All technical substance stays. Never touch code blocks, command lines, API names, error strings, option names.
 - **Human docs** (`README*`, `docs/**`, `docs/specs/**`, `harness/README*`, `tests/manual.md`), owner's rule verbatim: "Plain English, full sentences, no AI tell language. Avoid em dashes, "not just X but Y", bold labels on every bullet, filler openers, and words like "durable", "seam", "artifact" where a normal word works. Do not append a clause that vouches for a fact instead of explaining it, asserting that something is intentional, earned or no accident ("and not by luck", "by design"). State the fact, and give the reason in its own sentence when the reason matters. Do not hard wrap. One paragraph or bullet is one line, however long. Only code blocks keep their own line breaks." Owner exception: README module list keeps bold module names (main doc, scanned by eye).
 - **Code comments**: compressed like agent text. Wrap at ~120 (`colorcolumn = "120"` in `lazyvim/.config/nvim/lua/config/options.lua`).
+
+- **Code format**: `nix fmt` (treefmt.nix): nixfmt, shfmt (style from `.editorconfig`: 2 spaces, `case` indented, `&&`/`||` end the line), stylua (`lazyvim/.config/nvim/stylua.toml`), taplo, prettier (CSS/JSON/YAML/mjs/tsx; `.jsonc` without trailing commas). Not formatted: `hardware.nix`, `lazy-lock.json`, `lazyvim.json`, panel `.js` (`.pragma library`). Run before commit; never hand-align code the formatter undoes.
 
 Everywhere:
 
@@ -96,7 +99,7 @@ Notebook `loc-nixos` now, AMD desktop (two monitors, no hostname yet) later. Tru
 - **alacritty**: opacity set live by `sway/.config/sway/bin/opacity`; text size by `sway/.config/sway/display/ctl`, which edits `alacritty.toml` in place. Diff in `git status` from that = expected.
 - **lazyvim** (`lazyvim/.config/nvim/`): LazyVim. Plugin specs `lua/plugins/`, lock `lazy-lock.json`. Catppuccin Mocha, `transparent_background` (`lua/plugins/theme.lua`). `lua/config/clipboard.lua`: in tmux or SSH every yank also goes out as OSC 52.
 - **mise** (`mise/.config/mise/config.toml`): Node 22, Python 3.11, Ruby 3.4, Rust, Go, uv, agent CLIs. `mise install` after stowing. Ruby = jdx/ruby precompiled, runs through nix-ld.
-- **bash**: `.bashrc` sources `~/.config/bash/{env,shell,aliases,init}`, binds `inputrc`. All written here, nothing sourced from a distro. `env` sources `~/.private/envs` (Sway starts no login shell).
+- **bash**: `.bashrc` sources `~/.config/bash/{env,shell,aliases,init}`, binds `inputrc`. All written here, nothing sourced from a distro. `env` sources `~/.private/envs` (Sway starts no login shell). Startup files carry `#!/usr/bin/env bash` only so shellcheck and shfmt find them.
 - **local-bin** (`local-bin/.local/bin/`): `asdf` = shim to mise (a work CLI hardcodes `asdf` calls, no mise backend); `dotfiles-doctor`. Stowed **file by file** (`~/.local/bin` holds unrelated real files). Doctor: stow conflicts never auto-fixed; repairs outside repo = report-only. Details: `docs/dotfiles-doctor.md`, spec `docs/specs/dotfiles-doctor.md`.
 - **claude-code**: stowed **file by file** (`~/.claude/` holds untracked runtime state). `settings.json` never tracked (`extraKnownMarketplaces` and `enabledPlugins` leak work detail); real file at `~/.claude/settings.json`, encrypted copy in `~/.private`. Why: `docs/claude-code.md`.
 - **mpv**: uosc installed by its own script, not tracked; `stow mpv` before installer. Why: `docs/mpv.md`.

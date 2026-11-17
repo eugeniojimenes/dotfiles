@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Aliases and small functions.
 
 if command -v eza &>/dev/null; then
@@ -11,7 +12,10 @@ fi
 alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
 alias eff='$EDITOR "$(ff)"'
 sff() {
-  [[ -n ${1-} ]] || { echo "usage: sff <destination>  (e.g. sff host:/tmp/)"; return 1; }
+  [[ -n ${1-} ]] || {
+    echo "usage: sff <destination>  (e.g. sff host:/tmp/)"
+    return 1
+  }
   local file
   file=$(find . -type f -printf '%T@\t%p\n' | sort -rn | cut -f2- | ff) && [[ -n $file ]] && scp "$file" "$1"
 }
@@ -25,7 +29,10 @@ if command -v zoxide &>/dev/null; then
     elif [[ -d $1 ]]; then
       builtin cd "$1" || return
     else
-      z "$@" || { echo "Error: Directory not found"; return 1; }
+      z "$@" || {
+        echo "Error: Directory not found"
+        return 1
+      }
       printf '\U000F17A9 '
       pwd
     fi

@@ -24,8 +24,7 @@
         inputsFrom = builtins.attrValues self.checks.x86_64-linux;
       };
 
-      formatter.x86_64-linux = pkgs.nixfmt-tree.override {
-        settings.formatter.nixfmt.excludes = [ "nixos/hosts/*/hardware.nix" ];
-      };
+      # `nix fmt`: nixfmt, shfmt, stylua, taplo over the repo (treefmt.nix).
+      formatter.x86_64-linux = import ./treefmt.nix { inherit pkgs; };
     };
 }

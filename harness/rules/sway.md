@@ -10,7 +10,7 @@ alwaysApply: false
 
 Why behind each: `docs/sway.md`. Skills: `add-keybinding`, `add-panel`.
 
-- Bash script = `#!/usr/bin/env bash` (NixOS has no `/bin/bash`). POSIX script = `#!/bin/sh`.
+- Bash script = `#!/usr/bin/env bash` (NixOS has no `/bin/bash`). POSIX script = `#!/bin/sh`. Format = `nix fmt` (shfmt, style in `.editorconfig`); one-line `{ a; b; }` groups get split, so prefer `cond && return` early exits.
 - Every binding gets `#: <title>` on the line above, except workspace bindcodes in `config.d/50-workspaces` (titles generated). `bin/keybindings` (`Super + K`) shows it; no title = raw command shown.
 - Explicit paths only: `$dir/...` in config, `~/.config/sway/...` in scripts. App configs live in `apps/`, passed by path; stock `~/.config/<app>` never read.
 - Outputs: `output "<make> <model> <serial>"` from `swaymsg -t get_outputs -p`, in `hosts/<hostname>`. Never connector names (`eDP-1`, `HDMI-A-1`): they shift with driver load order. Nothing machine-specific in `config.d/`.

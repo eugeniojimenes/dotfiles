@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+# shellcheck source=/dev/null
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
 # Guarded so nested login shells (`bash -l`, tmux login shells, su -) don't prepend

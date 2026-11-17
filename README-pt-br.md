@@ -139,10 +139,11 @@ Um conflito do stow (um arquivo real onde devia haver um symlink) nunca é corri
 O `bin/check` roda as camadas de teste pelos checks do flake. As ferramentas vêm do nixpkgs fixado, então nada precisa ser instalado. Rode antes de cada commit. O flake só enxerga arquivos rastreados, então faça `git add` nos arquivos novos antes.
 ```sh
 bin/check           # tudo: static, unit, eval de cada host, depois a busca de termos do empregador
-bin/check static    # shellcheck, nixfmt e statix, sway -C por host, qmllint, painéis carregados num Sway headless, JSON do waybar, varredura de em-dash, pares de docs, stow simulado, gitleaks
+bin/check static    # formatação (nix fmt não mudaria nada), shellcheck, nixfmt e statix, sway -C por host, qmllint, painéis carregados num Sway headless, JSON do waybar, varredura de em-dash, pares de docs, stow simulado, gitleaks
 bin/check unit      # testes bats em tests/unit/, scripts rodam contra comandos stub
 bin/check terms     # só local: arquivos e caminhos rastreados contra a lista de termos em ~/.private, pulado quando está trancado
 nix develop         # shell com as mesmas ferramentas, para rodar uma delas na mão
+nix fmt             # formata o repo: Nix, shell, Lua, TOML, CSS, JSON, YAML, JS (treefmt.nix, estilo no .editorconfig)
 ```
 O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Os testes de hardware e de sessão ao vivo estão em [tests/manual.md](tests/manual.md), e as specs das funcionalidades, que dizem o que cada teste cobre, estão em [docs/specs/](docs/specs/README.md) (só em inglês).
 

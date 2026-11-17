@@ -1,0 +1,20 @@
+# Editor and formatter style, one place: Neovim reads it natively, shfmt reads it when given no style flags
+# (treefmt.nix, conform in LazyVim). Lua width lives in lazyvim/.config/nvim/stylua.toml, Nix style is nixfmt's own.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+# shfmt: `case` items indented, `&&` / `||` / `|` end the line (never start the next one).
+switch_case_indent = true
+binary_next_line = false
+
+[*.md]
+# Two trailing spaces = line break in Markdown.
+trim_trailing_whitespace = false

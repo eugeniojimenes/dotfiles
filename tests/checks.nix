@@ -20,6 +20,7 @@ in
     jq
     stow
     gitleaks
+    self.formatter.x86_64-linux # treefmt.nix: step format
   ]) "cd ${self} && bash tests/static.sh";
 
   # Writable copy with patched shebangs: the build sandbox has no /usr/bin/env.

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # History: big, shared between terminals (append, never overwrite), no duplicates or space-prefixed commands.
 HISTSIZE=32768
 HISTFILESIZE=$HISTSIZE

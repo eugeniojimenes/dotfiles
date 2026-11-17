@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Tool hooks. Completion and fzf key bindings (Ctrl-R, Ctrl-T, Alt-C) come from NixOS's /etc/bashrc
 # (programs.fzf.keybindings in nixos/common.nix).
 command -v mise &>/dev/null && eval "$(mise activate bash)"

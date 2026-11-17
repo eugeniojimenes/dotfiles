@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Shared setup for tests/unit: isolated HOME and XDG dirs, stubbed commands first on PATH (see stubs/_stub).
 # Each test file: setup() { load "${BATS_TEST_DIRNAME%/tests/unit/*}/tests/helpers/common"; }
 

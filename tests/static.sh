@@ -23,12 +23,7 @@ shell_files() {
 
 # warning and up: style notes (quoting a known-single word, A && B || C after a printf) are noise here.
 # SC2088: `~` inside quotes is display text in these scripts, never a path to expand.
-# Bash startup files have no shebang. SC1090/SC1091: they source files by runtime path (~/.private/envs).
-shellcheck_all() {
-  shell_files | xargs -d '\n' shellcheck -S warning -e SC2088 &&
-    shellcheck -S warning -s bash -e SC2088,SC1090,SC1091 bash/.bashrc bash/.bash_profile \
-      bash/.config/bash/{env,shell,aliases,init} tests/helpers/common.bash
-}
+shellcheck_all() { shell_files | xargs -d '\n' shellcheck -S warning -e SC2088; }
 
 # hardware.nix = nixos-generate-config output, committed verbatim.
 nix_format() {
@@ -88,7 +83,11 @@ panels_load() {
     sock=''
     sleep 0.1
   done
-  [[ -n $sock ]] || { cat "$tmp/sway.log"; kill "$sp"; return 1; }
+  [[ -n $sock ]] || {
+    cat "$tmp/sway.log"
+    kill "$sp"
+    return 1
+  }
   for dir in sway/.config/sway/*/; do
     [[ -f $dir/toggle ]] || continue
     qml=$dir$(grep -o '[a-z]*\.qml' "$dir/toggle" | head -1)
@@ -124,7 +123,10 @@ em_dash() {
   hits=$(grep -rnIP --exclude-dir=.git '\x{2014}' .)
   (($? < 2)) || return 1 # 1 = no match, 2 = grep broke
   hits=$(grep -v '^\./claude-code/\.claude/' <<<"$hits")
-  [[ -z $hits ]] || { echo "$hits"; return 1; }
+  [[ -z $hits ]] || {
+    echo "$hits"
+    return 1
+  }
 }
 
 # Human docs come in pairs, <x>.md + <x>.pt-br.md (docs/specs/ excluded: English only), root README-pt-br.md the odd
@@ -139,6 +141,17 @@ doc_pairs() {
       *) [[ -f ${f%.md}.pt-br.md ]] || echo "warning: $f has no pt-br pair" ;;
     esac
   done
+}
+
+# `nix fmt` would change nothing: treefmt (treefmt.nix) on a writable copy, the diff shown when it would.
+format_check() {
+  local src=$tmp/fmt d
+  cp -r . "$src" && chmod -R u+w "$src" || return 1
+  (cd "$src" && treefmt --no-cache --quiet) || return 1
+  d=$(diff -ru --no-dereference . "$src") && return 0
+  head -80 <<<"$d"
+  echo "fix: nix fmt"
+  return 1
 }
 
 # Packaging only (two modules shipping one file, a bad name): live-home state is dotfiles-doctor's job.
@@ -157,6 +170,7 @@ leaks() { gitleaks dir --no-banner --redact -v .; }
 
 step shellcheck shellcheck_all
 step nix-format nix_format
+step format format_check
 step sway-config sway_config
 step qmllint qml_lint
 step panels-load panels_load
