@@ -9,8 +9,8 @@ O desktop inteiro fica numa pasta só, `sway/.config/sway/`, que o stow liga em 
 - `hosts/<hostname>` tem as linhas `output` daquela máquina. Carrega por último para poder sobrescrever as partes compartilhadas, e um arquivo ausente é pulado. Veja [machines.pt-br.md](machines.pt-br.md).
 - `bin/` tem os scripts que os atalhos, o waybar e o menu rodam.
 - `apps/` tem as configs do waybar, mako, fuzzel, swaylock e wiremix.
-- `bluetooth/`, `calendar/`, `display/`, `lock/`, `sound/` e `wifi/` são painéis Quickshell.
-- `common/` guarda o que os painéis compartilham: `PanelShell.qml`, `Theme.qml` e `AdvancedLink.qml`.
+- `panels/` guarda os painéis Quickshell e a tela de bloqueio. Cada um tem um arquivo de entrada no topo (`wifi.qml`, `bluetooth.qml`, `sound.qml`, `display.qml`, `calendar.qml`, `lock.qml`) e um diretório com o mesmo nome com os seus scripts e a sua lógica (`toggle`, `flow.mjs`, `display/ctl`, `lock/lock`).
+- `panels/common/` guarda o que os painéis compartilham: `PanelShell.qml`, `Theme.qml` e `AdvancedLink.qml`.
 
 Um arquivo fica fora dessa pasta: `sway/.config/xdg-desktop-portal-wlr/sway`, a config do seletor de compartilhamento de tela.
 
@@ -40,7 +40,7 @@ Um painel é uma `PanelWindow` transparente de tela cheia na camada overlay, com
 
 O foco exclusivo do teclado não acompanha a troca de workspace. Trocar de workspace pelo teclado ou por um clique em outra saída deixaria todas as janelas sem entrada até o painel fechar. Por isso cada painel escuta os eventos de workspace do Sway pelo `I3IpcListener` e se fecha quando o foco muda, como faria um popup. O Sway também pula o próprio reposicionamento do mouse enquanto uma layer surface segura o teclado, então quando a troca vai para outra saída o painel move o cursor para o centro do novo workspace antes de sair.
 
-Tudo isso fica uma vez só em `common/PanelShell.qml`, e todo painel, menos a tela de bloqueio, é um `PanelShell` com o seu próprio card. O Quickshell só carrega arquivos do diretório do painel que ele roda, então cada diretório de painel tem um symlink `common` para `../common` e importa `"common"`. Um `import "../common"` simples passa no qmllint mas falha no Quickshell, e por isso o `bin/check static` também inicia cada painel num Sway headless (passo `panels-load`). O `common/Theme.qml` guarda as cores e a fonte, e o `common/AdvancedLink.qml` é o link do rodapé que abre a TUI completa do painel num terminal flutuante. Uma correção no comportamento compartilhado vai ali, e chega a todos os painéis de uma vez.
+Tudo isso fica uma vez só em `common/PanelShell.qml`, e todo painel, menos a tela de bloqueio, é um `PanelShell` com o seu próprio card. O Quickshell só carrega arquivos do diretório do arquivo de entrada que ele roda, e por isso todo arquivo de entrada fica no topo de `panels/` e importa dali o `"common"` e os arquivos do seu `<nome>/`. Um import que sai desse diretório passa no qmllint mas falha no Quickshell, então o `bin/check static` também inicia cada painel num Sway headless (passo `panels-load`). O `common/Theme.qml` guarda as cores e a fonte, e o `common/AdvancedLink.qml` é o link do rodapé que abre a TUI completa do painel num terminal flutuante. Uma correção no comportamento compartilhado vai ali, e chega a todos os painéis de uma vez.
 
 ## Opacidade e tamanho do texto do terminal
 

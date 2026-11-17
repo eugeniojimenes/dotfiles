@@ -88,9 +88,9 @@ panels_load() {
     kill "$sp"
     return 1
   }
-  for dir in sway/.config/sway/*/; do
+  for dir in sway/.config/sway/panels/*/; do
     [[ -f $dir/toggle ]] || continue
-    qml=$dir$(grep -o '[a-z]*\.qml' "$dir/toggle" | head -1)
+    qml=sway/.config/sway/panels/$(grep -o '[a-z]*\.qml' "$dir/toggle" | head -1)
     env -i PATH="$PATH" HOME="$tmp/home" XDG_RUNTIME_DIR="$run" WAYLAND_DISPLAY=wayland-1 SWAYSOCK="$sock" \
       QT_QPA_PLATFORM=wayland quickshell -p "$PWD/$qml" >"$tmp/qs.log" 2>&1 &
     q=$!

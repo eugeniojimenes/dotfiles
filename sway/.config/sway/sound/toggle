@@ -1,3 +1,0 @@
-#!/bin/sh
-# Sound icon click: open the sound panel, or close it when already open.
-pkill -f 'quickshell -p .*/sway/sound/shell.qml' || exec quickshell -p ~/.config/sway/sound/shell.qml

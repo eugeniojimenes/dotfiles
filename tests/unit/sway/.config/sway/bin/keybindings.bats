@@ -11,7 +11,7 @@ fixture() {
   local d=$HOME/.config/sway
   mkdir -p "$d/config.d"
   ln -s "$SWAY/bin" "$d/bin"
-  printf '%s\n' 'set $mod Mod4' 'set $sway ~/.config/sway' 'set $lock $sway/lock/lock' 'include config.d/*' >"$d/config"
+  printf '%s\n' 'set $mod Mod4' 'set $sway ~/.config/sway' 'set $lock $sway/panels/lock/lock' 'include config.d/*' >"$d/config"
   printf '%s\n' \
     '#: Lock the screen' \
     'bindsym $mod+Shift+l exec $lock' \
@@ -31,7 +31,7 @@ row() { printf '%-34s %s\t%s' "$1" "$2" "$3"; }
   fixture
   run "$SWAY/bin/keybindings"
   run cat "$STUBS/fuzzel.stdin"
-  assert_line "$(row 'Super + Shift + l' 'Lock the screen' 'exec ~/.config/sway/lock/lock')"
+  assert_line "$(row 'Super + Shift + l' 'Lock the screen' 'exec ~/.config/sway/panels/lock/lock')"
 }
 
 @test "workspace bindcodes: number row key and a generated title" {
@@ -61,11 +61,11 @@ row() { printf '%-34s %s\t%s' "$1" "$2" "$3"; }
 
 @test "picked line runs its command through swaymsg" {
   fixture
-  stub fuzzel 'exec ~/.config/sway/lock/lock'
+  stub fuzzel 'exec ~/.config/sway/panels/lock/lock'
   rm "$STUBS/fuzzel.rc"
   run "$SWAY/bin/keybindings"
   run calls
-  assert_line 'swaymsg -q -- exec ~/.config/sway/lock/lock'
+  assert_line 'swaymsg -q -- exec ~/.config/sway/panels/lock/lock'
 }
 
 @test "menu closed: nothing runs" {

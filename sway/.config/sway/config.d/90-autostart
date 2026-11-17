@@ -3,7 +3,7 @@ exec swayidle -w \
     timeout 300 '$lock' \
     timeout 330 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
     before-sleep '$lock' \
-    after-resume '$dir/display/reinit'
+    after-resume '$dir/panels/display/reinit'
 exec mako --config $dir/apps/mako
 exec $dir/bin/wallpaper restore
 exec swayosd-server

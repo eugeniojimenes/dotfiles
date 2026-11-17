@@ -1,6 +1,6 @@
 # Sound panel
 
-Files: `sway/.config/sway/sound/shell.qml` (Quickshell), `sway/.config/sway/sound/toggle` (run by a click on the waybar volume icon and by the menu entry Setup > Sound).
+Files: `sway/.config/sway/panels/sound.qml` (Quickshell), `sway/.config/sway/panels/sound/toggle` (run by a click on the waybar volume icon and by the menu entry Setup > Sound).
 
 ## Purpose
 

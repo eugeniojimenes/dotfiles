@@ -16,7 +16,7 @@ Outputs are matched by `"make model serial"` as printed by `swaymsg -t get_outpu
 
 These are in shared files today and only matter on the notebook. Check each one when the desktop arrives.
 
-- `sway/.config/sway/display/reinit` is the after-resume hook for external monitors on NVIDIA. It does no harm on other hardware.
+- `sway/.config/sway/panels/display/reinit` is the after-resume hook for external monitors on NVIDIA. It does no harm on other hardware.
 - The GPU ordering in `sway/.config/sway/bin/start` does nothing on a machine with one GPU.
 - The touchpad `input` block does nothing on a machine without a touchpad.
 - AMD GPU monitoring tools (`amdgpu_top`, `rocm-smi`) belong in the desktop host file.

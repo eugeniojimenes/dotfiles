@@ -16,7 +16,7 @@ awk '
     while (line ~ /^--/) sub(/^--[a-z-]+\s+/, "", line)
     key = line; sub(/\s.*/, "", key)
     cmd = line; sub(/^\S+\s+/, "", cmd)
-    for (pass = 0; pass < 2; pass++)   # twice: $lock expands to "$dir/lock/lock"
+    for (pass = 0; pass < 2; pass++)   # twice: $lock expands to "$dir/panels/lock/lock"
       for (v in vars) while ((i = index(cmd, v)) > 0) cmd = substr(cmd, 1, i - 1) vars[v] substr(cmd, i + length(v))
     if ($1 == "bindcode" && match(key, /\+?(1[0-9])$/)) {
       n = substr(key, RSTART + (substr(key, RSTART, 1) == "+")) - 9

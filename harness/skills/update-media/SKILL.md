@@ -21,7 +21,7 @@ Media files live in the public repo `eugeniojimenes/dotfiles-media` (local clone
   "file": "bluetooth-panel-2026-11-17.png",
   "used_in": ["docs/sway.md", "docs/sway.pt-br.md"],
   "alt": { "en": "Bluetooth panel: headphones connected with battery level, nearby devices hidden", "pt-br": "Painel de Bluetooth: fone conectado com nível de bateria, aparelhos próximos ocultos" },
-  "shows": ["sway/.config/sway/bluetooth/", "sway/.config/sway/apps/waybar.jsonc"],
+  "shows": ["sway/.config/sway/panels/bluetooth/", "sway/.config/sway/apps/waybar.jsonc"],
   "captured": { "commit": "<full 40-char hash>", "date": "2026-11-17" },
   "how": "Bluetooth on, headphones connected. Open with bluetooth/toggle, crop the card on eDP-1."
 }

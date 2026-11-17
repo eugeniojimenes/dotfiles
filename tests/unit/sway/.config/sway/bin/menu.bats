@@ -27,7 +27,7 @@ launched() { calls | sed -n 's/^setsid -f sh -c //p'; }
   answers @Setup @Bluetooth
   run "$SWAY/bin/menu"
   assert_success
-  [[ $(launched) == "$HOME/.config/sway/bluetooth/toggle" ]]
+  [[ $(launched) == "$HOME/.config/sway/panels/bluetooth/toggle" ]]
 }
 
 @test "Esc at the top: exit 0, nothing launched" {

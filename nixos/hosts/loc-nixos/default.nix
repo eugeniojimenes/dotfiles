@@ -23,7 +23,7 @@
     nvidia = {
       open = true;
       # PreserveVideoMemoryAllocations + kernel suspend notifiers (open module >= 595 default), so no
-      # nvidia-suspend/resume services as on Arch. External monitor may still need sway/display/reinit after resume.
+      # nvidia-suspend/resume services as on Arch. External monitor may still need sway/panels/display/reinit after resume.
       powerManagement.enable = true;
       prime = {
         offload = {

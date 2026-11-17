@@ -87,10 +87,10 @@ menu_opacity() {
 
 menu_setup() {
   {
-    entry 󰖩 "Wi-Fi" "run:$dir/wifi/toggle"
-    entry 󰂯 "Bluetooth" "run:$dir/bluetooth/toggle"
-    entry 󰕾 "Sound" "run:$dir/sound/toggle"
-    entry 󰍹 "Display" "run:$dir/display/toggle"
+    entry 󰖩 "Wi-Fi" "run:$dir/panels/wifi/toggle"
+    entry 󰂯 "Bluetooth" "run:$dir/panels/bluetooth/toggle"
+    entry 󰕾 "Sound" "run:$dir/panels/sound/toggle"
+    entry 󰍹 "Display" "run:$dir/panels/display/toggle"
     entry 󰏫 "Edit Sway config" "run:$dir/bin/float nvim $dir/config.d"
     entry 󰏫 "Edit bar" "run:$dir/bin/float nvim $dir/apps/waybar.jsonc"
     entry 󰑓 "Reload Sway" "run:swaymsg reload"
@@ -103,7 +103,7 @@ menu_toggle() {
 
 menu_system() {
   {
-    entry 󰌾 "Lock" "run:$dir/lock/lock"
+    entry 󰌾 "Lock" "run:$dir/panels/lock/lock"
     entry 󰤄 "Suspend" "run:systemctl suspend"
     entry 󰍃 "Exit Sway" "run:swaymsg exit"
     entry 󰜉 "Reboot" "run:systemctl reboot"

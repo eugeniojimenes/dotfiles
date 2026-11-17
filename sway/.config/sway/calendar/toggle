@@ -1,3 +1,0 @@
-#!/bin/sh
-# Clock click: open the calendar, or close it when already open.
-pkill -f 'quickshell -p .*/sway/calendar/shell.qml' || exec quickshell -p ~/.config/sway/calendar/shell.qml

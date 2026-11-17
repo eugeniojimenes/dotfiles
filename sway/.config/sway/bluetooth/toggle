@@ -1,3 +1,0 @@
-#!/bin/sh
-# Bluetooth icon click: open the Bluetooth panel, or close it when already open.
-pkill -f 'quickshell -p .*/sway/bluetooth/shell.qml' || exec quickshell -p ~/.config/sway/bluetooth/shell.qml

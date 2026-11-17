@@ -16,7 +16,7 @@ As saídas são identificadas por `"make model serial"`, como mostra o `swaymsg 
 
 Estes ficam em arquivos compartilhados hoje e só importam no notebook. Verifique cada um quando o desktop chegar.
 
-- `sway/.config/sway/display/reinit` é o hook pós-suspensão para monitores externos na NVIDIA. Não faz mal em outro hardware.
+- `sway/.config/sway/panels/display/reinit` é o hook pós-suspensão para monitores externos na NVIDIA. Não faz mal em outro hardware.
 - A ordem das GPUs em `sway/.config/sway/bin/start` não faz nada numa máquina com uma GPU só.
 - O bloco `input` do touchpad não faz nada numa máquina sem touchpad.
 - As ferramentas de monitoramento de GPU AMD (`amdgpu_top`, `rocm-smi`) vão no arquivo de host do desktop.

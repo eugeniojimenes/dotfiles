@@ -2,7 +2,7 @@
 # Whole desktop in this directory, every app started with an explicit path so stock ~/.config/<app> is never read:
 #   config.d/  this config, split by topic   bin/  scripts the bindings, bar and menu run
 #   apps/      waybar, mako, fuzzel, swaylock, wiremix
-#   bluetooth/ calendar/ display/ lock/ sound/ wifi/  Quickshell panels
+#   panels/    Quickshell root: <name>.qml entries, <name>/ scripts and logic, common/ shared parts
 # Outside it: ~/.config/xdg-desktop-portal-wlr/sway (screen-share picker), ~/.local/state/sway (wallpaper, terminal
 # opacity), ~/Pictures/Wallpapers (images).
 # /etc/sway/config.d is not included: bin/session-env does the systemd/D-Bus environment import itself.
@@ -12,8 +12,8 @@ set $mod Mod4
 set $dir ~/.config/sway
 # Alacritty with a translucent background, opacity set from the menu (Style > Terminal opacity). See bin/term.
 set $term $dir/bin/term
-# Quickshell lock screen (lock/). Falls back to plain swaylock if it fails to lock within 5s.
-set $lock $dir/lock/lock
+# Quickshell lock screen (panels/lock.qml). Falls back to plain swaylock if it fails to lock within 5s.
+set $lock $dir/panels/lock/lock
 
 # Pieces load in name order; the variables above must come first. Binding titles (`#:`): see bin/keybindings.
 include config.d/*
