@@ -59,7 +59,7 @@ Old generations keep their whole closure on disk. `nix.gc` runs weekly and delet
 
 ## Making a change
 
-Format with `nixfmt` (the official style, RFC 166) and lint with `statix check -i nixos/hosts/*/hardware.nix .`. statix wants one block per top-level option (`services = { ... }`) and no repeated keys.
+Format with `nixfmt` (the official style, RFC 166) and lint with `statix check -i 'nixos/hosts/*/hardware.nix' .`. statix wants one block per top-level option (`services = { ... }`) and no repeated keys.
 
 Build before switching:
 

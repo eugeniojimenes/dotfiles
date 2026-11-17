@@ -11,7 +11,7 @@ Rules: `harness/rules/nixos.md`. Why: `docs/nixos.md`.
 
 1. Pick file. Every machine = `nixos/common.nix`. One machine = `nixos/hosts/<hostname>/default.nix`. Never `hardware.nix`.
 2. Edit. Comment only a non-obvious why, compressed, wrap ~120.
-3. Format + lint: `nix fmt` (nixfmt-tree, skips `hardware.nix`), `statix check -i nixos/hosts/*/hardware.nix .`.
+3. Format + lint: `nix fmt` (nixfmt-tree, skips `hardware.nix`), `statix check -i 'nixos/hosts/*/hardware.nix' .`.
 4. `git add` every new or changed file under `nixos/` and `flake.*`.
 5. Build: `nix build .#nixosConfigurations.<host>.config.system.build.toplevel` (host = `hostname`).
 6. Diff: `nix store diff-closures /run/current-system ./result`. Read it: expected packages added or removed, versions moved only on `nix flake update`. Refactor = only version label. Surprise = stop, explain.

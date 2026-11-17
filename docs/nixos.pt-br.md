@@ -59,7 +59,7 @@ Gerações antigas mantêm toda a closure delas no disco. O `nix.gc` roda toda s
 
 ## Fazendo uma mudança
 
-Formate com `nixfmt` (o estilo oficial, RFC 166) e faça o lint com `statix check -i nixos/hosts/*/hardware.nix .`. O statix quer um bloco por opção de nível superior (`services = { ... }`) e nenhuma chave repetida.
+Formate com `nixfmt` (o estilo oficial, RFC 166) e faça o lint com `statix check -i 'nixos/hosts/*/hardware.nix' .`. O statix quer um bloco por opção de nível superior (`services = { ... }`) e nenhuma chave repetida.
 
 Faça o build antes de trocar:
 

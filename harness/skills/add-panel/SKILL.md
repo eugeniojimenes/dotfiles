@@ -15,13 +15,13 @@ Rules: `harness/rules/sway.md`. Why the pattern: `docs/sway.md` "Panels". Skelet
 4. Wire: waybar module `on-click` in `apps/waybar.jsonc`, menu entry in `bin/menu`. New external command = package in `nixos/common.nix` `programs.sway.extraPackages`.
 5. `tests/manual.md`: row `Spec <name>-panel | Criteria N to M.` under each host.
 6. `git add`, `bin/check static` (qmllint resolves types, shellcheck toggle, waybar JSON), `bin/check`.
-7. Try it: run `~/.config/sway/<name>/toggle` (not a `pkill -f` from the agent shell). Owner checks the manual criteria on the live session and writes the date.
+7. Try it: `swaymsg exec ~/.config/sway/<name>/toggle`, same as waybar (run directly it blocks the agent shell: `exec quickshell` stays in foreground). Never `pkill -f` from the agent shell. Owner checks the manual criteria on the live session and writes the date.
 8. README Sway entry + `docs/sway.md` if the panel list there changes (pt-br pairs too). Commit `feat(sway): Quickshell <name> panel`.
 
 ## Acceptance
 
 - qmllint clean; toggle opens and closes; Esc, outside click, workspace switch close it; cursor follows to the other output.
-- Nothing left running after close (`pgrep -f sway/<name>/shell.qml` empty).
+- Nothing left running after close (`pgrep -af '^[^ ]*quickshell -p .*/sway/<name>/shell.qml'` empty; unanchored `pgrep -f` matches the agent's own shell).
 - Spec + manual rows in place; `bin/check` passes.
 
 ## Pitfalls (from this repo)

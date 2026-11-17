@@ -9,7 +9,7 @@ Rules: `harness/rules/sway.md`. Spec: `docs/specs/keybindings.md`.
 
 ## Steps
 
-1. Pick piece by topic in `sway/.config/sway/config.d/`: `30-apps` launchers, `40-windows` focus/layout, `50-workspaces`, `60-media` volume/brightness/screenshots, `70-session` lock/exit/power. Machine-only key = `hosts/<hostname>`.
+1. Pick piece by topic in `sway/.config/sway/config.d/`: `30-apps` launchers, `40-windows` focus/layout, `50-workspaces`, `60-media` volume/brightness/screenshots, `70-session` reload/exit. Lock key lives in `30-apps` (`$mod+Shift+l`). Machine-only key = `hosts/<hostname>`, but `bin/keybindings` reads only `config` + `config.d/*`: such a key never shows in `Super + K`.
 2. Conflict check. List every existing combo:
    ```sh
    grep -hE '^\s*bind(sym|code)' sway/.config/sway/config sway/.config/sway/config.d/* sway/.config/sway/hosts/* | sort
@@ -31,5 +31,6 @@ Rules: `harness/rules/sway.md`. Spec: `docs/specs/keybindings.md`.
 
 - Title not directly above: `bin/keybindings` shows raw command instead.
 - Workspace `bindcode`s get generated titles; do not add `#:` there.
+- Binding in `hosts/<hostname>`: missing from `Super + K` (parser skips `hosts/`). Prefer `config.d/` unless the key only makes sense on that machine.
 - `$var` inside the command must exist in `config` (variables load before `config.d/*`).
 - Testing a panel binding by `pkill -f '<pattern>'` from a shell whose command line holds the pattern kills that shell. Use the toggle script.
