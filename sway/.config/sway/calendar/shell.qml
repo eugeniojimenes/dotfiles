@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.I3
 import Quickshell.Wayland
+import "calendar.js" as Cal
 
 // Calendar popup for the waybar clock: month grid with ISO week numbers, today
 // marked, year progress. Esc, a click outside or clicking the clock again closes it. Arrows and the wheel step
@@ -50,9 +51,9 @@ ShellRoot {
     property int viewMonth: today.getMonth()
 
     function step(delta) {
-      var m = viewMonth + delta
-      viewYear += Math.floor(m / 12)
-      viewMonth = ((m % 12) + 12) % 12
+      const v = Cal.step(viewYear, viewMonth, delta)
+      viewYear = v.year
+      viewMonth = v.month
     }
 
     function goToday() {
@@ -60,28 +61,9 @@ ShellRoot {
       viewMonth = today.getMonth()
     }
 
-    function isoWeek(d) {
-      var t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()))
-      t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7))
-      return Math.ceil(((t - new Date(Date.UTC(t.getUTCFullYear(), 0, 1))) / 86400000 + 1) / 7)
-    }
-
-    function sameDay(a, b) {
-      return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
-    }
-
-    // 6 weeks x 7 days from the Monday on or before the 1st. Noon, so a DST change at midnight cannot shift a day.
-    readonly property var cells: {
-      var offset = (new Date(viewYear, viewMonth, 1, 12).getDay() + 6) % 7
-      var out = []
-      for (var i = 0; i < 42; i++) out.push(new Date(viewYear, viewMonth, 1 - offset + i, 12))
-      return out
-    }
-
-    readonly property real yearDone: {
-      var start = new Date(today.getFullYear(), 0, 1)
-      return (today - start) / (new Date(today.getFullYear() + 1, 0, 1) - start)
-    }
+    // Date math in calendar.js (tested there).
+    readonly property var cells: Cal.cells(viewYear, viewMonth)
+    readonly property real yearDone: Cal.yearDone(today)
 
     // Anywhere outside the card closes.
     MouseArea {
@@ -192,7 +174,7 @@ ShellRoot {
               readonly property int row: Math.floor(index / 8)
               readonly property bool weekCol: index % 8 === 0
               readonly property date day: win.cells[row * 7 + (weekCol ? 0 : index % 8 - 1)]
-              readonly property bool isToday: !weekCol && win.sameDay(day, win.today)
+              readonly property bool isToday: !weekCol && Cal.sameDay(day, win.today)
               readonly property bool inMonth: day.getMonth() === win.viewMonth
 
               width: weekCol ? 30 : 40
@@ -202,7 +184,7 @@ ShellRoot {
 
               Text {
                 anchors.centerIn: parent
-                text: parent.weekCol ? win.isoWeek(parent.day) : parent.day.getDate()
+                text: parent.weekCol ? Cal.isoWeek(parent.day) : parent.day.getDate()
                 color: parent.isToday ? "#1e1e2e" : (parent.weekCol || !parent.inMonth ? win.dim : win.fg)
                 font.family: win.font
                 font.pixelSize: parent.weekCol ? 11 : 14

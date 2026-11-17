@@ -17,7 +17,8 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Steam on the dGPU | A game started with `prime-run %command%` runs on the NVIDIA card. | |
 | Rollback | Boot a previous generation from the boot menu and check that it starts Sway. | |
 | Spec keybindings | Criterion 10. | |
-| Spec wifi-panel | Criteria 2 to 11. | |
+| Spec wifi-panel | Criteria 2, 4 to 7 and 9 to 11. | |
+| Spec calendar-panel | Criteria 2 and 5 to 8. Check a month whose 1st is a Monday and the week numbers around New Year. | |
 | Spec sound-panel | Criteria 2 to 10. | |
 | Spec bluetooth-panel | Criteria 2 to 14. Pair a device that needs no code (headphones), then one that asks for a code through Advanced. | |
 | Spec lock | Criteria 7 to 10. Criterion 9: lock, switch to a TTY, kill the Quickshell lock process, and check that the outputs stay covered. | |

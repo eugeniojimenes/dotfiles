@@ -4,6 +4,7 @@ import Quickshell.I3
 import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Wayland
+import "flow.js" as Flow
 
 // Wi-Fi panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
 // password prompt for a secured network with no saved profile. Esc or a click outside closes it. One process per
@@ -47,20 +48,15 @@ ShellRoot {
     readonly property var bars: ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"]
 
     readonly property var device: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
-    // Connected first, then strongest. Unnamed (hidden) networks left out: nothing to show or type for them.
-    readonly property var networks: device ? device.networks.values.filter(n => n.name !== "")
-      .sort((a, b) => (b.connected - a.connected) || (b.signalStrength - a.signalStrength)) : []
+    readonly property var networks: device ? Flow.listed(device.networks.values) : []
     readonly property bool scanning: scan.running
+    // Pick, password and connect state, driven by flow.js.
     property var asking: null          // network whose password row is open
     property string failure: ""
     property var joining: null         // network the user picked; close once it connects
 
-    function pick(n) {
-      failure = ""
-      if (n.connected || n.stateChanging) return
-      joining = n
-      n.connect()   // saved profile or open network: no prompt; otherwise connectionFailed(NoSecrets) asks below
-    }
+    function closePanel() { Qt.quit() }
+    function pick(n) { Flow.pick(win, n) }
 
     function psk(n) {
       return n.security === WifiSecurityType.WpaPsk || n.security === WifiSecurityType.Wpa2Psk
@@ -209,16 +205,9 @@ ShellRoot {
             Connections {
               target: row.net
               function onConnectionFailed(reason) {
-                if (reason === ConnectionFailReason.NoSecrets && win.psk(row.net)) {
-                  win.asking = row.net
-                  win.failure = row.net.known ? "Wrong password" : ""
-                } else {
-                  win.failure = reason === ConnectionFailReason.NoSecrets
-                    ? "Enterprise network: use Advanced (nmtui)" : "Connection failed"
-                }
-                win.joining = null
+                Flow.failed(win, row.net, reason === ConnectionFailReason.NoSecrets, win.psk(row.net))
               }
-              function onConnectedChanged() { if (row.net.connected && win.joining === row.net) Qt.quit() }
+              function onConnectedChanged() { Flow.connectedChanged(win, row.net) }
             }
 
             Rectangle {
@@ -295,16 +284,9 @@ ShellRoot {
                 font.family: win.font
                 font.pixelSize: 13
                 onVisibleChanged: if (visible) { text = ""; forceActiveFocus() }
-                Keys.onEscapePressed: { win.asking = null; win.failure = "" }
-                Keys.onReturnPressed: submit()
-                Keys.onEnterPressed: submit()
-                function submit() {
-                  if (text === "") return
-                  win.failure = ""
-                  win.joining = row.net
-                  win.asking = null
-                  row.net.connectWithPsk(text)
-                }
+                Keys.onEscapePressed: Flow.cancel(win)
+                Keys.onReturnPressed: Flow.submit(win, row.net, text)
+                Keys.onEnterPressed: Flow.submit(win, row.net, text)
 
                 Text {
                   anchors.verticalCenter: parent.verticalCenter

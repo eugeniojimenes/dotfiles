@@ -5,7 +5,7 @@ description: Add a Quickshell panel to the Sway desktop of this repo (toggle scr
 
 # add-panel
 
-Rules: `harness/rules/sway.md`. Why the pattern: `docs/sway.md` "Panels". Skeleton: `references/panel.md`. Existing panels to copy from: `wifi/`, `bluetooth/`, `sound/`, `display/`, `calendar/`.
+Rules: `harness/rules/sway.md`. Why the pattern: `docs/sway.md` "Panels". Skeleton: `references/panel.md`. Existing panels to copy from: `wifi/` + `bluetooth/` (flow in `flow.js`, tested), `sound/`, `display/`, `calendar/`.
 
 ## Steps
 
