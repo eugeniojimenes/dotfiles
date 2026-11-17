@@ -25,7 +25,7 @@ The rules and skills are written in English, in the compressed style described i
 | `add-keybinding` | Add a Sway binding with its title and a conflict check. |
 | `add-panel` | Add a Quickshell panel following the existing panel pattern. |
 | `new-feature` | Ship a feature spec first: criteria, tests, code, docs. |
-| `update-media` | Find stale or missing screenshots and GIFs, capture them with private names blurred, publish them to `dotfiles-media`. |
+| `update-media` | Find stale or missing screenshots and GIFs, capture them with private names masked, publish them to `dotfiles-media`. |
 
 ## Which tool reads what
 
