@@ -35,7 +35,8 @@ apps() {
     awk -F= -v id="$id" '
       /^\[/ { main = ($0 == "[Desktop Entry]"); next }
       !main { next }
-      $1 == "Name" && name == "" { name = substr($0, 6) }
+      # A TAB in Name would add a column: "App<TAB>run:cmd" would reach sh -c. Fields are TAB separated, so none in.
+      $1 == "Name" && name == "" { name = substr($0, 6); gsub(/\t/, " ", name) }
       $1 == "Icon" { icon = substr($0, 6) }
       ($1 == "NoDisplay" || $1 == "Hidden") && $2 == "true" { hide = 1 }
       $1 == "Type" && $2 != "Application" { hide = 1 }

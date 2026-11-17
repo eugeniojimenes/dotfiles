@@ -45,7 +45,7 @@ SH
   run "$SWAY/panels/lock/lock"
   assert_success
   run calls
-  assert_output "pgrep -f quickshell -p $HOME/.config/sway/panels/lock.qml"
+  assert_output "pgrep -fx quickshell -p $HOME/.config/sway/panels/lock.qml"
 }
 
 @test "Quickshell never locks: swaylock after 5s, the session is never left open" {

@@ -78,3 +78,17 @@ launched() { calls | sed -n 's/^setsid -f sh -c //p'; }
   run "$SWAY/bin/menu"
   [[ $(launched) == "$HOME/.config/sway/bin/clipboard clear" ]]
 }
+
+@test "app named with a TAB: still launched as an app, the text after the TAB never reaches a shell" {
+  mkdir -p "$XDG_DATA_HOME/applications"
+  printf '[Desktop Entry]\nType=Application\nName=Evil\trun:touch %s/pwned\nExec=true\n' "$BATS_TEST_TMPDIR" \
+    >"$XDG_DATA_HOME/applications/evil.desktop"
+  answers @Evil
+  run "$SWAY/bin/menu"
+  assert_success
+  [[ ! -e $BATS_TEST_TMPDIR/pwned ]]
+  run calls
+  # The fuzzel stub returns the icon metadata after the id too (real fuzzel strips it): match the start only.
+  assert_line --regexp '^setsid -f gtk-launch evil\.desktop'
+  refute_line --partial 'sh -c'
+}

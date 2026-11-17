@@ -7,7 +7,8 @@ dir=~/.config/sway/panels
 run=${XDG_RUNTIME_DIR:-/tmp}/sway-lock
 qml="quickshell -p $dir/lock.qml"
 
-pgrep -f "$qml" >/dev/null && exit 0 # already locked
+# -x: the whole command line, so an editor or grep holding the same text never passes for a running lock.
+pgrep -fx "$qml" >/dev/null && exit 0 # already locked
 
 rm -rf "$run" && mkdir -m 700 "$run"
 # Screenshots for the blurred backdrop, one per output, taken before the lock covers them. Live only in the
