@@ -40,3 +40,16 @@ map("n", "<C-f>", function() Snacks.picker.pick("files") end, { desc = "Find Fil
 -- stays on the LSP, which is genuinely semantic for constants; this is the fast sibling.
 -- Shadows built-in `gR` (virtual replace mode).
 map({ "n", "x" }, "gR", function() Snacks.picker.grep_word() end, { desc = "References (ripgrep)" })
+
+-- LazyVim's `<leader>gD` filters on `file:line` only, the hunk lives in `item.diff` for the preview. Append it so the
+-- query searches diff content. Fuzzy over a whole hunk matches scattered letters, prefix `'` for an exact match.
+-- `transform` also sees the raw `git diff` lines feeding the parser, those carry no `diff` and must pass untouched.
+map("n", "<leader>gD", function()
+  Snacks.picker.git_diff({
+    base = "origin",
+    group = true,
+    transform = function(item)
+      if item.diff then item.text = item.text .. "\n" .. item.diff end
+    end,
+  })
+end, { desc = "Git Diff (origin)" })
