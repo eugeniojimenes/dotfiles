@@ -82,3 +82,43 @@ export function bell(modes, unread) {
   if (unread > 0) return { text: `󰂚${count}`, tooltip: `${unread} new${open}`, class: "unread" };
   return { text: "󰂚", tooltip: `No new notifications${open}`, class: "idle" };
 }
+
+// Popup deck geometry. `heights` = each card's natural height by index (0 = newest, in front). Closed: older cards
+// behind the front one, each `gap` px higher and 4% smaller, as tall as the front card so their top edges show the same,
+// up to `edges` of them. Open (pointer over it): a plain list, newest on top.
+export const DECK = { gap: 8, edges: 3 };
+
+export function deckCard(index, count, open, heights) {
+  const natural = heights[index] ?? 0;
+  if (open) {
+    let y = 0;
+    for (let i = 0; i < index; i++) y += (heights[i] ?? 0) + DECK.gap;
+    return { y, scale: 1, height: natural, shown: true };
+  }
+  const peek = Math.min(count - 1, DECK.edges);
+  return {
+    y: (peek - Math.min(index, DECK.edges)) * DECK.gap,
+    scale: Math.max(0.92, 1 - index * 0.04),
+    height: index === 0 ? natural : (heights[0] ?? natural),
+    shown: index <= DECK.edges,
+  };
+}
+
+export function deckHeight(count, open, heights) {
+  if (count === 0) return 0;
+  if (!open) return (heights[0] ?? 0) + Math.min(count - 1, DECK.edges) * DECK.gap;
+  const last = deckCard(count - 1, count, true, heights);
+  return last.y + last.height;
+}
+
+// Centre list: the notifications whose id is kept, newest first. `arrived` maps id -> arrival time in ms.
+export function centreItems(notifications, kept, arrived) {
+  return notifications
+    .filter((item) => kept.includes(item.id))
+    .sort((a, b) => (arrived[b.id] ?? 0) - (arrived[a.id] ?? 0));
+}
+
+// First line of a centre entry: "Slack  ·  5 min", or only the time when the app sent no name.
+export function meta(appName, when) {
+  return [appName, when].filter((part) => part !== "").join("  ·  ");
+}

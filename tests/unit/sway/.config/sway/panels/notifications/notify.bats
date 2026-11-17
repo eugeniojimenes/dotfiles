@@ -21,3 +21,6 @@ qt() {
 @test "history: poweralertd state changes never kept, its warnings are" { qt test_keep; }
 @test "time in the centre: now, minutes, hours, then the clock" { qt test_ago; }
 @test "bar bell: mode wins (recording, share, dnd), else the unread count" { qt test_bell; }
+@test "deck closed: front lowest, older edges a gap higher and smaller, up to three" { qt test_deck_closed; }
+@test "deck open: a list, newest on top, a gap between cards" { qt test_deck_open; }
+@test "centre: kept ones only, newest first; meta line with or without app name" { qt test_centre_items; }

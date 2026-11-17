@@ -134,37 +134,6 @@ ShellRoot {
         font.capitalization: Font.AllUppercase
       }
 
-      component Chip: Rectangle {
-        property string label
-        property bool active
-        signal pressed
-
-        width: Math.max(38, chipText.implicitWidth + 16)
-        height: 28
-        radius: 8
-        color: active ? win.accent : (hover.containsMouse ? win.track : "transparent")
-        border.color: active ? win.accent : win.track
-        border.width: 1
-
-        Text {
-          id: chipText
-          anchors.centerIn: parent
-          text: parent.label
-          color: parent.active ? "#1e1e2e" : win.fg
-          font.family: win.font
-          font.pixelSize: 12
-          font.bold: parent.active
-        }
-
-        MouseArea {
-          id: hover
-          anchors.fill: parent
-          cursorShape: Qt.PointingHandCursor
-          hoverEnabled: true
-          onClicked: parent.pressed()
-        }
-      }
-
       Column {
         id: content
         anchors.horizontalCenter: parent.horizontalCenter

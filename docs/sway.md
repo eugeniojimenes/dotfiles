@@ -10,7 +10,7 @@ The whole desktop lives in one directory, `sway/.config/sway/`, which stow links
 - `bin/` holds the scripts that bindings, waybar and the menu run.
 - `apps/` holds the configs for waybar, fuzzel, swaylock and wiremix.
 - `panels/` holds the Quickshell panels and the lock screen. Each one has an entry file at the top (`wifi.qml`, `bluetooth.qml`, `sound.qml`, `display.qml`, `calendar.qml`, `lock.qml`) and a directory of the same name with its scripts and logic (`toggle`, `flow.mjs`, `display/ctl`, `lock/lock`).
-- `panels/common/` holds what the panels share: `PanelShell.qml`, `Theme.qml` and `AdvancedLink.qml`.
+- `panels/common/` holds what the panels share: `PanelShell.qml`, `Theme.qml`, `AdvancedLink.qml` and `Chip.qml`, the small button the panels use.
 
 One file lives outside that directory: `sway/.config/xdg-desktop-portal-wlr/sway`, the screen-share picker config.
 
@@ -68,7 +68,7 @@ A panel is a full-screen transparent `PanelWindow` on the overlay layer with exc
 
 Exclusive keyboard focus does not follow a workspace switch. Switching workspace by key or by a click on another output would leave every window without input until the panel closed. So each panel listens to Sway's workspace events through `I3IpcListener` and closes itself on a focus change, the way a popup would. Sway also skips its own mouse warping while a layer surface holds the keyboard, so when the switch moves to another output the panel moves the cursor to the center of the new workspace before it quits.
 
-All of this lives once in `common/PanelShell.qml`, and every panel except the lock screen is a `PanelShell` with its own card. Quickshell only loads files from the directory of the entry file it runs, which is why every entry file sits at the top of `panels/` and imports `"common"` and its own `<name>/` files from there. An import that leaves that directory passes qmllint but fails in Quickshell, so `bin/check static` also starts every panel in a headless Sway (step `panels-load`). `common/Theme.qml` holds the colours and the font, and `common/AdvancedLink.qml` is the footer link that opens a panel's full TUI in a floating terminal. A fix to the shared behaviour goes there, so it reaches every panel at once.
+All of this lives once in `common/PanelShell.qml`, and every panel except the lock screen is a `PanelShell` with its own card. Quickshell only loads files from the directory of the entry file it runs, which is why every entry file sits at the top of `panels/` and imports `"common"` and its own `<name>/` files from there. An import that leaves that directory passes qmllint but fails in Quickshell, so `bin/check static` also starts every panel in a headless Sway (step `panels-load`). A big panel splits into component files in its own `<name>/` directory, as the notification daemon does with its popups and centre. Those files import `"../common"`, which stays inside `panels/` and works. Quickshell's own `import qs.common` form also works there, but qmllint cannot resolve it, so the repo keeps relative imports. `common/Theme.qml` holds the colours and the font, and `common/AdvancedLink.qml` is the footer link that opens a panel's full TUI in a floating terminal. A fix to the shared behaviour goes there, so it reaches every panel at once.
 
 ## Terminal opacity and text size
 

@@ -1,6 +1,6 @@
 # Notifications
 
-Files: `sway/.config/sway/panels/notifications.qml` (Quickshell daemon, popups and notification centre), `sway/.config/sway/panels/notifications/toggle` (opens the centre: bell click, `Super + Ctrl + ,`, menu), `sway/.config/sway/panels/notifications/notify.mjs` (rules), `sway/.config/sway/panels/notifications/run` (started by `sway/.config/sway/config.d/90-autostart`), `sway/.config/sway/bin/dnd` (modes and the waybar bell), `sway/.config/sway/panels/common/PanelShell.qml` (the centre's window).
+Files: `sway/.config/sway/panels/notifications.qml` (Quickshell daemon: server, state, modes, IPC), `sway/.config/sway/panels/notifications/Popups.qml` and `PopupCard.qml` (popups), `sway/.config/sway/panels/notifications/Centre.qml` and `CentreEntry.qml` (notification centre), `sway/.config/sway/panels/notifications/toggle` (opens the centre: bell click, `Super + Ctrl + ,`, menu), `sway/.config/sway/panels/notifications/notify.mjs` (rules), `sway/.config/sway/panels/notifications/run` (started by `sway/.config/sway/config.d/90-autostart`), `sway/.config/sway/bin/dnd` (modes and the waybar bell), `sway/.config/sway/panels/common/PanelShell.qml` (the centre's window).
 
 ## Purpose
 

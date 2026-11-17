@@ -79,4 +79,31 @@ TestCase {
     verify(Notify.bell(["dnd", "screenshare"], 0).tooltip.indexOf("sharing") >= 0)
     verify(Notify.bell(["screenshare", "recording"], 0).tooltip.indexOf("recording") >= 0)
   }
+
+  function test_deck_closed() {
+    var h = [60, 80, 40, 50, 70]
+    compare(Notify.deckCard(0, 1, false, h), { y: 0, scale: 1, height: 60, shown: true })
+    // Three behind the front: the front sits 3 gaps down, each older one a gap higher, all as tall as the front.
+    compare(Notify.deckCard(0, 5, false, h).y, 24)
+    compare(Notify.deckCard(1, 5, false, h), { y: 16, scale: 0.96, height: 60, shown: true })
+    compare(Notify.deckCard(3, 5, false, h).y, 0)
+    compare(Notify.deckCard(4, 5, false, h).shown, false)
+    compare(Notify.deckHeight(5, false, h), 84)
+    compare(Notify.deckHeight(0, false, h), 0)
+  }
+
+  function test_deck_open() {
+    var h = [60, 80, 40]
+    compare(Notify.deckCard(0, 3, true, h), { y: 0, scale: 1, height: 60, shown: true })
+    compare(Notify.deckCard(2, 3, true, h).y, 60 + 8 + 80 + 8)
+    compare(Notify.deckHeight(3, true, h), 60 + 8 + 80 + 8 + 40)
+  }
+
+  function test_centre_items() {
+    var list = [{ id: 1 }, { id: 2 }, { id: 3 }]
+    compare(Notify.centreItems(list, [1, 3], { 1: 100, 3: 300 }).map(i => i.id), [3, 1])
+    compare(Notify.centreItems(list, [], {}), [])
+    compare(Notify.meta("Slack", "5 min"), "Slack  ·  5 min")
+    compare(Notify.meta("", "now"), "now")
+  }
 }
