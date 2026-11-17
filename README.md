@@ -6,119 +6,150 @@
 [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](./README-pt-br.md)
 [![love](https://img.shields.io/badge/Build%20With-%F0%9F%96%A4-lightgreen)](https://eugeniojimenes.dev)
 
-My personal config files (dotfiles) for NixOS with the Sway compositor. System config in `nixos/`, everything under `$HOME` managed with GNU Stow.
+My personal configuration for NixOS with the Sway compositor. The system itself (packages, services, login, one setup per machine) is a Nix flake. Everything under `$HOME` comes from GNU Stow modules that link the files into place.
 
 ## Table of contents
-- [Quickstart](#quickstart)
-- [System config (NixOS)](#system-config-nixos)
-- [Apply dotfiles with GNU Stow](#apply-dotfiles-with-gnu-stow)
-  - [About each module](#about-each-module)
+- [What is in here](#what-is-in-here)
+- [Install on a new machine](#install-on-a-new-machine)
+- [Using it as a base for your own](#using-it-as-a-base-for-your-own)
+- [Daily use](#daily-use)
+- [Modules](#modules)
 - [Health check](#health-check)
-- [Docs](#docs)
 - [Tests](#tests)
 - [Cedilla with US keyboard layout](#cedilla-with-us-keyboard-layout)
+- [Docs](#docs)
 - [License](#license)
 - [Code of conduct](#code-of-conduct)
 
-## Quickstart
-Fresh NixOS install (graphical installer, no desktop):
-```sh
-nix-shell -p git --run 'git clone https://github.com/eugeniojimenes/dotfiles.git ~/dotfiles'
-```
-Then [System config](#system-config-nixos), then [Stow](#apply-dotfiles-with-gnu-stow).
+## What is in here
+- `flake.nix` and `nixos/` hold the system configuration. `nixos/common.nix` is shared by every machine, and `nixos/hosts/<hostname>/` holds what only that machine needs. There is no home-manager.
+- Every top-level directory with dot-prefixed contents is a stow module. Stow mirrors the module's tree into `$HOME`, so `sway/.config/sway/config` becomes `~/.config/sway/config`. The list is in [Modules](#modules).
+- `bin/check` and `tests/` run the tests. `docs/` explains how each part works and why.
+- `AGENTS.md`, `CLAUDE.md`, `harness/` and the `.claude/`, `.agents/` and `.cursor/` directories hold instructions for AI coding agents. You can ignore them if you do not use one.
 
-## System config (NixOS)
-`flake.nix` (repo root) = one NixOS system per machine, nixpkgs pinned in `flake.lock`. `nixos/common.nix` = packages, services, Sway, login, shared by every machine. `nixos/hosts/<hostname>/` = what only that machine needs: `default.nix` (GPU, hostname) and `hardware.nix` (its `nixos-generate-config` output). Not a stow module. New machine, after a plain NixOS install:
+## Install on a new machine
+1. Install NixOS with the graphical installer and pick no desktop. Create the user named in `nixos/common.nix`, or change that name first as described in [Using it as a base for your own](#using-it-as-a-base-for-your-own).
+
+2. Clone the repo:
+   ```sh
+   nix-shell -p git --run 'git clone https://github.com/eugeniojimenes/dotfiles.git ~/dotfiles'
+   ```
+
+3. Prepare the host. A reinstall creates new disk UUIDs, so even a machine that already has its directory in `nixos/hosts/` needs its hardware config written again. A new machine also needs a `default.nix`, an entry in `flake.nix` and a Sway output file. [docs/machines.md](docs/machines.md) explains each one.
+   ```sh
+   cd ~/dotfiles
+   mkdir -p nixos/hosts/<hostname>
+   nixos-generate-config --show-hardware-config > nixos/hosts/<hostname>/hardware.nix
+   # new machine only: write nixos/hosts/<hostname>/default.nix (start from hosts/loc-nixos),
+   # add it to flake.nix and write sway/.config/sway/hosts/<hostname>
+   git add nixos flake.nix sway   # a flake only sees files git tracks
+   ```
+
+4. Link the dotfiles before the first rebuild. The login manager starts Sway through `~/.config/sway/bin/start`, and that file only exists once the `sway` module is stowed. Move away any file a module would replace (`~/.bashrc` on a fresh system). Create the shared parent directories too: without them stow links `~/.local/share` as a whole into the `steam` module, and every app then writes its data into the repo.
+   ```sh
+   mkdir -p ~/.local/share ~/.local/bin ~/.claude
+   nix-shell -p stow --run 'stow alacritty bash btop claude-code git lazyvim local-bin mise mpv opencode rubocop steam sway tmux'
+   ```
+
+5. Build the system and reboot into it. After the reboot greetd logs straight into Sway. The disk passphrase at boot already guards the machine, so there is no second password.
+   ```sh
+   sudo nixos-rebuild boot --flake ~/dotfiles#<hostname>
+   reboot
+   ```
+
+6. Install what lives outside Nix: the language runtimes and CLIs from mise, the tmux plugin manager and the mpv interface. Inside tmux, press `prefix + I` to install the plugins. Open Neovim once so lazy.nvim installs its plugins.
+   ```sh
+   mise install
+   git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
+   curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
+   ```
+
+7. Turn on the pre-commit hook, which refuses commits that hold a secret or a forbidden term: `git config core.hooksPath .githooks`.
+
+8. With a US international keyboard, set up the cedilla as described in [Cedilla with US keyboard layout](#cedilla-with-us-keyboard-layout).
+
+9. This step is for the owner only. Unlock the private repo with `~/.private/private unlock`. A fork skips it. The files in this repo that point there are all optional.
+
+10. Run `dotfiles-doctor` to check the result. It lists anything still missing, and `dotfiles-doctor --fix` applies the safe repairs.
+
+## Using it as a base for your own
+The configuration is personal, so a fork needs a few edits before the install above.
+
+- The user name `callmarx` appears in `nixos/common.nix` (the user and the greetd paths), in `sway/.config/sway/apps/fuzzel-menu.ini` and in `sway/.config/xdg-desktop-portal-wlr/sway`. The last two use the absolute path `/home/callmarx/`.
+- Write your own host directory instead of reusing `nixos/hosts/loc-nixos/`. That one has NVIDIA PRIME bus IDs and Intel settings for one specific notebook.
+- Time zone and console keymap are in `nixos/common.nix`. Keyboard layouts are in `sway/.config/sway/config.d/20-input`, where the external keyboard is matched by its name.
+- Change the `[user]` section of `git/.gitconfig`. The work identity include points at a file that lives in my private repo, and git skips it when the file does not exist.
+- The package list in `nixos/common.nix` is mine. Remove what you do not use.
+- The `claude-code` module holds my global Claude Code instructions, which include English feedback for a Portuguese speaker. Leave it out of the `stow` command or replace its contents.
+- Use your fork's URL in the clone step.
+
+The term scan in `bin/check` and in the hook needs a list from my private repo. Without it the scan is skipped, so a fork needs nothing there.
+
+## Daily use
 ```sh
-mkdir nixos/hosts/<hostname>
-nixos-generate-config --show-hardware-config > nixos/hosts/<hostname>/hardware.nix
-# write nixos/hosts/<hostname>/default.nix (see hosts/loc-nixos), add it to flake.nix
-git add nixos flake.nix   # a flake only sees files git tracks
-sudo nixos-rebuild boot --flake ~/dotfiles#<hostname> && reboot
-```
-Day to day:
-```sh
-sudo nixos-rebuild switch --flake ~/dotfiles             # after editing nixos/ (picks the host by hostname)
+sudo nixos-rebuild switch --flake ~/dotfiles                       # after editing nixos/, picks the host by hostname
 nix flake update && sudo nixos-rebuild switch --flake ~/dotfiles   # update packages
-sudo nixos-rebuild switch --rollback                     # back to the previous generation
+sudo nixos-rebuild switch --rollback                               # back to the previous generation
+stow <module>                                                      # link a module, from ~/dotfiles
+stow -D <module>                                                   # remove its links, the files stay in the repo
 ```
-No home-manager: system state lives in `nixos/`, user config in the stow modules below. User name is in `common.nix`; a new machine also gets its Sway file `sway/.config/sway/hosts/<hostname>`. Details in [docs/nixos.md](docs/nixos.md) and [docs/machines.md](docs/machines.md).
+A new file under `nixos/` needs `git add` before a rebuild sees it. Older generations are also in the boot menu.
 
-## Apply dotfiles with GNU Stow
-Stow manages symlinks from repo into `$HOME`. Move away anything a module would replace first (`~/.bashrc` on a fresh system). Create the shared parents first, or stow folds `~/.local/share` into the `steam` module and every app writes its data into the repo: `mkdir -p ~/.local/share ~/.local/bin ~/.claude`.
-```sh
-cd ~/dotfiles
-stow alacritty bash btop claude-code git lazyvim local-bin mise mpv opencode rubocop steam sway tmux
-stow -D <module>   # remove a module's symlinks, files stay in the repo
-```
+In Sway, `Super + Space` opens the menu and `Super + K` lists every key binding. In tmux, `prefix + ?` lists the bindings.
 
-### About each module:
-1. **Alacritty**: `alacritty/.config/alacritty/`. JetBrainsMono Nerd Font, padding, keybindings, Catppuccin Mocha colors. Opacity and text size are set live from the Sway menu and display panel.
+## Modules
+- **Alacritty** (`alacritty/.config/alacritty/`): the terminal, with JetBrainsMono Nerd Font, padding, key bindings and Catppuccin Mocha colors. Opacity and text size change live from the Sway menu and the display panel.
 
-2. **Bash**: `bash/`. `.bashrc` loads `~/.config/bash/{env,shell,aliases,init}` and `inputrc`. Prompt by [starship](https://starship.rs/) (`bash/.config/starship.toml`).
+- **Bash** (`bash/`): `.bashrc` loads `~/.config/bash/{env,shell,aliases,init}` and `inputrc`. The prompt is [starship](https://starship.rs/), configured in `bash/.config/starship.toml`.
 
-3. **btop**: `btop/.config/btop/`. Catppuccin Mocha theme, transparent background.
+- **btop** (`btop/.config/btop/`): Catppuccin Mocha theme with a transparent background.
 
-4. **Claude Code**: `claude-code/.claude/`. Global Claude Code config: `CLAUDE.md` (instructions), custom skills (`skills/`), `statusline-command.sh`. Machine-local state (`settings.json`, `settings.local.json`, per-project memory) stays out of repo, see [docs/claude-code.md](docs/claude-code.md).
+- **Claude Code** (`claude-code/.claude/`): my global Claude Code config, with instructions in `CLAUDE.md`, custom skills in `skills/` and the status line script. Machine-local state such as `settings.json`, `settings.local.json` and per-project memory stays out of the repo. [docs/claude-code.md](docs/claude-code.md) explains why.
 
-5. **Git**: `git/`. Colored output, `develop` as default branch, commit message template inspired by Conventional Commits.
+- **Git** (`git/`): colored output, `develop` as the default branch and a commit message template based on Conventional Commits. [docs/git.md](docs/git.md) covers the work identity.
 
-6. **Neovim (LazyVim)**: `lazyvim/`. Catppuccin Mocha with transparent background. Inside tmux or SSH, yanks also go out as OSC 52. Clean start: `rm -rf ~/.local/share/nvim ~/.local/state/nvim`.
+- **Neovim** (`lazyvim/`): a LazyVim setup with Catppuccin Mocha and a transparent background. Inside tmux or over SSH, every yank also goes to the system clipboard through OSC 52. For a clean start, remove `~/.local/share/nvim` and `~/.local/state/nvim`.
 
-7. **mise** (tool version manager): `mise/.config/mise/`. Node, Python, Ruby, Rust, Go, uv and agent CLIs. Prebuilt binaries run on NixOS through `programs.nix-ld`.
-  ```sh
-  mise install
-  ```
+- **local-bin** (`local-bin/.local/bin/`): personal scripts on `PATH`. `dotfiles-doctor` is the [health check](#health-check). `asdf` is a small shim that forwards to mise, because a work CLI calls `asdf` directly. Stow links this module file by file, since `~/.local/bin` also holds files that do not belong in the repo, such as the mise shims.
 
-8. **mpv**: `mpv/.config/mpv/`. UI = [uosc](https://github.com/tomasklaen/uosc), installed by its own script, not tracked. `stow mpv` first, then:
-  ```sh
-  curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
-  ```
-  uosc updates itself from its menu (**Update uosc**). Notes in [docs/mpv.md](docs/mpv.md).
+- **mise** (`mise/.config/mise/`): the version manager for Node, Python, Ruby, Rust, Go, uv and the agent CLIs. Their prebuilt binaries run on NixOS through `programs.nix-ld`.
 
-9. **RuboCop**: `rubocop/`. Global config (`~/.rubocop.yml`) with `rubocop-performance`, `rubocop-rails`, `rubocop-rspec`.
+- **mpv** (`mpv/.config/mpv/`): the video player, with the [uosc](https://github.com/tomasklaen/uosc) interface. uosc comes from its own installer, is not tracked, and updates itself from its menu (**Update uosc**). [docs/mpv.md](docs/mpv.md) has the details.
 
-10. **Steam**: `steam/`. Game launchers in `~/.local/share/applications/`. Games on the NVIDIA GPU: launch option `prime-run %command%`.
+- **OpenCode** (`opencode/.config/opencode/`): model, plugins, the context7 MCP server and TUI settings.
 
-11. **Sway**: `sway/.config/sway/`. Whole desktop in one directory: config, waybar, mako, fuzzel menu (`Super + Space`), Quickshell calendar, display panel, sound panel, Wi-Fi panel and lock screen, wallpaper switcher (`~/Pictures/Wallpapers`), screenshots, screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). Config split by topic in `config.d/`, scripts in `bin/`, app configs in `apps/`. `Super + K` lists every keybinding. `bin/start` puts the integrated GPU first so the dGPU only drives its own outputs. Details in [docs/sway.md](docs/sway.md).
+- **RuboCop** (`rubocop/`): the global `~/.rubocop.yml`, with `rubocop-performance`, `rubocop-rails` and `rubocop-rspec`.
 
-12. **tmux**: `tmux/`. Prefix `Ctrl + \` (or `Ctrl + b`), `prefix + ?` lists bindings. Plugin manager outside `~/.config/tmux`:
-  ```sh
-  git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
-  ```
-  Inside tmux, `prefix + I` installs plugins. Snapshots are manual: `prefix + Ctrl-s` saves, `prefix + Ctrl-r` restores sessions, layouts and cwds (no programs relaunched). `Super + Alt + Return` attaches to the main server when nothing is attached, else opens an independent one. Neovim sessions: `<leader>qs`. Details in [docs/tmux.md](docs/tmux.md).
+- **Steam** (`steam/`): game launchers in `~/.local/share/applications/`. To run a game on the NVIDIA GPU, set its launch option to `prime-run %command%`.
 
-13. **OpenCode**: `opencode/.config/opencode/`. Model, plugins, context7 MCP, TUI settings.
+- **Sway** (`sway/.config/sway/`): the whole desktop in one directory. It holds the Sway config, waybar, mako, the fuzzel menu, the Quickshell calendar, display, sound and Wi-Fi panels, the lock screen, a wallpaper switcher for `~/Pictures/Wallpapers`, screenshots and the screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). The config is split by topic in `config.d/`, scripts are in `bin/` and app configs in `apps/`. `bin/start` puts the integrated GPU first, so the NVIDIA GPU only drives the outputs wired to it. [docs/sway.md](docs/sway.md) has the details.
 
-14. **local-bin**: `local-bin/.local/bin/`. Personal scripts on `PATH`: `dotfiles-doctor` (see [Health check](#health-check)) and `asdf`, a shim that forwards to mise because a work CLI hardcodes `asdf` calls. Stow links it file by file, since `~/.local/bin` also holds files that do not belong in the repo (mise shims).
+- **tmux** (`tmux/`): the prefix is `Ctrl + \` (or `Ctrl + b`). Snapshots are manual: `prefix + Ctrl-s` saves and `prefix + Ctrl-r` restores sessions, layouts and working directories, without relaunching programs. `Super + Alt + Return` attaches to the main server when nothing is attached to it, and otherwise opens an independent one. Neovim sessions are on `<leader>qs`. [docs/tmux.md](docs/tmux.md) has the details.
 
 ## Health check
-`dotfiles-doctor` checks stow state, commands from `nixos/common.nix`, mise tools, plugin installs and machine-local files. Read-only by default, prints the repair for each problem; `--fix` applies the safe ones.
+`dotfiles-doctor` checks the stow state, the commands `nixos/common.nix` should provide, the mise tools, the plugin installs and the machine-local files. By default it only reads and prints the repair for each problem. `--fix` applies the safe ones.
 ```sh
 dotfiles-doctor
 dotfiles-doctor --fix
 ~/dotfiles/local-bin/.local/bin/dotfiles-doctor   # before local-bin is stowed
 ```
-Stow conflicts (real file where a symlink belongs) are never auto-fixed: diff against the repo first. Details in [docs/dotfiles-doctor.md](docs/dotfiles-doctor.md).
-
-## Docs
-How each part works and why: [docs/](docs/README.md) (NixOS, machines, Sway, tmux, git, public repo rules, Claude Code, dotfiles-doctor, mpv). Feature specs and the tests that cover them: [docs/specs/](docs/specs/README.md).
+A stow conflict (a real file where a symlink belongs) is never fixed automatically. Compare the file with the repo first. [docs/dotfiles-doctor.md](docs/dotfiles-doctor.md) describes every check.
 
 ## Tests
-`bin/check` runs the test layers through the flake checks, so the tools come from the pinned nixpkgs and nothing needs to be installed. Run it before every commit. The flake only sees tracked files, so `git add` new files first.
+`bin/check` runs the test layers through the flake checks. The tools come from the pinned nixpkgs, so nothing needs to be installed. Run it before every commit. The flake only sees tracked files, so `git add` new files first.
 ```sh
 bin/check           # everything: static, unit, eval of each host, then the employer-term scan
-bin/check static    # shellcheck, nixfmt and statix, sway -C per host, qmllint, waybar JSON, em-dash sweep, stow dry run, gitleaks
+bin/check static    # shellcheck, nixfmt and statix, sway -C per host, qmllint, waybar JSON, em-dash sweep, doc pairs, stow dry run, gitleaks
 bin/check unit      # bats tests in tests/unit/, scripts run against stubbed commands
 bin/check terms     # local only: tracked files against the term list in ~/.private, skipped when it is locked
 nix develop         # shell with the same tools, to run one of them by hand
 ```
-GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md).
+GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md), and the feature specs that list what each test covers are in [docs/specs/](docs/specs/README.md).
 
-A pre-commit hook in `.githooks/` refuses a commit when a tracked file holds a forbidden term (`bin/check terms`) or the staged changes hold a secret (`gitleaks git --staged`). It prints `file:line`, never the value. Git runs it only once the clone points at it, so enable it per clone: `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does it). Local only: CI runs the same scans through `bin/check`, minus `terms`. Skip once with `git commit --no-verify`. What each scan misses: [docs/public-repo.md](docs/public-repo.md).
+The pre-commit hook in `.githooks/` refuses a commit when a tracked file holds a forbidden term (`bin/check terms`) or the staged changes hold a secret (`gitleaks git --staged`). It prints `file:line` and never the value. Git only runs it once the clone points at it, so enable it in each clone with `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does the same). The hook runs locally only, and CI runs the same scans through `bin/check`, except `terms`. To skip it once, use `git commit --no-verify`. [docs/public-repo.md](docs/public-repo.md) lists what each scan misses.
 
 ## Cedilla with US keyboard layout
-US international maps `'` + `c` to ć. Override at the end of `~/.XCompose` (machine-local, not in repo):
+The US international layout turns `'` followed by `c` into ć. To get ç, add an override at the end of `~/.XCompose`, which is machine-local and not in the repo:
 ```sh
 cat >>~/.XCompose <<'XC'
 include "%L"
@@ -128,10 +159,13 @@ include "%L"
 <dead_acute> <C> : "Ç" Ccedilla
 XC
 ```
-Restart apps to pick it up. Check: `xkbcli compile-compose | grep '<dead_acute> <c>'` prints ç. The built-in ABNT2 keyboard has its own ç key and needs nothing.
+Restart the apps to pick it up. To check, `xkbcli compile-compose | grep '<dead_acute> <c>'` should print ç. The notebook's built-in ABNT2 keyboard has its own ç key and needs nothing.
+
+## Docs
+[docs/](docs/README.md) explains how each part works and why: NixOS, machines, Sway, tmux, git, the public repo rules, Claude Code, dotfiles-doctor and mpv. Each page also has a Portuguese version.
 
 ## License
-Open source under MIT license. See [LICENSE](/LICENSE). Third-party files and their licenses: [THIRD-PARTY.md](/THIRD-PARTY.md).
+Open source under the MIT license. See [LICENSE](/LICENSE). Third-party files and their licenses are listed in [THIRD-PARTY.md](/THIRD-PARTY.md).
 
 ## Code of conduct
-I am committed to providing a friendly, safe, and welcoming environment for all. Please read and respect the [Code of Conduct](/code_of_conduct.md).
+I am committed to providing a friendly, safe and welcoming environment for all. Please read and respect the [Code of Conduct](/code_of_conduct.md).

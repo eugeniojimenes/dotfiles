@@ -13,7 +13,7 @@ Full rules: `AGENTS.md` "Writing style". Applies to every `.md` except `claude-c
 Audience decides style:
 
 - Agent text (`AGENTS.md`, `CLAUDE.md`, `harness/rules/**`, `harness/skills/**`): compressed, caveman `full`, fragments fine, all technical substance kept.
-- Human docs (`README*`, `docs/**`, `docs/specs/**`, `harness/README*`, `tests/manual.md`): plain English, full sentences. No em dash, no "not just X but Y", no bold label on every bullet, no filler opener. "durable", "seam", "artifact" only where no normal word works. No clause vouching for a fact ("by design", "not by luck", "on purpose"): state fact, reason in own sentence.
+- Human docs (`README*`, `docs/**`, `docs/specs/**`, `harness/README*`, `tests/manual.md`): plain English, full sentences. No em dash, no "not just X but Y", no bold label on every bullet (exception: README module list), no filler opener. "durable", "seam", "artifact" only where no normal word works. No clause vouching for a fact ("by design", "not by luck", "on purpose"): state fact, reason in own sentence.
 - Both: no em-dash (U+2014), no AI tells ("moreover", "furthermore", "additionally", "however", "it is worth noting", "crucial", "robust", "seamless", "comprehensive", "leverage"). Never hard wrap markdown: one paragraph or bullet = one line. Code blocks, commands, paths, option names, error strings verbatim.
 
 Pairs:
