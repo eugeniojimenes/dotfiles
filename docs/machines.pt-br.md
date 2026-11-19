@@ -7,7 +7,7 @@ Hoje o repo atende o notebook `loc-nixos`. Um desktop com GPU AMD e dois monitor
 - `nixos/hosts/<hostname>/default.nix`: o hostname, o driver da GPU e suas opções (bus IDs do NVIDIA PRIME, `i915` no initrd, `services.xserver.videoDrivers`) e serviços ligados ao fabricante da CPU, como o `thermald`, que é para CPUs Intel.
 - `nixos/hosts/<hostname>/hardware.nix`: a config de hardware gerada, commitada sem alterações.
 - `flake.nix`: uma linha `nixosConfigurations.<hostname>` por máquina.
-- `sway/.config/sway/hosts/<hostname>`: as linhas `output` daquela máquina. O Sway inclui esse arquivo depois de `config.d/*`, então ele pode sobrescrever qualquer coisa lá, e uma máquina sem o arquivo roda só com as partes compartilhadas.
+- `sway/.config/sway/hosts/<hostname>`: as linhas `output` daquela máquina e o layout de um teclado embutido que não seja US internacional. O Sway inclui esse arquivo depois de `config.d/*`, então ele pode sobrescrever qualquer coisa lá, e uma máquina sem o arquivo roda só com as partes compartilhadas.
 - `tests/manual.md`: uma seção de verificações de hardware por máquina.
 
 As saídas são identificadas por `"make model serial"`, como mostra o `swaymsg -t get_outputs -p`, nunca pelo nome do conector. Nomes de conector como `eDP-1` mudam conforme a ordem em que os drivers carregam: a tela do notebook era `eDP-2` no Arch e é `eDP-1` aqui.

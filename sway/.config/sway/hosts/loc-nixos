@@ -2,3 +2,11 @@
 # Outputs matched by "make model serial" (`swaymsg -t get_outputs -p`), not by connector name: the kernel numbers
 # connectors across both GPUs in driver load order, so the panel was eDP-2 on Arch and is eDP-1 here.
 output "Chimei Innolux Corporation 0x1552 Unknown" scale 1
+# Built-in ABNT2 keyboard; every other keyboard stays on the us(intl) default from config.d/20-input. Keys come
+# from the internal USB ITE device, not the PS/2 AT one: both listed, both br.
+input "1165:51590:ITE_Tech._Inc._ITE_Device(8176)_Keyboard" {
+    xkb_layout br
+}
+input "1:1:AT_Translated_Set_2_keyboard" {
+    xkb_layout br
+}

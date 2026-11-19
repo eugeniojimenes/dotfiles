@@ -1,15 +1,12 @@
-### Input. Built-in ABNT2 = br, listed external keyboards = us/intl, no layout toggle.
-# Not "us/intl for every keyboard, br for the built-in": that needs xkb_variant "" in the override, which sway's
-# config parser rejects, and the built-in silently stayed US. Identifiers: `swaymsg -t get_inputs`.
+### Input. Every keyboard = us/intl, no layout toggle; a built-in ABNT2 gets br in its host file
+# (hosts/loc-nixos). Variant inside the layout name: `xkb_variant intl` here would leak into the br override, which
+# fails to compile (no br(intl)) and leaves the keyboard on us; sway's parser rejects xkb_variant "" to clear it.
+# Identifiers: `swaymsg -t get_inputs`.
 input type:keyboard {
-    xkb_layout br
+    xkb_layout us(intl)
     xkb_options compose:caps,shift:both_capslock_cancel
     repeat_delay 600
     repeat_rate 40
-}
-input "9610:73:BY_Tech_Gaming_Keyboard" {
-    xkb_layout us
-    xkb_variant intl
 }
 input type:touchpad {
     tap enabled

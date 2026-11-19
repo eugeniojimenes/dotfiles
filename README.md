@@ -75,7 +75,7 @@ The configuration is personal, so a fork needs a few edits before the install ab
 
 - The user name `callmarx` is set once, as `user` at the top of `nixos/common.nix`. Use the name you picked in the installer, since changing it there creates a new user instead of renaming the existing one.
 - Write your own host directory instead of reusing `nixos/hosts/loc-nixos/`. That one has NVIDIA PRIME bus IDs and Intel settings for one specific notebook.
-- Time zone and console keymap are in `nixos/common.nix`. Keyboard layouts are in `sway/.config/sway/config.d/20-input`, where the external keyboard is matched by its name.
+- Time zone and console keymap are in `nixos/common.nix`. Keyboard layouts are in `sway/.config/sway/config.d/20-input`: every keyboard is US international by default, and the host file `sway/.config/sway/hosts/<hostname>` gives a built-in ABNT2 keyboard the Brazilian layout, matched by its name.
 - Change the `[user]` section of `git/.gitconfig`. The work identity include points at a file that lives in my private repo, and git skips it when the file does not exist.
 - The package list in `nixos/common.nix` is mine. Remove what you do not use.
 - The `claude-code` module holds my global Claude Code instructions, which include English feedback for a Portuguese speaker. Leave it out of the `stow` command or replace its contents.
