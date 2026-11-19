@@ -6,7 +6,7 @@ experimental = true
 all_compile = false
 disable_tools = ["bundler"]
 # Supply-chain cooldown: install and upgrade only releases published 7 days ago or more (most malicious releases are
-# pulled within a week). Explicit: the built-in 24h default only exists from mise 2026.6.2, newer than nixpkgs' mise.
+# pulled within a week). Explicit: the built-in default is 24h only.
 minimum_release_age = "7d"
 
 [settings.ruby]
@@ -15,8 +15,8 @@ minimum_release_age = "7d"
 CFLAGS = "-std=gnu17"
 
 [tools]
-# Agent CLIs auto_update daily, held back by minimum_release_age above. Option from mise 2026.10.4 on: older ones
-# (nixpkgs has 2026.5.12 now) ignore it, then only `mise upgrade` moves them.
+# Agent CLIs auto_update daily, held back by minimum_release_age above. Option from mise 2026.10.4 on (mise comes from
+# nixpkgs-unstable, see flake.nix): older ones ignore it, then only `mise upgrade` moves them.
 claude = { version = "latest", auto_update = true }
 # Search past Claude Code sessions (not in nixpkgs; prebuilt release binary).
 "github:raine/claude-history" = "latest"

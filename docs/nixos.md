@@ -4,7 +4,7 @@ The system configuration lives in `nixos/` and in `flake.nix` at the repo root. 
 
 ## Layout
 
-`flake.nix` defines one `nixosConfigurations.<hostname>` per machine. The attribute name is the hostname, so `sudo nixos-rebuild switch --flake ~/dotfiles` picks the right system by itself. The flake follows the `nixos-26.05` branch, and `flake.lock` pins the exact nixpkgs revision. `bin/update` moves the lock (see [Updating](#updating)).
+`flake.nix` defines one `nixosConfigurations.<hostname>` per machine. The attribute name is the hostname, so `sudo nixos-rebuild switch --flake ~/dotfiles` picks the right system by itself. The flake follows the `nixos-26.05` branch, and `flake.lock` pins the exact nixpkgs revision. `bin/update` moves the lock (see [Updating](#updating)). A second input, `nixpkgs-unstable`, supplies the few packages the stable branch has too old, only mise for now: the 2026.5.12 in 26.05 fails `mise install` on a `.tool-versions` entry listed in `disable_tools`, which 2026.6.4 fixed. `bin/update` does not move that input; `nix flake update nixpkgs-unstable` does. It goes away with the move to 26.11.
 
 `nixos/common.nix` holds everything every machine shares: packages, services, Sway, login. `nixos/hosts/<hostname>/default.nix` holds what one machine needs and imports `../../common.nix` and `./hardware.nix`. `/etc/nixos` is not used.
 
@@ -89,7 +89,7 @@ The system step reads the list of NixOS channel releases. A channel release has 
 
 After locking, `bin/check` runs against the new packages, so the Quickshell panels load with the new Quickshell and `sway -C` reads the config with the new Sway before anything is applied. A failure restores `flake.lock`. The new system is then built and compared with the running one with `nvd diff`. When the kernel, its modules or the initrd changed, the script says to run `sudo nixos-rebuild boot` and reboot: a `switch` would keep the old NVIDIA kernel module loaded under a new userspace driver, and GPU apps fail until the reboot. Otherwise it says to run `sudo nixos-rebuild test`, which reverts on the next boot, and `switch` once the system works.
 
-mise waits 7 days for new releases (`minimum_release_age` in its config). Its tools are published straight by their maintainers, and the agent CLIs among them run with access to the shell and the code, so they get the longer supply-chain wait. Analyses of known supply-chain attacks found that most malicious releases were pulled within a week. The built-in 24-hour default of mise only exists from 2026.6.2, newer than the mise in nixpkgs, so the value is set explicitly.
+mise waits 7 days for new releases (`minimum_release_age` in its config). Its tools are published straight by their maintainers, and the agent CLIs among them run with access to the shell and the code, so they get the longer supply-chain wait. Analyses of known supply-chain attacks found that most malicious releases were pulled within a week. The built-in default of mise is 24 hours, so the 7 days are set explicitly.
 
 ## Making a change
 

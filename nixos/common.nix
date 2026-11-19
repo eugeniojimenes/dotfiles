@@ -4,7 +4,7 @@
 # Apply: sudo nixos-rebuild switch --flake ~/dotfiles. Update: nix flake update, then the same switch.
 # A flake only sees files git tracks: `git add` a new file before rebuilding.
 # Formatted with nixfmt (official style, RFC 166); one block per top-level option.
-{ pkgs, ... }:
+{ pkgs, nixpkgs-unstable, ... }:
 
 let
   # Login name picked in the installer: the account and its home exist already. Changing it here makes a new user, it
@@ -354,7 +354,12 @@ in
       stow
       age
       gitleaks # ~/.private snapshot scans for secrets before archiving
-      mise
+      # Unstable recipe on stable packages, flake.nix says why. Tests off: built locally, no binary cache hit.
+      # rust-bindgen: openssl-sys in this recipe fails without the bindgen CLI.
+      ((pkgs.callPackage "${nixpkgs-unstable}/pkgs/by-name/mi/mise/package.nix" { }).overrideAttrs (old: {
+        doCheck = false;
+        nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.rust-bindgen ];
+      }))
       curl
       wget
       unzip

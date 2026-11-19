@@ -4,7 +4,7 @@ A configuração do sistema fica em `nixos/` e no `flake.nix` na raiz do repo. `
 
 ## Estrutura
 
-O `flake.nix` define um `nixosConfigurations.<hostname>` por máquina. O nome do atributo é o hostname, então `sudo nixos-rebuild switch --flake ~/dotfiles` escolhe o sistema certo sozinho. O flake segue o branch `nixos-26.05`, e o `flake.lock` fixa a revisão exata do nixpkgs. O `bin/update` move o lock (veja [Atualizando](#atualizando)).
+O `flake.nix` define um `nixosConfigurations.<hostname>` por máquina. O nome do atributo é o hostname, então `sudo nixos-rebuild switch --flake ~/dotfiles` escolhe o sistema certo sozinho. O flake segue o branch `nixos-26.05`, e o `flake.lock` fixa a revisão exata do nixpkgs. O `bin/update` move o lock (veja [Atualizando](#atualizando)). Um segundo input, `nixpkgs-unstable`, fornece os poucos pacotes que o branch estável tem velhos demais, por enquanto só o mise: a 2026.5.12 do 26.05 quebra o `mise install` com uma entrada do `.tool-versions` listada em `disable_tools`, corrigido na 2026.6.4. O `bin/update` não move esse input; quem move é `nix flake update nixpkgs-unstable`. Ele sai na mudança para o 26.11.
 
 `nixos/common.nix` tem tudo o que todas as máquinas compartilham: pacotes, serviços, Sway, login. `nixos/hosts/<hostname>/default.nix` tem o que uma máquina precisa e importa `../../common.nix` e `./hardware.nix`. `/etc/nixos` não é usado.
 
@@ -89,7 +89,7 @@ A etapa do sistema lê a lista de releases do canal do NixOS. Um release do cana
 
 Depois de travar o lock, o `bin/check` roda com os pacotes novos, então os painéis do Quickshell carregam com o Quickshell novo e o `sway -C` lê a config com o Sway novo antes de qualquer coisa ser aplicada. Uma falha restaura o `flake.lock`. Em seguida o sistema novo é construído e comparado com o que está rodando com `nvd diff`. Quando o kernel, os módulos dele ou o initrd mudaram, o script manda rodar `sudo nixos-rebuild boot` e reiniciar: um `switch` manteria o módulo antigo da NVIDIA carregado sob um driver de userspace novo, e os apps de GPU falham até o reboot. Caso contrário, manda rodar `sudo nixos-rebuild test`, que volta atrás no próximo boot, e o `switch` quando o sistema estiver funcionando.
 
-O mise espera 7 dias por releases novos (`minimum_release_age` na config dele). As ferramentas dele são publicadas direto pelos mantenedores, e as CLIs de agente entre elas rodam com acesso ao shell e ao código, então recebem a espera mais longa contra ataques de supply chain. Análises de ataques de supply chain conhecidos mostraram que a maioria dos releases maliciosos foi retirada em menos de uma semana. O padrão embutido de 24 horas do mise só existe a partir da 2026.6.2, mais nova que o mise do nixpkgs, então o valor é definido explicitamente.
+O mise espera 7 dias por releases novos (`minimum_release_age` na config dele). As ferramentas dele são publicadas direto pelos mantenedores, e as CLIs de agente entre elas rodam com acesso ao shell e ao código, então recebem a espera mais longa contra ataques de supply chain. Análises de ataques de supply chain conhecidos mostraram que a maioria dos releases maliciosos foi retirada em menos de uma semana. O padrão embutido do mise é de 24 horas, então os 7 dias são definidos explicitamente.
 
 ## Fazendo uma mudança
 
