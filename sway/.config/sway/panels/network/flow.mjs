@@ -63,3 +63,17 @@ export function cancelPassword(panel) {
 export function closeWhenPickedIsUp(panel, network) {
   if (network.connected && panel.joining === network) panel.closePanel();
 }
+
+// Wired row above the Wi-Fi list. `wired` = the wired device as plain fields, null without one:
+//   { hasLink, connected, connecting, disconnecting, speed } (speed = link speed in Mb/s, 0 unknown)
+// Returns null when there is nothing to show (no cable and no connection), else { status, action }: action "connect",
+// "disconnect", or "" while NetworkManager is busy with it.
+export function wiredRow(wired) {
+  if (!wired || (!wired.hasLink && !wired.connected)) return null;
+  if (wired.connecting) return { status: "Connecting…", action: "" };
+  if (wired.disconnecting) return { status: "Disconnecting…", action: "" };
+  if (!wired.connected) return { status: "Not connected", action: "connect" };
+  if (!wired.speed) return { status: "Connected", action: "disconnect" };
+  const speed = wired.speed >= 1000 ? wired.speed / 1000 + " Gb/s" : wired.speed + " Mb/s";
+  return { status: "Connected · " + speed, action: "disconnect" };
+}

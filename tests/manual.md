@@ -23,7 +23,7 @@ These checks need real hardware or a live Wayland session, so no automated layer
 | Spec osd | Criteria 8, 9, 12 and 15. Criterion 15: `Super + Ctrl + I` twice, `Super + Ctrl + N` twice, Toggle › Do not disturb twice and each power profile from the menu, then the Do not disturb chip in the centre (no popup). Media keys and clicks on the bar track: play/pause, next and previous with Spotify and a video in Brave. Volume keys, mute, microphone mute and the brightness Fn keys, also with the screen locked; the wheel and right click on the bar volume icon and the wheel on the monitor icon. Hold a key: one popup that follows the value. |
 | Cedilla in Chromium apps | With the USB keyboard (us/intl), `'` then `c` gives ç in Brave and in Slack, accents (á, ã, ê) still work, and the notebook's ABNT2 keyboard keeps its own ç key and accents. |
 | Spec keybindings | Criterion 10. |
-| Spec network-panel | Criteria 3 to 6 and 8. |
+| Spec network-panel | Criteria 3 to 6, 8 and 11. Criterion 11: with the panel open, unplug and plug the cable, then Disconnect and Connect. |
 | Spec calendar-panel | Criteria 4 to 7. Check a month whose 1st is a Monday and the week numbers around New Year. |
 | Spec sound-panel | Criteria 2 to 7 and 9 to 13. For 12, play Spotify and a video in Brave at the same time. |
 | Spec bluetooth-panel | Criteria 2 to 11. Pair a device that needs no code (headphones), then one that asks for a code through Advanced. |

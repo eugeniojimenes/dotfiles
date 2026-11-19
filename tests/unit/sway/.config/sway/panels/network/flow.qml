@@ -95,4 +95,19 @@ TestCase {
     compare(p.joining, null)
     compare(p.failure, "")
   }
+
+  function test_wired_row() {
+    const wired = fields => Object.assign({ hasLink: true, connected: false, connecting: false, disconnecting: false, speed: 0 }, fields)
+    compare(Flow.wiredRow(null), null)
+    compare(Flow.wiredRow(wired({ hasLink: false })), null)
+    compare(Flow.wiredRow(wired({})), { status: "Not connected", action: "connect" })
+    compare(Flow.wiredRow(wired({ connecting: true })), { status: "Connecting…", action: "" })
+    compare(Flow.wiredRow(wired({ connected: true, disconnecting: true })), { status: "Disconnecting…", action: "" })
+    compare(Flow.wiredRow(wired({ connected: true, speed: 1000 })), { status: "Connected · 1 Gb/s", action: "disconnect" })
+    compare(Flow.wiredRow(wired({ connected: true, speed: 2500 })).status, "Connected · 2.5 Gb/s")
+    compare(Flow.wiredRow(wired({ connected: true, speed: 100 })).status, "Connected · 100 Mb/s")
+    compare(Flow.wiredRow(wired({ connected: true })).status, "Connected")
+    // Connected with the link gone for a moment: still shown, so it can be disconnected.
+    compare(Flow.wiredRow(wired({ hasLink: false, connected: true })).action, "disconnect")
+  }
 }

@@ -6,8 +6,9 @@ import Quickshell.Wayland
 import "network/flow.mjs" as Flow
 import "common"
 
-// Network panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
-// password prompt for a secured network with no saved profile. Esc or a click outside closes it. One process per
+// Network panel for the waybar network icon: the wired connection while a cable is in (connect, disconnect), Wi-Fi
+// networks live from NetworkManager (Quickshell.Networking), radio switch, password prompt for a secured network with
+// no saved profile. Esc or a click outside closes it. One process per
 // open, like the calendar: the scanner runs only while the panel is up.
 ShellRoot {
   PanelShell {
@@ -17,6 +18,15 @@ ShellRoot {
 
     readonly property var device: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
     readonly property var networks: device ? Flow.visibleNetworks(device.networks.values) : []
+    readonly property var wired: Networking.devices.values.find(d => d.type === DeviceType.Wired) ?? null
+    // Flow.wiredRow on the wired device's fields: null = no row.
+    readonly property var wiredRow: Flow.wiredRow(wired ? {
+      hasLink: wired.hasLink,
+      connected: wired.connected,
+      connecting: wired.state === ConnectionState.Connecting,
+      disconnecting: wired.state === ConnectionState.Disconnecting,
+      speed: wired.linkSpeed
+    } : null)
     readonly property bool scanning: scan.running
 
     // Pick, password and connect state, driven by flow.mjs.
@@ -70,20 +80,73 @@ ShellRoot {
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
         spacing: 12
 
-        // Header: title, scan status, radio switch.
+        Text {
+          textFormat: Text.PlainText
+          text: "Network"
+          color: win.fg
+          font.family: win.font
+          font.pixelSize: 16
+          font.bold: true
+        }
+
+        // Wired: shown while a cable is plugged in or the wired connection is up. It wins the default route over Wi-Fi.
+        Column {
+          visible: win.wiredRow !== null
+          width: parent.width
+          spacing: 6
+
+          SectionLabel { text: "󰈀  Wired" }
+
+          Rectangle {
+            width: parent.width
+            height: 36
+            radius: 8
+            color: win.wired && win.wired.connected ? win.track : "transparent"
+
+            Text {
+              id: wiredName
+              anchors { left: parent.left; leftMargin: 10; verticalCenter: parent.verticalCenter }
+              textFormat: Text.PlainText
+              text: win.wired ? win.wired.name : ""
+              color: win.wired && win.wired.connected ? win.accent : win.fg
+              font.family: win.font
+              font.pixelSize: 13
+              font.bold: win.wired ? win.wired.connected : false
+            }
+
+            Text {
+              anchors { left: wiredName.right; leftMargin: 10; right: wiredButton.left; rightMargin: 8; verticalCenter: parent.verticalCenter }
+              textFormat: Text.PlainText
+              text: win.wiredRow ? win.wiredRow.status : ""
+              elide: Text.ElideRight
+              color: win.dim
+              font.family: win.font
+              font.pixelSize: 12
+            }
+
+            Chip {
+              id: wiredButton
+              anchors { right: parent.right; rightMargin: 6; verticalCenter: parent.verticalCenter }
+              visible: win.wiredRow !== null && win.wiredRow.action !== ""
+              label: win.wiredRow && win.wiredRow.action === "disconnect" ? "Disconnect" : "Connect"
+              onPressed: {
+                if (win.wiredRow.action === "disconnect") win.wired.disconnect()
+                else if (win.wired.network) win.wired.network.connect()
+              }
+            }
+          }
+        }
+
+        // Wi-Fi line: scan status, radio switch.
         Item {
           width: parent.width
           height: 28
 
-          Text {
+          SectionLabel {
             id: title
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            text: "Network"
-            color: win.fg
-            font.family: win.font
-            font.pixelSize: 16
-            font.bold: true
+            text: "󰖩  Wi-Fi"
           }
 
           Row {
@@ -139,10 +202,11 @@ ShellRoot {
           }
         }
 
+        // Radio off needs no line of its own: the switch above already says so.
         Text {
-          visible: !Networking.wifiEnabled || win.device === null
+          visible: win.device === null
           textFormat: Text.PlainText
-          text: win.device === null ? "No Wi-Fi device" : "Wi-Fi is off"
+          text: "No Wi-Fi device"
           color: win.dim
           font.family: win.font
           font.pixelSize: 13

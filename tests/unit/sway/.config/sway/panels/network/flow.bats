@@ -20,3 +20,4 @@ qt() {
 @test "saved network, secret refused: Wrong password, Esc closes the row" { qt test_saved_network_refused_secret_says_wrong_password; }
 @test "enterprise network and other failures: message shown, panel stays" { qt test_enterprise_and_other_failures; }
 @test "connected or changing network: click ignored" { qt test_connected_or_changing_network_ignored; }
+@test "wired row: hidden without a cable, status with link speed, connect or disconnect, nothing while busy" { qt test_wired_row; }
