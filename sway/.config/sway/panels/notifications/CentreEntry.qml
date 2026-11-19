@@ -73,6 +73,7 @@ Rectangle {
           id: meta
 
           width: parent.width - 24
+          textFormat: Text.PlainText
           text: Notify.meta(entry.n.appName, Notify.ago(entry.arrivedAt, entry.now))
           color: Theme.dim
           font.family: Theme.font
@@ -100,6 +101,7 @@ Rectangle {
       }
       Text {
         width: parent.width
+        textFormat: Text.PlainText
         text: entry.n.summary
         color: Theme.fg
         font.family: Theme.font
@@ -111,7 +113,7 @@ Rectangle {
       }
       Text {
         width: parent.width
-        text: entry.n.body
+        text: Notify.safeBody(entry.n.body)
         visible: text !== ""
         textFormat: Text.StyledText
         color: Theme.fg

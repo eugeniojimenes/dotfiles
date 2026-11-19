@@ -65,6 +65,7 @@ LazyLoader {
           Text {
             width: parent.width - 28
             anchors.verticalCenter: parent.verticalCenter
+            textFormat: Text.PlainText
             text: Notify.hiddenText(loader.daemon.hiddenCount, loader.daemon.modes)
             color: Theme.fg
             font.family: Theme.font
@@ -95,7 +96,8 @@ LazyLoader {
         HoverHandler { id: hover }
 
         Repeater {
-          model: loader.daemon.popups
+          // ScriptModel, not the bare array: a new array recreated every card and restarted every timer.
+          model: ScriptModel { values: loader.daemon.popups }
 
           PopupCard {
             daemon: loader.daemon

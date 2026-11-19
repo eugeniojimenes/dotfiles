@@ -39,4 +39,42 @@ TestCase {
     compare(Sound.clampVolume(-0.05), 0)
     compare(Sound.clampVolume(0.5), 0.5)
   }
+
+  function player(dbusName, isPlaying, trackTitle) {
+    return { dbusName: "org.mpris.MediaPlayer2." + dbusName, isPlaying: isPlaying, trackTitle: trackTitle }
+  }
+
+  function test_media_player() {
+    var spotify = player("spotify", false, "Song")
+    var brave = player("brave", true, "Video")
+    var stale = player("chromium", false, "")
+    compare(Sound.mediaPlayers([spotify, stale, brave]), [spotify, brave])
+    compare(Sound.mediaPlayer([spotify, brave], ""), brave)
+    compare(Sound.mediaPlayer([spotify, brave], "spotify"), spotify)
+    compare(Sound.mediaPlayer([spotify, brave], "gone"), brave)
+    compare(Sound.mediaPlayer([stale, spotify], ""), spotify)
+    compare(Sound.mediaPlayer([stale], "chromium"), null)
+    compare(Sound.mediaPlayer([], ""), null)
+  }
+
+  function test_instance() {
+    compare(Sound.instance(player("brave.instance123", true, "Video")), "brave.instance123")
+  }
+
+  function test_step_player() {
+    var spotify = player("spotify", true, "Song")
+    var stale = player("chromium", false, "")
+    var brave = player("brave", false, "Video")
+    compare(Sound.stepPlayer([spotify, stale, brave], spotify, 1), brave)
+    compare(Sound.stepPlayer([spotify, stale, brave], brave, 1), spotify)
+    compare(Sound.stepPlayer([spotify, stale, brave], spotify, -1), brave)
+    compare(Sound.stepPlayer([spotify], spotify, 1), spotify)
+  }
+
+  function test_clock() {
+    compare(Sound.clock(0), "0:00")
+    compare(Sound.clock(65.9), "1:05")
+    compare(Sound.clock(3725), "1:02:05")
+    compare(Sound.clock(-3), "0:00")
+  }
 }

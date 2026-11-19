@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# Track in the bar and the media keys, on the player that plays. Spec: docs/specs/sound-panel.md.
+#   media status                   JSON for the waybar module, again on every player change (runs until waybar ends)
+#   media toggle|next|previous     play-pause, next, previous on that player (keys, bar clicks), then the track popup
+#   media pick INSTANCE            that player from now on (sound panel card arrows), until another one starts playing
+# Player = the picked one while it has a track, else the first playing, else the first paused with a track; same order
+# as the sound panel's media card. Not playerctld: it follows the last player whose state changed, so pausing one
+# player while another played made the paused one current.
+
+sep=$'\x1f' # not a whitespace IFS char: empty fields (no artist) stay in place
+fields="{{status}}$sep{{playerInstance}}$sep{{playerName}}$sep{{artist}}$sep{{title}}"
+# The card reads the pick too.
+choice=${XDG_RUNTIME_DIR:?}/sway-media-player
+
+# Fields of the player to use, one line, empty when no player has a track.
+current() {
+  playerctl -a metadata --format "$fields" 2>/dev/null | awk -F"$sep" -v picked="$(cat "$choice" 2>/dev/null)" '
+    $5 == "" || ($1 != "Playing" && $1 != "Paused") { next }
+    $2 == picked { chosen = $0 }
+    $1 == "Playing" && playing == "" { playing = $0 }
+    $1 == "Paused" && paused == "" { paused = $0 }
+    END { if (chosen != "") print chosen; else if (playing != "") print playing; else if (paused != "") print paused }'
+}
+
+# waybar reads text and tooltip as Pango markup. \& = literal: a bare & in the replacement is the match (bash 5.2).
+markup() {
+  local text=${1//&/\&amp;}
+  text=${text//</\&lt;}
+  printf '%s' "${text//>/\&gt;}"
+}
+
+status_line() {
+  local status instance name artist title full text icon=󰐊
+  IFS=$sep read -r status instance name artist title <<<"$(current)"
+  if [[ -z $title ]]; then
+    echo '{"text": ""}'
+    return
+  fi
+  full=$title
+  [[ -n $artist ]] && full="$artist - $title"
+  text=$full
+  ((${#text} > 70)) && text="${text:0:69}…"
+  [[ $status == Paused ]] && icon=󰏤
+  jq -cn --arg text "$icon $(markup "$text")" --arg tooltip "$name: $(markup "$full")" --arg class "${status,,}" \
+    '{text: $text, tooltip: $tooltip, class: $class}'
+}
+
+case ${1-} in
+  status)
+    trap status_line USR1
+    declare -A was # last status per player
+    # --follow prints every player once at start, then each change. A trapped USR1 ends read with status > 128.
+    while :; do
+      read -r line
+      rc=$?
+      ((rc > 128)) && continue
+      ((rc)) && break
+      IFS=$sep read -r status instance _ <<<"$line"
+      # Empty line = the last player left: no instance to note, an empty key is a bash error.
+      if [[ -n $instance ]]; then
+        # A player starting to play ends the pick of another one.
+        if [[ $status == Playing && ${was[$instance]-} != Playing && $instance != "$(cat "$choice" 2>/dev/null)" ]]; then
+          : >"$choice"
+        fi
+        was[$instance]=$status
+      fi
+      status_line
+    done < <(playerctl -a --follow metadata --format "$fields" 2>/dev/null)
+    ;;
+  toggle | next | previous)
+    IFS=$sep read -r _ instance _ <<<"$(current)"
+    action=$1
+    [[ $action == toggle ]] && action=play-pause
+    # No player with a track: playerctl's own pick (a player still stopped).
+    playerctl ${instance:+-p "$instance"} "$action"
+    # Popup of the notification daemon (panels/notifications/Osd.qml): reads that player live, so the track after
+    # next/previous shows once it arrives. Best effort, daemon down = no popup.
+    [[ -n $instance ]] && quickshell ipc -p ~/.config/sway/panels/notifications.qml call osd track "$instance" "$1" >/dev/null 2>&1
+    exit 0
+    ;;
+  pick)
+    [[ -n ${2-} ]] || exit 2
+    printf '%s\n' "$2" >"$choice"
+    # Every status loop (waybar runs one per bar, so per output), by its command line: a saved PID could belong to
+    # another process by now, and USR1 kills a process that does not trap it. Anchored on bash, not the sh -c around.
+    pkill -USR1 -f '^[^ ]*bash [^ ]*/sway/bin/media status$'
+    exit 0
+    ;;
+  *)
+    sed -n '3,5p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

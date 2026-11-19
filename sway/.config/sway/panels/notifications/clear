@@ -1,0 +1,13 @@
+#!/bin/sh
+# Clear notifications over the daemon's IPC (../notifications.qml):
+#   clear popups   the popups on screen go away, the notification centre keeps them (Super+Ctrl+period)
+#   clear all      every notification, popups and centre, as Clear in the centre (Super+Ctrl+Shift+comma)
+qs() { exec quickshell ipc -p ~/.config/sway/panels/notifications.qml call notifications "$1"; }
+case ${1-} in
+  popups) qs dismissPopups ;;
+  all) qs clearAll ;;
+  *)
+    sed -n '3,4p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

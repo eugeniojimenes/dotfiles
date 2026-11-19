@@ -17,3 +17,7 @@ qt() {
 @test "lists: outputs, inputs, playing apps; recording streams and nodes without audio left out" { qt test_devices; }
 @test "names: description, then nickname, then node name; apps by application name" { qt test_labels; }
 @test "volume: stops at 0 and at 100%" { qt test_clamp; }
+@test "media card: the chosen player, else the playing one, else a paused one with a track; stale ones skipped" { qt test_media_player; }
+@test "player instance: D-Bus name without the MPRIS prefix, as playerctl names it" { qt test_instance; }
+@test "media card arrows: next or previous player with a track, wrapping around" { qt test_step_player; }
+@test "track time: m:ss, h:mm:ss from one hour on" { qt test_clock; }

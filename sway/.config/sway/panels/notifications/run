@@ -2,6 +2,6 @@
 # Notification daemon (sway autostart): Quickshell's notification server and popups, see ../notifications.qml.
 # Started again when it crashes, so notifications never stay without a server; a clean exit (0) ends the loop.
 # One instance only: a second one could not own the D-Bus name but would still answer `dnd` over IPC.
-qml="quickshell -p $HOME/.config/sway/panels/notifications.qml"
-pgrep -fx "$qml" >/dev/null && exit 0
-until $qml; do sleep 2; done
+qml=$HOME/.config/sway/panels/notifications.qml
+pgrep -fx "quickshell -p $qml" >/dev/null && exit 0
+until quickshell -p "$qml"; do sleep 2; done

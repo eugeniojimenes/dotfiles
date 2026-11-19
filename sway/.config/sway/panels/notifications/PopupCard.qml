@@ -42,6 +42,8 @@ Rectangle {
   Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
 
   Timer {
+    id: timer
+
     readonly property int ms: Notify.timeoutMs({ appName: card.n.appName, urgency: card.n.urgency,
                                                  expireTimeout: card.n.expireTimeout })
 
@@ -52,10 +54,20 @@ Rectangle {
 
   HoverHandler { id: hover }
 
+  // Replaced in place with new text: its full time again.
+  Connections {
+    target: card.n
+
+    function onSummaryChanged() { timer.restart() }
+    function onBodyChanged() { timer.restart() }
+  }
+
   MouseArea {
     anchors.fill: parent
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     cursorShape: Qt.PointingHandCursor
+    // Default action runs, but the app's window stays put: Quickshell 0.3.0 never sends ActivationToken (docs/sway.md
+    // "Notifications").
     onClicked: mouse => {
       if (mouse.button === Qt.RightButton) card.n.dismiss()
       else if (card.defaultAction) card.defaultAction.invoke()
@@ -88,6 +100,7 @@ Rectangle {
 
       Text {
         width: parent.width
+        textFormat: Text.PlainText
         text: card.n.appName
         visible: text !== ""
         color: Theme.dim
@@ -97,6 +110,7 @@ Rectangle {
       }
       Text {
         width: parent.width
+        textFormat: Text.PlainText
         text: card.n.summary
         color: Theme.fg
         font.family: Theme.font
@@ -108,7 +122,7 @@ Rectangle {
       }
       Text {
         width: parent.width
-        text: card.n.body
+        text: Notify.safeBody(card.n.body)
         visible: text !== ""
         textFormat: Text.StyledText
         color: Theme.fg

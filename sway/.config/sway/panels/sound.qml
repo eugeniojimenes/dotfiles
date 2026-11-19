@@ -3,11 +3,13 @@ import Quickshell
 import Quickshell.Services.Pipewire
 import Quickshell.Wayland
 import "common"
+import "sound"
 import "sound/sound.mjs" as Sound
 
-// Sound panel for the waybar volume icon: output and input volume, mute and live level, default device pick, and
-// per-app volume, straight from PipeWire (Quickshell.Services.Pipewire). Volume stops at 100%. Arrows step the output
-// volume, M mutes it, Esc or a click outside closes. One process per open, like the calendar.
+// Sound panel for the waybar volume icon: media card (sound/MediaCard.qml), output and input volume, mute and live
+// level, default device pick, and per-app volume, straight from PipeWire (Quickshell.Services.Pipewire). Volume stops
+// at 100%. Arrows step the output volume, M mutes it, Space plays or pauses the media card's player, Esc or a click
+// outside closes. One process per open, like the calendar.
 ShellRoot {
   PanelShell {
     id: win
@@ -47,6 +49,7 @@ ShellRoot {
       Text {
         visible: vr.name !== ""
         width: parent.width
+        textFormat: Text.PlainText
         text: vr.name
         elide: Text.ElideRight
         color: win.dim
@@ -62,6 +65,7 @@ ShellRoot {
           id: icon
           width: 24
           anchors.verticalCenter: parent.verticalCenter
+          textFormat: Text.PlainText
           text: vr.muted ? vr.mutedIcon : vr.icons[Math.min(vr.icons.length - 1, Math.floor(vr.vol * vr.icons.length))]
           color: vr.muted ? win.dim : win.fg
           font.family: win.font
@@ -113,6 +117,7 @@ ShellRoot {
           anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
           horizontalAlignment: Text.AlignRight
+          textFormat: Text.PlainText
           text: Math.round(vr.vol * 100) + "%"
           color: win.dim
           font.family: win.font
@@ -164,6 +169,7 @@ ShellRoot {
             anchors.right: parent.right
             anchors.rightMargin: 8
             anchors.verticalCenter: parent.verticalCenter
+            textFormat: Text.PlainText
             text: (modelData === dl.current ? "󰄬  " : "    ") + win.label(modelData)
             elide: Text.ElideRight
             color: modelData === dl.current ? win.accent : win.fg
@@ -186,6 +192,7 @@ ShellRoot {
     }
 
     component Heading: Text {
+      textFormat: Text.PlainText
       color: win.fg
       font.family: win.font
       font.pixelSize: 13
@@ -207,6 +214,7 @@ ShellRoot {
           else if (event.key === Qt.Key_Up || event.key === Qt.Key_Right) win.setVolume(win.sink, win.sink.audio.volume + 0.05)
           else if (event.key === Qt.Key_Down || event.key === Qt.Key_Left) win.setVolume(win.sink, win.sink.audio.volume - 0.05)
           else if (event.key === Qt.Key_M && win.sink) win.sink.audio.muted = !win.sink.audio.muted
+          else if (event.key === Qt.Key_Space && mediaCard.player && mediaCard.player.canTogglePlaying) mediaCard.player.togglePlaying()
         }
       }
 
@@ -214,6 +222,9 @@ ShellRoot {
         id: content
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 16 }
         spacing: 10
+
+        MediaCard { id: mediaCard }
+        Rectangle { visible: mediaCard.visible; width: parent.width; height: 1; color: win.track }
 
         Heading { text: "Output" }
         Text {

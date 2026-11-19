@@ -20,6 +20,8 @@ LazyLoader {
     readonly property var items: Notify.centreItems(loader.daemon.tracked, loader.daemon.kept, loader.daemon.arrived)
     readonly property string hiddenBy: loader.daemon.modes.includes("screenshare") ? "screenshare"
                                        : loader.daemon.modes.includes("recording") ? "recording" : ""
+    // Opening the centre mid-share would put every entry on the shared screen: the list waits for Show popups.
+    readonly property bool listShown: items.length > 0 && hiddenBy === ""
     property real now: Date.now()
 
     keepAlive: true
@@ -76,7 +78,7 @@ LazyLoader {
             Chip {
               label: "Clear"
               active: false
-              visible: win.items.length > 0
+              visible: win.listShown
               onPressed: {
                 for (const item of win.items.slice()) item.dismiss()
               }
@@ -84,16 +86,17 @@ LazyLoader {
           }
         }
 
-        // A share or recording mode left on (say, the daemon restarted mid-share and missed the end): one click brings
-        // the popups back.
+        // Share or recording on: the list is hidden too. One click turns the mode off and shows it (also the way out of a
+        // mode left on, say the daemon restarted mid-share and missed the end).
         Row {
           visible: win.hiddenBy !== ""
           spacing: 8
 
           Text {
             anchors.verticalCenter: parent.verticalCenter
-            text: win.hiddenBy === "screenshare" ? "Popups hidden while sharing the screen"
-                                                 : "Popups hidden while recording the screen"
+            textFormat: Text.PlainText
+            text: win.hiddenBy === "screenshare" ? "Hidden while sharing the screen"
+                                                 : "Hidden while recording the screen"
             color: win.error
             font.family: win.font
             font.pixelSize: 11
@@ -106,6 +109,15 @@ LazyLoader {
         }
 
         Text {
+          visible: win.items.length > 0 && !win.listShown
+          textFormat: Text.PlainText
+          text: Notify.centreHiddenText(win.items.length, loader.daemon.modes)
+          color: win.dim
+          font.family: win.font
+          font.pixelSize: 12
+        }
+
+        Text {
           visible: win.items.length === 0
           text: "No notifications"
           color: win.dim
@@ -114,7 +126,7 @@ LazyLoader {
         }
 
         Flickable {
-          visible: win.items.length > 0
+          visible: win.listShown
           width: parent.width
           height: Math.min(list.implicitHeight, win.height * 0.7)
           contentHeight: list.implicitHeight

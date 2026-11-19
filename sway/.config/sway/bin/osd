@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Volume, microphone and brightness keys: change the value, then the notification daemon shows the popup
+# (panels/notifications/Osd.qml, over IPC). Spec: docs/specs/osd.md.
+#   osd volume up|down|mute   osd mic mute   osd brightness up|down
+
+usage() {
+  sed -n '4p' "$0" | sed 's/^# *//'
+  exit 2
+}
+
+# Popup best effort: daemon down = value changed anyway, no error for the key binding.
+show() { quickshell ipc -p ~/.config/sway/panels/notifications.qml call osd popup "$@" >/dev/null 2>&1 || true; }
+
+# `wpctl get-volume` = "Volume: 0.45", "[MUTED]" appended when muted. Popup args: percent, muted.
+show_node() {
+  wpctl get-volume "$2" | awk -v kind="$1" '{ printf "%s %d %s\n", kind, $2 * 100 + 0.5, ($3 == "[MUTED]") ? "true" : "false" }' |
+    { read -r kind pct muted && show "$kind" "$pct" "$muted"; }
+}
+
+sink=@DEFAULT_AUDIO_SINK@ source=@DEFAULT_AUDIO_SOURCE@
+case ${1-}:${2-} in
+  volume:up)
+    wpctl set-mute "$sink" 0
+    wpctl set-volume -l 1 "$sink" 5%+ # -l 1 = never above 100%
+    show_node volume "$sink"
+    ;;
+  volume:down)
+    wpctl set-volume "$sink" 5%-
+    show_node volume "$sink"
+    ;;
+  volume:mute)
+    wpctl set-mute "$sink" toggle
+    show_node volume "$sink"
+    ;;
+  mic:mute)
+    wpctl set-mute "$source" toggle
+    show_node mic "$source"
+    ;;
+  brightness:up | brightness:down)
+    [[ $2 == up ]] && step=5%+ || step=5%-
+    # -c backlight: with no backlight (the desktop) brightnessctl would take the first LED, Caps Lock or the keyboard.
+    brightnessctl -c backlight -q -n set "$step" # -n: floor at 1, a 0 backlight is a black screen on some panels
+    # -m = "device,class,raw,PCT%,max"
+    show brightness "$(brightnessctl -c backlight -m | awk -F, '{ sub(/%/, "", $4); print $4 }')" false
+    "$(dirname "$0")"/../panels/display/refresh
+    ;;
+  *) usage ;;
+esac
+exit 0

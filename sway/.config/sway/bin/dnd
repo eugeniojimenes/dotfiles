@@ -10,8 +10,14 @@ case $1 in
   record-on) qs modeOn recording >/dev/null ;;
   record-off) qs modeOff recording >/dev/null ;;
   # The bell's JSON comes from the daemon (notify.mjs `bell`): mode, unread count. Daemon down: nothing to show.
+  # Mid-reload the handler is not registered yet and `quickshell ipc` prints "Target not found." with exit 0: only
+  # JSON goes through, waybar fails to parse anything else.
   status)
-    qs status 2>/dev/null || echo '{"text": ""}'
+    out=$(qs status 2>/dev/null)
+    case $out in
+      "{"*) printf '%s\n' "$out" ;;
+      *) echo '{"text": ""}' ;;
+    esac
     exit 0
     ;;
 esac

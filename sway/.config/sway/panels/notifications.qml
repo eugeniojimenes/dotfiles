@@ -6,7 +6,7 @@ import "notifications"
 import "notifications/notify.mjs" as Notify
 
 // Notification daemon: owns org.freedesktop.Notifications (instead of mako); popups in notifications/Popups.qml, the
-// centre in notifications/Centre.qml. Always running, started by ./notifications/run (sway autostart), unlike the
+// centre in notifications/Centre.qml, the volume/brightness popup in notifications/Osd.qml. Always running, started by ./notifications/run (sway autostart), unlike the
 // other panels.
 // Rules (what pops up, for how long, modes, history cap) live in notifications/notify.mjs. bin/dnd drives the modes
 // over Quickshell IPC: `quickshell ipc -p <this file> call notifications <function>`.
@@ -26,24 +26,24 @@ ShellRoot {
   property bool hiddenCritical: false
   property bool centerOpen: false
   property real seenAt: Date.now()   // last time the centre was opened
-  readonly property int unread: kept.filter(id => (arrived[id] ?? 0) > seenAt).length
+  readonly property int unread: Notify.unread(kept, arrived, seenAt)
   readonly property var tracked: server.trackedNotifications.values
 
   onUnreadChanged: poke()
   onModesChanged: {
     poke()
     modesFile.setText(modes.join(" "))
+    // A share or recording starting: popups already up leave the screen too (the centre keeps them).
+    if (Notify.screenHidden(modes)) for (const n of popups.slice()) hidePopup(n)
   }
 
   // Waybar bell, signal 8 (see bin/dnd).
   function poke() { Quickshell.execDetached(["pkill", "-RTMIN+8", "-f", "^waybar "]) }
 
-  // Ones the history does not keep (transient, poweralertd state changes) end with their popup.
-  function ephemeral(n) { return n.transient || !Notify.keep({ appName: n.appName, urgency: n.urgency }) }
-
   function openCenter() {
     seenAt = Date.now()
-    popups = []
+    // hidePopup, not `popups = []`: an ephemeral one on screen must still expire, or it stays in the centre.
+    for (const n of popups.slice()) hidePopup(n)
     closeHidden()
     centerOpen = true
   }
@@ -55,12 +55,32 @@ ShellRoot {
 
   function hidePopup(n) {
     popups = popups.filter(p => p !== n)
-    if (ephemeral(n) && n.tracked) n.expire()
+    if (Notify.ephemeral(n) && n.tracked) n.expire()
   }
 
   function forget(n) {
     hidePopup(n)
     kept = kept.filter(id => id !== n.id)
+    const left = Object.assign({}, arrived)
+    delete left[n.id]
+    arrived = left
+  }
+
+  // Rules in Notify.arrive (tested); here only applied. A new notification, or one its sender replaced in place.
+  function arrive(n, reloaded) {
+    const state = { kept: kept, arrived: arrived, hiddenCount: hiddenCount, hiddenCritical: hiddenCritical }
+    const info = { id: n.id, appName: n.appName, urgency: n.urgency, transient: n.transient, reloaded: reloaded }
+    const next = Notify.arrive(state, info, modes, Date.now(), seenAt)
+    arrived = next.arrived
+    kept = next.kept
+    hiddenCount = next.hiddenCount
+    hiddenCritical = next.hiddenCritical
+    if (next.show) popups = [n].concat(popups.filter(p => p !== n))
+    if (next.restartHidden) hiddenTimer.restart()
+    // Later, not now: inside onNotification the server has not filed it yet, so expire() would do nothing, closed would
+    // never come and its id would stay counted as unread.
+    if (next.expire) Qt.callLater(() => { if (n.tracked) n.expire() })
+    trim()
   }
 
   function trim() {
@@ -80,21 +100,13 @@ ShellRoot {
 
     onNotification: n => {
       n.tracked = true
-      // A reload's carry-overs keep no time and do not count as new.
-      root.arrived[n.id] = n.lastGeneration ? root.seenAt - 1 : Date.now()
-      root.kept = root.kept.filter(id => id !== n.id).concat([n.id])
       n.closed.connect(() => root.forget(n))
-      // Carried over by a Quickshell reload (keepOnReload): back in the history, never a popup again.
-      const how = n.lastGeneration ? "silent" : Notify.delivery({ appName: n.appName, urgency: n.urgency }, root.modes)
-      if (how === "show") {
-        root.popups = [n].concat(root.popups.filter(p => p !== n))
-      } else if (how === "hidden") {
-        root.hiddenCount += 1
-        if (n.urgency === NotificationUrgency.Critical) root.hiddenCritical = true
-        hiddenTimer.restart()
-      }
-      if (root.ephemeral(n) && !root.popups.includes(n)) n.expire()
-      root.trim()
+      // Replaced in place (same id: a chat's "3 new messages", poweralertd's battery warnings): Quickshell updates this
+      // object and sends no new `notification`, so its text changing is the arrival. One call per batch of changes.
+      const again = () => root.arrive(n, false)
+      n.summaryChanged.connect(() => Qt.callLater(again))
+      n.bodyChanged.connect(() => Qt.callLater(again))
+      root.arrive(n, n.lastGeneration)
     }
   }
 
@@ -116,6 +128,9 @@ ShellRoot {
   Component.onCompleted: {
     const saved = modesFile.text().trim()
     if (saved !== "") modes = saved.split(" ").filter(m => Notify.MODES.includes(m))
+    // Waybar may have asked for the bell while this process was down (login, restart): empty then, and with no mode
+    // and nothing unread no change would ever poke it again.
+    poke()
   }
 
   IpcHandler {
@@ -130,8 +145,18 @@ ShellRoot {
     function modeOn(name: string): void { root.modes = Notify.setMode(root.modes, name, "on") }
     function modeOff(name: string): void { root.modes = Notify.setMode(root.modes, name, "off") }
     function modeToggle(name: string): void { root.modes = Notify.setMode(root.modes, name, "toggle") }
+    // ./notifications/clear: popups off the screen (the centre keeps them), or everything as Clear in the centre does.
+    function dismissPopups(): void {
+      for (const n of root.popups.slice()) root.hidePopup(n)
+      root.closeHidden()
+    }
+    function clearAll(): void {
+      for (const n of Array.from(root.tracked)) n.dismiss()
+      root.closeHidden()
+    }
   }
 
   Popups { daemon: root }
   Centre { daemon: root }
+  Osd {}
 }

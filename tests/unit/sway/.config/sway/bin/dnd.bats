@@ -39,3 +39,11 @@ setup() {
   run jq -e '.text == ""' <<<"$output"
   assert_success
 }
+
+@test "status: daemon mid-reload answers 'Target not found.' with exit 0: empty text" {
+  stub quickshell 'Target not found.'
+  run "$SWAY/bin/dnd" status
+  assert_success
+  run jq -e '.text == ""' <<<"$output"
+  assert_success
+}
