@@ -20,5 +20,7 @@ Why behind each: `docs/nixos.md`. Full procedure: skill `nixos-change` (new mach
 - Never touch `system.stateVersion`.
 - Agent never runs `sudo`. Ask owner: `sudo nixos-rebuild switch --flake ~/dotfiles`. Kernel, initrd, driver, `boot.*` change = `sudo nixos-rebuild boot --flake ~/dotfiles` + reboot instead (skill `nixos-change`).
 - New command a stowed script calls = add package here (Sway-only tool: `programs.sway.extraPackages`), plus `dotfiles-doctor` `commands` list when its absence breaks the desktop.
+- Portals = sway package defaults. `programs.nix-ld` runs mise/Mason binaries. greetd autologins into `~/.config/sway/bin/start` (LUKS passphrase gates boot). `prime-run` keeps Arch name (Steam launch options). `programs.fzf.keybindings` + NixOS bash completion replace old `/usr/share` sourcing.
+- Input method = plain `fcitx5` + `/etc/xdg/fcitx5` (keyboard only, no hotkeys), started by sway: Chromium/Electron ignore `~/.XCompose` (ç). Never `i18n.inputMethod` (adds configtool + KDE Frameworks, ~470 MiB).
 - Known dead ends, do not retry: Nautilus as FileChooser portal (25 s startup deadlock), `gtk-theme = "Adwaita-dark"` (plain GTK3 lacks it, use `adw-gtk3-dark`), `nix.settings.auto-optimise-store` (slows every build, `nix.optimise.automatic` instead).
 - Comments: why only, compressed, wrap ~120.

@@ -1,6 +1,6 @@
 ---
 name: nixos-change
-description: Change the NixOS system config of this repo (nixos/common.nix, a host dir, flake.nix, flake.lock) end to end - edit, format, build, diff, hand the switch to the owner, verify, commit. Use for adding or removing a package, service, option, kernel module, or for `nix flake update`.
+description: Change the NixOS system config of this repo (nixos/common.nix, a host dir, flake.nix, flake.lock) end to end - edit, format, build, diff, hand the switch to the owner, verify, commit. Use for adding or removing a package, service, option, kernel module, or for a `flake.lock` move (`bin/update` does those, with a 2-day channel release wait, check, build and diff).
 ---
 
 # nixos-change

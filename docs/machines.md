@@ -19,9 +19,10 @@ These are in shared files today and only matter on the notebook. Check each one 
 - `sway/.config/sway/panels/display/reinit` is the after-resume hook for external monitors on NVIDIA. It does no harm on other hardware.
 - The GPU ordering in `sway/.config/sway/bin/start` does nothing on a machine with one GPU.
 - The touchpad `input` block does nothing on a machine without a touchpad.
-- AMD GPU monitoring tools (`amdgpu_top`, `rocm-smi`) belong in the desktop host file.
+- AMD GPU monitoring tools (`amdgpu_top`, `rocm-smi`) belong in the desktop host file, and so does a btop that shows the GPU: `(pkgs.btop.override { rocmSupport = true; })`, which reads the card through `rocm-smi`. Never set `nixpkgs.config.rocmSupport` for the whole system, since that rebuilds a large part of nixpkgs. The notebook keeps plain btop: with `cudaSupport` btop polls the NVIDIA card through NVML, and that keeps the RTX 3050 awake (`runtime_status` goes from `suspended` to `active`) for as long as btop is open.
 - Battery support: UPower with `criticalPowerAction`, `poweralertd` in `config.d/90-autostart`, the poweralertd rules in `panels/notifications/notify.mjs` and waybar's battery module. Without a battery they do nothing; check that the battery module stays hidden. The power panel hides its charge section and the charge limit without a laptop battery and opens from Setup › Power.
 - The `bin/record` header says no VA-API driver is installed. That is the notebook's Intel GPU; an AMD GPU gets VA-API from Mesa, so `h264_vaapi` becomes an option there if x264 on two large monitors costs too much CPU.
+- Hibernation lives in the notebook's host file: swapfile, resume device, `resume_offset`, lid and battery actions. A desktop that should hibernate needs its own swapfile and offset, see [nixos.md](nixos.md#hibernation).
 - The internal microphone fix lives in the notebook's host file. Check the desktop's microphone with the same recording test before calling it done.
 
 ## Adding a machine

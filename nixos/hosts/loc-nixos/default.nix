@@ -1,6 +1,11 @@
 # Notebook: Lenovo LOQ 15IRH8, Intel UHD + RTX 3050 Laptop. Everything only this machine needs; the rest in common.nix.
 # hardware.nix = this machine's nixos-generate-config output, kept verbatim (regenerate, never hand-edit).
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -18,6 +23,10 @@
     # DDR5 SPD temperature sensor: its resume fails (`spd5118 ... failed to resume async: error -6`) and the error
     # flashes on the console when the lid opens. Only a RAM temperature reading is lost.
     blacklistedKernelModules = [ "spd5118" ];
+    # Resume from hibernation: the swapfile below lives on the root filesystem, at this physical offset. Recreating
+    # the swapfile (size change) moves it: recompute, `sudo filefrag -v /var/lib/swapfile`, extent 0 physical_offset.
+    resumeDevice = config.fileSystems."/".device;
+    kernelParams = [ "resume_offset=124332032" ];
   };
 
   hardware = {
@@ -54,8 +63,38 @@
         sed -n '/^\[Element Internal Mic Boost\]/,/^$/p' $out | grep -qx 'volume = zero'
       '';
 
+  # Hibernation target: a swapfile on the LUKS root, so the RAM image is encrypted at rest. 16 GiB = RAM: hibernates
+  # even with memory full. zram (priority 5) still takes everyday swap first; this one is priority -2.
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024;
+    }
+  ];
+
   services = {
     xserver.videoDrivers = [ "nvidia" ];
     thermald.enable = true; # Intel CPU thermal management
+    # Battery at 4%: hibernate, the session comes back. common.nix powers off (machines without a disk swap). 4%, not
+    # UPower's 2%: the reading drifts near empty on an aging battery; writing the image takes about 0.1 Wh of ~59.
+    # Critical warning at 7% keeps a few minutes between the red notification and the hibernation.
+    upower = {
+      criticalPowerAction = lib.mkForce "Hibernate";
+      percentageAction = 4;
+      percentageCritical = 7;
+    };
+    # Lid: suspend, then hibernate (systemd.sleep below). Lid closed with an external monitor: ignored (logind's docked
+    # default).
+    logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
+  };
+
+  # suspend-then-hibernate: on battery, hibernate after 2 h suspended; on AC, stay suspended. This battery has an ACPI
+  # trip point (_BTP, BAT1/alarm), so without HibernateDelaySec systemd 260 skips its discharge estimate and hibernates
+  # only if the firmware tags the wake as its battery alarm (DMI wake-up type "APM Timer"). This firmware leaves it at
+  # "Power Switch" after a resume from deep sleep (checked 2026-11-18), so that path never hibernates: the timer is the
+  # only one that does.
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "2h";
+    HibernateOnACPower = false;
   };
 }
