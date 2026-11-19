@@ -94,6 +94,7 @@ ShellRoot {
             spacing: 10
             Text {
               anchors.verticalCenter: parent.verticalCenter
+              textFormat: Text.PlainText
               text: Power.icon(win.dev.percentage, !UPower.onBattery)
               color: win.dev.percentage <= 0.1 && !win.charging ? win.error : win.fg
               font.family: win.font
@@ -102,6 +103,7 @@ ShellRoot {
             Column {
               anchors.verticalCenter: parent.verticalCenter
               Text {
+                textFormat: Text.PlainText
                 text: Math.round(win.dev.percentage * 100) + "%"
                 color: win.fg
                 font.family: win.font
@@ -109,6 +111,7 @@ ShellRoot {
                 font.bold: true
               }
               Text {
+                textFormat: Text.PlainText
                 text: Power.status(win.dev.state, win.dev.timeToEmpty, win.dev.timeToFull)
                 color: win.dim
                 font.family: win.font
@@ -131,6 +134,7 @@ ShellRoot {
           }
 
           Text {
+            textFormat: Text.PlainText
             text: Power.detail(win.dev.changeRate,
                                win.battery && win.battery.healthSupported ? win.battery.healthPercentage : null)
             visible: text !== ""
@@ -158,6 +162,7 @@ ShellRoot {
           }
           Text {
             visible: PowerProfiles.degradationReason !== PerformanceDegradationReason.None
+            textFormat: Text.PlainText
             text: "Performance limited: " + PerformanceDegradationReason.toString(PowerProfiles.degradationReason)
             color: win.error
             font.family: win.font

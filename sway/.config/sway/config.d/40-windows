@@ -47,5 +47,8 @@ mode "resize" {
 #: Resize mode (arrows, Enter/Esc to leave)
 bindsym $mod+r mode "resize"
 
+# A fullscreen window (video, slides, game) holds off the screensaver, the lock and screens off, whatever the app asks.
+for_window [all] inhibit_idle fullscreen
+
 # TUIs opened from the bar or the menu (float script): floating, centered.
 for_window [app_id="sway-float"] floating enable, resize set 900 600, move position center

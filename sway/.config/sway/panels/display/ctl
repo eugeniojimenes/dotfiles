@@ -33,7 +33,7 @@ ddc_bus() {
 brightness_get() {
   local bus cur max
   if [[ $1 == eDP-* ]]; then
-    brightnessctl -m | awk -F, '{ sub(/%/, "", $4); print $4 }'
+    brightnessctl -c backlight -m | awk -F, '{ sub(/%/, "", $4); print $4 }'
   elif bus=$(ddc_bus "$1"); then
     read -r _ _ _ cur max < <(ddcutil --bus "$bus" getvcp 10 --brief 2>/dev/null) ||
       {
@@ -50,7 +50,7 @@ brightness_get() {
 brightness_set() {
   local bus max
   if [[ $1 == eDP-* ]]; then
-    brightnessctl -q set "$2%"
+    brightnessctl -c backlight -q set "$2%"
   elif bus=$(ddc_bus "$1"); then
     read -r _ _ _ _ max < <(ddcutil --bus "$bus" getvcp 10 --brief 2>/dev/null)
     ddcutil --bus "$bus" --noverify setvcp 10 $(($2 * ${max:-100} / 100)) >/dev/null 2>&1

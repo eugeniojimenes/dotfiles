@@ -144,6 +144,7 @@ ShellRoot {
             anchors.centerIn: parent
             Text {
               anchors.horizontalCenter: parent.horizontalCenter
+              textFormat: Text.PlainText
               text: win.out ? (win.out.internal ? "Laptop screen" : (win.out.make.split(" ")[0] + " " + win.out.model)) : ""
               color: win.fg
               font.family: win.font
@@ -152,6 +153,7 @@ ShellRoot {
             }
             Text {
               anchors.horizontalCenter: parent.horizontalCenter
+              textFormat: Text.PlainText
               text: win.out ? win.out.name + (win.out.active ? "" : "  ·  off") : ""
               color: win.dim
               font.family: win.font
@@ -182,6 +184,7 @@ ShellRoot {
             SectionLabel { text: "󰃠  Brightness" }
             Text {
               anchors.right: parent.right
+              textFormat: Text.PlainText
               text: win.loadingBrightness ? "…" : (win.brightness >= 0 ? win.brightness + "%" : "unavailable")
               color: win.fg
               font.family: win.font

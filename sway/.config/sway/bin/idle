@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Idle handling with swayidle. Spec: docs/specs/stay-awake.md.
-#   idle start    normal: lock at 5 min, screens off at 5.5 min (sway autostart)
+#   idle start    normal: screensaver at 5 min, lock at 7 min, screens off at 7.5 min (sway autostart)
 #   idle toggle   normal <-> stay awake (Super+Ctrl+I, menu Toggle, bar icon click)
 #   idle status   JSON for the waybar module (signal 10): icon only while awake
 # Awake = swayidle without timeouts, not no swayidle: suspend and lid close still lock first.
 
 dir=~/.config/sway
 lock=$dir/panels/lock/lock
-normal=(timeout 300 "$lock" timeout 330 'swaymsg "output * power off"' resume 'swaymsg "output * power on"')
+saver=$dir/panels/screensaver/screensaver
+normal=(timeout 300 "$saver start" resume "$saver stop" timeout 420 "$lock"
+  timeout 450 'swaymsg "output * power off"' resume 'swaymsg "output * power on"')
 always=(before-sleep "$lock" after-resume "$dir/panels/display/reinit")
 
 # The awake instance is the only one whose first event is before-sleep.
@@ -24,7 +26,7 @@ case ${1-} in
     ;;
   status)
     if awake; then
-      echo '{"text": "󰅶", "tooltip": "Staying awake: no lock or screen off when idle (click to allow)", "class": "awake"}'
+      echo '{"text": "󰅶", "tooltip": "Staying awake: no screensaver, lock or screen off when idle (click to allow)", "class": "awake"}'
     else
       echo '{"text": ""}'
     fi

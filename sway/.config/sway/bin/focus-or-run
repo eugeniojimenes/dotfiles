@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Focus the open window of a single-window app, or start the app. Spec: docs/specs/focus-or-run.md.
+#   focus-or-run NAME COMMAND...
+# NAME = the window's app_id (Wayland) or class (XWayland), whole name, any case. Browsers keep their plain key: a new
+# window each press.
+
+name=${1-}
+if [[ ! $name =~ ^[A-Za-z0-9._-]+$ ]] || (($# < 2)); then
+  sed -n '3p' "$0" | sed 's/^# \?//' >&2
+  exit 2
+fi
+shift
+# swaymsg exits non-zero when no window matches.
+for key in app_id class; do
+  swaymsg -q "[$key=\"(?i)^$name\$\"] focus" 2>/dev/null && exit 0
+done
+exec "$@"

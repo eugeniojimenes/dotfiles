@@ -18,7 +18,7 @@ ShellRoot {
   readonly property bool dry: Quickshell.env("SWAY_LOCK_DRY") === "1"   // parse/run without locking, for testing
 
   readonly property color fg: Theme.fg
-  readonly property color dim: "#a6adc8" // brighter than Theme.dim: read over a blurred photo
+  readonly property color dim: Theme.subtext0 // brighter than Theme.dim: read over a blurred photo
   readonly property color accent: Theme.accent
   readonly property color error: Theme.error
   readonly property string font: Theme.font
@@ -83,7 +83,7 @@ ShellRoot {
     // One surface per output; each shows its own screenshot.
     WlSessionLockSurface {
       id: surface
-      color: "#1e1e2e"
+      color: Theme.base
 
       Image {
         id: shot
@@ -107,7 +107,7 @@ ShellRoot {
 
       Rectangle {
         anchors.fill: parent
-        color: "#661e1e2e"
+        color: Qt.alpha(Theme.base, 0.4)
       }
 
       Column {
@@ -116,6 +116,7 @@ ShellRoot {
 
         Text {
           anchors.horizontalCenter: parent.horizontalCenter
+          textFormat: Text.PlainText
           text: Qt.formatTime(root.now, "HH:mm")
           color: root.fg
           font.family: root.font
@@ -125,6 +126,7 @@ ShellRoot {
 
         Text {
           anchors.horizontalCenter: parent.horizontalCenter
+          textFormat: Text.PlainText
           text: Qt.formatDate(root.now, "dddd, MMMM d")
           color: root.dim
           font.family: root.font
@@ -138,9 +140,9 @@ ShellRoot {
           width: 340
           height: 52
           radius: 26
-          color: "#cc1e1e2e"
+          color: Qt.alpha(Theme.base, 0.8)
           border.width: 2
-          border.color: root.message !== "" ? root.error : (field.activeFocus ? root.accent : "#45475a")
+          border.color: root.message !== "" ? root.error : (field.activeFocus ? root.accent : Theme.surface1)
 
           Text {
             anchors.left: parent.left
@@ -174,8 +176,9 @@ ShellRoot {
             Text {
               anchors.verticalCenter: parent.verticalCenter
               visible: field.text === ""
+              textFormat: Text.PlainText
               text: root.checking ? "Checking…" : "Password"
-              color: "#6c7086"
+              color: Theme.dim
               font: field.font
             }
           }
@@ -184,6 +187,7 @@ ShellRoot {
         Text {
           anchors.horizontalCenter: parent.horizontalCenter
           height: 20
+          textFormat: Text.PlainText
           text: root.message
           color: root.error
           font.family: root.font

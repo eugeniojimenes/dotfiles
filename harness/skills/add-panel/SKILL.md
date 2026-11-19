@@ -9,13 +9,13 @@ Rules: `harness/rules/sway.md`. Why the pattern: `docs/sway.md` "Panels". Skelet
 
 ## Steps
 
-1. Spec first: `docs/specs/<name>-panel.md` (format `docs/specs/README.md`). Criterion 1 = qmllint (`Test: tests/static.sh: qmllint`); behaviour criteria mostly `Test: manual`. Copy the shared ones from `docs/specs/wifi-panel.md`: icon click opens and second click closes; Esc closes; outside click or workspace switch closes, cursor moves to centre of other output.
+1. Spec first: `docs/specs/<name>-panel.md` (format `docs/specs/README.md`). Criterion 1 = qmllint (`Test: tests/static.sh: qmllint`); behaviour criteria mostly `Test: manual`. Shared behaviour (icon opens and closes, outside click, workspace switch with cursor warp, Advanced link) = `docs/specs/panels.md`, never repeated in the panel spec. Panel spec keeps own keys, Esc included (each panel handles Esc).
 2. `sway/.config/sway/panels/<name>.qml` (entry, top of `panels/`) + `sway/.config/sway/panels/<name>/toggle` from `references/panel.md`. Root = `PanelShell` via `import "common"` (entry must sit at top of `panels/`: Quickshell refuses imports leaving the entry file's dir): overlay window, exclusive keyboard, outside click close, workspace-switch close with cursor warp, theme colours. Panel adds: namespace `sway-<name>`, card with a `MouseArea` swallowing clicks, Esc → `Qt.quit()`, footer `AdvancedLink` when a TUI exists. Never re-copy the shared blocks into the panel.
 3. Async flow (connect, pair, wait for a result) = logic in `panels/<name>/flow.mjs`, tested through `qmltestrunner` (`harness/rules/tests.md`). Data: Quickshell services first (`Quickshell.Networking`, `Quickshell.Bluetooth`, `Quickshell.Services.Pipewire`...); external command via `Process` only when no service exists. Anything that polls runs only while panel open.
 4. Wire: waybar module `on-click` in `apps/waybar.jsonc`, menu entry in `bin/menu`. New external command = package in `nixos/common.nix` `programs.sway.extraPackages`.
 5. `tests/manual.md`: row `Spec <name>-panel | Criteria N to M.` under each host.
-6. `git add`, `bin/check static` (qmllint resolves types, `panels-load` starts the panel in headless Sway, shellcheck toggle, waybar JSON), `bin/check`.
-7. Try it: `swaymsg exec ~/.config/sway/panels/<name>/toggle`, same as waybar (run directly it blocks the agent shell: `exec quickshell` stays in foreground). Never `pkill -f` from the agent shell. Owner checks the manual criteria on the live session and writes the date.
+6. `git add`, `bin/check static` (qmllint resolves types, `panels-load` starts the panel in headless Sway, `sway-paths`: toggle names own entry file, entry uses `PanelShell`, every waybar/menu path exists, shellcheck toggle, waybar JSON), `bin/check`.
+7. Try it: `swaymsg exec ~/.config/sway/panels/<name>/toggle`, same as waybar (run directly it blocks the agent shell: `exec quickshell` stays in foreground). Never `pkill -f` from the agent shell. Owner checks the manual criteria on the live session; on their word `bin/manual-pass "Spec <name>-panel"`.
 8. README Sway entry + `docs/sway.md` if the panel list there changes (pt-br pairs too). Commit `feat(sway): Quickshell <name> panel`.
 
 ## Acceptance

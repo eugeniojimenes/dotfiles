@@ -88,6 +88,7 @@ ShellRoot {
 
           Text {
             anchors.centerIn: parent
+            textFormat: Text.PlainText
             text: win.months[win.viewMonth] + " " + win.viewYear
             color: win.fg
             font.family: win.font
@@ -119,6 +120,7 @@ ShellRoot {
             Text {
               width: index === 0 ? 30 : 40
               height: 24
+              textFormat: Text.PlainText
               text: modelData
               color: win.dim
               font.family: win.font
@@ -145,8 +147,9 @@ ShellRoot {
 
               Text {
                 anchors.centerIn: parent
+                textFormat: Text.PlainText
                 text: parent.weekCol ? Cal.isoWeek(parent.day) : parent.day.getDate()
-                color: parent.isToday ? "#1e1e2e" : (parent.weekCol || !parent.inMonth ? win.dim : win.fg)
+                color: parent.isToday ? Theme.base : (parent.weekCol || !parent.inMonth ? win.dim : win.fg)
                 font.family: win.font
                 font.pixelSize: parent.weekCol ? 11 : 14
                 font.bold: parent.isToday
@@ -161,6 +164,7 @@ ShellRoot {
           spacing: 6
 
           Text {
+            textFormat: Text.PlainText
             text: win.today.getFullYear() + "  ·  " + Math.round(win.yearDone * 100) + "% of the year"
             color: win.dim
             font.family: win.font
@@ -171,7 +175,7 @@ ShellRoot {
             width: parent.width
             height: 4
             radius: 2
-            color: "#313244"
+            color: win.track
 
             Rectangle {
               width: parent.width * win.yearDone

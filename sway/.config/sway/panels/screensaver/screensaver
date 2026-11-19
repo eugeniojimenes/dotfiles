@@ -1,0 +1,23 @@
+#!/bin/sh
+# Screensaver (../screensaver.qml) for swayidle, see bin/idle:
+#   screensaver start   5 min idle: show it, unless it or the lock screen is already up
+#   screensaver stop    any activity (swayidle resume): end it
+# Detached on start: swayidle -w waits for its commands. Exact command lines (-x): a shell holding the same text never
+# counts as the screensaver.
+dir=$HOME/.config/sway/panels
+qml="quickshell -p $dir/screensaver.qml"
+case ${1-} in
+  start)
+    pgrep -fx "$qml" >/dev/null && exit 0
+    pgrep -fx "quickshell -p $dir/lock.qml" >/dev/null && exit 0
+    exec setsid -f quickshell -p "$dir/screensaver.qml" >/dev/null 2>&1
+    ;;
+  stop)
+    pkill -fx "$qml"
+    exit 0
+    ;;
+  *)
+    sed -n '3,4p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

@@ -1,6 +1,10 @@
 ### Apps
 #: Notification centre
 bindsym $mod+Ctrl+comma exec $dir/panels/notifications/toggle
+#: Dismiss notification popups (the centre keeps them)
+bindsym $mod+Ctrl+period exec $dir/panels/notifications/clear popups
+#: Clear all notifications
+bindsym $mod+Ctrl+Shift+comma exec $dir/panels/notifications/clear all
 #: Clipboard history
 bindsym $mod+v exec $dir/bin/clipboard pick
 #: Emoji picker
@@ -17,11 +21,13 @@ bindsym $mod+Shift+b exec brave --incognito
 bindsym $mod+Shift+f exec nautilus
 #: Editor
 bindsym $mod+n exec $term -e nvim
-# Focus the open dashboard (swaymsg exits 2 on no match), else start it.
+# Single-window apps: focus the open window, else start it (bin/focus-or-run). Browsers open a new window each press.
 #: System tools (btop + lazydocker)
-bindsym $mod+Shift+t exec swaymsg '[app_id="sys-tools"] focus' || $term --class sys-tools -e $dir/bin/sys-tools
+bindsym $mod+Shift+t exec $dir/bin/focus-or-run sys-tools $term --class sys-tools -e $dir/bin/sys-tools
 #: Music
-bindsym $mod+m exec spotify
+bindsym $mod+m exec $dir/bin/focus-or-run spotify spotify
+#: Slack
+bindsym $mod+Shift+s exec $dir/bin/focus-or-run Slack slack
 #: App menu
 bindsym $mod+space exec $dir/bin/menu
 #: Next wallpaper

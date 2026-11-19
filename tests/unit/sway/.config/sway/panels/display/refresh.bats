@@ -15,7 +15,7 @@ setup() { load "${BATS_TEST_DIRNAME%/tests/unit/*}/tests/helpers/common"; }
   run "$SWAY/panels/display/refresh"
   assert_success
   run grep '^pgrep' "$STUBS/calls"
-  assert_output 'pgrep -f quickshell -p .*/sway/panels/display.qml'
+  assert_output "pgrep -fx quickshell -p $HOME/.config/sway/panels/display.qml"
   run grep '^quickshell' "$STUBS/calls"
   assert_output "quickshell ipc -p $HOME/.config/sway/panels/display.qml call display refresh"
 }

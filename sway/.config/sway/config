@@ -1,9 +1,9 @@
-# Sway config for the notebook (Intel iGPU + RTX 3050).
+# Sway config shared by every machine; per-machine outputs in hosts/<hostname>.
 # Whole desktop in this directory, every app started with an explicit path so stock ~/.config/<app> is never read:
 #   config.d/  this config, split by topic   bin/  scripts the bindings, bar and menu run
 #   apps/      waybar, fuzzel, swaylock, wiremix
 #   panels/    Quickshell root: <name>.qml entries, <name>/ scripts and logic, common/ shared parts
-# Outside it: ~/.config/xdg-desktop-portal-wlr/sway (screen-share picker), ~/.local/state/sway (wallpaper, terminal
+# Outside it: nixos/common.nix xdg.portal.wlr.settings (screen-share picker), ~/.local/state/sway (wallpaper, terminal
 # opacity), ~/Pictures/Wallpapers (images).
 # /etc/sway/config.d is not included: bin/session-env does the systemd/D-Bus environment import itself.
 # Start: greetd runs `~/.config/sway/bin/start` (GPU order, see that script). Quit: Super+Shift+Escape.

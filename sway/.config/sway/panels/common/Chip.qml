@@ -20,8 +20,9 @@ Rectangle {
   Text {
     id: chipText
     anchors.centerIn: parent
+    textFormat: Text.PlainText
     text: chip.label
-    color: chip.active ? "#1e1e2e" : Theme.fg
+    color: chip.active ? Theme.base : Theme.fg
     font.family: Theme.font
     font.pixelSize: 12
     font.bold: chip.active

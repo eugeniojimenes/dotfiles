@@ -1,27 +1,33 @@
 ### Media, brightness, screenshots, recording
-# swayosd draws the volume/brightness popup.
+# bin/osd changes the value, the notification daemon draws the popup (panels/notifications/Osd.qml).
 #: Volume up
-bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume raise
+bindsym --locked XF86AudioRaiseVolume exec $dir/bin/osd volume up
 #: Volume down
-bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume lower
+bindsym --locked XF86AudioLowerVolume exec $dir/bin/osd volume down
 #: Mute
-bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
+bindsym --locked XF86AudioMute exec $dir/bin/osd volume mute
 #: Mute microphone
-bindsym --locked XF86AudioMicMute exec swayosd-client --input-volume mute-toggle
+bindsym --locked XF86AudioMicMute exec $dir/bin/osd mic mute
 #: Brightness up
-bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness raise && $dir/panels/display/refresh
+bindsym --locked XF86MonBrightnessUp exec $dir/bin/osd brightness up
 #: Brightness down
-bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness lower && $dir/panels/display/refresh
+bindsym --locked XF86MonBrightnessDown exec $dir/bin/osd brightness down
 #: Play/pause
-bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioPlay exec $dir/bin/media toggle
 #: Next track
-bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioNext exec $dir/bin/media next
 #: Previous track
-bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioPrev exec $dir/bin/media previous
 #: Screenshot (area)
 bindsym Print exec $dir/bin/screenshot area
 #: Screenshot (screen)
 bindsym Shift+Print exec $dir/bin/screenshot screen
+# Print keys: the modifier picks the action (none = screenshot, Ctrl = record, Super = read the screen), Shift = whole
+# screen instead of an area. Alt is left out: Alt+Print sends Sys_Req, not Print.
+#: Text from area (OCR)
+bindsym $mod+Print exec $dir/bin/ocr
+#: Color picker
+bindsym $mod+Ctrl+Print exec $dir/bin/colorpick
 #: Night light (again to turn off)
 bindsym $mod+Ctrl+n exec $dir/bin/nightlight toggle
 #: Record area (again to stop)

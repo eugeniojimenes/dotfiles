@@ -7,8 +7,13 @@ default_border pixel 2
 # Also exports XCURSOR_THEME/XCURSOR_SIZE to every client Sway starts. GTK apps read cursor-theme from dconf (nixos/).
 seat * xcursor_theme Adwaita 24
 gaps inner 5
-client.focused #89b4fa #89b4fa #1e1e2e #89b4fa #89b4fa
-client.unfocused #313244 #313244 #cdd6f4 #313244 #313244
+# Catppuccin Mocha, as panels/common/Theme.qml and apps/waybar.css.
+set $blue #89b4fa
+set $base #1e1e2e
+set $surface0 #313244
+set $text #cdd6f4
+client.focused $blue $blue $base $blue $blue
+client.unfocused $surface0 $surface0 $text $surface0 $surface0
 
 ### Outputs: per machine, in hosts/<hostname>.
 # Background owned by bin/wallpaper (restored in 90-autostart). `swaybg_command -` stops Sway spawning its own

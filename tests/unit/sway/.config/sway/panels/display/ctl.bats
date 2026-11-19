@@ -70,7 +70,7 @@ cache() { echo "$XDG_RUNTIME_DIR/sway-ddc-$1"; }
   run "$SWAY/panels/display/ctl" brightness set eDP-1 30
   run "$SWAY/panels/display/ctl" brightness set HDMI-A-1 50
   run calls
-  assert_line 'brightnessctl -q set 30%'
+  assert_line 'brightnessctl -c backlight -q set 30%'
   assert_line 'ddcutil --bus 7 --noverify setvcp 10 30'
 }
 

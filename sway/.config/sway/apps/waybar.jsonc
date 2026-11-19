@@ -5,11 +5,12 @@
   "modules-left": ["custom/menu", "sway/workspaces", "sway/mode"],
   "modules-center": ["clock"],
   "modules-right": [
+    "custom/media",
     "custom/record",
     "custom/idle",
     "custom/nightlight",
-    "custom/notifications",
     "tray",
+    "custom/notifications",
     "network",
     "bluetooth",
     "wireplumber",
@@ -61,9 +62,18 @@
     "format-icons": ["󰕿", "󰖀", "󰕾"],
     "tooltip-format": "{node_name}: {volume}%",
     "on-click": "~/.config/sway/panels/sound/toggle",
-    "on-click-right": "swayosd-client --output-volume mute-toggle",
-    "on-scroll-up": "swayosd-client --output-volume raise",
-    "on-scroll-down": "swayosd-client --output-volume lower"
+    "on-click-right": "~/.config/sway/bin/osd volume mute",
+    "on-scroll-up": "~/.config/sway/bin/osd volume up",
+    "on-scroll-down": "~/.config/sway/bin/osd volume down"
+  },
+
+  "custom/media": {
+    "exec": "~/.config/sway/bin/media status",
+    "return-type": "json",
+    "restart-interval": 5,
+    "on-click": "~/.config/sway/bin/media toggle",
+    "on-click-right": "~/.config/sway/bin/media next",
+    "on-click-middle": "~/.config/sway/bin/media previous"
   },
 
   "custom/notifications": {
@@ -113,8 +123,8 @@
     "format": "󰍹",
     "tooltip-format": "Displays: brightness, scale, text size",
     "on-click": "~/.config/sway/panels/display/toggle",
-    "on-scroll-up": "swayosd-client --brightness raise && ~/.config/sway/panels/display/refresh",
-    "on-scroll-down": "swayosd-client --brightness lower && ~/.config/sway/panels/display/refresh"
+    "on-scroll-up": "~/.config/sway/bin/osd brightness up",
+    "on-scroll-down": "~/.config/sway/bin/osd brightness down"
   },
 
   "battery": {

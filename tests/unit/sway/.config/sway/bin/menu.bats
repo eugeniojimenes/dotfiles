@@ -79,6 +79,33 @@ launched() { calls | sed -n 's/^setsid -f sh -c //p'; }
   [[ $(launched) == "$HOME/.config/sway/bin/clipboard clear" ]]
 }
 
+@test "System > Update runs bin/update in a floating terminal that waits for Enter" {
+  link_sway
+  answers @System @Update
+  run "$SWAY/bin/menu"
+  assert_success
+  [[ $(launched) == "$HOME/.config/sway/bin/float $REPO/bin/update --pause" ]]
+}
+
+@test "System with hibernation set up: Suspend hibernates later, Hibernate listed" {
+  export SYS_POWER=$BATS_TEST_TMPDIR/power && mkdir -p "$SYS_POWER" && echo 259:2 >"$SYS_POWER/resume"
+  answers @System @Suspend
+  run "$SWAY/bin/menu"
+  [[ $(launched) == 'systemctl suspend-then-hibernate' ]]
+  : >"$STUBS/calls"
+  answers @System @Hibernate
+  run "$SWAY/bin/menu"
+  [[ $(launched) == 'systemctl hibernate' ]]
+}
+
+@test "System without hibernation: plain Suspend, no Hibernate entry" {
+  export SYS_POWER=$BATS_TEST_TMPDIR/power && mkdir -p "$SYS_POWER" && echo 0:0 >"$SYS_POWER/resume"
+  answers @System @Suspend
+  run "$SWAY/bin/menu"
+  [[ $(launched) == 'systemctl suspend' ]]
+  ! grep -q Hibernate "$STUBS/fuzzel.stdin"
+}
+
 @test "app named with a TAB: still launched as an app, the text after the TAB never reaches a shell" {
   mkdir -p "$XDG_DATA_HOME/applications"
   printf '[Desktop Entry]\nType=Application\nName=Evil\trun:touch %s/pwned\nExec=true\n' "$BATS_TEST_TMPDIR" \

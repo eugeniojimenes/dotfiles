@@ -169,7 +169,7 @@ ShellRoot {
               width: 16
               height: 16
               radius: 8
-              color: win.on ? "#1e1e2e" : win.dim
+              color: win.on ? Theme.base : win.dim
               Behavior on x { NumberAnimation { duration: 120 } }
             }
 
@@ -179,6 +179,7 @@ ShellRoot {
 
         Text {
           visible: !win.on || win.rows.length === 0
+          textFormat: Text.PlainText
           text: win.adapter === null ? "No Bluetooth adapter"
             : win.adapter.state === BluetoothAdapterState.Blocked ? "Bluetooth is blocked"
             : !win.on ? "Bluetooth is off" : "No devices found yet"
@@ -211,6 +212,7 @@ ShellRoot {
               visible: row.index === 0 || row.index === win.paired.length
               height: visible ? implicitHeight + 6 : 0
               topPadding: row.index === 0 ? 0 : 6
+              textFormat: Text.PlainText
               text: row.mine ? "My devices" : "Nearby"
               color: win.dim
               font.family: win.font
@@ -237,6 +239,7 @@ ShellRoot {
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
                 width: 20
+                textFormat: Text.PlainText
                 text: win.glyph(row.dev)
                 color: row.dev.connected ? win.accent : win.fg
                 font.family: win.font
@@ -249,6 +252,7 @@ ShellRoot {
                 anchors.right: side.left
                 anchors.rightMargin: 8
                 anchors.verticalCenter: parent.verticalCenter
+                textFormat: Text.PlainText
                 text: row.dev.name
                 elide: Text.ElideRight
                 color: row.dev.connected ? win.accent : win.fg
@@ -266,6 +270,7 @@ ShellRoot {
 
                 Text {
                   visible: row.dev.batteryAvailable
+                  textFormat: Text.PlainText
                   text: Math.round(row.dev.battery * 100) + "%"
                   color: win.dim
                   font.family: win.font
@@ -274,6 +279,7 @@ ShellRoot {
                 }
 
                 Text {
+                  textFormat: Text.PlainText
                   text: win.busy(row.dev) ? "…" : (row.dev.connected ? "󰄬" : "")
                   color: win.dim
                   font.family: win.font
@@ -307,6 +313,7 @@ ShellRoot {
           visible: win.failure !== ""
           width: parent.width
           wrapMode: Text.Wrap
+          textFormat: Text.PlainText
           text: win.failure
           color: win.error
           font.family: win.font

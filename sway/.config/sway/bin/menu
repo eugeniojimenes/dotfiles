@@ -70,9 +70,13 @@ menu_capture() {
   {
     entry 󰩭 "Screenshot (area)" "run:$dir/bin/screenshot area"
     entry 󰍹 "Screenshot (screen)" "run:$dir/bin/screenshot screen"
+    entry 󰊄 "Text from area (OCR)" "run:$dir/bin/ocr"
+    entry 󰈊 "Color picker" "run:$dir/bin/colorpick"
     # Any of these while recording stops it (bin/record).
     entry 󰑋 "Record area" "run:$dir/bin/record area"
     entry 󰑋 "Record screen" "run:$dir/bin/record screen"
+    entry 󰍬 "Record area with microphone" "run:$dir/bin/record area audio"
+    entry 󰍬 "Record screen with microphone" "run:$dir/bin/record screen audio"
   } | pick 'Capture'
 }
 
@@ -123,11 +127,28 @@ menu_power() {
   done | pick 'Power profile'
 }
 
+# Hibernation set up on this machine (resume device in nixos/hosts/<host>): Suspend hibernates later on battery, and
+# Hibernate shows. /sys/power/resume reads 0:0 without it (the desktop has no swapfile).
+hibernates() {
+  local resume
+  resume=$(cat "${SYS_POWER:-/sys/power}/resume" 2>/dev/null)
+  [[ -n $resume && $resume != 0:0 ]]
+}
+
 menu_system() {
+  # bin/update lives in the repo, not in a module: found through the stow link of this directory.
+  local root
+  root=$(readlink -f "$dir/../../..")
   {
+    entry 󰚰 "Update" "run:$dir/bin/float $root/bin/update --pause"
     entry 󰌾 "Lock" "run:$dir/panels/lock/lock"
     entry 󰎟 "Clear clipboard history" "run:$dir/bin/clipboard clear"
-    entry 󰤄 "Suspend" "run:systemctl suspend"
+    if hibernates; then
+      entry 󰤄 "Suspend" "run:systemctl suspend-then-hibernate"
+      entry 󰒲 "Hibernate" "run:systemctl hibernate"
+    else
+      entry 󰤄 "Suspend" "run:systemctl suspend"
+    fi
     entry 󰍃 "Exit Sway" "run:swaymsg exit"
     entry 󰜉 "Reboot" "run:systemctl reboot"
     entry 󰐥 "Power off" "run:systemctl poweroff"

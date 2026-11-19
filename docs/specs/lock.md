@@ -1,6 +1,6 @@
 # Lock screen
 
-Files: `sway/.config/sway/panels/lock/lock` (script), `sway/.config/sway/panels/lock.qml` (Quickshell lock screen), `sway/.config/sway/apps/swaylock` (fallback config). The script runs from `Super + Shift + L`, the menu entry System > Lock, and swayidle after 5 minutes idle and before sleep.
+Files: `sway/.config/sway/panels/lock/lock` (script), `sway/.config/sway/panels/lock.qml` (Quickshell lock screen), `sway/.config/sway/apps/swaylock` (fallback config). The script runs from `Super + Shift + L`, the menu entry System > Lock, and swayidle after 7 minutes idle and before sleep.
 
 ## Purpose
 
@@ -17,4 +17,4 @@ The lock screen covers every output with a blurred picture of what was on it, a 
 7. Every output shows its own blurred screenshot, the time, the date and a password field. Test: manual
 8. The correct password unlocks the session through the PAM service `swaylock`. A wrong one clears the field and shows "Wrong password", with the number of failed attempts from the second one on. Esc clears the field. Test: manual
 9. If the Quickshell process dies while locked, Sway keeps every output covered until another locker unlocks it. Test: manual
-10. swayidle locks the session after 5 minutes idle and before the machine goes to sleep. Test: manual
+10. swayidle locks the session after 7 minutes idle and before the machine goes to sleep. Test: manual

@@ -18,7 +18,7 @@ swaymsg -t get_outputs | jq -r '.[] | select(.active) | .name' | while read -r o
 done
 
 (
-  SWAY_LOCK_SHOTS=$run SWAY_LOCK_MARKER=$run/locked $qml >/dev/null 2>&1
+  SWAY_LOCK_SHOTS=$run SWAY_LOCK_MARKER=$run/locked quickshell -p "$dir/lock.qml" >/dev/null 2>&1
   rm -rf "$run"
 ) &
 

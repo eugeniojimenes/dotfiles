@@ -13,3 +13,4 @@ Files: `sway/.config/sway/bin/nightlight`, bound in `sway/.config/sway/config.d/
 3. `nightlight status` prints the waybar JSON: a moon icon with class `on` while on, empty text otherwise. Test: `tests/unit/sway/.config/sway/bin/nightlight.bats: "status: icon only while on"`
 4. Toggle › Night light in the menu runs `nightlight toggle`. Test: `tests/unit/sway/.config/sway/bin/menu.bats: "Toggle > Stay awake and Night light run their toggles"`
 5. `Super + Ctrl + N` warms every screen, the bar icon appears, and a click on it or the key again restores the normal colours. Test: manual
+6. `nightlight` with no argument prints the usage and exits 2. Test: `tests/unit/sway/.config/sway/bin/nightlight.bats: "no argument: usage, exit 2"`

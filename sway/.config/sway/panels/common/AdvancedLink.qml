@@ -8,6 +8,7 @@ Text {
 
   required property list<string> command
 
+  textFormat: Text.PlainText
   color: area.containsMouse ? Theme.fg : Theme.dim
   font.family: Theme.font
   font.pixelSize: 13

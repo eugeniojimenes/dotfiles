@@ -95,6 +95,7 @@ ShellRoot {
 
             Text {
               id: spinner
+              textFormat: Text.PlainText
               text: win.scanning ? "󰑓" : "󰄬"
               color: win.scanning ? win.accent : win.dim
               font.family: win.font
@@ -107,6 +108,7 @@ ShellRoot {
             }
 
             Text {
+              textFormat: Text.PlainText
               text: win.scanning ? "Searching…" : "Scanned"
               color: win.dim
               font.family: win.font
@@ -129,7 +131,7 @@ ShellRoot {
               width: 16
               height: 16
               radius: 8
-              color: Networking.wifiEnabled ? "#1e1e2e" : win.dim
+              color: Networking.wifiEnabled ? Theme.base : win.dim
               Behavior on x { NumberAnimation { duration: 120 } }
             }
 
@@ -139,6 +141,7 @@ ShellRoot {
 
         Text {
           visible: !Networking.wifiEnabled || win.device === null
+          textFormat: Text.PlainText
           text: win.device === null ? "No Wi-Fi device" : "Wi-Fi is off"
           color: win.dim
           font.family: win.font
@@ -185,6 +188,7 @@ ShellRoot {
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
+                textFormat: Text.PlainText
                 text: win.bars[Math.min(4, Math.floor(row.net.signalStrength * 5))]
                 color: row.net.connected ? win.accent : win.fg
                 font.family: win.font
@@ -197,6 +201,7 @@ ShellRoot {
                 anchors.right: status.left
                 anchors.rightMargin: 8
                 anchors.verticalCenter: parent.verticalCenter
+                textFormat: Text.PlainText
                 text: row.net.name
                 elide: Text.ElideRight
                 color: row.net.connected ? win.accent : win.fg
@@ -210,6 +215,7 @@ ShellRoot {
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
+                textFormat: Text.PlainText
                 text: row.net.stateChanging ? "…"
                   : (row.net.connected ? "󰄬" : (row.net.security === WifiSecurityType.Open ? "" : "󰌾"))
                 color: win.dim
@@ -256,6 +262,7 @@ ShellRoot {
                 Text {
                   anchors.verticalCenter: parent.verticalCenter
                   visible: pass.text === ""
+                  textFormat: Text.PlainText
                   text: "Password for " + row.net.name
                   color: win.dim
                   font: pass.font
@@ -267,6 +274,7 @@ ShellRoot {
 
         Text {
           visible: win.failure !== ""
+          textFormat: Text.PlainText
           text: win.failure
           color: win.error
           font.family: win.font

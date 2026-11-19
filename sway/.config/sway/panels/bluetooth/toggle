@@ -1,3 +1,5 @@
 #!/bin/sh
 # Bluetooth icon click: open the Bluetooth panel, or close it when already open.
-pkill -f 'quickshell -p .*/sway/panels/bluetooth.qml' || exec quickshell -p ~/.config/sway/panels/bluetooth.qml
+# -x = exact command line: a loose pattern killed any process holding it and left the panel closed.
+qml=$HOME/.config/sway/panels/bluetooth.qml
+pkill -fx "quickshell -p $qml" || exec quickshell -p "$qml"

@@ -1,3 +1,5 @@
 #!/bin/sh
 # Waybar battery icon: open the power panel, or close it when already open.
-pkill -f 'quickshell -p .*/sway/panels/power.qml' || exec quickshell -p ~/.config/sway/panels/power.qml
+# -x = exact command line: a loose pattern killed any process holding it and left the panel closed.
+qml=$HOME/.config/sway/panels/power.qml
+pkill -fx "quickshell -p $qml" || exec quickshell -p "$qml"

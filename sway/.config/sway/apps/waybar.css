@@ -1,3 +1,15 @@
+/* Catppuccin Mocha, the colours this bar uses. Same values as panels/common/Theme.qml and config.d/10-look. */
+@define-color base #1e1e2e;
+@define-color text #cdd6f4;
+@define-color overlay0 #6c7086;
+@define-color blue #89b4fa;
+@define-color red #f38ba8;
+@define-color yellow #f9e2af;
+@define-color green #a6e3a1;
+@define-color subtext0 #a6adc8;
+@define-color peach #fab387;
+@define-color sky #89dceb;
+
 * {
   font-family: "JetBrainsMono Nerd Font";
   font-size: 13px;
@@ -7,27 +19,27 @@
 }
 
 window#waybar {
-  background: #1e1e2e;
-  color: #cdd6f4;
+  background: @base;
+  color: @text;
 }
 
 #workspaces button {
   padding: 0 8px;
-  color: #6c7086;
+  color: @overlay0;
 }
 
 #workspaces button.focused {
-  color: #1e1e2e;
-  background: #89b4fa;
+  color: @base;
+  background: @blue;
 }
 
 #workspaces button.urgent {
-  background: #f38ba8;
+  background: @red;
 }
 
 #mode {
-  background: #f9e2af;
-  color: #1e1e2e;
+  background: @yellow;
+  color: @base;
   padding: 0 8px;
 }
 
@@ -38,74 +50,83 @@ window#waybar {
 #battery,
 #power-profiles-daemon,
 #tray,
+#custom-media,
 #custom-display {
   padding: 0 10px;
 }
 
 #battery.warning {
-  color: #f9e2af;
+  color: @yellow;
 }
 
 #battery.critical {
-  color: #f38ba8;
+  color: @red;
 }
 
 #custom-menu {
   padding: 0 12px 0 10px;
   font-size: 15px;
-  color: #89b4fa;
+  color: @blue;
 }
 
 #network.disconnected,
 #bluetooth.off,
 #bluetooth.disabled,
 #wireplumber.muted {
-  color: #6c7086;
+  color: @overlay0;
 }
 
 #battery.charging,
 #battery.plugged {
-  color: #a6e3a1;
+  color: @green;
 }
 
 #custom-record {
   padding: 0 10px;
-  color: #f38ba8;
+  color: @red;
 }
 
 #custom-idle,
 #custom-nightlight {
   padding: 0 10px;
-  color: #f9e2af;
+  color: @yellow;
 }
 
 /* Power profile colour: saver green, balanced plain, performance orange. */
 #power-profiles-daemon.power-saver {
-  color: #a6e3a1;
+  color: @green;
 }
 
 #power-profiles-daemon.balanced {
-  color: #a6adc8;
+  color: @subtext0;
 }
 
 #power-profiles-daemon.performance {
-  color: #fab387;
+  color: @peach;
 }
 
 /* Bell: plain when quiet, blue with new ones, yellow in Do not disturb, red while a share or recording hides popups. */
 #custom-notifications {
   padding: 0 10px;
-  color: #a6adc8;
+  color: @subtext0;
 }
 
 #custom-notifications.unread {
-  color: #89b4fa;
+  color: @blue;
 }
 
 #custom-notifications.dnd {
-  color: #f9e2af;
+  color: @yellow;
 }
 
 #custom-notifications.share {
-  color: #f38ba8;
+  color: @red;
+}
+
+#custom-media {
+  color: @sky;
+}
+
+#custom-media.paused {
+  color: @overlay0;
 }

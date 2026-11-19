@@ -7,7 +7,8 @@ Cut from `sway/.config/sway/panels/wifi.qml`. Replace `<name>`. Colours come fro
 ```sh
 #!/bin/sh
 # <Icon> click: open the <name> panel, or close it when already open.
-pkill -f 'quickshell -p .*/sway/panels/<name>.qml' || exec quickshell -p ~/.config/sway/panels/<name>.qml
+qml=$HOME/.config/sway/panels/<name>.qml
+pkill -fx "quickshell -p $qml" || exec quickshell -p "$qml"
 ```
 
 `sway/.config/sway/panels/<name>.qml` (entry file, top of `panels/`, never in a subdir):

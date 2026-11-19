@@ -14,3 +14,4 @@ Files: `sway/.config/sway/bin/clipboard`, started by `sway/.config/sway/config.d
 4. `clipboard clear` wipes the history. Test: `tests/unit/sway/.config/sway/bin/clipboard.bats: "clear: history wiped"`
 5. The root menu has Clipboard history, and System has Clear clipboard history. Test: `tests/unit/sway/.config/sway/bin/menu.bats: "root: Clipboard history and Emoji run their scripts, System clears the history"`
 6. `Super + V` opens the picker. Text and images copied in any app show up, newest first, and the chosen one pastes with `Ctrl + V`. A password copied from a password manager that marks it as sensitive does not show up. After logging out and back in, the history is empty. Test: manual
+7. `clipboard` with no argument prints the usage and exits 2. Test: `tests/unit/sway/.config/sway/bin/clipboard.bats: "no argument: usage, exit 2"`
