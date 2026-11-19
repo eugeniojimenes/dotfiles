@@ -53,6 +53,9 @@ alias d='docker'
 alias r='rails'
 alias t='tmux attach || tmux new -s Work'
 alias mup='MISE_MINIMUM_RELEASE_AGE=0 mise up'
+# bundle with the headers native gems compile against (flake devShell ruby-native). --profile = GC root: the built .so
+# files point at those libraries. After a nixpkgs move and a GC: `bundle-native pristine pg rugged fast_excel`.
+alias bundle-native='nix develop ~/dotfiles#ruby-native --profile ~/.local/state/ruby-native -c bundle'
 n() { command nvim "${@:-.}"; }
 
 # Git

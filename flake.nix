@@ -34,6 +34,20 @@
         inputsFrom = builtins.attrValues self.checks.x86_64-linux;
       };
 
+      # Headers and build tools for gems with native extensions (pg, rugged, fast_excel): NixOS has no global -dev
+      # packages. Through the `bundle-native` alias (bash aliases), which keeps a GC root on it.
+      devShells.x86_64-linux.ruby-native = pkgs.mkShell {
+        packages = with pkgs; [
+          pkg-config
+          cmake
+          zlib
+          libpq
+          openssl
+          libyaml
+          libffi
+        ];
+      };
+
       # `nix fmt`: nixfmt, shfmt, stylua, taplo over the repo (treefmt.nix).
       formatter.x86_64-linux = import ./treefmt.nix { inherit pkgs; };
     };
