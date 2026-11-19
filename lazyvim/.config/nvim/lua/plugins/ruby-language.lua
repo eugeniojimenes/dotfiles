@@ -20,6 +20,19 @@ local function mise_cmd(cmd)
   return vim.list_extend({ "mise", "exec", "--" }, cmd)
 end
 
+-- NixOS: Ruby LSP Rails boots the app, whose gems dlopen libcurl through ffi, and NixOS has no /usr/lib to find it.
+-- A Ruby built with its own OpenSSL 3.0 also clashes with nixpkgs' libcurl (needs OPENSSL_3.5.0). nix-ld's library
+-- dir (stable path, holds libcurl and the matching OpenSSL) fixes both. Set after `mise exec`, never on mise itself:
+-- that dir's libcrypto breaks mise's own (`undefined symbol: CRYPTO_library_init`). DISABLE_SPRING: the runner would
+-- fork from a Spring server started elsewhere without this path, and the loader reads LD_LIBRARY_PATH only at exec.
+local nix_ld_lib = "/run/current-system/sw/share/nix-ld/lib"
+local function nix_ld_libs(cmd)
+  if not vim.uv.fs_stat(nix_ld_lib) then
+    return cmd
+  end
+  return vim.list_extend({ "env", "LD_LIBRARY_PATH=" .. nix_ld_lib, "DISABLE_SPRING=1" }, cmd)
+end
+
 -- Both ruby_lsp and rubocop exit 1 immediately when the project bundle is incomplete, and nvim
 -- only reports "quit with exit code 1"; the actual Bundler::GemNotFound is buried in lsp.log.
 -- Check once in the background and say what to run.
@@ -98,7 +111,7 @@ return {
           -- ruby-lsp composes its own `.ruby-lsp/` bundle from the project Gemfile, so it must run
           -- under the correct Ruby. Install per-Ruby with `mise exec -- gem install ruby-lsp`
           -- (it is intentionally not added to the project Gemfile).
-          cmd = mise_cmd({ "ruby-lsp" }),
+          cmd = mise_cmd(nix_ld_libs({ "ruby-lsp" })),
           root_dir = project_root_dir,
         },
         solargraph = {
