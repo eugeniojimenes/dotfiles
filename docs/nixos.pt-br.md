@@ -34,6 +34,8 @@ O greetd entra direto no Sway rodando `~/.config/sway/bin/start`. O disco é cri
 
 `programs.nix-ld` deixa binários pré-compilados rodarem. O mise e o Mason baixam binários (Node, Python, Ruby, rustup, language servers) que esperam `/lib64/ld-linux-x86-64.so.2`. O `icu` entra no conjunto padrão de bibliotecas porque binários .NET, como o marksman do Mason, abortam sem `libicu`.
 
+O `services.envfs` faz o mesmo para shebangs. O NixOS só tem `/bin/sh` e `/usr/bin/env`, então um script que começa com `#!/bin/bash` falha, e muitos scripts de fora deste repo fazem isso, como os de repositórios do trabalho. O envfs monta `/bin` e `/usr/bin` como um sistema de arquivos FUSE que encontra cada programa no `PATH` do processo que o pede. Os scripts deste repo continuam com `#!/usr/bin/env bash` e não dependem dele.
+
 ## Portals
 
 Os portals vêm dos padrões do módulo Sway do NixOS: o `xdg-desktop-portal-wlr` cuida do compartilhamento de tela e das capturas de tela, e o `xdg-desktop-portal-gtk` cuida do resto, incluindo o seletor de arquivos. O seletor de compartilhamento de tela é definido em `xdg.portal.wlr.settings`, porque o módulo inicia o portal wlr com uma config gerada dessas settings e nunca lê `~/.config/xdg-desktop-portal-wlr`. O serviço de usuário do portal também recebe `/run/current-system/sw` no `PATH`, porque o dele tem pouco além de coreutils, grim e slurp, e o seletor precisa do fuzzel e do Quickshell.

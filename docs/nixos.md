@@ -34,6 +34,8 @@ greetd logs straight into Sway by running `~/.config/sway/bin/start`. The disk i
 
 `programs.nix-ld` lets prebuilt binaries run. mise and Mason download binaries (Node, Python, Ruby, rustup, language servers) that expect `/lib64/ld-linux-x86-64.so.2`. `icu` is added to the default library set because .NET binaries such as Mason's marksman abort without `libicu`.
 
+`services.envfs` does the same for shebangs. NixOS has only `/bin/sh` and `/usr/bin/env`, so a script that starts with `#!/bin/bash` fails, and many scripts outside this repo do, such as those in work repositories. envfs mounts `/bin` and `/usr/bin` as a FUSE filesystem that finds each program in the `PATH` of the process asking for it. The scripts in this repo still use `#!/usr/bin/env bash` and do not depend on it.
+
 ## Portals
 
 The portals come from the defaults of the NixOS Sway module: `xdg-desktop-portal-wlr` handles screen sharing and screenshots, and `xdg-desktop-portal-gtk` handles everything else, including the file chooser. The screen-share picker is set in `xdg.portal.wlr.settings`, since the module starts the wlr portal with a config generated from those settings and never reads `~/.config/xdg-desktop-portal-wlr`. The portal's user service also gets `/run/current-system/sw` in its `PATH`, because its own holds little more than coreutils, grim and slurp, and the picker needs fuzzel and Quickshell.

@@ -151,6 +151,9 @@ in
     };
     gvfs.enable = true; # Nautilus: trash, phones, network shares
     locate.enable = true; # plocate
+    # FUSE /usr/bin and /bin that resolve from the caller's PATH: scripts outside this repo (work repos, a work CLI's
+    # helpers) hardcode `#!/bin/bash`, and a CLI that execs them directly fails with ENOENT. nix-ld's twin for shebangs.
+    envfs.enable = true;
   };
 
   programs = {
