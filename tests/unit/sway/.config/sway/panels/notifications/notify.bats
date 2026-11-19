@@ -31,4 +31,5 @@ qt() {
 @test "osd icon: volume and brightness by level, muted ones" { qt test_osd_icon; }
 @test "track text: artist - title, title alone, player name without a title" { qt test_track_text; }
 @test "track icon: next and previous by action, else play or pause by state" { qt test_track_icon; }
+@test "switch popup: stay awake, night light, do not disturb on and off, power profiles; unknown ones none" { qt test_switch_popup; }
 @test "centre hidden text: count and the reason, share wins over recording" { qt test_centre_hidden_text; }

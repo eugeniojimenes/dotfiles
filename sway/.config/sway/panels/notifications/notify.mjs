@@ -183,6 +183,34 @@ export function osdIcon(kind, value, muted) {
   return muted ? "󰝟" : step(["󰕿", "󰖀", "󰕾"]);
 }
 
+// Switch popup (Osd.qml): stay awake, night light and do not disturb (`value` = "on" or "off") and the power profile
+// (`value` = its powerprofilesctl name). Returns { icon, title, detail, on }, on = drawn bright, else grey; null for an
+// unknown kind or value, then no popup. Icons as the bar's.
+export function switchPopup(kind, value) {
+  const on = value === "on";
+  const onOff = value === "on" || value === "off";
+  if (kind === "awake" && onOff)
+    return on
+      ? { icon: "󰅶", title: "Stay awake on", detail: "No lock or screen off when idle", on }
+      : { icon: "󰾪", title: "Stay awake off", detail: "Screensaver at 5 min, lock at 7", on };
+  if (kind === "nightlight" && onOff)
+    return on
+      ? { icon: "󰖔", title: "Night light on", detail: "Warm screen at 4000 K", on }
+      : { icon: "󰖙", title: "Night light off", detail: "Screen colours back to normal", on };
+  if (kind === "dnd" && onOff)
+    return on
+      ? { icon: "󰂛", title: "Do not disturb on", detail: "No popups, the centre keeps them", on }
+      : { icon: "󰂚", title: "Do not disturb off", detail: "Popups show again", on };
+  const profiles = {
+    "power-saver": { icon: "󰌪", title: "Power saver" },
+    balanced: { icon: "󰗶", title: "Balanced" },
+    performance: { icon: "󱐋", title: "Performance" },
+  };
+  if (kind === "profile" && Object.prototype.hasOwnProperty.call(profiles, value))
+    return { icon: profiles[value].icon, title: profiles[value].title, detail: "Power profile", on: true };
+  return null;
+}
+
 // Track popup text (Osd.qml): "Artist - Title", the title alone without an artist, the player name without a title.
 export function trackText(artist, title, playerName) {
   if (!title) return playerName;

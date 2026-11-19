@@ -73,6 +73,23 @@ quickshell ipc -p $HOME/.config/sway/panels/display.qml call display refresh"
   assert_output 1
 }
 
+@test "switch: popup asked for the kind and value, nothing changed" {
+  run "$SWAY/bin/osd" switch awake on
+  assert_success
+  run "$SWAY/bin/osd" switch profile balanced
+  run calls
+  assert_output "$(printf '%s\n' "${ipc% popup} switched awake on" "${ipc% popup} switched profile balanced")"
+}
+
+@test "switch without a value or for another kind: usage, exit 2" {
+  run "$SWAY/bin/osd" switch awake
+  assert_failure 2
+  run "$SWAY/bin/osd" switch volume on
+  assert_failure 2
+  run calls
+  assert_output ''
+}
+
 @test "no argument or unknown one: usage, exit 2, nothing changed" {
   run "$SWAY/bin/osd"
   assert_failure 2

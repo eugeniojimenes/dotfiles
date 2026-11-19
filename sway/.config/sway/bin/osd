@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 # Volume, microphone and brightness keys: change the value, then the notification daemon shows the popup
-# (panels/notifications/Osd.qml, over IPC). Spec: docs/specs/osd.md.
-#   osd volume up|down|mute   osd mic mute   osd brightness up|down
+# (panels/notifications/Osd.qml, over IPC). `switch` only shows one, for a toggle another script made.
+# Spec: docs/specs/osd.md.
+#   osd volume up|down|mute   osd mic mute   osd brightness up|down   osd switch awake|nightlight|profile VALUE
 
 usage() {
-  sed -n '4p' "$0" | sed 's/^# *//'
+  sed -n '5p' "$0" | sed 's/^# *//'
   exit 2
 }
 
 # Popup best effort: daemon down = value changed anyway, no error for the key binding.
-show() { quickshell ipc -p ~/.config/sway/panels/notifications.qml call osd popup "$@" >/dev/null 2>&1 || true; }
+ipc() { quickshell ipc -p ~/.config/sway/panels/notifications.qml call osd "$@" >/dev/null 2>&1 || true; }
+show() { ipc popup "$@"; }
 
 # `wpctl get-volume` = "Volume: 0.45", "[MUTED]" appended when muted. Popup args: percent, muted.
 show_node() {
@@ -43,6 +45,11 @@ case ${1-}:${2-} in
     # -m = "device,class,raw,PCT%,max"
     show brightness "$(brightnessctl -c backlight -m | awk -F, '{ sub(/%/, "", $4); print $4 }')" false
     "$(dirname "$0")"/../panels/display/refresh
+    ;;
+  # The daemon draws only kinds and values it knows (Notify.switchPopup); anything else shows nothing.
+  switch:awake | switch:nightlight | switch:profile)
+    [[ -n ${3-} ]] || usage
+    ipc switched "$2" "$3"
     ;;
   *) usage ;;
 esac

@@ -144,7 +144,11 @@ ShellRoot {
     function modes(): string { return root.modes.join(" ") }
     function modeOn(name: string): void { root.modes = Notify.setMode(root.modes, name, "on") }
     function modeOff(name: string): void { root.modes = Notify.setMode(root.modes, name, "off") }
-    function modeToggle(name: string): void { root.modes = Notify.setMode(root.modes, name, "toggle") }
+    function modeToggle(name: string): void {
+      root.modes = Notify.setMode(root.modes, name, "toggle")
+      // Only do not disturb is switched by hand (bin/dnd toggle); share and recording modes come from their scripts.
+      if (name === "dnd") osdPopup.showSwitch("dnd", root.modes.includes("dnd") ? "on" : "off")
+    }
     // ./notifications/clear: popups off the screen (the centre keeps them), or everything as Clear in the centre does.
     function dismissPopups(): void {
       for (const n of root.popups.slice()) root.hidePopup(n)
@@ -158,5 +162,5 @@ ShellRoot {
 
   Popups { daemon: root }
   Centre { daemon: root }
-  Osd {}
+  Osd { id: osdPopup }
 }

@@ -118,12 +118,12 @@ menu_toggle() {
   } | pick 'Toggle'
 }
 
-# power-profiles-daemon; the waybar module follows the change over D-Bus by itself.
+# power-profiles-daemon; the waybar module follows the change over D-Bus by itself, bin/osd shows the popup.
 menu_power() {
   local cur p
   cur=$(powerprofilesctl get 2>/dev/null)
   for p in power-saver balanced performance; do
-    entry "$([[ $p == "$cur" ]] && echo 󰄬 || echo 󰝦)" "$p" "run:powerprofilesctl set $p"
+    entry "$([[ $p == "$cur" ]] && echo 󰄬 || echo 󰝦)" "$p" "run:powerprofilesctl set $p && $dir/bin/osd switch profile $p"
   done | pick 'Power profile'
 }
 

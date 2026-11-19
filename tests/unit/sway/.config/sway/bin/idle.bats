@@ -14,21 +14,23 @@ setup() {
   assert_output "swayidle -w timeout 300 $SAVER start resume $SAVER stop timeout 420 $LOCK timeout 450 swaymsg \"output * power off\" resume swaymsg \"output * power on\" $ALWAYS"
 }
 
-@test "toggle from normal: swayidle without timeouts, still locks before sleep, waybar signal 10" {
+@test "toggle from normal: swayidle without timeouts, still locks before sleep, waybar signal 10, popup" {
   stub pgrep --rc 1
   run "$SWAY/bin/idle" toggle
   assert_success
   run calls
   assert_output "$(printf '%s\n' "pgrep -f ^swayidle -w before-sleep" 'pkill -x swayidle' \
-    "setsid -f swayidle -w $ALWAYS" 'pkill -RTMIN+10 -f ^waybar ')"
+    "setsid -f swayidle -w $ALWAYS" 'pkill -RTMIN+10 -f ^waybar ' \
+    "quickshell ipc -p $HOME/.config/sway/panels/notifications.qml call osd switched awake on")"
 }
 
-@test "toggle from awake: back to the timeouts" {
+@test "toggle from awake: back to the timeouts, popup" {
   stub pgrep --rc 0
   run "$SWAY/bin/idle" toggle
   assert_success
   run calls
   assert_line --regexp "^setsid -f swayidle -w timeout 300 .* $ALWAYS\$"
+  assert_line "quickshell ipc -p $HOME/.config/sway/panels/notifications.qml call osd switched awake off"
 }
 
 @test "status: icon only while awake" {

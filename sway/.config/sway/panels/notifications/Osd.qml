@@ -6,9 +6,10 @@ import Quickshell.Wayland
 import "notify.mjs" as Notify
 import "../common"
 
-// Volume, microphone, brightness and track popup of the notification daemon (../notifications.qml), over IPC:
+// Volume, microphone, brightness, track and switch popup of the notification daemon (../notifications.qml), over IPC:
 // `call osd popup <volume|mic|brightness> <percent> <muted>` from bin/osd (not `show`: the CLI takes that for
-// `ipc show`), `call osd track <instance> <toggle|next|previous>` from bin/media. The track popup reads the player live: the play/pause icon
+// `ipc show`), `call osd track <instance> <toggle|next|previous>` from bin/media, `call osd switched <kind> <value>`
+// from bin/osd switch (stay awake, night light, power profile; do not disturb from the daemon itself). The track popup reads the player live: the play/pause icon
 // and the track after next/previous show once the player reports them. The window exists only while shown, so each
 // time it maps Sway puts it on the focused output. Empty mask = clicks pass through; no keyboard focus.
 Scope {
@@ -20,8 +21,27 @@ Scope {
   property bool shown: false
   property var player: null // MprisPlayer of a track popup
   property string action: "toggle"
+  // Switch popup: Notify.switchPopup of the last kind and value.
+  property string switchIcon: ""
+  property string switchTitle: ""
+  property string switchDetail: ""
+  property bool switchOn: false
   readonly property bool playing: player ? player.isPlaying : false
   readonly property color trackColor: playing ? Theme.playing : Theme.dim // as the waybar track
+
+  function showSwitch(kind, value) {
+    const popup = Notify.switchPopup(kind, value)
+    if (!popup)
+      return
+    osd.switchIcon = popup.icon
+    osd.switchTitle = popup.title
+    osd.switchDetail = popup.detail
+    osd.switchOn = popup.on
+    osd.kind = "switch"
+    osd.shown = true
+    hide.interval = 1500
+    hide.restart()
+  }
 
   IpcHandler {
     target: "osd"
@@ -47,6 +67,8 @@ Scope {
       hide.interval = 2500
       hide.restart()
     }
+
+    function switched(kind: string, value: string): void { osd.showSwitch(kind, value) }
   }
 
   // next/previous: the new title arrives after the command, the popup stays for it.
@@ -94,8 +116,10 @@ Scope {
             width: 26
             anchors.verticalCenter: parent.verticalCenter
             textFormat: Text.PlainText
-            text: osd.kind === "track" ? Notify.trackIcon(osd.action, osd.playing) : Notify.osdIcon(osd.kind, osd.value, osd.muted)
-            color: osd.kind === "track" ? osd.trackColor : osd.muted ? Theme.dim : Theme.fg
+            text: osd.kind === "track" ? Notify.trackIcon(osd.action, osd.playing)
+              : osd.kind === "switch" ? osd.switchIcon : Notify.osdIcon(osd.kind, osd.value, osd.muted)
+            color: osd.kind === "track" ? osd.trackColor
+              : osd.kind === "switch" ? (osd.switchOn ? Theme.fg : Theme.dim) : osd.muted ? Theme.dim : Theme.fg
             font.family: Theme.font
             font.pixelSize: 22
           }
@@ -112,8 +136,35 @@ Scope {
             font.pixelSize: 13
           }
 
+          Column {
+            visible: osd.kind === "switch"
+            width: 254
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 2
+
+            Text {
+              width: parent.width
+              textFormat: Text.PlainText
+              text: osd.switchTitle
+              elide: Text.ElideRight
+              color: osd.switchOn ? Theme.fg : Theme.dim
+              font.family: Theme.font
+              font.pixelSize: 13
+            }
+
+            Text {
+              width: parent.width
+              textFormat: Text.PlainText
+              text: osd.switchDetail
+              elide: Text.ElideRight
+              color: Theme.dim
+              font.family: Theme.font
+              font.pixelSize: 11
+            }
+          }
+
           Rectangle {
-            visible: osd.kind !== "track"
+            visible: osd.kind !== "track" && osd.kind !== "switch"
             width: 200
             height: 6
             radius: 3
@@ -129,7 +180,7 @@ Scope {
           }
 
           Text {
-            visible: osd.kind !== "track"
+            visible: osd.kind !== "track" && osd.kind !== "switch"
             width: 40
             anchors.verticalCenter: parent.verticalCenter
             horizontalAlignment: Text.AlignRight

@@ -189,6 +189,23 @@ TestCase {
     compare(Notify.trackText("Artist", "", "spotify"), "spotify")
   }
 
+  function test_switch_popup() {
+    compare(Notify.switchPopup("awake", "on"),
+      { icon: "󰅶", title: "Stay awake on", detail: "No lock or screen off when idle", on: true })
+    compare(Notify.switchPopup("awake", "off"),
+      { icon: "󰾪", title: "Stay awake off", detail: "Screensaver at 5 min, lock at 7", on: false })
+    compare(Notify.switchPopup("nightlight", "on").icon, "󰖔")
+    compare(Notify.switchPopup("nightlight", "off").on, false)
+    compare(Notify.switchPopup("dnd", "on").title, "Do not disturb on")
+    compare(Notify.switchPopup("dnd", "off").icon, "󰂚")
+    compare(Notify.switchPopup("profile", "power-saver"),
+      { icon: "󰌪", title: "Power saver", detail: "Power profile", on: true })
+    compare(Notify.switchPopup("profile", "performance").icon, "󱐋")
+    compare(Notify.switchPopup("profile", "toString"), null)
+    compare(Notify.switchPopup("awake", "maybe"), null)
+    compare(Notify.switchPopup("volume", "on"), null)
+  }
+
   function test_track_icon() {
     compare(Notify.trackIcon("toggle", true), "󰐊")
     compare(Notify.trackIcon("toggle", false), "󰏤")

@@ -9,8 +9,8 @@ Files: `sway/.config/sway/bin/idle`, started by `sway/.config/sway/config.d/90-a
 ## Acceptance criteria
 
 1. `idle start` runs swayidle with the screensaver at 5 minutes, the lock at 7 minutes, the screens off at 7.5 minutes, the lock before sleep and the display hook after resume. Test: `tests/unit/sway/.config/sway/bin/idle.bats: "start: screensaver at 5 min, lock at 7 min, screens off at 7.5 min, lock before sleep"`
-2. `idle toggle` from normal restarts swayidle without the timeouts, keeps the lock before sleep and the resume hook, and sends waybar signal 10. Test: `tests/unit/sway/.config/sway/bin/idle.bats: "toggle from normal: swayidle without timeouts, still locks before sleep, waybar signal 10"`
-3. `idle toggle` while awake restarts swayidle with the timeouts again. Test: `tests/unit/sway/.config/sway/bin/idle.bats: "toggle from awake: back to the timeouts"`
+2. `idle toggle` from normal restarts swayidle without the timeouts, keeps the lock before sleep and the resume hook, sends waybar signal 10 and asks the daemon for the "Stay awake on" popup (`osd switch awake on`). Test: `tests/unit/sway/.config/sway/bin/idle.bats: "toggle from normal: swayidle without timeouts, still locks before sleep, waybar signal 10, popup"`
+3. `idle toggle` while awake restarts swayidle with the timeouts again and asks for the "Stay awake off" popup. Test: `tests/unit/sway/.config/sway/bin/idle.bats: "toggle from awake: back to the timeouts, popup"`
 4. `idle status` prints the waybar JSON: a cup icon with class `awake` while staying awake, empty text otherwise. Test: `tests/unit/sway/.config/sway/bin/idle.bats: "status: icon only while awake"`
 5. Toggle › Stay awake in the menu runs `idle toggle`. Test: `tests/unit/sway/.config/sway/bin/menu.bats: "Toggle > Stay awake and Night light run their toggles"`
 6. `Super + Ctrl + I` toggles stay awake, the bar icon appears and a click on it switches back. While awake the screen stays on, without the screensaver and unlocked, past 8 minutes idle, and suspending still shows the lock screen on resume. Test: manual

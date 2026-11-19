@@ -56,13 +56,13 @@ launched() { calls | sed -n 's/^setsid -f sh -c //p'; }
   [[ $(launched) == "$HOME/.config/sway/bin/nightlight toggle" ]]
 }
 
-@test "Toggle > Power profile: current one checked, pick sets it" {
+@test "Toggle > Power profile: current one checked, pick sets it and shows the popup" {
   stub powerprofilesctl balanced
   answers @Toggle '@Power profile' @performance
   run "$SWAY/bin/menu"
   assert_success
   grep -q $'󰄬  balanced\t' "$STUBS/fuzzel.stdin"
-  [[ $(launched) == 'powerprofilesctl set performance' ]]
+  [[ $(launched) == "powerprofilesctl set performance && $HOME/.config/sway/bin/osd switch profile performance" ]]
 }
 
 @test "root: Clipboard history and Emoji run their scripts, System clears the history" {
