@@ -29,12 +29,34 @@ in
     };
   };
 
-  networking.networkmanager = {
-    enable = true;
-    # Real MAC never sent on connect: one fixed MAC per network name. Home router keeps seeing the same one; the MAC
-    # alone does not link visits across places. Hostname and DHCPv6 DUID still go out the same everywhere (NM
-    # defaults kept, docs/nixos.md "Wi-Fi MAC address"). Scan MAC is already random (NetworkManager default).
-    wifi.macAddress = "stable-ssid";
+  networking = {
+    networkmanager = {
+      enable = true;
+      # Real MAC never sent on connect: one fixed MAC per network name. Home router keeps seeing the same one; the MAC
+      # alone does not link visits across places. Hostname and DHCPv6 DUID still go out the same everywhere (NM
+      # defaults kept, docs/nixos.md "Wi-Fi MAC address"). Scan MAC is already random (NetworkManager default).
+      wifi.macAddress = "stable-ssid";
+    };
+    firewall = {
+      # Container to host IP:published port (nginx container in front of another one's port, via the docker0 IP) goes
+      # through docker-proxy on INPUT; nixos-fw dropped it (timeout). `br-+` = every compose bridge (iptables wildcard).
+      trustedInterfaces = [
+        "docker0"
+        "br-+"
+      ];
+      # Published ports are DNATed in PREROUTING and never hit INPUT, so nixos-fw does not guard them: any LAN host
+      # reached 5432/6379/9200. DOCKER-USER (first in FORWARD, Docker keeps its rules) lets only container traffic and
+      # replies through. Not `daemon.settings.ip = "127.0.0.1"`: containers could no longer reach the host IP above.
+      extraCommands = ''
+        iptables -N DOCKER-USER 2>/dev/null || true
+        iptables -F DOCKER-USER
+        iptables -A DOCKER-USER -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN
+        iptables -A DOCKER-USER -i docker0 -j RETURN
+        iptables -A DOCKER-USER -i br-+ -j RETURN
+        iptables -A DOCKER-USER -j DROP
+      '';
+      extraStopCommands = "iptables -F DOCKER-USER 2>/dev/null || true";
+    };
   };
 
   time.timeZone = "America/Sao_Paulo";
