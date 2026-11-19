@@ -39,9 +39,11 @@
     "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
     "format-ethernet": "󰈀",
     "format-disconnected": "󰤮",
+    "format-disabled": "󰖪",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
     "tooltip-format-linked": "{essid} ({signalStrength}%)",
     "tooltip-format-disconnected": "Desconectado",
+    "tooltip-format-disabled": "Wi-Fi off, no cable connected",
     "on-click": "~/.config/sway/panels/network/toggle"
   },
 
