@@ -35,10 +35,12 @@
 
   "network": {
     "format-wifi": "{icon}",
+    "format-linked": "{icon}",
     "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
     "format-ethernet": "󰈀",
     "format-disconnected": "󰤮",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+    "tooltip-format-linked": "{essid} ({signalStrength}%)",
     "tooltip-format-disconnected": "Desconectado",
     "on-click": "~/.config/sway/panels/wifi/toggle"
   },
