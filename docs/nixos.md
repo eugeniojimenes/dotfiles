@@ -63,6 +63,16 @@ DNS stays as the network hands it out: plain queries to the router at home, to w
 
 Before either one, check that NetworkManager stops passing the DHCP DNS to resolved (`resolvectl status` lists only the chosen servers), or the change protects nothing.
 
+## Docker
+
+Containers often reach a service published by another container through the host's address on the Docker bridge (`172.17.0.1`), for example an nginx container in front of an app container's published port. That traffic goes through `docker-proxy` on the host's INPUT chain, and the NixOS firewall dropped it silently, so the request timed out. `docker0` and every compose bridge (`br-+`) are therefore trusted interfaces.
+
+Published ports work the other way round: Docker rewrites them in PREROUTING, so they never reach INPUT and the NixOS firewall does not guard them. Without a rule, anyone on the same network reached the databases the containers publish. A rule in the `DOCKER-USER` chain, which Docker runs first and never rewrites, drops forwarded traffic that does not come from a Docker bridge, except replies to connections already open. Binding published ports to `127.0.0.1` with `virtualisation.docker.daemon.settings.ip` looks simpler, but containers could then no longer reach each other through the host's address.
+
+The log driver is `json-file`, Docker's own default, instead of the journald that NixOS picks: compose files that set `logging.options.max-size` without a driver fail under journald with "unknown log opt". A small `docker-compose` wrapper runs `docker compose`, for scripts that still call the old name. The standalone `docker-compose` binary is not used, because it does not find buildx and falls back to the classic builder.
+
+The work setup depends on this section and on envfs, the `ruby-native` dev shell and the mise from `nixpkgs-unstable`. Changing any of them can break the work containers, so check with the owner first.
+
 ## Hibernation
 
 Only the notebook hibernates. `nixos/hosts/loc-nixos/default.nix` adds a 16 GiB swapfile at `/var/lib/swapfile`, the same size as the RAM so a full memory still fits. It lives on the LUKS root, so the RAM image written to it is encrypted like everything else on the disk. zram keeps priority 5 and the swapfile -2, so everyday swapping still goes to zram first.

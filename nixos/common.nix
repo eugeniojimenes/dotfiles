@@ -109,7 +109,12 @@ in
 
   security.rtkit.enable = true;
   zramSwap.enable = true;
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    # Docker's own default, not NixOS's journald: compose files with `logging.options.max-size` and no driver (json-file
+    # options) fail on journald with "unknown log opt".
+    logDriver = "json-file";
+  };
 
   services = {
     # LUKS passphrase already gates the boot: straight into Sway. Exit Sway = tuigreet.
@@ -403,6 +408,9 @@ in
       starship
       lazygit
       lazydocker
+      # `docker-compose` name for outside scripts that still call it. Wrapper, not the standalone binary: that one does
+      # not find buildx (plugin dir lives in the docker store path), builds with the classic builder, no `COPY --parents`.
+      (writeShellScriptBin "docker-compose" ''exec docker compose "$@"'')
       jq
       gum
       tlrc

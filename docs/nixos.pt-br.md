@@ -63,6 +63,16 @@ O DNS fica como a rede entrega: consultas em texto puro para o roteador em casa 
 
 Antes de qualquer uma, confira que o NetworkManager para de passar o DNS do DHCP para o resolved (`resolvectl status` lista só os servidores escolhidos), senão a mudança não protege nada.
 
+## Docker
+
+Containers costumam alcançar um serviço publicado por outro container pelo endereço do host na bridge do Docker (`172.17.0.1`), por exemplo um container nginx na frente da porta publicada de um container da aplicação. Esse tráfego passa pelo `docker-proxy` na chain INPUT do host, e o firewall do NixOS o descartava em silêncio, então a requisição estourava o tempo. Por isso o `docker0` e todas as bridges do compose (`br-+`) são interfaces confiáveis.
+
+Portas publicadas funcionam ao contrário: o Docker as reescreve em PREROUTING, então elas nunca chegam à INPUT e o firewall do NixOS não as protege. Sem uma regra, qualquer um na mesma rede alcançava os bancos de dados que os containers publicam. Uma regra na chain `DOCKER-USER`, que o Docker roda primeiro e nunca reescreve, descarta o tráfego encaminhado que não vem de uma bridge do Docker, exceto respostas a conexões já abertas. Prender as portas publicadas em `127.0.0.1` com `virtualisation.docker.daemon.settings.ip` parece mais simples, mas aí os containers deixam de se alcançar pelo endereço do host.
+
+O driver de log é o `json-file`, o padrão do próprio Docker, em vez do journald que o NixOS escolhe: arquivos compose que definem `logging.options.max-size` sem driver falham no journald com "unknown log opt". Um pequeno wrapper `docker-compose` roda `docker compose`, para scripts que ainda chamam o nome antigo. O binário `docker-compose` avulso não é usado, porque ele não encontra o buildx e volta para o builder clássico.
+
+O setup do trabalho depende desta seção, do envfs, do dev shell `ruby-native` e do mise do `nixpkgs-unstable`. Mudar qualquer um deles pode quebrar os containers do trabalho, então confirme com o dono antes.
+
 ## Hibernação
 
 Só o notebook hiberna. O `nixos/hosts/loc-nixos/default.nix` acrescenta um swapfile de 16 GiB em `/var/lib/swapfile`, do mesmo tamanho da RAM, para que a memória cheia ainda caiba. Ele fica no root com LUKS, então a imagem da RAM gravada nele é cifrada como todo o resto do disco. O zram mantém prioridade 5 e o swapfile -2, então o swap do dia a dia continua indo primeiro para o zram.
