@@ -13,7 +13,7 @@ Why behind each: `docs/sway.md`. Skills: `add-keybinding`, `add-panel`.
 - Bash script = `#!/usr/bin/env bash` (NixOS has no `/bin/bash`). POSIX script = `#!/bin/sh`. Format = `nix fmt` (shfmt, style in `.editorconfig`); one-line `{ a; b; }` groups get split, so prefer `cond && return` early exits.
 - Every binding gets `#: <title>` on the line above, except workspace bindcodes in `config.d/50-workspaces` (titles generated). `bin/keybindings` (`Super + K`) shows it; no title = raw command shown.
 - Explicit paths only: `$dir/...` in config, `~/.config/sway/...` in scripts. App configs live in `apps/`, passed by path; stock `~/.config/<app>` never read.
-- `/etc/sway/config.d` not included: `bin/session-env` does the systemd/D-Bus env import. Menu (`bin/menu`) reads `.desktop` files from `XDG_DATA_DIRS`.
+- `/etc/sway/config.d` not included: `bin/session-env` does the systemd/D-Bus env import. Menu = Quickshell panel `panels/menu.qml`, tree + search + actions in `panels/menu/menu.mjs`; apps from `DesktopEntries` (`XDG_DATA_DIRS`), launched by id through `gtk-launch`.
 - Screen-share portal settings (`chooser_cmd`, `exec_before`, `exec_after`) = `xdg.portal.wlr.settings` in `nixos/common.nix`: NixOS starts the portal with `--config`, `~/.config/xdg-desktop-portal-wlr` never read. Picker = `bin/share-picker` + `panels/share.qml`.
 - Outputs: `output "<make> <model> <serial>"` from `swaymsg -t get_outputs -p`, in `hosts/<hostname>`. Never connector names (`eDP-1`, `HDMI-A-1`): they shift with driver load order. Nothing machine-specific in `config.d/`.
 - `config.d/` pieces numbered, load in name order; variables in `config` come first. New topic = new numbered piece, not a new include.

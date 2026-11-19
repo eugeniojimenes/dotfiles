@@ -1,6 +1,6 @@
 # Hibernation
 
-Files: `nixos/hosts/loc-nixos/default.nix` (swapfile, resume device and offset, lid action, sleep settings, battery action), `sway/.config/sway/bin/menu` (System › Suspend and Hibernate).
+Files: `nixos/hosts/loc-nixos/default.nix` (swapfile, resume device and offset, lid action, sleep settings, battery action), `sway/.config/sway/panels/menu/menu.mjs` (System › Suspend and Hibernate).
 
 ## Purpose
 
@@ -8,8 +8,8 @@ The notebook can keep a session across a power-off: the RAM image goes to an enc
 
 ## Acceptance criteria
 
-1. With hibernation set up (the kernel's resume device is set), System › Suspend in the menu runs `systemctl suspend-then-hibernate` and System › Hibernate runs `systemctl hibernate`. Test: `tests/unit/sway/.config/sway/bin/menu.bats: "System with hibernation set up: Suspend hibernates later, Hibernate listed"`
-2. Without it (the desktop, no swapfile), Suspend runs a plain `systemctl suspend` and there is no Hibernate entry. Test: `tests/unit/sway/.config/sway/bin/menu.bats: "System without hibernation: plain Suspend, no Hibernate entry"`
+1. With hibernation set up (the kernel's resume device is set), System › Suspend in the menu runs `systemctl suspend-then-hibernate` and System › Hibernate runs `systemctl hibernate`. Test: `tests/unit/sway/.config/sway/panels/menu/menu.bats: "hibernation set up: Suspend hibernates later and Hibernate is listed; without it, plain Suspend"`
+2. Without it (the desktop, no swapfile), Suspend runs a plain `systemctl suspend` and there is no Hibernate entry. Test: `tests/unit/sway/.config/sway/panels/menu/menu.bats: "hibernation set up: Suspend hibernates later and Hibernate is listed; without it, plain Suspend"`
 3. After the reboot the kernel knows where to resume from: `/sys/power/resume` shows the root device and `/sys/power/resume_offset` the swapfile's offset. Test: manual
 4. System › Hibernate locks the session, powers the notebook off, and after the LUKS passphrase the session returns as it was: windows, terminals, the external monitor, and the NVIDIA card back to `suspended` when idle. Test: manual
 5. Closing the lid on battery suspends; on AC it stays suspended. The lock screen is up on resume either way. Test: manual

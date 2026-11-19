@@ -28,8 +28,8 @@ bindsym $mod+Shift+t exec $dir/bin/focus-or-run sys-tools $term --class sys-tool
 bindsym $mod+m exec $dir/bin/focus-or-run spotify spotify
 #: Slack
 bindsym $mod+Shift+s exec $dir/bin/focus-or-run Slack slack
-#: App menu
-bindsym $mod+space exec $dir/bin/menu
+#: Menu: apps, settings and actions (again to close)
+bindsym $mod+space exec $dir/panels/menu/toggle
 #: Next wallpaper
 bindsym $mod+Ctrl+space exec $dir/bin/wallpaper next
 #: Previous wallpaper

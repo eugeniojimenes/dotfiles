@@ -60,4 +60,4 @@ ShellRoot {
 Wiring:
 
 - `sway/.config/sway/apps/waybar.jsonc`: module `"on-click": "~/.config/sway/panels/<name>/toggle"`.
-- `sway/.config/sway/bin/menu`: `entry <icon> "<Label>" "run:$dir/panels/<name>/toggle"` in the Setup submenu.
+- `sway/.config/sway/panels/menu/menu.mjs`: `{ id: "setup.<name>", parent: "setup", icon: "<icon>", label: "<Label>", run: sh("~/.config/sway/panels/<name>/toggle") }` in the Setup block.

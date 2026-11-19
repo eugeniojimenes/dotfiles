@@ -1,6 +1,6 @@
 # Color picker
 
-Files: `sway/.config/sway/bin/colorpick`, bound to `Super + Ctrl + Print` in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/bin/menu`. hyprpicker is in `nixos/common.nix`.
+Files: `sway/.config/sway/bin/colorpick`, bound to `Super + Ctrl + Print` in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/panels/menu/menu.mjs`. hyprpicker is in `nixos/common.nix`.
 
 ## Purpose
 

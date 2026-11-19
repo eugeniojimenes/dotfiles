@@ -1,6 +1,6 @@
 # Screenshot
 
-Files: `sway/.config/sway/bin/screenshot`, bound to `Print` (area) and `Shift + Print` (screen) in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/bin/menu`.
+Files: `sway/.config/sway/bin/screenshot`, bound to `Print` (area) and `Shift + Print` (screen) in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/panels/menu/menu.mjs`.
 
 ## Purpose
 

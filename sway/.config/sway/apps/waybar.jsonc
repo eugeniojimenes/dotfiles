@@ -22,7 +22,7 @@
   "custom/menu": {
     "format": "󱓞",
     "tooltip-format": "Menu (Super+Space)",
-    "on-click": "~/.config/sway/bin/menu"
+    "on-click": "~/.config/sway/panels/menu/toggle"
   },
 
   "sway/workspaces": { "disable-scroll": true },

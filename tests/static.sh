@@ -243,15 +243,15 @@ spec_tests() {
   return "$rc"
 }
 
-# Wiring a manual pass per panel would only re-check: every Sway path the bar, the Sway config, the menu, the panels,
-# fuzzel-menu.ini and the NixOS config (session start, screen-share portal hooks) run exists; each panel toggle names only its own entry file; a toggle that starts a panel starts a PanelShell one and
+# Wiring a manual pass per panel would only re-check: every Sway path the bar, the Sway config, the panels (the menu's
+# tree in panels/menu/menu.mjs included) and the NixOS config (session start, screen-share portal hooks) run exists; each panel toggle names only its own entry file; a toggle that starts a panel starts a PanelShell one and
 # closes it by its exact command line.
 sway_paths() {
   local s=sway/.config/sway p f name rc=0
   while IFS= read -r p; do
     [[ -e $s/$p ]] || { echo "missing: $p" && rc=1; }
   done < <(grep -ohP '(\.config/sway|\$dir)/\K[a-z][^ "'"'"';)`$]*' "$s"/config "$s"/config.d/* "$s"/apps/waybar.jsonc \
-    "$s"/bin/menu "$s"/panels/*.qml "$s"/panels/*/*.qml "$s"/apps/fuzzel-menu.ini nixos/*.nix nixos/hosts/*/*.nix |
+    "$s"/panels/*.qml "$s"/panels/*/*.qml "$s"/panels/*/*.mjs nixos/*.nix nixos/hosts/*/*.nix |
     sort -u)
   for f in "$s"/panels/*/toggle; do
     name=${f%/toggle} name=${name##*/}

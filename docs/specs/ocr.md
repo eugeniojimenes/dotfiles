@@ -1,6 +1,6 @@
 # Text from the screen (OCR)
 
-Files: `sway/.config/sway/bin/ocr`, bound to `Super + Print` in `sway/.config/sway/config.d/60-media` and listed under Capture in `sway/.config/sway/bin/menu`. The tesseract package with English and Portuguese data is in `nixos/common.nix`.
+Files: `sway/.config/sway/bin/ocr`, bound to `Super + Print` in `sway/.config/sway/config.d/60-media` and listed under Capture in `sway/.config/sway/panels/menu/menu.mjs`. The tesseract package with English and Portuguese data is in `nixos/common.nix`.
 
 ## Purpose
 

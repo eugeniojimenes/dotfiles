@@ -73,7 +73,7 @@ nvidia = "595.71.05"
 displays = ["Chimei Innolux Corporation 0x1552"]
 
 [loc-nixos.items."Spec menu"]
-date = "2026-11-18"
+date = "2026-11-19"
 nixos = "26.05.20261113.f1e5c35"
 kernel = "6.18.63"
 nvidia = "595.71.05"

@@ -18,7 +18,7 @@ The screen-share portal is set up in `nixos/common.nix` (`xdg.portal.wlr.setting
 
 ## Scripts
 
-Bash scripts start with `#!/usr/bin/env bash` because NixOS has no `/bin/bash`. POSIX scripts use `#!/bin/sh`, which NixOS does provide. The menu reads `.desktop` files from `XDG_DATA_DIRS` instead of `/usr/share`, since NixOS keeps them in the store and in profile directories.
+Bash scripts start with `#!/usr/bin/env bash` because NixOS has no `/bin/bash`. POSIX scripts use `#!/bin/sh`, which NixOS does provide. The menu lists apps through Quickshell, which reads `.desktop` files from `XDG_DATA_DIRS` instead of `/usr/share`, since NixOS keeps them in the store and in profile directories.
 
 ## Binding titles
 
@@ -107,6 +107,10 @@ Exclusive keyboard focus does not follow a workspace switch. Switching workspace
 All of this lives once in `common/PanelShell.qml`, and every panel except the lock screen is a `PanelShell` with its own card. Quickshell only loads files from the directory of the entry file it runs, which is why every entry file sits at the top of `panels/` and imports `"common"` and its own `<name>/` files from there. An import that leaves that directory passes qmllint but fails in Quickshell, so `bin/check static` also starts every panel in a headless Sway (step `panels-load`). A big panel splits into component files in its own `<name>/` directory, as the notification daemon does with its popups and centre. Those files import `"../common"`, which stays inside `panels/` and works. Quickshell's own `import qs.common` form also works there, but qmllint cannot resolve it, so the repo keeps relative imports. `common/Theme.qml` holds the colours and the font, and `common/AdvancedLink.qml` is the footer link that opens a panel's full TUI in a floating terminal. A fix to the shared behaviour goes there, so it reaches every panel at once.
 
 Every `Text` in the panels that shows a value declares its format, and the static step `plain-text` fails when one does not. Qt's default format guesses: a string that looks like HTML is drawn as rich text, and rich text fetches the source of an `<img>` tag over the network. A notification title, a page title in the share picker, a track name or a Wi-Fi network name can carry such a tag, so the machine would contact an address someone else picked, which leaks its IP. Those texts are drawn as plain text. The notification body is the only styled text: it keeps bold, italic, underline, links and line breaks, and every other `<` is escaped by `Notify.safeBody`, so an image tag shows as text.
+
+## Menu
+
+`Super + Space`, or the menu icon at the left of the bar, opens the menu: a Quickshell panel in the middle of the screen with Apps, the top entries (Keybindings, Notifications, Clipboard history, Emoji) and the Capture, Style, Setup, Toggle and System submenus. Apps holds every installed app with its icon. The whole tree lives in `panels/menu/menu.mjs`, so typing searches every level below the one shown: from the top, "screen" lists the Capture entries with their path beside them, and "browser" finds Firefox by its generic name. The current level's own matches come first, then a line, then the deeper ones. Esc clears the search, then goes up a level, then closes. It follows the Omarchy menu, which keeps the whole tree in its own Quickshell shell. The fuzzel menu it replaces read the apps after drawing the first lines, so the entries jumped sideways when the app icons arrived, and its search at the top did not reach the submenus. The spec is [docs/specs/menu.md](specs/menu.md).
 
 ## Terminal opacity and text size
 

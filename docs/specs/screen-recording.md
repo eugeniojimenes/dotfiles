@@ -1,6 +1,6 @@
 # Screen recording
 
-Files: `sway/.config/sway/bin/record`, bound in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/bin/menu`, shown by the `custom/record` module in `sway/.config/sway/apps/waybar.jsonc` and by the floating box `sway/.config/sway/panels/recording.qml`. Notifications are hidden through `sway/.config/sway/bin/dnd` and the `recording` mode of `sway/.config/sway/panels/notifications.qml`.
+Files: `sway/.config/sway/bin/record`, bound in `sway/.config/sway/config.d/60-media`, listed under Capture in `sway/.config/sway/panels/menu/menu.mjs`, shown by the `custom/record` module in `sway/.config/sway/apps/waybar.jsonc` and by the floating box `sway/.config/sway/panels/recording.qml`. Notifications are hidden through `sway/.config/sway/bin/dnd` and the `recording` mode of `sway/.config/sway/panels/notifications.qml`.
 
 ## Purpose
 

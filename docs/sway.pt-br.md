@@ -18,7 +18,7 @@ O portal de compartilhamento de tela é configurado no `nixos/common.nix` (`xdg.
 
 ## Scripts
 
-Scripts bash começam com `#!/usr/bin/env bash` porque o NixOS não tem `/bin/bash`. Scripts POSIX usam `#!/bin/sh`, que o NixOS oferece. O menu lê arquivos `.desktop` de `XDG_DATA_DIRS` em vez de `/usr/share`, já que o NixOS os guarda no store e nas pastas de profile.
+Scripts bash começam com `#!/usr/bin/env bash` porque o NixOS não tem `/bin/bash`. Scripts POSIX usam `#!/bin/sh`, que o NixOS oferece. O menu lista os apps pelo Quickshell, que lê arquivos `.desktop` de `XDG_DATA_DIRS` em vez de `/usr/share`, já que o NixOS os guarda no store e nas pastas de profile.
 
 ## Títulos dos atalhos
 
@@ -107,6 +107,10 @@ O foco exclusivo do teclado não acompanha a troca de workspace. Trocar de works
 Tudo isso fica uma vez só em `common/PanelShell.qml`, e todo painel, menos a tela de bloqueio, é um `PanelShell` com o seu próprio card. O Quickshell só carrega arquivos do diretório do arquivo de entrada que ele roda, e por isso todo arquivo de entrada fica no topo de `panels/` e importa dali o `"common"` e os arquivos do seu `<nome>/`. Um import que sai desse diretório passa no qmllint mas falha no Quickshell, então o `bin/check static` também inicia cada painel num Sway headless (passo `panels-load`). Um painel grande se divide em arquivos de componente no seu próprio diretório `<nome>/`, como o daemon de notificações faz com os popups e a central. Esses arquivos importam `"../common"`, que continua dentro de `panels/` e funciona. A forma `import qs.common` do próprio Quickshell também funciona ali, mas o qmllint não consegue resolvê-la, então o repo mantém imports relativos. O `common/Theme.qml` guarda as cores e a fonte, e o `common/AdvancedLink.qml` é o link do rodapé que abre a TUI completa do painel num terminal flutuante. Uma correção no comportamento compartilhado vai ali, e chega a todos os painéis de uma vez.
 
 Todo `Text` dos painéis que mostra um valor declara o seu formato, e o step estático `plain-text` falha quando algum não declara. O formato padrão do Qt adivinha: uma string que parece HTML é desenhada como rich text, e rich text busca na rede a origem de uma tag `<img>`. Um título de notificação, um título de página no seletor de share, o nome de uma música ou o nome de uma rede Wi-Fi podem trazer essa tag, e a máquina contataria um endereço escolhido por outra pessoa, o que vaza o IP dela. Esses textos são desenhados como texto puro. O corpo da notificação é o único texto com estilo: ele mantém negrito, itálico, sublinhado, links e quebras de linha, e todo outro `<` é escapado pelo `Notify.safeBody`, então uma tag de imagem aparece como texto.
+
+## Menu
+
+`Super + Space`, ou o ícone de menu à esquerda da barra, abre o menu: um painel Quickshell no meio da tela com Apps, as entradas do topo (Keybindings, Notifications, Clipboard history, Emoji) e os submenus Capture, Style, Setup, Toggle e System. Apps tem todos os apps instalados com o ícone de cada um. A árvore inteira fica em `panels/menu/menu.mjs`, então digitar busca em todos os níveis abaixo do que está aberto: no topo, "screen" lista as entradas de Capture com o caminho ao lado, e "browser" acha o Firefox pelo nome genérico. Os resultados do próprio nível vêm primeiro, depois uma linha, depois os mais fundos. Esc limpa a busca, depois sobe um nível, depois fecha. Ele segue o menu do Omarchy, que guarda a árvore inteira no próprio shell em Quickshell. O menu no fuzzel que ele substitui lia os apps depois de desenhar as primeiras linhas, então as entradas pulavam para o lado quando os ícones dos apps chegavam, e a busca no topo não chegava aos submenus. A spec é [docs/specs/menu.md](specs/menu.md).
 
 ## Opacidade e tamanho do texto do terminal
 

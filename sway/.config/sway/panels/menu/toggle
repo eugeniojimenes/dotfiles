@@ -1,0 +1,4 @@
+#!/bin/sh
+# Super+Space and the bar menu icon: open the menu, or close it when already open.
+qml=$HOME/.config/sway/panels/menu.qml
+pkill -fx "quickshell -p $qml" || exec quickshell -p "$qml"
