@@ -1,21 +1,107 @@
 #!/usr/bin/env bash
-# Screen-share picker for xdg-desktop-portal-wlr (chooser_type=dmenu). The portal sends lines like
-# "Monitor: HDMI-A-1" and "Window: <title> (<toplevel id>)" and wants one of them back verbatim. Shown here without
-# the prefix and the id, with an icon; the original line rides along in a hidden second column.
+# Screen-share picker for xdg-desktop-portal-wlr (chooser_type=dmenu, xdg.portal.wlr.settings in nixos/common.nix).
+#   share-picker            chooser: portal lines on stdin, the pick on stdout; a monitor pick hides notifications
+#   share-picker started    exec_before: a share starts and no other is live; hides unless the last pick was a window
+# The portal sends lines like "Monitor: eDP-1 <description>" and "Window: <title> (<toplevel id>)" and wants one of
+# them back verbatim. Shown by panels/share.qml as cards side by side: a monitor with its icon and model, a window
+# with its thumbnail, title and workspace.
+# Hidden at both: the pick runs before the stream starts and covers a share that starts while another is live (the
+# portal skips exec_before then). The start covers Brave: "Choose what to share" opens a preview share (the picker
+# shows), ends it, and starts the real one without the picker; exec_after (dnd share-off) runs between the two.
+state=${XDG_RUNTIME_DIR:?}/sway-share-target
+
+if [[ ${1-} == started ]]; then
+  # One pick, one start: read and forget, so a later start without a pick (Brave's real share after its preview, a
+  # restore) hides. A shared window never shows popups; anything else hides, a monitor being the safer guess.
+  target=$(cat "$state" 2>/dev/null)
+  rm -f "$state"
+  [[ $target == Window ]] || exec ~/.config/sway/bin/dnd share-on
+  exit 0
+fi
+
+lines=$(cat)
+
+# Brave asks for a window twice, for its preview and then to share, and the portal restores only a monitor pick. So a
+# window pick is remembered, and the next ask within 60 s that still offers that window gets it back without the
+# picker. One use only: Brave's "Choose a different window" gets the same window once, and the picker on the next try.
+memory=$XDG_RUNTIME_DIR/sway-share-last-window
+if [[ -f $memory ]]; then
+  IFS=$'\t' read -r at last <"$memory"
+  rm -f "$memory"
+  if (($(date +%s) - at <= 60)) && grep -qxF -- "$last" <<<"$lines"; then
+    echo Window >"$state"
+    printf '%s\n' "$last"
+    exit 0
+  fi
+fi
+
+dir=$XDG_RUNTIME_DIR/sway-share-picker # thumbnails, rows, pick; gone when the picker closes
+rm -rf "$dir"
+mkdir -p "$dir"
+trap 'rm -rf "$dir"' EXIT
+
+# A monitor already shared or recorded shows this picker too: no captures then, so other windows and monitors stay
+# off the stream. Cards fall back to the app's icon.
+live=0
+grep -qwE 'screenshare|recording' "$XDG_RUNTIME_DIR/sway-notification-modes" 2>/dev/null && live=1
+
+# Each monitor as it is now (the share dialog included, the picker opens after).
+n=0
+while ((!live)) && IFS= read -r line; do
+  [[ $line == Monitor:* ]] || continue
+  name=${line#Monitor: } name=${name%% *} n=$((n + 1))
+  grim -o "$name" -s 0.2 "$dir/m$n.png" 2>/dev/null &
+done <<<"$lines"
+wait
+
+declare -A where app
+if grep -q '^Window:' <<<"$lines"; then
+  # Workspace and app of each window, by the id the portal puts in "(...)": "<id>\t<workspace>\t<app_id>".
+  while IFS=$'\t' read -r id ws a; do
+    where[$id]=$ws app[$id]=$a
+  done < <(swaymsg -t get_tree | jq -r '.. | objects | select(.type? == "workspace")
+    | (if .name == "__i3_scratch" then "scratchpad" else "workspace \(.name)" end) as $ws
+    | .. | objects | select(.foreign_toplevel_identifier? != null)
+    | "\(.foreign_toplevel_identifier)\t\($ws)\t\(.app_id // .window_properties.class // "")"')
+  # Thumbnail of each window, in parallel: grim -T captures the window itself, also on another workspace or covered.
+  n=0
+  while ((!live)) && IFS= read -r line; do
+    [[ $line == Window:* ]] || continue
+    id=${line##*(} id=${id%)} n=$((n + 1))
+    grim -T "$id" -s 0.2 "$dir/$n.png" 2>/dev/null &
+  done <<<"$lines"
+  wait
+fi
+
+# One card per portal line for panels/share.qml (share/share.mjs parses it): kind, label, detail, thumbnail, app_id,
+# then the line itself, last since a title may hold a tab. Tabs in the label become spaces.
+n=0 m=0
 while IFS= read -r line; do
   case $line in
-    Monitor:*) printf '󰍹  %s\t%s\n' "${line#Monitor: }" "$line" ;;
-    Window:*)
-      title=${line#Window: }
-      printf '  %s\t%s\n' "${title% (*}" "$line"
+    Monitor:*)
+      name=${line#Monitor: } detail='' m=$((m + 1))
+      [[ $name == *' '* ]] && detail=${name#* } name=${name%% *}
+      thumb=$dir/m$m.png
+      [[ -s $thumb ]] || thumb=''
+      printf 'monitor\t%s\t%s\t%s\t\t%s\n' "$name" "$detail" "$thumb" "$line"
       ;;
-    *) printf '%s\t%s\n' "$line" "$line" ;;
+    Window:*)
+      title=${line#Window: } id=${line##*(} id=${id%)} n=$((n + 1))
+      title=${title% (*} title=${title//$'\t'/ }
+      thumb=$dir/$n.png
+      [[ -s $thumb ]] || thumb=''
+      printf 'window\t%s\t%s\t%s\t%s\t%s\n' "$title" "${where[$id]-}" "$thumb" "${app[$id]-}" "$line"
+      ;;
+    *) printf 'other\t%s\t\t\t\t%s\n' "${line//$'\t'/ }" "$line" ;;
   esac
-done | fuzzel --dmenu --config ~/.config/sway/apps/fuzzel.ini --with-nth=1 --accept-nth=2 \
-  --placeholder 'Share which screen or window?' | {
-  IFS= read -r choice || exit 1
-  # Whole screen: hide notifications for the duration. A shared window never shows them, nothing to do.
-  # The portal's exec_after (see ~/.config/xdg-desktop-portal-wlr/sway) clears it once every share has ended.
-  [[ $choice == Monitor:* ]] && ~/.config/sway/bin/dnd share-on
-  printf '%s\n' "$choice"
-}
+done <<<"$lines" >"$dir/rows"
+
+SHARE_PICKER_IN=$dir/rows SHARE_PICKER_OUT=$dir/pick quickshell -p ~/.config/sway/panels/share.qml >/dev/null 2>&1
+# No pick (Esc, a click outside) = exit 1: the portal cancels the share.
+[[ -s $dir/pick ]] || exit 1
+IFS= read -r choice <"$dir/pick"
+printf '%s\n' "${choice%%:*}" >"$state"
+# stdout = the pick only: the portal reads its first line.
+[[ $choice == Monitor:* ]] && ~/.config/sway/bin/dnd share-on >/dev/null
+[[ $choice == Window:* ]] && printf '%s\t%s\n' "$(date +%s)" "$choice" >"$memory"
+printf '%s\n' "$choice"
