@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# Record passed tests/manual.md items in tests/manual-passes.toml: the last pass of each item per machine, with the
+# machine and the software it passed on. Updated in place, history = `git log -p`. Commits nothing.
+#   bin/manual-pass [-n] [--with TEXT] "<item>"...
+#   -n            print the new file, write nothing
+#   --with TEXT   peripherals used (monitor, headset...) or agent-driven, typed by hand
+# Items = first cells of the rows in this host's section of tests/manual.md.
+# Public repo: model names and versions only. Never a serial, MAC or UUID (DMI product_serial, EDID serial, Bluetooth
+# address): none of those is read here.
+
+set -uo pipefail
+
+# Tests point these at fakes. Unset = the real ones.
+proc=${PROCFS:-/proc}
+dmi=${DMI_SYSFS:-/sys/class/dmi/id}
+system=${CURRENT_SYSTEM:-/run/current-system}
+
+file=tests/manual-passes.toml
+header="# Last pass of each tests/manual.md item per machine, written by bin/manual-pass. History: git log -p $file"
+
+usage() { sed -n '4,6p' "$0" | sed 's/^# \?//'; }
+
+dry=0 with=''
+while (($#)); do
+  case $1 in
+    -n) dry=1 ;;
+    --with)
+      with=${2-}
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -*)
+      usage >&2
+      exit 2
+      ;;
+    *) break ;;
+  esac
+  shift
+done
+if ((!$#)); then
+  usage >&2
+  exit 2
+fi
+
+top=$(git rev-parse --show-toplevel) || exit 1
+cd "$top" || exit 1
+host=$(cat "$proc/sys/kernel/hostname")
+
+# Items of this host: first cell of each row under `## <host>` or `## <host> (...)`, header and separator skipped.
+items=$(awk -v host="$host" '
+  /^## / { mine = ($0 == "## " host || index($0, "## " host " ") == 1); next }
+  mine && /^\|/ {
+    cell = $0; sub(/^\| */, "", cell); sub(/ *\|.*/, "", cell)
+    if (cell != "Item" && cell !~ /^-+$/) print cell
+  }' tests/manual.md)
+for item in "$@"; do
+  grep -qxF -- "$item" <<<"$items" && continue
+  echo "manual-pass: \"$item\" is not an item of $host in tests/manual.md. Items:" >&2
+  sed 's/^/  /' <<<"$items" >&2
+  exit 1
+done
+
+# DMI placeholders vendors leave in, and fields a machine lacks, come out empty.
+dmi_field() {
+  local v
+  v=$(cat "$dmi/$1" 2>/dev/null) || return 0
+  case $v in
+    'To Be Filled By O.E.M.' | 'Default string' | 'System Product Name' | 'System Version' | 'Not Applicable') ;;
+    *) printf '%s' "$v" ;;
+  esac
+}
+words() { printf '%s ' "$@" | tr -s ' ' | sed 's/^ //; s/ $//'; }
+lines_json() { jq -Rn '[inputs | select(. != "")]'; }
+
+gpus=$(lspci -mm 2>/dev/null |
+  awk -F'"' '$2 ~ /^(VGA compatible|3D|Display) controller$/ { print $4 " " $6 }' | lines_json)
+# Make and model only: the serial field is never read.
+displays=$(swaymsg -t get_outputs 2>/dev/null |
+  jq -r '.[] | select(.active) | "\(.make) \(.model)"' 2>/dev/null | lines_json)
+
+# Empty fields and lists are left out of the file.
+state=$(
+  if [[ -f $file ]]; then yq -p toml -o json '.' "$file"; else echo '{}'; fi
+) || exit 1
+new=$(jq -r -n \
+  --argjson state "$state" \
+  --arg host "$host" \
+  --arg machine "$(words "$(dmi_field sys_vendor)" "$(dmi_field product_version)" "$(dmi_field product_name)")" \
+  --arg board "$(words "$(dmi_field board_vendor)" "$(dmi_field board_name)")" \
+  --arg cpu "$(awk -F': ' '/^model name/ { print $2; exit }' "$proc/cpuinfo" 2>/dev/null)" \
+  --argjson gpus "$gpus" \
+  --arg date "$(date +%F)" \
+  --arg nixos "$(cat "$system/nixos-version" 2>/dev/null)" \
+  --arg kernel "$(cat "$proc/sys/kernel/osrelease" 2>/dev/null)" \
+  --arg nvidia "$(awk '/^NVRM version/ { for (i = 1; i <= NF; i++) if ($i ~ /^[0-9]+\.[0-9.]+$/) { print $i; exit } }' \
+    "$proc/driver/nvidia/version" 2>/dev/null)" \
+  --argjson displays "$displays" \
+  --arg with "$with" \
+  --args '
+  def present: with_entries(select(.value != "" and .value != []));
+  # TOML from JSON: bare key when it can be one, else a quoted one. JSON string escapes are valid TOML basic strings.
+  def key: if test("^[A-Za-z0-9_-]+$") then . else tojson end;
+  # Arrays as taplo (nix fmt) writes them: one line up to 80 columns, else one element per line.
+  def value($k):
+    if type != "array" then tojson
+    elif ("\($k) = [\(map(tojson) | join(", "))]" | length) <= 80 then "[\(map(tojson) | join(", "))]"
+    else "[\n" + (map("  \(tojson),") | join("\n")) + "\n]"
+    end;
+  def fields: to_entries | map(select(.key != "items") | (.key | key) as $k | "\($k) = \(.value | value($k))") | join("\n");
+
+  ({ date: $date, nixos: $nixos, kernel: $kernel, nvidia: $nvidia, displays: $displays, with: $with } | present) as $pass
+  | ($state // {})
+  | .[$host] = ({ machine: $machine, board: $board, cpu: $cpu, gpus: $gpus } | present)
+      + { items: ((.[$host].items // {}) + ($ARGS.positional | map({ (.): $pass }) | add)) }
+  | [to_entries[] | .key as $h
+      | ("[\($h | key)]\n" + (.value | fields)),
+        (.value.items | to_entries[] | "[\($h | key).items.\(.key | key)]\n" + (.value | fields))]
+  | join("\n\n")
+  ' "$@") || exit 1
+
+if ((dry)); then
+  printf '%s\n\n%s\n' "$header" "$new"
+  exit 0
+fi
+printf '%s\n\n%s\n' "$header" "$new" >"$file.tmp" && mv "$file.tmp" "$file"
+echo "manual-pass: $file updated, $# item(s) on $host. Commit it with the change it validates, or on its own."

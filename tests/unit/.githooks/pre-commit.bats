@@ -85,3 +85,19 @@ fake_token() { printf 'ghp_%s' "$(printf 'a1B2c3D4e5%.0s' 1 2 3 4 | cut -c1-36)"
   [[ ${output,,} != *zorblax* ]]
   [ "$(git rev-list --count HEAD)" -eq 1 ]
 }
+
+@test "doc staged without its pair: warning, commit allowed" {
+  mkdir -p docs/specs harness
+  for f in docs/x.md docs/x.pt-br.md harness/README.md harness/README.pt-br.md docs/specs/y.md; do echo a >"$f"; done
+  git add . && git commit -qm docs
+  echo b >>docs/x.md && echo b >>harness/README.pt-br.md && echo b >>docs/specs/y.md && git add .
+  run git commit -qm one-side
+  assert_success
+  assert_line 'warning: docs/x.md staged without docs/x.pt-br.md'
+  assert_line 'warning: harness/README.pt-br.md staged without harness/README.md'
+  refute_output --partial 'specs'
+  echo c >>docs/x.md && echo c >>docs/x.pt-br.md && git add .
+  run git commit -qm both
+  assert_success
+  refute_output --partial 'warning'
+}

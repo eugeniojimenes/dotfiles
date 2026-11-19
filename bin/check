@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Run the test layers, logs always shown (-L).
-#   bin/check [all|static|unit|terms [--cached|--message FILE]]
+#   bin/check [all|static|unit|terms [--cached|--message FILE|--range REV...]]
 #   default all = every flake check (static, unit, eval of each host) + terms
 
 set -uo pipefail
@@ -9,7 +9,9 @@ cd "$(dirname "$(readlink -f "$0")")/.." || exit 1
 # Employer terms: list lives encrypted in ~/.private, never in this repo. Prints file:line only, so a hit never puts
 # the term itself in a log. Default = work tree. --cached = index (pre-commit: what the commit would publish).
 # --message FILE = a commit message (commit-msg hook). Paths are checked too: a hit prints its row in `git ls-files`.
-terms() { # [--cached | --message FILE]
+# --range REV... = each commit `git rev-list REV...` lists, message, paths and added lines (pre-push hook): rewritten
+# history (rebase, squash) never went through the other two.
+terms() { # [--cached | --message FILE | --range REV...]
   local list=$HOME/.private/forbidden-terms pats hits rows rc n
   if [[ ! -f $list ]]; then
     echo "terms: skipped, $list absent (run ~/.private/private unlock)"
@@ -30,6 +32,10 @@ terms() { # [--cached | --message FILE]
     echo "terms: clean"
     return 0
   fi
+  [[ ${1-} == --range ]] && {
+    terms_range "$pats" "${@:2}"
+    return
+  }
   rows=$(git ls-files | grep -niF -f <(printf '%s\n' "$pats") | cut -d: -f1)
   hits=$(git grep ${1:+"$1"} -nIiF -f <(printf '%s\n' "$pats"))
   rc=$?
@@ -49,6 +55,33 @@ terms() { # [--cached | --message FILE]
     echo "terms: forbidden term in a path, see: git ls-files | sed -n ${n}p"
   done
   return 1
+}
+
+# Commit by commit: a hit names the commit and the file, a path holding a term only the commit.
+terms_range() { # PATTERNS REV...
+  local pats=$1 commits c f rc=0
+  shift
+  commits=$(git rev-list "$@") || {
+    echo "terms: git rev-list $* failed" >&2
+    return 1
+  }
+  for c in $commits; do
+    git log -1 --format=%B "$c" | grep -qiF -f <(printf '%s\n' "$pats") && {
+      echo "terms: commit ${c:0:12}: message holds a forbidden term"
+      rc=1
+    }
+    while IFS= read -r -d '' f; do
+      if grep -qiF -f <(printf '%s\n' "$pats") <<<"$f"; then
+        echo "terms: commit ${c:0:12}: a path holds a forbidden term, see: git show --name-only ${c:0:12}"
+        rc=1
+      elif git show --format= --unified=0 "$c" -- "$f" | grep '^+' | grep -v '^+++ ' | grep -qiF -f <(printf '%s\n' "$pats"); then
+        echo "terms: commit ${c:0:12}: $f adds a forbidden term"
+        rc=1
+      fi
+    done < <(git diff-tree --no-commit-id -r -z --name-only --root "$c")
+  done
+  ((rc)) || echo "terms: clean"
+  return "$rc"
 }
 
 case ${1:-all} in

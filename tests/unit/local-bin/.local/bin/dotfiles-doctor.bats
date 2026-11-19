@@ -132,3 +132,38 @@ SH
   refute_output --partial zorblax
   [ "$(grep 'problem(s)' <<<"$output")" = "$absent" ]
 }
+
+@test "uosc: found in the mpv wrapper; an installer copy in ~/.config/mpv/scripts flagged, not removed" {
+  mkdir -p "$BATS_TEST_TMPDIR/mpvbin" "$HOME/.config/mpv/scripts/uosc"
+  printf 'exec mpv --script=/nix/store/x-uosc-5.12.0/share/mpv/scripts/uosc\n' >"$BATS_TEST_TMPDIR/mpvbin/mpv"
+  chmod +x "$BATS_TEST_TMPDIR/mpvbin/mpv"
+  PATH=$BATS_TEST_TMPDIR/mpvbin:$PATH run "$doctor" --fix
+  assert_line '  ok    uosc (mpv wrapper)'
+  assert_line '  FAIL  second uosc in ~/.config/mpv/scripts, loads on top of the packaged one'
+  [[ -d $HOME/.config/mpv/scripts/uosc ]]
+}
+
+@test "uosc: mpv without it, rebuild suggested" {
+  # An mpv without uosc first on PATH: the host's own mpv has it.
+  mkdir -p "$BATS_TEST_TMPDIR/mpvbin"
+  printf 'exec /nix/store/x-mpv-0.40/bin/mpv\n' >"$BATS_TEST_TMPDIR/mpvbin/mpv"
+  chmod +x "$BATS_TEST_TMPDIR/mpvbin/mpv"
+  PATH=$BATS_TEST_TMPDIR/mpvbin:$PATH run "$doctor"
+  assert_line '  FAIL  mpv runs without uosc'
+  assert_line '        fix: sudo nixos-rebuild switch --flake ~/dotfiles'
+}
+
+@test "tmux plugins: every run-shell of tmux.conf present under the plugin dir" {
+  mkdir -p "$BATS_TEST_TMPDIR/plugins/sensible" "$BATS_TEST_TMPDIR/plugins/resurrect"
+  touch "$BATS_TEST_TMPDIR/plugins/sensible/sensible.tmux" "$BATS_TEST_TMPDIR/plugins/resurrect/resurrect.tmux"
+  TMUX_PLUGINS=$BATS_TEST_TMPDIR/plugins run "$doctor"
+  assert_line '  ok    tmux plugins'
+}
+
+@test "tmux plugins: one missing, named, rebuild suggested" {
+  mkdir -p "$BATS_TEST_TMPDIR/plugins/sensible"
+  touch "$BATS_TEST_TMPDIR/plugins/sensible/sensible.tmux"
+  TMUX_PLUGINS=$BATS_TEST_TMPDIR/plugins run "$doctor"
+  assert_line '  FAIL  tmux plugins missing: resurrect'
+  assert_line '        fix: sudo nixos-rebuild switch --flake ~/dotfiles'
+}

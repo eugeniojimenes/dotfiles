@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Last gate before the public remotes: every commit about to be pushed, its message, paths and added lines, against the
+# term list and gitleaks. Rewritten history (rebase, squash) never went through pre-commit or commit-msg.
+# Git runs hooks from the top of the work tree. Args: remote name, URL. stdin: one "<local ref> <local sha> <remote ref>
+# <remote sha>" line per ref pushed.
+
+set -uo pipefail
+
+remote=$1
+failed=0
+
+if command -v gitleaks >/dev/null; then
+  gl=(gitleaks)
+else
+  gl=(nix shell --option warn-dirty false --inputs-from . nixpkgs#gitleaks -c gitleaks)
+fi
+
+while read -r _ local _ remote_sha; do
+  # A deleted branch publishes nothing.
+  [[ $local =~ ^0+$ ]] && continue
+  # New branch, or a remote tip this clone never fetched: what no ref of that remote holds yet.
+  if [[ ! $remote_sha =~ ^0+$ ]] && git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
+    range=("$remote_sha..$local")
+  else
+    range=("$local" --not "--remotes=$remote")
+  fi
+  [[ -n $(git rev-list "${range[@]}") ]] || continue
+  # </dev/null: both would otherwise read the ref lines meant for this loop.
+  if ! out=$(bin/check terms --range "${range[@]}" </dev/null); then
+    printf '%s\n' "$out"
+    failed=1
+  fi
+  "${gl[@]}" git --log-opts="${range[*]}" --redact --no-banner -v -l warn </dev/null || failed=1
+done
+
+if ((failed)); then
+  cat >&2 <<'MSG'
+
+pre-push: push refused, a commit to push holds a forbidden term or a secret (commit and file above, value hidden).
+Rewrite those commits without it (git rebase -i, or reset --soft and commit again), then push.
+MSG
+  exit 1
+fi

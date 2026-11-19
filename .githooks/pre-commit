@@ -22,6 +22,21 @@ else
 fi
 "${gl[@]}" git --staged --redact --no-banner -v -l warn || failed=1
 
+# Human doc staged without its pair: warning only, a typo fix in English needs no pt-br edit. Pairs:
+# harness/rules/writing.md "Pairs". docs/specs/ is English only.
+staged=$(git diff --cached --name-only)
+while IFS= read -r f; do
+  case $f in
+    README.md) pair=README-pt-br.md ;;
+    README-pt-br.md) pair=README.md ;;
+    docs/*/*) continue ;;
+    docs/*.pt-br.md | harness/README.pt-br.md) pair=${f%.pt-br.md}.md ;;
+    docs/*.md | harness/README.md) pair=${f%.md}.pt-br.md ;;
+    *) continue ;;
+  esac
+  [[ -f $pair ]] && ! grep -qxF "$pair" <<<"$staged" && echo "warning: $f staged without $pair" >&2
+done <<<"$staged"
+
 if ((failed)); then
   cat >&2 <<'MSG'
 

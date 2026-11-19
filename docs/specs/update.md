@@ -1,0 +1,25 @@
+# Update
+
+Files: `bin/update` (run from a terminal, or from System › Update in the Sway menu, which opens it in a floating terminal), `mise/.config/mise/config.toml` (`minimum_release_age`).
+
+## Purpose
+
+One command updates everything the repo tracks, one source per step, and stops at the first step that fails, so a breakage points at one source. The system takes the newest NixOS channel release that is at least 2 days old, unless a newer release fixes a high or critical CVE in this system, and the new system is tested by `bin/check`, built and compared before anything is applied. mise waits 7 days for new releases. The script never runs `sudo` and never commits: it ends with the commands to apply the system and the files to commit.
+
+## Acceptance criteria
+
+1. The system step locks nixpkgs to the newest release of the locked channel (`nixos-26.05`) published at least 2 days ago, read from the channel's release list. Test: `tests/unit/bin/update.bats: "system: newest channel release at least 2 days old is locked, a younger one waits"`
+2. When a release younger than 2 days fixes a CVE with a CVSS score of 7.0 or more in a package the running system ships, according to vulnix on both systems, that release is locked instead, and the fixed CVEs are listed. Test: `tests/unit/bin/update.bats: "system: a younger release fixing a high CVE skips the wait, the CVE is named"`
+3. A CVE under 7.0, one that both systems still have, or one in a package only used to build the system does not skip the wait. Test: `tests/unit/bin/update.bats: "system: a lower score, a CVE still present or a build-only package does not skip the wait"`
+4. `--now` locks the newest release whatever its age. Test: `tests/unit/bin/update.bats: "--now: newest release locked whatever its age"`
+5. When the chosen release is the one already locked, nothing is built and the step says the system is up to date. Test: `tests/unit/bin/update.bats: "system: chosen release already locked, nothing built"`
+6. After locking, `bin/check` runs. When it fails, `flake.lock` is restored and no later step runs. Test: `tests/unit/bin/update.bats: "bin/check fails: flake.lock restored, later steps skipped"`
+7. The new system is built and compared with the running one with `nvd diff`. When the kernel, its modules or the initrd changed, the script says to run `sudo nixos-rebuild boot` and reboot; otherwise `sudo nixos-rebuild test` and then `switch`. Test: `tests/unit/bin/update.bats: "kernel or initrd changed: boot and reboot, else test then switch"`
+8. The other steps run in order: `mise upgrade`, the lazy.nvim plugins, and the firmware check, which only reports what `fwupdmgr` offers. The tmux plugins come from nixpkgs and update with the system. Test: `tests/unit/bin/update.bats: "other steps: mise, nvim plugins, firmware report"`
+9. When `flake.lock` or `lazy-lock.json` already has uncommitted changes, the script refuses to start, so an update never mixes with other edits. Test: `tests/unit/bin/update.bats: "uncommitted lock files: refused before any step"`
+10. The end summary lists the changed lock files with the commit to make for each. Test: `tests/unit/bin/update.bats: "summary: changed lock files and their commits"`
+11. mise only installs releases published at least 7 days ago (`minimum_release_age = "7d"`). Test: manual
+12. System › Update in the menu opens the script in a floating terminal that stays open until Enter is pressed. The script works on the repo it lives in from any directory, and the menu starts it in the home directory. Test: `tests/unit/bin/update.bats: "started outside the repo, as the menu does from ~: works on the repo it lives in"`, `tests/unit/sway/.config/sway/bin/menu.bats: "System > Update runs bin/update in a floating terminal that waits for Enter"`, manual
+13. A release already locked that is newer than the one the 2-day rule picks, taken with `--now` or for a CVE fix, stays locked: nothing is built and the step says the system is up to date. A later run never moves nixpkgs back to an older release. Test: `tests/unit/bin/update.bats: "system: a locked release newer than the 2-day pick stays locked, nothing built"`
+14. A vulnix scan that exits with anything but 0 (none found) or 2 (found), or that leaves no list of findings on its output, counts as a failed CVE check, and the 2-day wait holds. A failed scan must not read as "no CVEs" on one side, which would list fixes that do not exist. Test: `tests/unit/bin/update.bats: "system: a failed CVE scan, or one with no findings list, keeps the 2-day wait"`
+15. When a step after the build fails, or the run is stopped with Ctrl-C, the summary still shows the command that applies the built system and the commits for the changed lock files. While `flake.lock` points at a release that is not built yet, a failure or Ctrl-C puts it back. Test: `tests/unit/bin/update.bats: "failure after the build: the apply command and the lock commit still shown"`, `tests/unit/bin/update.bats: "Ctrl-C while the new release is checked: flake.lock restored, nothing else runs"`

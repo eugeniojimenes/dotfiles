@@ -119,46 +119,34 @@ else
   else
     ok "all declared tools installed"
   fi
-  # config.toml postinstall hooks wire Neovim into each runtime. Silent no-ops when a hook fails.
-  command -v neovim-ruby-host &>/dev/null && ok "ruby neovim gem" || {
-    bad "ruby neovim gem"
-    repair "mise exec ruby -- gem install neovim"
-  }
-  command -v neovim-node-host &>/dev/null && ok "node neovim package" || {
-    bad "node neovim package"
-    repair "mise exec node -- npm install -g neovim"
-  }
-  python -c 'import neovim' &>/dev/null && ok "python neovim package" || {
-    bad "python neovim package"
-    repair "mise exec python -- pip install neovim"
-  }
 fi
 
 section "external installs"
-TPM=$HOME/.local/share/tmux/plugins/tpm
-if [[ -d $TPM ]]; then
-  ok "tpm"
-  absent=()
-  while read -r plugin; do
-    [[ $plugin == tpm ]] && continue
-    [[ -d $HOME/.local/share/tmux/plugins/$plugin ]] || absent+=("$plugin")
-  done < <(sed -n "s/.*@plugin '[^\/]*\/\([^']*\)'.*/\1/p" "$REPO/tmux/.config/tmux/tmux.conf")
-  if ((${#absent[@]})); then
-    bad "tmux plugins missing: ${absent[*]}"
-    repair "$TPM/bin/install_plugins"
-  else
-    ok "tmux plugins"
-  fi
+# tmux plugins = nixpkgs, linked under /etc/tmux/plugins by nixos/common.nix, run by tmux.conf. TMUX_PLUGINS: tests.
+plugins=${TMUX_PLUGINS:-/etc/tmux/plugins}
+absent=()
+while read -r p; do
+  [[ -f $plugins/$p ]] || absent+=("${p%%/*}")
+done < <(sed -n 's|^run-shell /etc/tmux/plugins/||p' "$REPO/tmux/.config/tmux/tmux.conf")
+if ((${#absent[@]})); then
+  bad "tmux plugins missing: ${absent[*]}"
+  repair "sudo nixos-rebuild switch --flake ~/dotfiles"
 else
-  bad "tpm not installed"
-  repair "git clone https://github.com/tmux-plugins/tpm $TPM"
+  ok "tmux plugins"
 fi
 
-if [[ -d $HOME/.config/mpv/scripts/uosc ]]; then
-  ok "uosc"
+# uosc = mpvScripts.uosc inside the mpv wrapper (nixos/common.nix). A copy in ~/.config/mpv/scripts (the old installer,
+# or uosc's own Update menu) loads a second uosc on top: reported, never deleted by --fix.
+mpv_bin=$(command -v mpv)
+if [[ -n $mpv_bin ]] && grep -aq 'share/mpv/scripts/uosc' "$(readlink -f "$mpv_bin")"; then
+  ok "uosc (mpv wrapper)"
 else
-  bad "uosc not installed"
-  repair "curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash"
+  bad "mpv runs without uosc"
+  repair "sudo nixos-rebuild switch --flake ~/dotfiles"
+fi
+if [[ -e $HOME/.config/mpv/scripts/uosc ]]; then
+  bad "second uosc in ~/.config/mpv/scripts, loads on top of the packaged one"
+  note "fix: rm -r ~/.config/mpv/scripts/uosc ~/.config/mpv/fonts/uosc_icons.otf ~/.config/mpv/fonts/uosc_textures.ttf"
 fi
 
 LAZY=$HOME/.local/share/nvim/lazy

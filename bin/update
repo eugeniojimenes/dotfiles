@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+# Update what this repo tracks, one source per step; stops at the first failure. Never runs sudo, never commits.
+#   bin/update [--now] [--pause]
+#   --now     newest NixOS channel release, without the 2-day wait
+#   --pause   wait for Enter at the end (System > Update in the menu runs it in a floating terminal)
+# Steps: system (channel release >= 2 days old, or a younger one fixing a CVE of CVSS >= 7 in this system; then
+# bin/check, build, nvd diff), mise (7-day minimum_release_age, mise config), nvim plugins, firmware (report
+# only); tmux plugins come from nixpkgs with the system. Spec: docs/specs/update.md.
+
+set -uo pipefail
+
+# Tests point these at fakes. Unset = the real ones.
+releases=${NIX_RELEASES_URL:-https://nix-releases.s3.amazonaws.com}
+system=${CURRENT_SYSTEM:-/run/current-system}
+proc=${PROCFS:-/proc}
+
+wait_s=$((2 * 86400))
+min_cvss=7
+
+usage() { sed -n '3,5p' "$0" | sed 's/^# \?//'; }
+
+now=0 pause=0
+for arg; do
+  case $arg in
+    --now) now=1 ;;
+    --pause) pause=1 ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+((pause)) && trap 'read -rp "Enter to close " _' EXIT
+
+# The repo this script lives in, wherever it starts: the menu starts it in ~.
+top=$(git -C "${0%/*}" rev-parse --show-toplevel) || exit 1
+cd "$top" || exit 1
+host=$(cat "$proc/sys/kernel/hostname")
+locks=(flake.lock lazyvim/.config/nvim/lazy-lock.json)
+
+# An update in its own commits only: a lock file already edited would mix with it.
+if ! git diff --quiet HEAD -- "${locks[@]}"; then
+  echo "update: uncommitted changes in a lock file, commit or revert them first:"
+  git status --short -- "${locks[@]}"
+  exit 1
+fi
+
+step() { printf '\n== %s\n' "$1"; }
+summary() {
+  step "summary"
+  [[ -n $next ]] && echo "system: $next"
+  changed=$(git status --porcelain -- "${locks[@]}")
+  [[ $changed == *flake.lock* ]] &&
+    echo "commit once the system works: git commit flake.lock -m 'build(nixos): flake update'"
+  [[ $changed == *lazy-lock.json* ]] &&
+    echo "commit: git commit lazyvim/.config/nvim/lazy-lock.json -m 'build(lazyvim): plugin update'"
+  [[ -n $changed ]] || echo "no lock file changed"
+  echo "then: the tests/manual.md items of what changed, recorded with bin/manual-pass"
+}
+# Stop early. flake.lock goes back while it points at a release not built yet; once something is done (a built
+# system, a changed lock file) the summary still says how to apply and commit it.
+restore=0 next=''
+stop() {
+  if ((restore)); then
+    git checkout -- flake.lock
+    echo "flake.lock restored"
+  fi
+  if [[ -n $next ]] || ! git diff --quiet HEAD -- "${locks[@]}"; then summary; fi
+  exit "$1"
+}
+fail() {
+  echo "update: $1 failed, later steps skipped"
+  stop 1
+}
+trap 'echo; echo "update: interrupted, later steps skipped"; stop 130' INT TERM HUP
+# Tools only this script needs come from the pinned nixpkgs when not installed.
+tool() {
+  if command -v "$1" >/dev/null; then
+    "$@"
+  else
+    nix shell --inputs-from . "nixpkgs#$1" -c "$@"
+  fi
+}
+
+toplevel=".#nixosConfigurations.$host.config.system.build.toplevel"
+
+step "system"
+channel=$(jq -r .nodes.nixpkgs.original.ref flake.lock)
+series=${channel#nixos-}
+current=$(jq -r .nodes.nixpkgs.locked.rev flake.lock)
+
+# Channel releases, newest first. Each one passed Hydra, so its packages are in the binary cache. Directory names:
+# nixos/<series>/nixos-<series>.<revcount>.<shortrev>/
+mapfile -t dirs < <(curl -fsS "$releases/?delimiter=/&prefix=nixos/$series/" |
+  grep -o "<Prefix>nixos/$series/nixos-$series\.[0-9]*\.[0-9a-f]*/</Prefix>" | sed 's/<[^>]*>//g' |
+  awk -F/ '{ split($3, part, "."); print part[3] "\t" $0 }' | sort -rn | cut -f2)
+((${#dirs[@]})) || fail "channel release list ($channel)"
+
+# Publication time = when its git-revision file was uploaded.
+age() {
+  local t s
+  t=$(curl -fsS "$releases/?prefix=${1}git-revision" | grep -o '<LastModified>[^<]*' | sed 's/<LastModified>//')
+  s=$(date -d "$t" +%s 2>/dev/null) || s=$(date +%s) # unreadable time = treated as brand new
+  echo $(($(date +%s) - s))
+}
+rev() { curl -fsS "$releases/${1}git-revision"; }
+name() {
+  local dir=${1%/}
+  echo "${dir##*/}"
+}
+
+chosen=''
+for dir in "${dirs[@]}"; do
+  if ((now || $(age "$dir") >= wait_s)); then
+    chosen=$dir
+    break
+  fi
+done
+[[ -n $chosen ]] || fail "release choice: no $channel release is 2 days old yet"
+# Never back: a locked release newer than the pick (taken with --now or for a CVE fix) stays locked.
+for dir in "${dirs[@]}"; do
+  [[ $dir == "$chosen" ]] && break
+  if [[ $(rev "$dir") == "$current" ]]; then
+    chosen=$dir
+    break
+  fi
+done
+
+# A younger release skips the wait when it fixes a CVE of CVSS >= 7 the current system has. vulnix matches package
+# names and versions against NVD, with false positives; those show on both sides and cancel out.
+high() {
+  local out rc
+  out=$(tool vulnix --json "$1")
+  rc=$?
+  # 0 = none found, 2 = found. Anything else, or no JSON list on stdout (vulnix also exits 2 on some errors), = the
+  # scan failed: a failed scan must not read as "no CVEs" on one side.
+  ((rc == 0 || rc == 2)) && jq -e 'type == "array"' <<<"$out" >/dev/null || return 1
+  jq -r --argjson min "$min_cvss" '.[] | .pname as $p | (.cvssv3_basescore // {}) | to_entries[]
+    | select(.value >= $min) | "\($p) \(.key) \(.value)"' <<<"$out" | sort -u
+}
+head_rev=$(rev "${dirs[0]}") || fail "release revision"
+if [[ $chosen != "${dirs[0]}" && $head_rev != "$current" ]]; then
+  echo "newest release $(name "${dirs[0]}") is under 2 days old: checking it for CVE fixes (vulnix)"
+  if drv_now=$(nix eval --raw "$toplevel.drvPath") &&
+    drv_head=$(nix eval --raw --no-write-lock-file --override-input nixpkgs "github:NixOS/nixpkgs/$head_rev" \
+      "$toplevel.drvPath") &&
+    cves_now=$(high "$drv_now") && cves_head=$(high "$drv_head"); then
+    # Only packages the running system ships count: the scan also walks build-only tools that never reach the machine.
+    shipped=$(nix path-info --recursive "$system" | sed 's|^/nix/store/[^-]*-||; s/-[0-9].*//' | sort -u)
+    fixed=$(comm -23 <(printf '%s\n' "$cves_now") <(printf '%s\n' "$cves_head") |
+      awk 'NR == FNR { keep[$0]; next } $1 in keep' <(printf '%s\n' "$shipped") -)
+    if [[ -n $fixed ]]; then
+      echo "it fixes CVSS >= $min_cvss in this system, no wait:"
+      sed 's/^/  /' <<<"$fixed"
+      chosen=${dirs[0]}
+    fi
+  else
+    echo "CVE check failed, keeping the 2-day wait"
+  fi
+fi
+
+rev=$(rev "$chosen") || fail "release revision"
+if [[ $rev == "$current" ]]; then
+  echo "up to date: $(name "$chosen")"
+  [[ $chosen == "${dirs[0]}" ]] || echo "newer release $(name "${dirs[0]}") waits out its 2 days (--now to take it)"
+else
+  echo "locking $(name "$chosen")"
+  restore=1
+  nix flake lock --override-input nixpkgs "github:NixOS/nixpkgs/$rev" || fail "flake lock"
+  bin/check || fail "bin/check on the new nixpkgs"
+  new=$(nix build --no-link --print-out-paths "$toplevel") || fail "build"
+  restore=0
+  tool nvd diff "$system" "$new"
+  # Kernel, its modules (NVIDIA among them) or initrd changed: a switch would leave the old kernel module loaded.
+  reboot=0
+  for part in kernel kernel-modules initrd; do
+    [[ $(readlink -f "$system/$part") == "$(readlink -f "$new/$part")" ]] || reboot=1
+  done
+  if ((reboot)); then
+    next="sudo nixos-rebuild boot --flake ~/dotfiles, then reboot (kernel, modules or initrd changed)"
+  else
+    next="sudo nixos-rebuild test --flake ~/dotfiles; once it works, sudo nixos-rebuild switch --flake ~/dotfiles"
+  fi
+fi
+
+step "mise"
+mise upgrade --yes || fail "mise upgrade"
+
+step "nvim plugins"
+nvim --headless '+Lazy! update' +qa || fail "lazy.nvim update"
+
+step "firmware (report only)"
+fwupdmgr get-updates
+case $? in
+  0) echo "apply with: fwupdmgr update (reboots the machine)" ;;
+  2) ;; # nothing to update
+  *) echo "fwupdmgr failed, not blocking" ;;
+esac
+
+summary
+exit 0

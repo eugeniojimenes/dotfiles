@@ -1,0 +1,201 @@
+# Last pass of each tests/manual.md item per machine, written by bin/manual-pass. History: git log -p tests/manual-passes.toml
+
+[loc-nixos]
+machine = "LENOVO LOQ 15IRH8 83EU"
+board = "LENOVO LNVNB161216"
+cpu = "12th Gen Intel(R) Core(TM) i5-12450H"
+gpus = [
+  "Intel Corporation Alder Lake-P GT1 [UHD Graphics]",
+  "NVIDIA Corporation GA107BM / GN20-P0-R-K2 [GeForce RTX 3050 6GB Laptop GPU]",
+]
+
+[loc-nixos.items."Spec hibernation"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items.Wi-Fi]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items.Sound]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Internal microphone"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items.Bluetooth]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Lock screen"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Battery warnings"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Power profile"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Polkit agent"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec menu"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec keybindings"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec screen-recording"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec stay-awake"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec night-light"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec focus-or-run"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec screenshot"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec colorpick"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec ocr"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec clipboard-history"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec emoji-picker"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec power-panel"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec sys-tools"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec dotfiles-doctor"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec osd"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec screen-share"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+with = "external monitor connected during the test"
+
+[loc-nixos.items."Cedilla in Chromium apps"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+
+[loc-nixos.items."Spec notifications"]
+date = "2026-11-18"
+nixos = "26.05.20261113.f1e5c35"
+kernel = "6.18.63"
+nvidia = "595.71.05"
+displays = ["Chimei Innolux Corporation 0x1552"]
+with = "agent-driven"

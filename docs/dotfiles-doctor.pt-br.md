@@ -10,8 +10,8 @@ A raiz do repo é encontrada com `readlink -f "$0"`, então o script funciona ta
 - Os comandos que o `nixos/common.nix` deveria fornecer. Se um deles falta, o sistema não foi reconstruído desde que o comando foi adicionado.
 - O hook de pre-commit: `core.hooksPath` precisa ser `.githooks`. O `--fix` configura isso.
 - A lista de termos proibidos. Quando `~/.private/forbidden-terms` não existe, ele mostra um aviso, porque `bin/check terms` e o hook pulam a busca de termos nesse caso. Ele nunca mostra o conteúdo da lista.
-- As ferramentas do mise, incluindo os hosts do Neovim instalados pelos hooks de `postinstall`, que falham sem mensagem nenhuma.
-- Instalações externas: o TPM e os plugins do tmux, a uosc, os plugins do lazy.nvim.
+- As ferramentas do mise: toda ferramenta declarada na config do mise está instalada.
+- Instalações externas: os plugins do tmux que o `nixos/common.nix` liga em `/etc/tmux/plugins`, os plugins do lazy.nvim. Também a uosc: ela precisa estar no wrapper do mpv, e uma segunda cópia em `~/.config/mpv/scripts`, deixada pelo instalador antigo, é apontada e nunca apagada.
 - Arquivos locais da máquina: `~/.claude/settings.json`, o app padrão para imagens e o mapeamento da cedilha.
 
 ## Lendo a saída do stow

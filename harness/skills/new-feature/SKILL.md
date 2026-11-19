@@ -5,7 +5,7 @@ description: Ship a new feature or a behaviour change in this repo spec-first - 
 
 # new-feature
 
-Rules: `AGENTS.md` "Specs and tests", `harness/rules/tests.md`. Spec format: `docs/specs/README.md`.
+Rules: `harness/rules/tests.md`. Spec format: `docs/specs/README.md`.
 
 ## Steps
 
