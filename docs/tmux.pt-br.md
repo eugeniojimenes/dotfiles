@@ -2,9 +2,13 @@
 
 A config é um arquivo só, `tmux/.config/tmux/tmux.conf`.
 
-## Gerenciador de plugins
+## Plugins
 
-O TPM fica em `~/.local/share/tmux/plugins/tpm`, não dentro de `~/.config/tmux`. `~/.config/tmux` precisa ter só o `tmux.conf` para que o stow ligue a pasta inteira em vez do arquivo sozinho. Um link no nível do arquivo já se desconectou do repo uma vez sem ninguém perceber. O caminho é definido por `TMUX_PLUGIN_MANAGER_PATH` no fim do `tmux.conf`. Depois do stow, instale os plugins de dentro do tmux com `prefix + I`.
+Os plugins (tmux-sensible e tmux-resurrect) vêm do nixpkgs. O `nixos/common.nix` liga cada um em `/etc/tmux/plugins/`, e o fim do `tmux.conf` roda eles com `run-shell`. As versões ficam presas pelo `flake.lock` e só mudam com uma atualização do sistema. O TPM, usado antes, clonava cada plugin do repositório dele, e o `bin/update` puxava o último commit toda vez, sem espera nenhuma, de repositórios parados havia anos. Um plugin novo entra nos dois lugares.
+
+O build do tmux-resurrect no nixpkgs é de 2022 e ainda salva em `~/.tmux/resurrect` por padrão, então o `tmux.conf` define `@resurrect-dir` como `~/.local/share/tmux/resurrect`, o caminho que as versões mais novas usam.
+
+`~/.config/tmux` precisa ter só o `tmux.conf` para que o stow ligue a pasta inteira em vez do arquivo sozinho. Um link no nível do arquivo já se desconectou do repo uma vez sem ninguém perceber.
 
 ## Descrições dos atalhos
 
@@ -26,3 +30,13 @@ Dois scripts iniciam servidores tmux próprios, e nenhum deles precisa de coorde
 
 - `sway/.config/sway/bin/tmux-launch` (`Super + Alt + Return`) se conecta ao servidor principal quando nenhum cliente está conectado a ele. Senão, abre um servidor independente no socket `iso-<pid>`.
 - `sway/.config/sway/bin/sys-tools` (`Super + Shift + T`) roda o btop e o lazydocker no socket `sys-tools`. É um visualizador. Um hook `pane-exited` mata o servidor quando qualquer um dos dois programas sai, e `C-s` e `C-r` ficam sem atalho lá, então ele nunca salva por cima do snapshot principal.
+
+## Quando o tmux 3.8 chegar
+
+O nixpkgs travado traz o tmux 3.7b. Quando o `bin/update` passar para um nixpkgs com tmux 3.8 ou mais novo, o `nvd diff` mostra a versão nova, e o step estático `tmux-config`, que carrega o `tmux.conf` num servidor isolado, falha na hora se algum comando ou opção sumiu. O que mudar ou testar então:
+
+- O `display-popup` não existe mais no 3.8, então o atalho `?` que mostra a lista de atalhos quebra. Painéis flutuantes e modais substituem os popups: `new-pane -O` abre um painel modal, e `-C` fecha com um clique fora.
+- O `lazyvim/.config/nvim/lua/config/options.lua` desliga o `termsync` do Neovim dentro do tmux, porque o tmux 3.7 move o cursor durante uma atualização sincronizada e ele pisca linhas abaixo no explorer do Neovim. O tmux 3.8 corrige isso (commit `57a13664cc`), então o bloco pode sair.
+- O 3.8 traz atalhos padrão que podem colidir com este config: `C-b g` para mover e redimensionar painéis flutuantes, `C-b T` para o título do painel, `C-b r` para um refresh, e `Tab` e `S-Tab` para o `switch-mode`.
+- O 3.8 tem temas claro e escuro embutidos com cores padrão novas, o que pode mudar o visual da barra de status.
+- O `switch-mode` é um seletor rápido de janelas e sessões que pode substituir os atalhos `choose-tree` em `w` e `s`.

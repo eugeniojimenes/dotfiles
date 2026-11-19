@@ -5,6 +5,9 @@ experimental = true
 # one (nixos/common.nix), so prebuilt works and skips the compilers and -dev libraries NixOS does not have.
 all_compile = false
 disable_tools = ["bundler"]
+# Supply-chain cooldown: install and upgrade only releases published 7 days ago or more (most malicious releases are
+# pulled within a week). Explicit: the built-in 24h default only exists from mise 2026.6.2, newer than nixpkgs' mise.
+minimum_release_age = "7d"
 
 [settings.ruby]
 
@@ -12,17 +15,19 @@ disable_tools = ["bundler"]
 CFLAGS = "-std=gnu17"
 
 [tools]
-# Agent CLIs auto_update daily but keep mise's default 24h minimum_release_age: a fresh release waits a day, the
-# window in which compromised npm releases usually get pulled.
+# Agent CLIs auto_update daily, held back by minimum_release_age above. Option from mise 2026.10.4 on: older ones
+# (nixpkgs has 2026.5.12 now) ignore it, then only `mise upgrade` moves them.
 claude = { version = "latest", auto_update = true }
 # Search past Claude Code sessions (not in nixpkgs; prebuilt release binary).
 "github:raine/claude-history" = "latest"
 gh = "latest"
 glab = "latest"
 go = "latest"
-node = { version = "22", postinstall = "corepack enable; npm install -g neovim" }
+# postinstall pulls from npm, PyPI and RubyGems with no release-age wait: only what is needed (pnpm/yarn shims, ruby-lsp
+# per Ruby for the LSP, bundler). No Neovim host packages: providers off in lazyvim options.lua.
+node = { version = "22", postinstall = "corepack enable" }
 opencode = { version = "latest", auto_update = true }
-python = { version = "3.11.13", postinstall = "pip install --upgrade pip; pip install neovim" }
-ruby = { version = "3.4.5", postinstall = "gem install bundler neovim ruby-lsp" }
+python = "3.11.13"
+ruby = { version = "3.4.5", postinstall = "gem install bundler ruby-lsp" }
 rust = "latest"
 uv = "latest"
