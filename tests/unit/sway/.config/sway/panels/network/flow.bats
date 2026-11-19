@@ -1,5 +1,5 @@
 #!/usr/bin/env bats
-# wifi/flow.mjs through qmltestrunner (QtTest, offscreen: no Wayland, no NetworkManager). One @test per function in
+# network/flow.mjs through qmltestrunner (QtTest, offscreen: no Wayland, no NetworkManager). One @test per function in
 # flow.qml, so spec criteria name them like any other bats test.
 
 setup() {

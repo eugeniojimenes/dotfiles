@@ -3,10 +3,10 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Networking
 import Quickshell.Wayland
-import "wifi/flow.mjs" as Flow
+import "network/flow.mjs" as Flow
 import "common"
 
-// Wi-Fi panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
+// Network panel for the waybar network icon: networks live from NetworkManager (Quickshell.Networking), radio switch,
 // password prompt for a secured network with no saved profile. Esc or a click outside closes it. One process per
 // open, like the calendar: the scanner runs only while the panel is up.
 ShellRoot {
@@ -33,7 +33,7 @@ ShellRoot {
         || network.security === WifiSecurityType.Sae
     }
 
-    WlrLayershell.namespace: "sway-wifi"
+    WlrLayershell.namespace: "sway-network"
 
     Binding { target: win.device; property: "scannerEnabled"; value: true; when: win.device !== null }
 
@@ -79,7 +79,7 @@ ShellRoot {
             id: title
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            text: "Wi-Fi"
+            text: "Network"
             color: win.fg
             font.family: win.font
             font.pixelSize: 16

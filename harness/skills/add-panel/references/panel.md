@@ -1,6 +1,6 @@
 # Panel skeleton
 
-Cut from `sway/.config/sway/panels/wifi.qml`. Replace `<name>`. Colours come from `common/Theme.qml` through `PanelShell` (`win.fg`, `win.accent`...).
+Cut from `sway/.config/sway/panels/network.qml`. Replace `<name>`. Colours come from `common/Theme.qml` through `PanelShell` (`win.fg`, `win.accent`...).
 
 `sway/.config/sway/panels/<name>/toggle` (mode 755):
 

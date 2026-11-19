@@ -42,7 +42,7 @@
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
     "tooltip-format-linked": "{essid} ({signalStrength}%)",
     "tooltip-format-disconnected": "Desconectado",
-    "on-click": "~/.config/sway/panels/wifi/toggle"
+    "on-click": "~/.config/sway/panels/network/toggle"
   },
 
   "bluetooth": {

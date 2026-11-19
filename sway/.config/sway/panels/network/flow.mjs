@@ -1,6 +1,6 @@
-// Wi-Fi panel logic, kept out of wifi.qml so tests/unit can run it with fake networks.
+// Network panel logic, kept out of network.qml so tests/unit can run it with fake networks.
 //
-// `panel` = wifi.qml: fields joining, asking, failure; method closePanel().
+// `panel` = network.qml: fields joining, asking, failure; method closePanel().
 // `network` = a Quickshell network (or a fake one in tests).
 //
 // States, read from the panel's fields:

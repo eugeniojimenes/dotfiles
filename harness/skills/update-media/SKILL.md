@@ -45,7 +45,7 @@ Image line in a doc: `![<alt in that doc's language>](<url><file>)`, `url` from 
 5. Privacy, before anyone else sees the file. Mask = solid fill, not blur (blur keeps word shape and length; a short SSID can be guessed):
    - PNG: `magick in.png -fill '#1e1e2e' -draw 'rectangle X0,Y0 X1,Y1' out.png`, one `-draw` per area.
    - GIF: mask the MP4 before converting, ffmpeg `drawbox=x=X:y=Y:w=W:h=H:color=0x1e1e2e:t=fill`, one per area, for the whole clip. A list that grows while recording (Bluetooth "Nearby" during scan) = mask the whole list area, not the rows of frame 1.
-   - Wi-Fi panel: every network name, connected one too. Icons and lock marks stay.
+   - Network panel: every network name, connected one too. Icons and lock marks stay.
    - Bluetooth panel: every row under "Nearby". "My devices": check each alias per capture (owner may have renamed one, e.g. a person's name); mask any that names a person.
    - Sound panel: app stream names (`application.name`) can name work apps or media: mask unless clearly generic.
    - Waybar: tray icons (work apps), and tooltips (network shows SSID and IP, Bluetooth shows device alias). Move the cursor off the bar before capture: `swaymsg seat - cursor set <x> <y>` to the screen centre.

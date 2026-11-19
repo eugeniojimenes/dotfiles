@@ -118,7 +118,13 @@ export function items(state, apps) {
       run: sh("~/.config/sway/bin/opacity " + value),
     })),
 
-    { id: "setup.wifi", parent: "setup", icon: "󰖩", label: "Wi-Fi", run: sh("~/.config/sway/panels/wifi/toggle") },
+    {
+      id: "setup.network",
+      parent: "setup",
+      icon: "󰖩",
+      label: "Network",
+      run: sh("~/.config/sway/panels/network/toggle"),
+    },
     {
       id: "setup.bluetooth",
       parent: "setup",

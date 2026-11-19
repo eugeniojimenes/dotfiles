@@ -1,5 +1,5 @@
 #!/bin/sh
-# Wi-Fi icon click: open the Wi-Fi panel, or close it when already open.
+# Network icon click: open the network panel, or close it when already open.
 # -x = exact command line: a loose pattern killed any process holding it and left the panel closed.
-qml=$HOME/.config/sway/panels/wifi.qml
+qml=$HOME/.config/sway/panels/network.qml
 pkill -fx "quickshell -p $qml" || exec quickshell -p "$qml"
