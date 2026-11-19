@@ -8,7 +8,7 @@
 // Commands spell out ~/.config/sway/...: sh expands it, and tests/static.sh sway-paths checks every path here exists.
 
 const sh = (command) => ["sh", "-c", command];
-const OPACITY = ["1.0", "0.98", "0.96", "0.94", "0.92", "0.88", "0.85", "0.80"];
+const OPACITY = ["1.0", "0.99", "0.98", "0.97", "0.96", "0.94", "0.92", "0.88", "0.85", "0.80"];
 const PROFILES = ["power-saver", "balanced", "performance"];
 const radio = (on) => (on ? "󰄬" : "󰝦");
 

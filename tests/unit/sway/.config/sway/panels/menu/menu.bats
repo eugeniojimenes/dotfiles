@@ -17,7 +17,7 @@ qt() {
 @test "apps: under Apps by name with their icon, launched by desktop id through gtk-launch, never a shell" { qt test_apps; }
 @test "entries: each runs its script or panel toggle" { qt test_actions; }
 @test "power profile: current one checked, a pick sets it and shows the popup" { qt test_power_profile; }
-@test "terminal opacity: eight steps, the saved one checked" { qt test_opacity; }
+@test "terminal opacity: ten steps, the saved one checked" { qt test_opacity; }
 @test "hibernation set up: Suspend hibernates later and Hibernate is listed; without it, plain Suspend" { qt test_hibernation; }
 @test "search: every level below, own entries first, deeper ones with their path, apps by name or generic name" { qt test_search; }
 @test "back: parent of a submenu, path of an entry" { qt test_back; }

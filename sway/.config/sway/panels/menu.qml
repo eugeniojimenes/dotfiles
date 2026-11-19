@@ -23,7 +23,7 @@ ShellRoot {
       id: entry.id, name: entry.name, icon: entry.icon, generic: entry.genericName
     }))
     readonly property var list: Menu.items({
-      opacity: opacityFile.text().trim() || "0.92",
+      opacity: opacityFile.text().trim() || "0.98",
       profile: profile,
       hibernates: Menu.hibernates(resumeFile.text())
     }, apps)
@@ -48,7 +48,7 @@ ShellRoot {
 
     WlrLayershell.namespace: "sway-menu"
 
-    // Terminal opacity saved by bin/opacity; 0.92 = its default.
+    // Terminal opacity saved by bin/opacity; 0.98 = bin/term's default.
     FileView {
       id: opacityFile
 

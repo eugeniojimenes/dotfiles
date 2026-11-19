@@ -67,12 +67,10 @@ TestCase {
 
   function test_opacity() {
     const rows = Menu.rows(Menu.items(state, apps), "style.opacity", "")
-    compare(rows.length, 8)
-    compare(rows[0].label, "100%")
-    compare(rows[4].label, "92%")
-    compare(rows[4].icon, "󰄬")
+    compare(labels(rows), ["100%", "99%", "98%", "97%", "96%", "94%", "92%", "88%", "85%", "80%"])
+    compare(rows[6].icon, "󰄬")
     compare(rows.filter(row => row.icon === "󰄬").length, 1)
-    compare(rows[7].run, ["sh", "-c", "~/.config/sway/bin/opacity 0.80"])
+    compare(rows[9].run, ["sh", "-c", "~/.config/sway/bin/opacity 0.80"])
   }
 
   function test_hibernation() {
