@@ -26,6 +26,7 @@ As regras e skills são escritas em inglês, no estilo comprimido descrito no `A
 | `add-panel` | Adicionar um painel Quickshell seguindo o padrão dos painéis existentes. |
 | `new-feature` | Entregar uma funcionalidade começando pela spec: critérios, testes, código, docs. |
 | `update-media` | Achar screenshots e GIFs desatualizados ou faltando, capturar com nomes privados ocultos e publicar no `dotfiles-media`. |
+| `manual-check` | Rodar itens do `tests/manual.md` na sessão ao vivo: controlar teclado e mouse, capturar a tela, relatar o que cada critério mostrou e gravar o pass quando o dono concordar. |
 
 ## Qual ferramenta lê o quê
 
@@ -42,10 +43,10 @@ Observações sobre a tabela, conferidas na documentação de cada ferramenta em
 
 - O Claude Code só lê `paths:` do frontmatter de uma regra e ignora as outras chaves. O Cursor lê `description`, `globs` (uma string separada por vírgulas) e `alwaysApply`. Por isso cada regra tem `paths:` e `globs:` com os mesmos padrões.
 - O Cursor só carrega arquivos de regra com extensão `.mdc`, então `.cursor/rules/` tem um link `.mdc` por regra em vez de um link para a pasta inteira. A documentação do Cursor não diz se ele segue symlinks nessa pasta, e o Cursor não estava instalado aqui para testar.
-- O Codex não tem arquivos de regra por caminho. As instruções dele vêm de arquivos `AGENTS.md`, um por pasta. O recurso "rules" dele controla quais comandos podem rodar, o que é outra coisa.
-- O OpenCode também não tem regras por caminho. A opção `instructions` dele sempre carrega os arquivos listados. Ele acha as skills em `.claude/skills` e `.agents/skills` sem nenhum link extra.
+- O Codex não tem arquivos de regra por caminho. As instruções dele vêm de arquivos `AGENTS.md`, um por pasta. O recurso "rules" dele controla quais comandos podem rodar, o que é outra coisa. A lista "Area rules" do `AGENTS.md` diz qual arquivo de regra vale para cada parte do repo, então o Codex sabe qual ler antes de mexer nessa parte.
+- O OpenCode também não tem regras por caminho. A opção `instructions` dele sempre carrega os arquivos listados. Ele segue a mesma lista "Area rules" do `AGENTS.md`. Ele acha as skills em `.claude/skills` e `.agents/skills` sem nenhum link extra.
 - O Cursor e o OpenCode leem `.claude/skills` e `.agents/skills`, que apontam para os mesmos arquivos. O `opencode debug skill` lista cada skill uma vez só, vinda de `.agents/skills`. O Cursor pode listar uma skill duas vezes.
-- Conferido aqui em novembro de 2026: uma sessão do Claude Code carrega o `AGENTS.md` pelo `CLAUDE.md`, enxerga as cinco skills e carrega `rules/sway.md` depois de ler um arquivo dentro de `sway/`.
+- Conferido aqui em novembro de 2026: uma sessão do Claude Code carrega o `AGENTS.md` pelo `CLAUDE.md`, enxerga as sete skills e carrega `rules/sway.md` depois de ler um arquivo dentro de `sway/`.
 
 ## Adicionar uma regra
 
@@ -61,6 +62,7 @@ Observações sobre a tabela, conferidas na documentação de cada ferramenta em
    ```
 2. Crie o link para o Cursor: `ln -s ../../harness/rules/<área>.md .cursor/rules/<área>.mdc`.
 3. Adicione a regra na tabela acima e no `README.md`.
+4. Adicione a regra na lista "Area rules" do `AGENTS.md`, que é como o Codex e o OpenCode a encontram.
 
 ## Adicionar uma skill
 
@@ -68,4 +70,4 @@ Observações sobre a tabela, conferidas na documentação de cada ferramenta em
 2. Nenhum link é necessário: os links de pasta já cobrem skills novas.
 3. Adicione a skill na tabela acima e no `README.md`.
 
-Faça `git add` nos arquivos novos antes de rodar o `bin/check`, que também procura travessões neles.
+Faça `git add` nos arquivos novos antes de rodar o `bin/check`, que também procura travessões neles e confere que o frontmatter é YAML válido com as suas chaves (step `frontmatter`).

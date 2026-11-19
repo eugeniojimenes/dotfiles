@@ -57,11 +57,9 @@ Minha configuração pessoal para NixOS com o compositor Sway. O sistema em si (
    reboot
    ```
 
-6. Instale o que fica fora do Nix: as linguagens e CLIs do mise, o gerenciador de plugins do tmux e a interface do mpv. Dentro do tmux, aperte `prefix + I` para instalar os plugins. Abra o Neovim uma vez para o lazy.nvim instalar os plugins dele.
+6. Instale o que fica fora do Nix: as linguagens e CLIs do mise. Abra o Neovim uma vez para o lazy.nvim instalar os plugins dele. Os plugins do tmux vêm com o sistema.
    ```sh
    mise install
-   git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
-   curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
    ```
 
 7. Ative o hook de pre-commit, que recusa commits com um segredo ou um termo proibido: `git config core.hooksPath .githooks`.
@@ -75,7 +73,7 @@ Minha configuração pessoal para NixOS com o compositor Sway. O sistema em si (
 ## Usar como base para o seu
 A configuração é pessoal, então um fork precisa de algumas mudanças antes da instalação acima.
 
-- O nome de usuário `callmarx` aparece no `nixos/common.nix` (o usuário e os caminhos do greetd), no `sway/.config/sway/apps/fuzzel-menu.ini` e no `sway/.config/xdg-desktop-portal-wlr/sway`. Os dois últimos usam o caminho absoluto `/home/callmarx/`.
+- O nome de usuário `callmarx` é definido uma vez só, como `user` no topo do `nixos/common.nix`. Use o nome que você escolheu no instalador, porque mudar ali cria um usuário novo em vez de renomear o existente.
 - Escreva sua própria pasta de host em vez de reaproveitar `nixos/hosts/loc-nixos/`. Essa tem os IDs de barramento do NVIDIA PRIME e configurações da Intel para um notebook específico.
 - Fuso horário e layout do console estão no `nixos/common.nix`. Os layouts de teclado estão em `sway/.config/sway/config.d/20-input`, onde o teclado externo é identificado pelo nome.
 - Troque a seção `[user]` do `git/.gitconfig`. O include da identidade do trabalho aponta para um arquivo que fica no meu repo privado, e o git ignora o include quando o arquivo não existe.
@@ -88,12 +86,14 @@ A busca de termos do `bin/check` e do hook precisa de uma lista do meu repo priv
 ## Uso no dia a dia
 ```sh
 sudo nixos-rebuild switch --flake ~/dotfiles                       # depois de editar o nixos/, escolhe o host pelo hostname
-nix flake update && sudo nixos-rebuild switch --flake ~/dotfiles   # atualiza os pacotes
+bin/update                                                         # atualiza tudo, depois rode o comando que ele mostra
 sudo nixos-rebuild switch --rollback                               # volta para a geração anterior
 stow <module>                                                      # liga um módulo, a partir de ~/dotfiles
 stow -D <module>                                                   # remove os links, os arquivos ficam no repo
 ```
 Um arquivo novo em `nixos/` precisa de `git add` antes que o rebuild o enxergue. As gerações anteriores também aparecem no menu de boot.
+
+O `bin/update` (também em System › Update no menu do Sway) atualiza o sistema, as ferramentas do mise e os plugins do Neovim, e lista as atualizações de firmware. Os plugins do tmux vêm do nixpkgs junto com o sistema. O sistema usa o release mais novo do NixOS com pelo menos 2 dias, ou um mais novo quando ele corrige um CVE sério nesta máquina, e é testado, construído e comparado antes de você aplicá-lo com o comando mostrado no final. O mise só instala releases com pelo menos 7 dias. O [docs/nixos.pt-br.md](docs/nixos.pt-br.md#atualizando) explica o porquê.
 
 No Sway, `Super + Space` abre o menu e `Super + K` lista todos os atalhos. No tmux, `prefix + ?` lista os atalhos.
 
@@ -114,7 +114,7 @@ No Sway, `Super + Space` abre o menu e `Super + K` lista todos os atalhos. No tm
 
 - **mise** (`mise/.config/mise/`): o gerenciador de versões de Node, Python, Ruby, Rust, Go, uv e das CLIs de agentes. Os binários pré-compilados deles rodam no NixOS pelo `programs.nix-ld`.
 
-- **mpv** (`mpv/.config/mpv/`): o player de vídeo, com a interface [uosc](https://github.com/tomasklaen/uosc). A uosc vem do instalador dela, fica fora do git e se atualiza pelo próprio menu (**Update uosc**). O [docs/mpv.pt-br.md](docs/mpv.pt-br.md) tem os detalhes.
+- **mpv** (`mpv/.config/mpv/`): o player de vídeo, com a interface [uosc](https://github.com/tomasklaen/uosc). A uosc vem do nixpkgs pelo wrapper do mpv, fixada pelo `flake.lock`. O [docs/mpv.pt-br.md](docs/mpv.pt-br.md) tem os detalhes.
 
 - **OpenCode** (`opencode/.config/opencode/`): modelo, plugins, o servidor MCP do context7 e a config da TUI.
 
@@ -122,7 +122,7 @@ No Sway, `Super + Space` abre o menu e `Super + K` lista todos os atalhos. No tm
 
 - **Steam** (`steam/`): atalhos de jogos em `~/.local/share/applications/`. Para rodar um jogo na GPU NVIDIA, use a opção de lançamento `prime-run %command%`.
 
-- **Sway** (`sway/.config/sway/`): o desktop inteiro numa pasta. Tem a config do Sway, waybar, o menu no fuzzel, um daemon de notificações no Quickshell, os painéis Quickshell de calendário, tela, som, energia, Wi-Fi e Bluetooth, a tela de bloqueio, a troca de papel de parede de `~/Pictures/Wallpapers`, capturas e gravação de tela, modo acordado, luz noturna, troca de perfil de energia, histórico do clipboard, seletor de emoji e o seletor de compartilhamento de tela (`sway/.config/xdg-desktop-portal-wlr/sway`). A config fica dividida por assunto em `config.d/`, os scripts em `bin/` e as configs dos apps em `apps/`. O `bin/start` põe a GPU integrada primeiro, e a NVIDIA só cuida das saídas ligadas nela. O [docs/sway.pt-br.md](docs/sway.pt-br.md) tem os detalhes.
+- **Sway** (`sway/.config/sway/`): o desktop inteiro numa pasta. Tem a config do Sway, waybar (com a música que toca), o menu no fuzzel, um daemon de notificações no Quickshell, os painéis Quickshell de calendário, tela, som (com um card de mídia), energia, Wi-Fi e Bluetooth, a tela de bloqueio, a troca de papel de parede de `~/Pictures/Wallpapers`, capturas e gravação de tela, modo acordado, luz noturna, troca de perfil de energia, histórico do clipboard, seletor de emoji e o seletor de compartilhamento de tela (`bin/share-picker`, ligado ao portal no `nixos/common.nix`). A config fica dividida por assunto em `config.d/`, os scripts em `bin/` e as configs dos apps em `apps/`. O `bin/start` põe a GPU integrada primeiro, e a NVIDIA só cuida das saídas ligadas nela. O [docs/sway.pt-br.md](docs/sway.pt-br.md) tem os detalhes.
 
 - **tmux** (`tmux/`): o prefixo é `Ctrl + \` (ou `Ctrl + b`). Os snapshots são manuais: `prefix + Ctrl-s` salva e `prefix + Ctrl-r` restaura sessões, layouts e diretórios, sem reabrir programas. `Super + Alt + Return` entra no servidor principal quando ninguém está conectado nele, e senão abre um servidor independente. As sessões do Neovim ficam em `<leader>qs`. O [docs/tmux.pt-br.md](docs/tmux.pt-br.md) tem os detalhes.
 
@@ -139,15 +139,15 @@ Um conflito do stow (um arquivo real onde devia haver um symlink) nunca é corri
 O `bin/check` roda as camadas de teste pelos checks do flake. As ferramentas vêm do nixpkgs fixado, então nada precisa ser instalado. Rode antes de cada commit. O flake só enxerga arquivos rastreados, então faça `git add` nos arquivos novos antes.
 ```sh
 bin/check           # tudo: static, unit, eval de cada host, depois a busca de termos do empregador
-bin/check static    # formatação (nix fmt não mudaria nada), shellcheck, nixfmt e statix, sway -C por host, qmllint, painéis carregados num Sway headless, JSON do waybar, varredura de em-dash, pares de docs, stow simulado, gitleaks
+bin/check static    # formatação (nix fmt não mudaria nada), shellcheck, statix, sway -C por host, qmllint, painéis carregados num Sway headless, JSON do waybar, config do tmux carregado pelo tmux travado, caminhos do Sway, a paleta de cores e o formato dos textos dos painéis, varredura de em-dash, pares de docs, todo critério de spec ligado a um teste que existe, frontmatter válido nas regras e skills de agente, stow simulado, gitleaks
 bin/check unit      # testes bats em tests/unit/, scripts rodam contra comandos stub
 bin/check terms     # só local: arquivos e caminhos rastreados contra a lista de termos em ~/.private, pulado quando está trancado
 nix develop         # shell com as mesmas ferramentas, para rodar uma delas na mão
 nix fmt             # formata o repo: Nix, shell, Lua, TOML, CSS, JSON, YAML, JS (treefmt.nix, estilo no .editorconfig)
 ```
-O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Os testes de hardware e de sessão ao vivo estão em [tests/manual.md](tests/manual.md), e as specs das funcionalidades, que dizem o que cada teste cobre, estão em [docs/specs/](docs/specs/README.md) (só em inglês).
+O CI do GitLab roda `nix flake check -L` em todo push para `sway` e `develop`. Isso cobre todas as camadas menos `terms`. Os testes de hardware e de sessão ao vivo estão em [tests/manual.md](tests/manual.md). Quando itens passam, `bin/manual-pass "<item>"...` registra em `tests/manual-passes.toml`, que guarda a última passada de cada item por máquina com a máquina e as versões de software em que passou (`-n` mostra o resultado antes, `--with` acrescenta os periféricos usados, ou `agent-driven` quando um agente rodou o teste), e as specs das funcionalidades, que dizem o que cada teste cobre, estão em [docs/specs/](docs/specs/README.md) (só em inglês).
 
-O hook de pre-commit em `.githooks/` recusa o commit quando um arquivo ou caminho em stage tem um termo proibido (`bin/check terms --cached`) ou as mudanças em stage têm um segredo (`gitleaks git --staged`). O hook commit-msg ao lado faz a mesma busca de termos na mensagem do commit. Ele mostra `arquivo:linha` e nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative em cada clone com `git config core.hooksPath .githooks` (o `dotfiles-doctor --fix` faz o mesmo). O hook roda só na máquina local, e o CI roda as mesmas buscas pelo `bin/check`, menos `terms`. Para pular uma vez, use `git commit --no-verify`. O [docs/public-repo.pt-br.md](docs/public-repo.pt-br.md) lista o que cada busca deixa passar.
+O hook de pre-commit em `.githooks/` recusa o commit quando um arquivo ou caminho em stage tem um termo proibido (`bin/check terms --cached`) ou as mudanças em stage têm um segredo (`gitleaks git --staged`). O hook commit-msg ao lado faz a mesma busca de termos na mensagem do commit, e o hook pre-push roda as duas buscas em cada commit prestes a ser enviado, então commits reescritos por um rebase ou squash também são verificados. Ele mostra `arquivo:linha` e nunca o valor. O git só roda o hook depois que o clone aponta para ele, então ative em cada clone com `git config core.hooksPath .githooks` (o `dotfiles-doctor --fix` faz o mesmo). O hook roda só na máquina local, e o CI roda as mesmas buscas pelo `bin/check`, menos `terms`. Para pular uma vez, use `git commit --no-verify`. O [docs/public-repo.pt-br.md](docs/public-repo.pt-br.md) lista o que cada busca deixa passar.
 
 ## Cedilha com teclado US
 O layout US internacional transforma `'` seguido de `c` em ć. Para ter ç, acrescente um override no fim do `~/.XCompose`, que é local da máquina e fica fora do repo:
@@ -160,7 +160,7 @@ include "%L"
 <dead_acute> <C> : "Ç" Ccedilla
 XC
 ```
-Reinicie os apps para pegar a mudança. Para conferir, `xkbcli compile-compose | grep '<dead_acute> <c>'` deve mostrar ç. O teclado ABNT2 do notebook tem tecla própria de ç e não precisa disso.
+Reinicie os apps para pegar a mudança. Para conferir, `xkbcli compile-compose | grep '<dead_acute> <c>'` deve mostrar ç. Apps Chromium e Electron (Brave, Slack) ignoram o `~/.XCompose` e compõem com uma tabela embutida que dá ć, então recebem as teclas pelo fcitx5, um método de entrada que compõe com a mesma biblioteca e lê esse arquivo. O `nixos/common.nix` instala ele com uma config só de teclado em `/etc/xdg/fcitx5`, e o Sway inicia ele. O teclado ABNT2 do notebook tem tecla própria de ç e não precisa disso.
 
 ## Documentação
 O [docs/](docs/README.pt-br.md) explica como cada parte funciona e por quê: NixOS, máquinas, Sway, tmux, git, as regras do repo público, Claude Code, dotfiles-doctor e mpv. Cada página também tem uma versão em inglês.

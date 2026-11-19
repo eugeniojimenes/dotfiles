@@ -26,6 +26,7 @@ The rules and skills are written in English, in the compressed style described i
 | `add-panel` | Add a Quickshell panel following the existing panel pattern. |
 | `new-feature` | Ship a feature spec first: criteria, tests, code, docs. |
 | `update-media` | Find stale or missing screenshots and GIFs, capture them with private names masked, publish them to `dotfiles-media`. |
+| `manual-check` | Run `tests/manual.md` items on the live session: drive the keyboard and mouse, capture the screen, report what each criterion showed, record the pass once the owner agrees. |
 
 ## Which tool reads what
 
@@ -42,10 +43,10 @@ Notes on the table, checked against each tool's documentation in November 2026:
 
 - Claude Code reads only `paths:` from a rule's frontmatter and ignores the other keys. Cursor reads `description`, `globs` (a comma-separated string) and `alwaysApply`. That is why each rule carries both `paths:` and `globs:` with the same patterns.
 - Cursor only loads rule files with the `.mdc` extension, so `.cursor/rules/` holds one `.mdc` link per rule instead of a link to the whole directory. Cursor's documentation does not say whether it follows symlinks in that directory, and Cursor was not installed here to test it.
-- Codex has no path-scoped rule files. Its instructions come from `AGENTS.md` files, one per directory. Its own "rules" feature controls which commands may run, which is a different thing.
-- OpenCode has no path-scoped rules either. Its `instructions` setting always loads the listed files. It finds skills in `.claude/skills` and `.agents/skills` without any extra link.
+- Codex has no path-scoped rule files. Its instructions come from `AGENTS.md` files, one per directory. Its own "rules" feature controls which commands may run, which is a different thing. The "Area rules" list in `AGENTS.md` names the rule file for each part of the repo, so Codex is told which one to read before it touches that part.
+- OpenCode has no path-scoped rules either. Its `instructions` setting always loads the listed files. It follows the same "Area rules" list in `AGENTS.md`. It finds skills in `.claude/skills` and `.agents/skills` without any extra link.
 - Cursor and OpenCode read both `.claude/skills` and `.agents/skills`, which point at the same files. `opencode debug skill` lists each skill once, from `.agents/skills`. Cursor may list a skill twice.
-- Checked here in November 2026: a Claude Code session loads `AGENTS.md` through `CLAUDE.md`, sees the five skills, and loads `rules/sway.md` after reading a file under `sway/`.
+- Checked here in November 2026: a Claude Code session loads `AGENTS.md` through `CLAUDE.md`, sees the seven skills, and loads `rules/sway.md` after reading a file under `sway/`.
 
 ## Adding a rule
 
@@ -61,6 +62,7 @@ Notes on the table, checked against each tool's documentation in November 2026:
    ```
 2. Link it for Cursor: `ln -s ../../harness/rules/<area>.md .cursor/rules/<area>.mdc`.
 3. Add it to the table above and to `README.pt-br.md`.
+4. Add it to the "Area rules" list in `AGENTS.md`, which is how Codex and OpenCode find it.
 
 ## Adding a skill
 
@@ -68,4 +70,4 @@ Notes on the table, checked against each tool's documentation in November 2026:
 2. No link is needed: the directory links already cover new skills.
 3. Add it to the table above and to `README.pt-br.md`.
 
-`git add` the new files before running `bin/check`, which also sweeps them for em dashes.
+`git add` the new files before running `bin/check`, which also sweeps them for em dashes and checks that the frontmatter is valid YAML with its keys (step `frontmatter`).

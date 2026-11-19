@@ -57,11 +57,9 @@ My personal configuration for NixOS with the Sway compositor. The system itself 
    reboot
    ```
 
-6. Install what lives outside Nix: the language runtimes and CLIs from mise, the tmux plugin manager and the mpv interface. Inside tmux, press `prefix + I` to install the plugins. Open Neovim once so lazy.nvim installs its plugins.
+6. Install what lives outside Nix: the language runtimes and CLIs from mise. Open Neovim once so lazy.nvim installs its plugins. The tmux plugins come with the system.
    ```sh
    mise install
-   git clone https://github.com/tmux-plugins/tpm ~/.local/share/tmux/plugins/tpm
-   curl -fsSL https://raw.githubusercontent.com/tomasklaen/uosc/HEAD/installers/unix.sh | bash
    ```
 
 7. Turn on the pre-commit hook, which refuses commits that hold a secret or a forbidden term: `git config core.hooksPath .githooks`.
@@ -75,7 +73,7 @@ My personal configuration for NixOS with the Sway compositor. The system itself 
 ## Using it as a base for your own
 The configuration is personal, so a fork needs a few edits before the install above.
 
-- The user name `callmarx` appears in `nixos/common.nix` (the user and the greetd paths), in `sway/.config/sway/apps/fuzzel-menu.ini` and in `sway/.config/xdg-desktop-portal-wlr/sway`. The last two use the absolute path `/home/callmarx/`.
+- The user name `callmarx` is set once, as `user` at the top of `nixos/common.nix`. Use the name you picked in the installer, since changing it there creates a new user instead of renaming the existing one.
 - Write your own host directory instead of reusing `nixos/hosts/loc-nixos/`. That one has NVIDIA PRIME bus IDs and Intel settings for one specific notebook.
 - Time zone and console keymap are in `nixos/common.nix`. Keyboard layouts are in `sway/.config/sway/config.d/20-input`, where the external keyboard is matched by its name.
 - Change the `[user]` section of `git/.gitconfig`. The work identity include points at a file that lives in my private repo, and git skips it when the file does not exist.
@@ -88,12 +86,14 @@ The term scan in `bin/check` and in the hook needs a list from my private repo. 
 ## Daily use
 ```sh
 sudo nixos-rebuild switch --flake ~/dotfiles                       # after editing nixos/, picks the host by hostname
-nix flake update && sudo nixos-rebuild switch --flake ~/dotfiles   # update packages
+bin/update                                                         # update everything, then the command it prints
 sudo nixos-rebuild switch --rollback                               # back to the previous generation
 stow <module>                                                      # link a module, from ~/dotfiles
 stow -D <module>                                                   # remove its links, the files stay in the repo
 ```
 A new file under `nixos/` needs `git add` before a rebuild sees it. Older generations are also in the boot menu.
+
+`bin/update` (also System › Update in the Sway menu) updates the system, the mise tools and the Neovim plugins, and lists firmware updates. The tmux plugins come from nixpkgs with the system. The system takes the newest NixOS release that is at least 2 days old, or a newer one when it fixes a serious CVE on this machine, and it is tested, built and compared before you apply it with the command printed at the end. mise only installs releases that are at least 7 days old. [docs/nixos.md](docs/nixos.md#updating) explains why.
 
 In Sway, `Super + Space` opens the menu and `Super + K` lists every key binding. In tmux, `prefix + ?` lists the bindings.
 
@@ -114,7 +114,7 @@ In Sway, `Super + Space` opens the menu and `Super + K` lists every key binding.
 
 - **mise** (`mise/.config/mise/`): the version manager for Node, Python, Ruby, Rust, Go, uv and the agent CLIs. Their prebuilt binaries run on NixOS through `programs.nix-ld`.
 
-- **mpv** (`mpv/.config/mpv/`): the video player, with the [uosc](https://github.com/tomasklaen/uosc) interface. uosc comes from its own installer, is not tracked, and updates itself from its menu (**Update uosc**). [docs/mpv.md](docs/mpv.md) has the details.
+- **mpv** (`mpv/.config/mpv/`): the video player, with the [uosc](https://github.com/tomasklaen/uosc) interface. uosc comes from nixpkgs through the mpv wrapper, pinned by `flake.lock`. [docs/mpv.md](docs/mpv.md) has the details.
 
 - **OpenCode** (`opencode/.config/opencode/`): model, plugins, the context7 MCP server and TUI settings.
 
@@ -122,7 +122,7 @@ In Sway, `Super + Space` opens the menu and `Super + K` lists every key binding.
 
 - **Steam** (`steam/`): game launchers in `~/.local/share/applications/`. To run a game on the NVIDIA GPU, set its launch option to `prime-run %command%`.
 
-- **Sway** (`sway/.config/sway/`): the whole desktop in one directory. It holds the Sway config, waybar, the fuzzel menu, a Quickshell notification daemon, the Quickshell calendar, display, sound, power, Wi-Fi and Bluetooth panels, the lock screen, a wallpaper switcher for `~/Pictures/Wallpapers`, screenshots, screen recording, stay awake, night light, a power profile switch, clipboard history, an emoji picker and the screen-share picker (`sway/.config/xdg-desktop-portal-wlr/sway`). The config is split by topic in `config.d/`, scripts are in `bin/` and app configs in `apps/`. `bin/start` puts the integrated GPU first, so the NVIDIA GPU only drives the outputs wired to it. [docs/sway.md](docs/sway.md) has the details.
+- **Sway** (`sway/.config/sway/`): the whole desktop in one directory. It holds the Sway config, waybar (with the track that plays), the fuzzel menu, a Quickshell notification daemon, the Quickshell calendar, display, sound (with a media card), power, Wi-Fi and Bluetooth panels, the lock screen, a wallpaper switcher for `~/Pictures/Wallpapers`, screenshots, screen recording, stay awake, night light, a power profile switch, clipboard history, an emoji picker and the screen-share picker (`bin/share-picker`, wired to the portal in `nixos/common.nix`). The config is split by topic in `config.d/`, scripts are in `bin/` and app configs in `apps/`. `bin/start` puts the integrated GPU first, so the NVIDIA GPU only drives the outputs wired to it. [docs/sway.md](docs/sway.md) has the details.
 
 - **tmux** (`tmux/`): the prefix is `Ctrl + \` (or `Ctrl + b`). Snapshots are manual: `prefix + Ctrl-s` saves and `prefix + Ctrl-r` restores sessions, layouts and working directories, without relaunching programs. `Super + Alt + Return` attaches to the main server when nothing is attached to it, and otherwise opens an independent one. Neovim sessions are on `<leader>qs`. [docs/tmux.md](docs/tmux.md) has the details.
 
@@ -139,15 +139,15 @@ A stow conflict (a real file where a symlink belongs) is never fixed automatical
 `bin/check` runs the test layers through the flake checks. The tools come from the pinned nixpkgs, so nothing needs to be installed. Run it before every commit. The flake only sees tracked files, so `git add` new files first.
 ```sh
 bin/check           # everything: static, unit, eval of each host, then the employer-term scan
-bin/check static    # format (nix fmt would change nothing), shellcheck, nixfmt and statix, sway -C per host, qmllint, panels loaded in headless Sway, waybar JSON, em-dash sweep, doc pairs, stow dry run, gitleaks
+bin/check static    # format (nix fmt would change nothing), shellcheck, statix, sway -C per host, qmllint, panels loaded in headless Sway, waybar JSON, tmux config loaded by the pinned tmux, Sway paths, the colour palette and the text format of panel texts, em-dash sweep, doc pairs, every spec criterion mapped to a test that exists, valid frontmatter in the agent rules and skills, stow dry run, gitleaks
 bin/check unit      # bats tests in tests/unit/, scripts run against stubbed commands
 bin/check terms     # local only: tracked files and paths against the term list in ~/.private, skipped when it is locked
 nix develop         # shell with the same tools, to run one of them by hand
 nix fmt             # format the repo: Nix, shell, Lua, TOML, CSS, JSON, YAML, JS (treefmt.nix, style in .editorconfig)
 ```
-GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md), and the feature specs that list what each test covers are in [docs/specs/](docs/specs/README.md).
+GitLab CI runs `nix flake check -L` on every push to `sway` and `develop`. That covers every layer except `terms`. Hardware and live-session checks are in [tests/manual.md](tests/manual.md). When items pass, `bin/manual-pass "<item>"...` records them in `tests/manual-passes.toml`, which keeps the last pass of each item per machine with the machine and the software versions it passed on (`-n` shows the result first, `--with` adds the peripherals used, or `agent-driven` when an agent ran the check), and the feature specs that list what each test covers are in [docs/specs/](docs/specs/README.md).
 
-The pre-commit hook in `.githooks/` refuses a commit when a staged file or path holds a forbidden term (`bin/check terms --cached`) or the staged changes hold a secret (`gitleaks git --staged`). The commit-msg hook next to it does the same term check on the commit message. It prints `file:line` and never the value. Git only runs it once the clone points at it, so enable it in each clone with `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does the same). The hook runs locally only, and CI runs the same scans through `bin/check`, except `terms`. To skip it once, use `git commit --no-verify`. [docs/public-repo.md](docs/public-repo.md) lists what each scan misses.
+The pre-commit hook in `.githooks/` refuses a commit when a staged file or path holds a forbidden term (`bin/check terms --cached`) or the staged changes hold a secret (`gitleaks git --staged`). The commit-msg hook next to it does the same term check on the commit message, and the pre-push hook runs both scans on every commit about to be pushed, so commits rewritten by a rebase or a squash are checked too. It prints `file:line` and never the value. Git only runs it once the clone points at it, so enable it in each clone with `git config core.hooksPath .githooks` (`dotfiles-doctor --fix` does the same). The hook runs locally only, and CI runs the same scans through `bin/check`, except `terms`. To skip it once, use `git commit --no-verify`. [docs/public-repo.md](docs/public-repo.md) lists what each scan misses.
 
 ## Cedilla with US keyboard layout
 The US international layout turns `'` followed by `c` into ć. To get ç, add an override at the end of `~/.XCompose`, which is machine-local and not in the repo:
@@ -160,7 +160,7 @@ include "%L"
 <dead_acute> <C> : "Ç" Ccedilla
 XC
 ```
-Restart the apps to pick it up. To check, `xkbcli compile-compose | grep '<dead_acute> <c>'` should print ç. The notebook's built-in ABNT2 keyboard has its own ç key and needs nothing.
+Restart the apps to pick it up. To check, `xkbcli compile-compose | grep '<dead_acute> <c>'` should print ç. Chromium and Electron apps (Brave, Slack) ignore `~/.XCompose` and compose with a built-in table that gives ć, so they get their keys through fcitx5 instead, an input method that composes with the same library and reads that file. `nixos/common.nix` installs it with a keyboard-only config in `/etc/xdg/fcitx5`, and Sway starts it. The notebook's built-in ABNT2 keyboard has its own ç key and needs nothing.
 
 ## Docs
 [docs/](docs/README.md) explains how each part works and why: NixOS, machines, Sway, tmux, git, the public repo rules, Claude Code, dotfiles-doctor and mpv. Each page also has a Portuguese version.

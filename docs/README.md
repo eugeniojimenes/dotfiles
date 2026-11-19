@@ -5,12 +5,12 @@ How the parts of this repo work and why they are set up the way they are. Instal
 - [nixos.md](nixos.md): flake layout, the notebook host, login, portals, Bluetooth pairing, theme, generations and garbage collection.
 - [machines.md](machines.md): what is configured per machine and how to add a new one.
 - [sway.md](sway.md): the Sway directory layout, binding titles, GPU order, resume, Quickshell panels.
-- [tmux.md](tmux.md): plugin manager location, binding descriptions, manual snapshots, extra servers.
+- [tmux.md](tmux.md): plugins from nixpkgs, binding descriptions, manual snapshots, extra servers, what to change when tmux 3.8 arrives.
 - [git.md](git.md): conditional work identity.
 - [public-repo.md](public-repo.md): no secrets, no employer details, leak scans, the 2026 history rewrite.
 - [claude-code.md](claude-code.md): the global Claude Code module and why `settings.json` is not tracked.
 - [dotfiles-doctor.md](dotfiles-doctor.md): what the health check looks at and how it reads stow.
-- [mpv.md](mpv.md): uosc install and updates.
+- [mpv.md](mpv.md): uosc from nixpkgs, and why not its installer.
 - [specs/](specs/README.md): feature specs and the tests that cover them (English only).
 
 Screenshots and GIFs live in the separate repo [dotfiles-media](https://github.com/eugeniojimenes/dotfiles-media), so old versions never add to this repo's size. `docs/media.json` lists each one with its alt text and the files it shows.
