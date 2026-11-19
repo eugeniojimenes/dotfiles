@@ -51,7 +51,7 @@ ShellRoot {
         spacing: 8
         Text { text: "●"; color: Theme.error; font.family: Theme.font; font.pixelSize: 14 }
         Text { text: "REC"; color: Theme.error; font.family: Theme.font; font.pixelSize: 14; font.bold: true }
-        Text { text: win.clock(win.elapsed); color: Theme.fg; font.family: Theme.font; font.pixelSize: 14 }
+        Text { textFormat: Text.PlainText; text: win.clock(win.elapsed); color: Theme.fg; font.family: Theme.font; font.pixelSize: 14 }
       }
 
       MouseArea {

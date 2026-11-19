@@ -1,7 +1,10 @@
 #!/bin/sh
-# Screenshot to ~/Pictures/screenshot-<date>.png and to the clipboard.
+# Screenshot to ~/Pictures/Screenshots/screenshot-<date>.png and to the clipboard. Spec: docs/specs/screenshot.md.
 # area = drag a region with slurp (Esc cancels), screen = the focused output.
+# The notification's Edit button opens it in satty: Enter or Copy saves over the same file and copies the result. notify-send
+# waits for the button; after 10 min it stops waiting and the button does nothing.
 dir=$(xdg-user-dir PICTURES 2>/dev/null) || dir=$HOME/Pictures
+dir=$dir/Screenshots
 mkdir -p "$dir"
 file=$dir/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
 case ${1:-area} in
@@ -10,4 +13,11 @@ case ${1:-area} in
     grim -g "$geom" "$file"
     ;;
   screen) grim -o "$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')" "$file" ;;
-esac && wl-copy <"$file" && notify-send -a Screenshot -i "$file" "Screenshot saved" "$file"
+esac || exit 1
+wl-copy <"$file" || exit 1
+action=$(timeout 600 notify-send -a Screenshot -i "$file" -A edit=Edit "Screenshot saved" "$file")
+[ "$action" = edit ] || exit 0
+# Enter and Copy both copy and save over the file (--save-after-copy), then close (--early-exit). satty's own defaults
+# do neither on Enter, and its Copy alone leaves the file unedited.
+exec satty --filename "$file" --output-filename "$file" --copy-command wl-copy --early-exit \
+  --actions-on-enter save-to-clipboard --save-after-copy

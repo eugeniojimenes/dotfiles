@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Screen recording to <XDG videos>/recording-<date>.mp4 with wf-recorder. Spec: docs/specs/screen-recording.md.
-#   record area               drag a region with slurp (Esc cancels)
-#   record screen             the focused output
+# Screen recording to <XDG videos>/Screenrecords/recording-<date>.mp4 with wf-recorder. Spec: docs/specs/screen-recording.md.
+#   record area [audio]       drag a region with slurp (Esc cancels); audio = the default microphone too
+#   record screen [audio]     the focused output
 #   record stop | status      status = JSON for the waybar module (signal 9)
 # While it runs: notifications hidden, a floating box (panels/recording.qml) shows the time.
-# A start while a recording runs stops it instead: the same key starts and stops. Video only, no audio.
+# A start while a recording runs stops it instead: the same key starts and stops. Keys record video only; the menu
+# offers the audio variants.
 # x264 on the CPU: wf-recorder only encodes damaged frames, so load stays low, and no VA-API driver is installed.
 
 pidfile=${XDG_RUNTIME_DIR:-/tmp}/sway-record.pid
@@ -49,6 +50,8 @@ if running; then
 fi
 
 args=()
+# Default PipeWire source (the microphone), through wf-recorder's pulse backend.
+[[ ${2-} == audio ]] && args+=(--audio)
 if [[ $1 == area ]]; then
   geom=$(slurp) || exit 0
   args+=(-g "$geom")
@@ -56,27 +59,45 @@ else
   args+=(-o "$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')")
 fi
 dir=$(xdg-user-dir VIDEOS 2>/dev/null) || dir=$HOME/Videos
+dir=$dir/Screenrecords
 mkdir -p "$dir"
 file=$dir/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4
 
+# Script killed mid-recording (TERM, INT, HUP): stop wf-recorder so it finishes the file, then the cleanup below runs
+# anyway. Without it the recording mode stayed on and every notification stayed hidden with nothing recording. Set
+# before the mode goes on, so a signal from there on still cleans up. SIGKILL cannot be caught: the centre's Show popups
+# chip turns the mode off.
+rec=''
+interrupted=0
+trap 'interrupted=1; [[ -n $rec ]] && kill -INT "$rec" 2>/dev/null' TERM INT HUP
 # Sway cannot keep a surface out of the capture: notifications hidden (mode, see bin/dnd) instead of recorded.
 "$bin/dnd" record-on
 wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 &
 rec=$!
 echo "$rec" >"$pidfile"
+# Signal before $rec was set: stop the recording that just started.
+((interrupted)) && kill -INT "$rec" 2>/dev/null
 poke
 # Floating box with the elapsed time, click = stop. Part of the video when it sits inside the recorded area.
 quickshell -p "$bin/../panels/recording.qml" >/dev/null 2>&1 &
 box=$!
 wait "$rec"
 rc=$?
+# Each trapped signal ends `wait` early, a repeated one too: wait again until wf-recorder has finished the file.
+while kill -0 "$rec" 2>/dev/null; do
+  wait "$rec"
+  rc=$?
+done
 kill "$box" 2>/dev/null
 rm -f "$pidfile"
 poke
 "$bin/dnd" record-off
 
+# A file with content is never deleted: an odd exit status may still leave a playable video.
 if ((rc == 0)) && [[ -s $file ]]; then
   notify-send -a Recording "Recording saved" "$file"
+elif [[ -s $file ]]; then
+  notify-send -a Recording -u critical "Recording may be incomplete" "$file (wf-recorder exit $rc)"
 else
   rm -f "$file"
   notify-send -a Recording -u critical "Recording failed" "wf-recorder exit $rc"

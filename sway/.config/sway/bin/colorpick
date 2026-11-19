@@ -1,0 +1,21 @@
+#!/bin/sh
+# Color picker: hyprpicker shows a magnifier, a click picks the pixel under it (Esc cancels). The hex color goes to the
+# clipboard and to a notification. Super+Ctrl+Print, menu Capture. Spec: docs/specs/colorpick.md.
+out=$(mktemp)
+trap 'rm -f "$out"' EXIT
+hyprpicker -q -f hex >"$out" 2>/dev/null &
+pick=$!
+# Sway hands a new layer surface the pointer only on the next motion: until the mouse moved, no lens and the old cursor.
+# A 1 px nudge and back, a few times while hyprpicker maps its surface, brings the lens up at once.
+for delay in 0.15 0.3 0.6; do
+  sleep "$delay"
+  kill -0 "$pick" 2>/dev/null || break
+  swaymsg -q seat - cursor move 1 0
+  swaymsg -q seat - cursor move -1 0
+done
+wait "$pick" || exit 0
+# hyprpicker logs to stdout too (-q keeps its errors): only the color, its last line holding one.
+color=$(grep -oE '#[0-9A-Fa-f]{6}' "$out" | tail -n 1)
+[ -n "$color" ] || exit 0
+printf '%s' "$color" | wl-copy
+notify-send -a "Color picker" "$color" "Copied to the clipboard"

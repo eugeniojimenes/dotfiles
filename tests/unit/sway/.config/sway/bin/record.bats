@@ -34,11 +34,11 @@ fake_recording() {
   stub slurp '10,10 20x20'
   run "$SWAY/bin/record" area
   assert_success
-  ls "$BATS_TEST_TMPDIR"/videos/recording-*.mp4
+  ls "$BATS_TEST_TMPDIR"/videos/Screenrecords/recording-*.mp4
   [[ ! -e $PIDFILE ]]
   run calls
-  assert_line --regexp "^wf-recorder -g 10,10 20x20 -f $BATS_TEST_TMPDIR/videos/recording-[0-9_-]+\.mp4$"
-  assert_line --regexp "^notify-send -a Recording Recording saved $BATS_TEST_TMPDIR/videos/recording-"
+  assert_line --regexp "^wf-recorder -g 10,10 20x20 -f $BATS_TEST_TMPDIR/videos/Screenrecords/recording-[0-9_-]+\.mp4$"
+  assert_line --regexp "^notify-send -a Recording Recording saved $BATS_TEST_TMPDIR/videos/Screenrecords/recording-"
   # Waybar poked once when it starts and once when it ends.
   [[ $(grep -c '^pkill -RTMIN+9 -f ^waybar $' "$STUBS/calls") == 2 ]]
 }
@@ -73,7 +73,18 @@ fake_recording() {
   run "$SWAY/bin/record" screen
   assert_success
   run calls
-  assert_line --regexp "^wf-recorder -o HDMI-A-1 -f $BATS_TEST_TMPDIR/videos/recording-"
+  assert_line --regexp "^wf-recorder -o HDMI-A-1 -f $BATS_TEST_TMPDIR/videos/Screenrecords/recording-"
+}
+
+@test "audio: the default microphone is recorded too, area and screen" {
+  stub slurp '10,10 20x20'
+  run "$SWAY/bin/record" area audio
+  assert_success
+  stub swaymsg '[{"name":"eDP-1","focused":true}]'
+  run "$SWAY/bin/record" screen audio
+  run calls
+  assert_line --regexp "^wf-recorder --audio -g 10,10 20x20 -f "
+  assert_line --regexp "^wf-recorder --audio -o eDP-1 -f "
 }
 
 @test "running: start or stop interrupts it, nothing new starts" {
@@ -114,15 +125,73 @@ fake_recording() {
   stub slurp '0,0 5x5'
   echo 'touch "${@: -1}"; exit 1' >"$STUBS/wf-recorder.sh"
   run "$SWAY/bin/record" area
-  run ls "$BATS_TEST_TMPDIR"/videos
+  run ls "$BATS_TEST_TMPDIR"/videos/Screenrecords
   assert_output ''
   run calls
   assert_line --regexp '^notify-send -a Recording -u critical Recording failed '
   assert_line "$QS modeOff recording"
 }
 
+@test "wf-recorder fails after writing: file kept, may-be-incomplete notification" {
+  stub slurp '0,0 5x5'
+  echo 'echo video >"${@: -1}"; exit 1' >"$STUBS/wf-recorder.sh"
+  run "$SWAY/bin/record" area
+  ls "$BATS_TEST_TMPDIR"/videos/Screenrecords/recording-*.mp4
+  run calls
+  assert_line --regexp '^notify-send -a Recording -u critical Recording may be incomplete .*recording-.*\.mp4 \(wf-recorder exit 1\)$'
+}
+
 @test "no argument: usage, exit 2" {
   run "$SWAY/bin/record"
   assert_failure 2
   assert_output --partial 'record area'
+}
+
+@test "record killed while recording: wf-recorder finishes the file, mode off, box closed" {
+  stub slurp '0,0 5x5'
+  # Background jobs start with SIGINT ignored, and bash cannot trap a signal ignored on entry: env resets it, so this
+  # wf-recorder finishes the file on SIGINT like the real one.
+  echo 'exec env --default-signal=INT bash -c '"'"'trap "echo video >\"$1\"; exit 0" INT; while :; do sleep 0.05; done'"'"' _ "${@: -1}"' \
+    >"$STUBS/wf-recorder.sh"
+  "$SWAY/bin/record" area 3>&- &
+  rec=$!
+  for _ in $(seq 200); do
+    grep -q recording.qml "$STUBS/calls" 2>/dev/null && break
+    sleep 0.02
+  done
+  kill -TERM "$rec"
+  for _ in $(seq 200); do
+    kill -0 "$rec" 2>/dev/null || break
+    sleep 0.02
+  done
+  run kill -0 "$rec"
+  assert_failure
+  [[ ! -e $PIDFILE ]]
+  ls "$BATS_TEST_TMPDIR"/videos/Screenrecords/recording-*.mp4
+  run grep -E '^(quickshell|notify-send) ' "$STUBS/calls"
+  assert_line "$QS modeOff recording"
+  assert_line --regexp '^notify-send -a Recording Recording saved '
+}
+
+@test "record signalled again while wf-recorder finishes: file kept, saved notification" {
+  stub slurp '0,0 5x5'
+  # Takes 0.5 s to finish the file after SIGINT, so the second TERM lands while it is still writing.
+  echo 'exec env --default-signal=INT bash -c '"'"'trap "sleep 0.5; echo video >\"$1\"; exit 0" INT; while :; do sleep 0.05; done'"'"' _ "${@: -1}"' \
+    >"$STUBS/wf-recorder.sh"
+  "$SWAY/bin/record" area 3>&- &
+  rec=$!
+  for _ in $(seq 200); do
+    grep -q recording.qml "$STUBS/calls" 2>/dev/null && break
+    sleep 0.02
+  done
+  kill -TERM "$rec"
+  sleep 0.1
+  kill -TERM "$rec"
+  for _ in $(seq 200); do
+    kill -0 "$rec" 2>/dev/null || break
+    sleep 0.02
+  done
+  ls "$BATS_TEST_TMPDIR"/videos/Screenrecords/recording-*.mp4
+  run grep '^notify-send ' "$STUBS/calls"
+  assert_output --regexp '^notify-send -a Recording Recording saved '
 }

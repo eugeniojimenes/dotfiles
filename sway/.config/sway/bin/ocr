@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Text from a screen area: drag a region with slurp (Esc cancels), tesseract reads it in English and Portuguese, the
+# text goes to the clipboard and a notification shows how it starts. Super+Print, menu Capture. Spec: docs/specs/ocr.md.
+
+geom=$(slurp) || exit 0
+# tesseract ends a page with a form feed; blank lines around the text are dropped.
+text=$(grim -g "$geom" - | tesseract stdin stdout -l eng+por 2>/dev/null | tr -d '\f' | sed '/./,$!d')
+
+if [[ -z ${text//[[:space:]]/} ]]; then
+  notify-send -a OCR -- "No text found" "Try a larger area or sharper text."
+  exit 0
+fi
+printf '%s' "$text" | wl-copy
+# The notification body is markup: escaped, so text such as "a < b" shows as read. First 200 characters. `--`: text
+# starting with "-" is the body, not an option.
+notify-send -a OCR -- "Text copied" "$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' <<<"${text:0:200}")"
