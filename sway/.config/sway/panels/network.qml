@@ -219,16 +219,21 @@ ShellRoot {
           height: Math.min(contentHeight, 420)
           clip: true
           currentIndex: -1
-          model: win.networks
+          // ScriptModel, not the bare array: the scanner rebuilds the array every few seconds, and a new array recreated
+          // every row, so the open password row lost its focus and typed text.
+          model: ScriptModel { values: win.networks }
           spacing: 2
 
-          delegate: Column {
+          // FocusScope root: ListView sets focus on the current delegate whenever the current item changes (every
+          // reorder by signal). A plain root took that focus from the password field inside it.
+          delegate: FocusScope {
             id: row
 
             required property var modelData
             required property int index
             readonly property var net: modelData
             width: ListView.view.width
+            height: rowColumn.implicitHeight
 
             Connections {
               target: row.net
@@ -241,95 +246,101 @@ ShellRoot {
               function onConnectedChanged() { Flow.closeWhenPickedIsUp(win, row.net) }
             }
 
-            Rectangle {
+            Column {
+              id: rowColumn
+
               width: parent.width
-              height: 36
-              radius: 8
-              color: rowMouse.containsMouse || list.currentIndex === row.index ? win.track : "transparent"
 
-              Text {
-                id: bars
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-                textFormat: Text.PlainText
-                text: win.bars[Math.min(4, Math.floor(row.net.signalStrength * 5))]
-                color: row.net.connected ? win.accent : win.fg
-                font.family: win.font
-                font.pixelSize: 16
-              }
-
-              Text {
-                anchors.left: bars.right
-                anchors.leftMargin: 12
-                anchors.right: status.left
-                anchors.rightMargin: 8
-                anchors.verticalCenter: parent.verticalCenter
-                textFormat: Text.PlainText
-                text: row.net.name
-                elide: Text.ElideRight
-                color: row.net.connected ? win.accent : win.fg
-                font.family: win.font
-                font.pixelSize: 13
-                font.bold: row.net.connected
-              }
-
-              Text {
-                id: status
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-                textFormat: Text.PlainText
-                text: row.net.stateChanging ? "…"
-                  : (row.net.connected ? "󰄬" : (row.net.security === WifiSecurityType.Open ? "" : "󰌾"))
-                color: win.dim
-                font.family: win.font
-                font.pixelSize: 14
-              }
-
-              MouseArea {
-                id: rowMouse
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                hoverEnabled: true
-                onClicked: { list.currentIndex = row.index; win.pick(row.net) }
-              }
-            }
-
-            // Password row, only for the network that asked for one.
-            Rectangle {
-              visible: win.asking === row.net
-              width: parent.width
-              height: visible ? 40 : 0
-              radius: 8
-              color: "transparent"
-              border.width: 2
-              border.color: win.failure !== "" ? win.error : win.accent
-
-              TextInput {
-                id: pass
-                anchors.fill: parent
-                anchors.leftMargin: 12
-                anchors.rightMargin: 12
-                verticalAlignment: TextInput.AlignVCenter
-                focus: win.asking === row.net
-                echoMode: TextInput.Password
-                passwordCharacter: "●"
-                color: win.fg
-                font.family: win.font
-                font.pixelSize: 13
-                onVisibleChanged: if (visible) { text = ""; forceActiveFocus() }
-                Keys.onEscapePressed: Flow.cancelPassword(win)
-                Keys.onReturnPressed: Flow.submitPassword(win, row.net, text)
-                Keys.onEnterPressed: Flow.submitPassword(win, row.net, text)
+              Rectangle {
+                width: parent.width
+                height: 36
+                radius: 8
+                color: rowMouse.containsMouse || list.currentIndex === row.index ? win.track : "transparent"
 
                 Text {
+                  id: bars
+                  anchors.left: parent.left
+                  anchors.leftMargin: 10
                   anchors.verticalCenter: parent.verticalCenter
-                  visible: pass.text === ""
                   textFormat: Text.PlainText
-                  text: "Password for " + row.net.name
+                  text: win.bars[Math.min(4, Math.floor(row.net.signalStrength * 5))]
+                  color: row.net.connected ? win.accent : win.fg
+                  font.family: win.font
+                  font.pixelSize: 16
+                }
+
+                Text {
+                  anchors.left: bars.right
+                  anchors.leftMargin: 12
+                  anchors.right: status.left
+                  anchors.rightMargin: 8
+                  anchors.verticalCenter: parent.verticalCenter
+                  textFormat: Text.PlainText
+                  text: row.net.name
+                  elide: Text.ElideRight
+                  color: row.net.connected ? win.accent : win.fg
+                  font.family: win.font
+                  font.pixelSize: 13
+                  font.bold: row.net.connected
+                }
+
+                Text {
+                  id: status
+                  anchors.right: parent.right
+                  anchors.rightMargin: 10
+                  anchors.verticalCenter: parent.verticalCenter
+                  textFormat: Text.PlainText
+                  text: row.net.stateChanging ? "…"
+                    : (row.net.connected ? "󰄬" : (row.net.security === WifiSecurityType.Open ? "" : "󰌾"))
                   color: win.dim
-                  font: pass.font
+                  font.family: win.font
+                  font.pixelSize: 14
+                }
+
+                MouseArea {
+                  id: rowMouse
+                  anchors.fill: parent
+                  cursorShape: Qt.PointingHandCursor
+                  hoverEnabled: true
+                  onClicked: { list.currentIndex = row.index; win.pick(row.net) }
+                }
+              }
+
+              // Password row, only for the network that asked for one.
+              Rectangle {
+                visible: win.asking === row.net
+                width: parent.width
+                height: visible ? 40 : 0
+                radius: 8
+                color: "transparent"
+                border.width: 2
+                border.color: win.failure !== "" ? win.error : win.accent
+
+                TextInput {
+                  id: pass
+                  anchors.fill: parent
+                  anchors.leftMargin: 12
+                  anchors.rightMargin: 12
+                  verticalAlignment: TextInput.AlignVCenter
+                  focus: win.asking === row.net
+                  echoMode: TextInput.Password
+                  passwordCharacter: "●"
+                  color: win.fg
+                  font.family: win.font
+                  font.pixelSize: 13
+                  onVisibleChanged: if (visible) { text = ""; forceActiveFocus() }
+                  Keys.onEscapePressed: Flow.cancelPassword(win)
+                  Keys.onReturnPressed: Flow.submitPassword(win, row.net, text)
+                  Keys.onEnterPressed: Flow.submitPassword(win, row.net, text)
+
+                  Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: pass.text === ""
+                    textFormat: Text.PlainText
+                    text: "Password for " + row.net.name
+                    color: win.dim
+                    font: pass.font
+                  }
                 }
               }
             }
