@@ -1,5 +1,9 @@
 # Flake checks, one per test layer. `self` = the flake source: git-tracked files only.
-{ pkgs, self }:
+{
+  pkgs,
+  self,
+  quickshell,
+}:
 let
   check =
     name: tools: script:
@@ -16,7 +20,7 @@ in
     sway
     tmux
     qt6.qtdeclarative
-    quickshell
+    quickshell # flake.nix argument, same build as the system
     jq
     yq-go
     stow

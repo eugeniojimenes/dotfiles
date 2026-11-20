@@ -4,7 +4,12 @@
 # Apply: sudo nixos-rebuild switch --flake ~/dotfiles. Update: nix flake update, then the same switch.
 # A flake only sees files git tracks: `git add` a new file before rebuilding.
 # Formatted with nixfmt (official style, RFC 166); one block per top-level option.
-{ pkgs, nixpkgs-unstable, ... }:
+{
+  pkgs,
+  nixpkgs-unstable,
+  quickshell,
+  ...
+}:
 
 let
   # Login name picked in the installer: the account and its home exist already. Changing it here makes a new user, it
@@ -195,7 +200,7 @@ in
         swaylock
         waybar
         fuzzel
-        quickshell
+        quickshell # flake.nix argument (unstable recipe), wins over `with pkgs`
         wiremix
         alacritty
         grim
