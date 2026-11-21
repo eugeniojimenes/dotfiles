@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Captive portal: public Wi-Fi asking for a login page. Spec: docs/specs/captive-portal.md.
+#   portal watch   notify each time NetworkManager's check lands on a login page (sway autostart)
+#   portal login   open the login window
+# Check URL = networking.networkmanager.settings.connectivity in nixos/common.nix; without it NM never reports portal.
+
+notify() {
+  local action
+  # --wait: notify-send prints the clicked action. default = click on the card itself.
+  action=$(notify-send -a Network -i network-wireless --wait --action=default=Open --action=login='Open login' \
+    'Wi-Fi needs a login' 'This network asks you to sign in on a web page.')
+  case $action in default | login) "$0" login ;; esac
+}
+
+case ${1-} in
+  watch)
+    [[ $(nmcli networking connectivity) == portal ]] && notify &
+    # One line per change; NM repeats the check every 5 min, so a portal left alone notifies again only on a change.
+    nmcli monitor | {
+      while read -r line; do
+        [[ $line == "Connectivity is now 'portal'" ]] && notify &
+      done
+      wait # the loop's subshell owns those notifications
+    }
+    wait
+    ;;
+  login)
+    # Own profile = own Brave process, so the flags apply (a running Brave would just get a new tab).
+    # HACK: one kind of misconfigured network, not a generic portal fix. Aruba access points left on their default
+    # certificate post the login to securelogin.hpe.com (older: securelogin.arubanetworks.com) and need the network's
+    # DNS to answer that name. A network handing out a public DNS (8.8.8.8) never does: NXDOMAIN, login stuck. Before
+    # login the access point intercepts HTTPS to any public address and serves that name with a valid certificate, so
+    # any public IP works. Other portals never ask for these names: the mapping does nothing there.
+    exec brave --user-data-dir="${XDG_RUNTIME_DIR:-/tmp}/portal-login" --no-first-run --new-window \
+      --host-resolver-rules='MAP securelogin.hpe.com 1.1.1.1, MAP securelogin.arubanetworks.com 1.1.1.1' \
+      http://neverssl.com/
+    ;;
+  *)
+    sed -n '3,4p' "$0" | sed 's/^# \?//'
+    exit 2
+    ;;
+esac

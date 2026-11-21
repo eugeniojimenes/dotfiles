@@ -5,6 +5,8 @@ exec $dir/bin/idle start
 exec $dir/panels/notifications/run
 # Clipboard history (bin/clipboard pick = Super+V), kept in memory for the session.
 exec $dir/bin/clipboard watch
+# Public Wi-Fi login page: notification with an Open login button (NetworkManager's connectivity check).
+exec $dir/bin/portal watch
 # Input method (fcitx5, config in nixos/common.nix): ç from ' + c in Brave and Slack. SKIP_FCITX_USER_PATH: reads only
 # /etc/xdg/fcitx5, nothing it would save in ~/.config. Set here, for fcitx5 alone, not session-wide.
 exec env SKIP_FCITX_USER_PATH=1 fcitx5 -d --replace

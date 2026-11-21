@@ -38,9 +38,21 @@ in
     networkmanager = {
       enable = true;
       # Real MAC never sent on connect: one fixed MAC per network name. Home router keeps seeing the same one; the MAC
-      # alone does not link visits across places. Hostname and DHCPv6 DUID still go out the same everywhere (NM
-      # defaults kept, docs/nixos.md "Wi-Fi MAC address"). Scan MAC is already random (NetworkManager default).
+      # alone does not link visits across places. Scan MAC is already random (NetworkManager default).
       wifi.macAddress = "stable-ssid";
+      settings = {
+        # Login page check: NM reports `portal` and sway/bin/portal notifies. Plain HTTP, the only kind a login page
+        # can intercept. GNOME's endpoint (body "NetworkManager is online", NM's default expected response).
+        connectivity.uri = "http://nmcheck.gnome.org/check_network_status.txt";
+        # Wi-Fi only: no hostname in DHCP and a DHCPv6 DUID per connection, so nothing links visits the per-network MAC
+        # keeps apart. Cable keeps the defaults (home router lists the notebook by name). docs/nixos.md "Wi-Fi MAC".
+        connection-wifi = {
+          match-device = "type:wifi";
+          "ipv4.dhcp-send-hostname" = false;
+          "ipv6.dhcp-send-hostname" = false;
+          "ipv6.dhcp-duid" = "stable-uuid";
+        };
+      };
     };
     firewall = {
       # Container to host IP:published port (nginx container in front of another one's port, via the docker0 IP) goes
