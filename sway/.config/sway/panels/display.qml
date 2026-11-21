@@ -73,7 +73,7 @@ ShellRoot {
       }
     }
 
-    // DDC/CI writes are slow; send only the last value of a drag or wheel burst.
+    // PERF: DDC/CI writes are slow; send only the last value of a drag or wheel burst.
     Timer {
       id: writeDelay
       interval: 250

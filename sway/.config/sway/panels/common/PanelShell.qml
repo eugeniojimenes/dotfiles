@@ -31,7 +31,7 @@ PanelWindow {
   WlrLayershell.layer: WlrLayer.Overlay
   WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-  // Exclusive keyboard focus does not follow a workspace switch: every window would stay without input until the
+  // HACK: Exclusive keyboard focus does not follow a workspace switch: every window would stay without input until the
   // panel closed. So the panel closes with the switch, like a popup. Sway skips its own mouse warping while a layer
   // surface holds the keyboard, so when the switch lands on another output the cursor is moved here.
   I3IpcListener {

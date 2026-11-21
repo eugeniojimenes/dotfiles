@@ -30,7 +30,7 @@ const tui: TuiPlugin = async (api) => {
   createRoot((dispose) => {
     const [modes, setModes] = createSignal(MODES.map((m) => readMode(m.file)));
 
-    // ponytail: 1s poll of two tiny flag files. No event exists for state written
+    // HACK: 1s poll of two tiny flag files. No event exists for state written
     // by sibling plugins. Upgrade to fs.watch if this ever shows in profiles.
     const timer = setInterval(() => setModes(MODES.map((m) => readMode(m.file))), 1000);
     api.lifecycle.onDispose(() => {

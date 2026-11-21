@@ -21,8 +21,9 @@ vim.g.loaded_node_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
 
--- tmux 3.7 holds a pane's synchronized output (termsync) but still moves the terminal cursor while it lasts: the cursor
--- flashes lines away in the explorer at each move. Fixed in tmux 3.8 (commit 57a13664cc); drop this once it ships.
+-- TODO: tmux 3.7 holds a pane's synchronized output (termsync) but still moves the terminal cursor while it lasts: the
+-- cursor flashes lines away in the explorer at each move. Fixed in tmux 3.8 (commit 57a13664cc); drop this once it
+-- ships.
 if vim.env.TMUX then
   vim.o.termsync = false
 end

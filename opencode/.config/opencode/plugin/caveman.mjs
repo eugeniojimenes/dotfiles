@@ -29,7 +29,7 @@ function writeMode(mode) {
   fs.writeFileSync(statePath, mode);
 }
 
-// ponytail: read SKILL fresh each turn (~5KB); cache only if it ever shows in profiles.
+// TODO: read SKILL fresh each turn (~5KB); cache only if it ever shows in profiles.
 function skillText() {
   try {
     return fs.readFileSync(skillPath, "utf8");

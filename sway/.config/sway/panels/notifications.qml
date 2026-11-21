@@ -42,7 +42,7 @@ ShellRoot {
 
   function openCenter() {
     seenAt = Date.now()
-    // hidePopup, not `popups = []`: an ephemeral one on screen must still expire, or it stays in the centre.
+    // WARN: hidePopup, not `popups = []`: an ephemeral one on screen must still expire, or it stays in the centre.
     for (const n of popups.slice()) hidePopup(n)
     closeHidden()
     centerOpen = true
@@ -77,8 +77,8 @@ ShellRoot {
     hiddenCritical = next.hiddenCritical
     if (next.show) popups = [n].concat(popups.filter(p => p !== n))
     if (next.restartHidden) hiddenTimer.restart()
-    // Later, not now: inside onNotification the server has not filed it yet, so expire() would do nothing, closed would
-    // never come and its id would stay counted as unread.
+    // WARN: Later, not now: inside onNotification the server has not filed it yet, so expire() would do nothing, closed
+    // would never come and its id would stay counted as unread.
     if (next.expire) Qt.callLater(() => { if (n.tracked) n.expire() })
     trim()
   }

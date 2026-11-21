@@ -9,7 +9,7 @@ case $1 in
   share-off) qs modeOff screenshare >/dev/null ;;
   record-on) qs modeOn recording >/dev/null ;;
   record-off) qs modeOff recording >/dev/null ;;
-  # The bell's JSON comes from the daemon (notify.mjs `bell`): mode, unread count. Daemon down: nothing to show.
+  # HACK: The bell's JSON comes from the daemon (notify.mjs `bell`): mode, unread count. Daemon down: nothing to show.
   # Mid-reload the handler is not registered yet and `quickshell ipc` prints "Target not found." with exit 0: only
   # JSON goes through, waybar fails to parse anything else.
   status)
@@ -21,5 +21,5 @@ case $1 in
     exit 0
     ;;
 esac
-# -f on the command line: the NixOS wrapper renames the process to .waybar-wrapped, so -x waybar never matched.
+# HACK: -f on the command line: the NixOS wrapper renames the process to .waybar-wrapped, so -x waybar never matched.
 pkill -RTMIN+8 -f '^waybar '

@@ -15,8 +15,8 @@ set -uo pipefail
 
 ALACRITTY=~/.config/alacritty/alacritty.toml
 
-# Built-in panel = kernel backlight; anything else = DDC/CI. The NVIDIA connectors expose no `ddc` link in sysfs, so
-# the bus comes from `ddcutil detect` (~1.5s), matched on the DRM connector name and cached per output for the
+# PERF: Built-in panel = kernel backlight; anything else = DDC/CI. The NVIDIA connectors expose no `ddc` link in sysfs,
+# so the bus comes from `ddcutil detect` (~1.5s), matched on the DRM connector name and cached per output for the
 # session. A stale cache (monitor moved ports) fails the read, gets dropped, and the next call detects again.
 ddc_bus() {
   local cache=${XDG_RUNTIME_DIR:-/tmp}/sway-ddc-$1 bus

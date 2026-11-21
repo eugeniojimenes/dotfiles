@@ -66,8 +66,8 @@ Rectangle {
     anchors.fill: parent
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     cursorShape: Qt.PointingHandCursor
-    // Default action runs, but the app's window stays put: Quickshell 0.3.0 never sends ActivationToken (docs/sway.md
-    // "Notifications").
+    // FIX: Default action runs, but the app's window stays put: Quickshell (0.3.2 too) never sends ActivationToken
+    // (docs/sway.md "Notifications").
     onClicked: mouse => {
       if (mouse.button === Qt.RightButton) card.n.dismiss()
       else if (card.defaultAction) card.defaultAction.invoke()

@@ -20,7 +20,7 @@ ShellRoot {
     }
 
     anchors { bottom: true; right: true }
-    // qmllint: Quickshell's qmltypes name the margins type without its namespace; Quickshell itself loads it.
+    // HACK: qmllint: Quickshell's qmltypes name the margins type without its namespace; Quickshell itself loads it.
     margins.bottom: 16 // qmllint disable unresolved-type
     margins.right: 16 // qmllint disable unresolved-type
     implicitWidth: row.implicitWidth + 28

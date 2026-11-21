@@ -61,9 +61,9 @@ in
         "docker0"
         "br-+"
       ];
-      # Published ports are DNATed in PREROUTING and never hit INPUT, so nixos-fw does not guard them: any LAN host
-      # reached 5432/6379/9200. DOCKER-USER (first in FORWARD, Docker keeps its rules) lets only container traffic and
-      # replies through. Not `daemon.settings.ip = "127.0.0.1"`: containers could no longer reach the host IP above.
+      # WARN: Published ports are DNATed in PREROUTING and never hit INPUT, so nixos-fw does not guard them: any LAN
+      # host reached 5432/6379/9200. DOCKER-USER (first in FORWARD, Docker keeps its rules) lets only container traffic
+      # and replies through. Not `daemon.settings.ip = "127.0.0.1"`: containers could no longer reach the host IP above.
       extraCommands = ''
         iptables -N DOCKER-USER 2>/dev/null || true
         iptables -F DOCKER-USER
@@ -109,7 +109,7 @@ in
       dates = "weekly";
       options = "--delete-older-than 30d";
     };
-    # Hard-links identical store files on a timer, not during every build (auto-optimise-store slows builds).
+    # PERF: Hard-links identical store files on a timer, not during every build (auto-optimise-store slows builds).
     optimise.automatic = true;
   };
 
@@ -149,11 +149,12 @@ in
       enable = true;
       alsa.enable = true;
       pulse.enable = true;
-      # x11-bell segfaults pipewire whenever Xwayland goes away (session-env exports DISPLAY). No X bell needed.
+      # HACK: x11-bell segfaults pipewire whenever Xwayland goes away (session-env exports DISPLAY). No X bell needed.
       extraConfig.pipewire."99-no-x11-bell"."context.properties"."module.x11.bell" = false;
       wireplumber.extraConfig = {
-        # KEF LSX II LT (USB speaker): when the host stops its stream after idle, the firmware stops answering control
-        # requests (`usb_set_interface -110`) and only a replug brings it back. Never suspended; matches nothing else.
+        # HACK: KEF LSX II LT (USB speaker): when the host stops its stream after idle, the firmware stops answering
+        # control requests (`usb_set_interface -110`) and only a replug brings it back. Never suspended; matches nothing
+        # else.
         "51-kef-lsx-no-suspend"."monitor.alsa.rules" = [
           {
             matches = [ { "node.name" = "~alsa_output.usb-KEF_LSX_II_LT.*"; } ];
@@ -195,8 +196,9 @@ in
     };
     gvfs.enable = true; # Nautilus: trash, phones, network shares
     locate.enable = true; # plocate
-    # FUSE /usr/bin and /bin that resolve from the caller's PATH: scripts outside this repo (work repos, a work CLI's
-    # helpers) hardcode `#!/bin/bash`, and a CLI that execs them directly fails with ENOENT. nix-ld's twin for shebangs.
+    # HACK: FUSE /usr/bin and /bin that resolve from the caller's PATH: scripts outside this repo (work repos, a work
+    # CLI's helpers) hardcode `#!/bin/bash`, and a CLI that execs them directly fails with ENOENT. nix-ld's twin for
+    # shebangs.
     envfs.enable = true;
   };
 
@@ -297,8 +299,8 @@ in
       "tmux/plugins/sensible".source = "${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible";
       "tmux/plugins/resurrect".source = "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect";
 
-      # Input method for Chromium and Electron (Brave, Slack): they compose dead keys with a built-in table and ignore
-      # ~/.XCompose, so ' + c gave ć on us/intl. Through the Wayland text-input protocol (Brave's wrapper passes
+      # HACK: Input method for Chromium and Electron (Brave, Slack): they compose dead keys with a built-in table and
+      # ignore ~/.XCompose, so ' + c gave ć on us/intl. Through the Wayland text-input protocol (Brave's wrapper passes
       # --enable-wayland-ime) fcitx5 composes with libxkbcommon, which reads ~/.XCompose. Started by sway
       # (90-autostart). Plain fcitx5, not i18n.inputMethod: that one adds fcitx5-configtool and its KDE Frameworks
       # (~470 MiB) through a path nothing here can override. Keyboard only, each keyboard keeps its Sway layout.
@@ -371,8 +373,8 @@ in
       dbeaver-bin
       spotify
       obs-studio
-      # uosc interface from nixpkgs: pinned by flake.lock, ziggy built from source, fonts through the wrapper. Never
-      # uosc's own installer or its Update menu: a copy in ~/.config/mpv/scripts would load a second uosc on top.
+      # WARN: uosc interface from nixpkgs: pinned by flake.lock, ziggy built from source, fonts through the wrapper.
+      # Never uosc's own installer or its Update menu: a copy in ~/.config/mpv/scripts would load a second uosc on top.
       # mpris: mpv on MPRIS, so the bar, the media keys and the sound panel see and drive it like any player.
       (mpv.override {
         scripts = [
@@ -401,7 +403,7 @@ in
       stow
       age
       gitleaks # ~/.private snapshot scans for secrets before archiving
-      # Unstable recipe on stable packages, flake.nix says why. Tests off: built locally, no binary cache hit.
+      # TODO: Unstable recipe on stable packages, flake.nix says why. Tests off: built locally, no binary cache hit.
       # rust-bindgen: openssl-sys in this recipe fails without the bindgen CLI.
       ((pkgs.callPackage "${nixpkgs-unstable}/pkgs/by-name/mi/mise/package.nix" { }).overrideAttrs (old: {
         doCheck = false;
@@ -425,8 +427,9 @@ in
       starship
       lazygit
       lazydocker
-      # `docker-compose` name for outside scripts that still call it. Wrapper, not the standalone binary: that one does
-      # not find buildx (plugin dir lives in the docker store path), builds with the classic builder, no `COPY --parents`.
+      # HACK: `docker-compose` name for outside scripts that still call it. Wrapper, not the standalone binary: that one
+      # does not find buildx (plugin dir lives in the docker store path), builds with the classic builder, no
+      # `COPY --parents`.
       (writeShellScriptBin "docker-compose" ''exec docker compose "$@"'')
       jq
       gum
@@ -478,6 +481,6 @@ in
   # The unit's PATH holds coreutils, grim and slurp only: the picker needs quickshell, jq and swaymsg, dnd needs pkill.
   systemd.user.services.xdg-desktop-portal-wlr.path = [ "/run/current-system/sw" ];
 
-  # Release of the first install. Never bump on upgrades: pins state formats (databases, paths), not versions.
+  # WARN: Release of the first install. Never bump on upgrades: pins state formats (databases, paths), not versions.
   system.stateVersion = "26.05";
 }

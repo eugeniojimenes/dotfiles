@@ -20,8 +20,8 @@ local function mise_cmd(cmd)
   return vim.list_extend({ "mise", "exec", "--" }, cmd)
 end
 
--- NixOS: Ruby LSP Rails boots the app, whose gems dlopen libcurl through ffi, and NixOS has no /usr/lib to find it.
--- A Ruby built with its own OpenSSL 3.0 also clashes with nixpkgs' libcurl (needs OPENSSL_3.5.0). nix-ld's library
+-- HACK: NixOS: Ruby LSP Rails boots the app, whose gems dlopen libcurl through ffi, and NixOS has no /usr/lib to find
+-- it. A Ruby built with its own OpenSSL 3.0 also clashes with nixpkgs' libcurl (needs OPENSSL_3.5.0). nix-ld's library
 -- dir (stable path, holds libcurl and the matching OpenSSL) fixes both. Set after `mise exec`, never on mise itself:
 -- that dir's libcrypto breaks mise's own (`undefined symbol: CRYPTO_library_init`). DISABLE_SPRING: the runner would
 -- fork from a Spring server started elsewhere without this path, and the loader reads LD_LIBRARY_PATH only at exec.
@@ -72,7 +72,7 @@ warn_on_stale_bundle()
 -- the same repo, and a rubocop that cannot load `.rubocop.yml`, whose `require:
 -- ./rubocop/custom_cops` only resolves from the repo root. `.git` marks the real checkout, so try
 -- it first and keep `Gemfile` for a bundler project that is not a git repo.
--- ponytail: matches the two paths bundler actually installs into; add more if a setup uses another.
+-- TODO: matches the two paths bundler actually installs into; add more if a setup uses another.
 local function project_root(bufnr)
   local fname = vim.api.nvim_buf_get_name(bufnr)
   if fname:find("/lib/ruby/gems/", 1, true) or fname:find("/vendor/bundle/", 1, true) then

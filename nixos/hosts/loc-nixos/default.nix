@@ -16,15 +16,16 @@
   networking.hostName = "loc-nixos";
 
   boot = {
-    # i915 in the initrd loads before nvidia, every boot. Connector names (eDP-1, DP-1..4 Intel, DP-5 and HDMI-A-1
+    # HACK: i915 in the initrd loads before nvidia, every boot. Connector names (eDP-1, DP-1..4 Intel, DP-5 and HDMI-A-1
     # NVIDIA) come from one counter across GPUs in load order, so a race renamed the panel. Bonus: native-res LUKS
     # prompt.
     initrd.kernelModules = [ "i915" ];
-    # DDR5 SPD temperature sensor: its resume fails (`spd5118 ... failed to resume async: error -6`) and the error
+    # HACK: DDR5 SPD temperature sensor: its resume fails (`spd5118 ... failed to resume async: error -6`) and the error
     # flashes on the console when the lid opens. Only a RAM temperature reading is lost.
     blacklistedKernelModules = [ "spd5118" ];
-    # Resume from hibernation: the swapfile below lives on the root filesystem, at this physical offset. Recreating
-    # the swapfile (size change) moves it: recompute, `sudo filefrag -v /var/lib/swapfile`, extent 0 physical_offset.
+    # WARN: Resume from hibernation: the swapfile below lives on the root filesystem, at this physical offset.
+    # Recreating the swapfile (size change) moves it: recompute, `sudo filefrag -v /var/lib/swapfile`, extent 0
+    # physical_offset.
     resumeDevice = config.fileSystems."/".device;
     kernelParams = [ "resume_offset=124332032" ];
   };
@@ -51,8 +52,8 @@
     };
   };
 
-  # Internal mic (Realtek ALC257): the stock ACP path merges "Internal Mic Boost" (+30 dB) into the source volume, so
-  # 100% = +60 dB and the mic clips on room noise; apps with auto gain (Meet) push it to 100%. Boost pinned at 0 dB
+  # HACK: Internal mic (Realtek ALC257): the stock ACP path merges "Internal Mic Boost" (+30 dB) into the source volume,
+  # so 100% = +60 dB and the mic clips on room noise; apps with auto gain (Meet) push it to 100%. Boost pinned at 0 dB
   # (volume = zero): 100% = +30 dB, the Capture element alone. PipeWire reads /etc/alsa-card-profile before its own.
   environment.etc."alsa-card-profile/mixer/paths/analog-input-internal-mic.conf".source =
     pkgs.runCommand "analog-input-internal-mic.conf" { }
@@ -88,11 +89,11 @@
     logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
   };
 
-  # suspend-then-hibernate: on battery, hibernate after 2 h suspended; on AC, stay suspended. This battery has an ACPI
-  # trip point (_BTP, BAT1/alarm), so without HibernateDelaySec systemd 260 skips its discharge estimate and hibernates
-  # only if the firmware tags the wake as its battery alarm (DMI wake-up type "APM Timer"). This firmware leaves it at
-  # "Power Switch" after a resume from deep sleep (checked 2026-11-18), so that path never hibernates: the timer is the
-  # only one that does.
+  # HACK: suspend-then-hibernate: on battery, hibernate after 2 h suspended; on AC, stay suspended. This battery has an
+  # ACPI trip point (_BTP, BAT1/alarm), so without HibernateDelaySec systemd 260 skips its discharge estimate and
+  # hibernates only if the firmware tags the wake as its battery alarm (DMI wake-up type "APM Timer"). This firmware
+  # leaves it at "Power Switch" after a resume from deep sleep (checked 2026-11-18), so that path never hibernates: the
+  # timer is the only one that does.
   systemd.sleep.settings.Sleep = {
     HibernateDelaySec = "2h";
     HibernateOnACPower = false;

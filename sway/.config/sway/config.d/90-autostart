@@ -10,23 +10,23 @@ exec $dir/bin/portal watch
 # Input method (fcitx5, config in nixos/common.nix): ç from ' + c in Brave and Slack. SKIP_FCITX_USER_PATH: reads only
 # /etc/xdg/fcitx5, nothing it would save in ~/.config. Set here, for fcitx5 alone, not session-wide.
 exec env SKIP_FCITX_USER_PATH=1 fcitx5 -d --replace
-# Battery warnings from UPower as notifications. -S = laptop battery and AC only, no headset or mouse batteries.
+# HACK: Battery warnings from UPower as notifications. -S = laptop battery and AC only, no headset or mouse batteries.
 # Restarted when it exits: it quits on the first notification it fails to send, and once died mid-session, so a 4%
 # hibernation came with no 7% warning. Its errors: $XDG_RUNTIME_DIR/sway-poweralertd.log.
 exec sh -c 'until poweralertd -S; do sleep 2; done 2>>"$XDG_RUNTIME_DIR/sway-poweralertd.log"'
 # polkit authentication agent: without one, every action that asks for the admin password fails outright.
 exec /run/current-system/sw/libexec/polkit-gnome-authentication-agent-1
 exec $dir/bin/wallpaper restore
-# Warms Nautilus for the first Super+Shift+F: starts the gvfs services and loads its libraries, then exits alone (no
-# window). Its first open of a session was the slow one.
+# PERF: Warms Nautilus for the first Super+Shift+F: starts the gvfs services and loads its libraries, then exits alone
+# (no window). Its first open of a session was the slow one.
 exec nautilus --gapplication-service
 # Creates ~/Pictures, ~/Videos... and user-dirs.dirs when missing (fresh home). No-op otherwise.
 exec xdg-user-dirs-update
 
 exec $dir/bin/session-env
 
-# Plain exec, not `bar { swaybar_command }`: that one runs without a shell, so ~ never expands and waybar
+# WARN: Plain exec, not `bar { swaybar_command }`: that one runs without a shell, so ~ never expands and waybar
 # silently never started.
-# 0.15.0 leaves a zombie child when a bar is destroyed (reload, resume, output gone): upstream bug, docs/sway.md
+# FIX: 0.15.0 leaves a zombie child when a bar is destroyed (reload, resume, output gone): upstream bug, docs/sway.md
 # "Waybar zombie processes".
 exec waybar -c $dir/apps/waybar.jsonc -s $dir/apps/waybar.css >$XDG_RUNTIME_DIR/sway-waybar.log 2>&1

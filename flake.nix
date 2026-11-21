@@ -3,11 +3,11 @@
 
   # Stable release branch (new release = edit here). flake.lock pins the revision; `nix flake update` moves it.
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-  # Recipes only, for packages the stable branch has too old: built against stable, so no second glibc and toolchain in
-  # the closure. mise: 26.05 ships 2026.5.12, whose `mise install` errors on a `disable_tools` entry it does not know
-  # (fixed in 2026.6.4). quickshell: 26.05 ships 0.3.0, which crashes when the last access point of an unsaved Wi-Fi
-  # network goes away (use-after-free, fixed in 0.3.1). Drop with the 26.11 move. bin/update does not move this input:
-  # `nix flake update nixpkgs-unstable` does.
+  # TODO: Recipes only, for packages the stable branch has too old: built against stable, so no second glibc and
+  # toolchain in the closure. mise: 26.05 ships 2026.5.12, whose `mise install` errors on a `disable_tools` entry it
+  # does not know (fixed in 2026.6.4). quickshell: 26.05 ships 0.3.0, which crashes when the last access point of an
+  # unsaved Wi-Fi network goes away (use-after-free, fixed in 0.3.1). Drop with the 26.11 move. bin/update does not move
+  # this input: `nix flake update nixpkgs-unstable` does.
   inputs.nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs =

@@ -21,7 +21,7 @@ case ${1-} in
     if awake; then mode=("${normal[@]}") now=off; else mode=() now=on; fi
     pkill -x swayidle
     setsid -f swayidle -w "${mode[@]}" "${always[@]}" >/dev/null 2>&1
-    # -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
+    # HACK: -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
     pkill -RTMIN+10 -f '^waybar '
     # Popup: the bar icon alone gives no sign when it goes away.
     "${0%/*}/osd" switch awake "$now"

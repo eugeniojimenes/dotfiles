@@ -22,8 +22,8 @@ ShellRoot {
       { id: PowerProfile.Performance, icon: "󱐋", label: "Performance" }
     ].filter(p => p.id !== PowerProfile.Performance || PowerProfiles.hasPerformanceProfile)
 
-    // Charge limit through UPower over D-Bus: Quickshell does not expose it. polkit lets the active user change it
-    // without a password. shortcut: object path built from the kernel name (battery_BAT1), UPower's own naming.
+    // HACK: Charge limit through UPower over D-Bus: Quickshell does not expose it. polkit lets the active user change
+    // it without a password. Object path built from the kernel name (battery_BAT1), UPower's own naming.
     readonly property string batteryPath: battery ? "/org/freedesktop/UPower/devices/battery_" + battery.nativePath : ""
     property bool limitSupported: false
     property bool limitEnabled: false

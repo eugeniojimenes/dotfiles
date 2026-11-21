@@ -11,8 +11,8 @@ setup() {
 
 teardown() { [[ -z ${REC-} ]] || kill -9 "$REC" 2>/dev/null || true; }
 
-# A real process named wf-recorder (/proc comm = script file name), standing for a running recording. Job control on,
-# else bash may start the background job with SIGINT ignored and the stop under test could never end it.
+# HACK: A real process named wf-recorder (/proc comm = script file name), standing for a running recording. Job control
+# on, else bash may start the background job with SIGINT ignored and the stop under test could never end it.
 fake_recording() {
   mkdir -p "$BATS_TEST_TMPDIR/bin"
   printf '#!%s\ntrap "exit 130" INT\nwhile :; do sleep 0.1; done\n' "$BASH" >"$BATS_TEST_TMPDIR/bin/wf-recorder"
@@ -149,8 +149,8 @@ fake_recording() {
 
 @test "record killed while recording: wf-recorder finishes the file, mode off, box closed" {
   stub slurp '0,0 5x5'
-  # Background jobs start with SIGINT ignored, and bash cannot trap a signal ignored on entry: env resets it, so this
-  # wf-recorder finishes the file on SIGINT like the real one.
+  # HACK: Background jobs start with SIGINT ignored, and bash cannot trap a signal ignored on entry: env resets it, so
+  # this wf-recorder finishes the file on SIGINT like the real one.
   echo 'exec env --default-signal=INT bash -c '"'"'trap "echo video >\"$1\"; exit 0" INT; while :; do sleep 0.05; done'"'"' _ "${@: -1}"' \
     >"$STUBS/wf-recorder.sh"
   "$SWAY/bin/record" area 3>&- &

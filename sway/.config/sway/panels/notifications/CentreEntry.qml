@@ -18,7 +18,7 @@ Rectangle {
   readonly property var defaultAction: n.actions.find(action => action.identifier === "default") ?? null
   readonly property var buttons: n.actions.filter(action => action.identifier !== "default")
 
-  // The centre closes before the action runs: invoking a non-resident notification destroys this entry, and the
+  // WARN: The centre closes before the action runs: invoking a non-resident notification destroys this entry, and the
   // handler with it.
   signal done
 

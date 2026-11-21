@@ -21,8 +21,8 @@ fi
 
 lines=$(cat)
 
-# Brave asks for a window twice, for its preview and then to share, and the portal restores only a monitor pick. So a
-# window pick is remembered, and the next ask within 60 s that still offers that window gets it back without the
+# HACK: Brave asks for a window twice, for its preview and then to share, and the portal restores only a monitor pick.
+# So a window pick is remembered, and the next ask within 60 s that still offers that window gets it back without the
 # picker. One use only: Brave's "Choose a different window" gets the same window once, and the picker on the next try.
 memory=$XDG_RUNTIME_DIR/sway-share-last-window
 if [[ -f $memory ]]; then

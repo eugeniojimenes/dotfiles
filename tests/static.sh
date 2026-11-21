@@ -108,7 +108,7 @@ sway_config() {
     out=$(PATH=$tmp/bin:$PATH XDG_RUNTIME_DIR=$tmp/run WLR_BACKENDS=headless WLR_RENDERER=pixman \
       DBUS_SESSION_BUS_ADDRESS=disabled: sway -C -c sway/.config/sway/config 2>&1)
     status=$?
-    # -C exits 0 on errors inside an included file: the log decides too. Full log only on a crash, it is mostly
+    # HACK: -C exits 0 on errors inside an included file: the log decides too. Full log only on a crash, it is mostly
     # fontconfig noise.
     if ((status)); then
       printf '%s\nhost %s: sway -C exit %d\n' "$out" "${host##*/}" "$status"
@@ -177,7 +177,7 @@ panels_load() {
   return $rc
 }
 
-# waybar config is plain JSON today. Comments added later: strip the `//` lines first.
+# TODO: waybar config is plain JSON today. Comments added later: strip the `//` lines first.
 json() { jq empty sway/.config/sway/apps/waybar.jsonc docs/media.json; }
 
 # claude-code/.claude/ = prompt text, em-dash used as a list separator the model reads (see docs/claude-code.md).

@@ -11,7 +11,7 @@
 pidfile=${XDG_RUNTIME_DIR:-/tmp}/sway-record.pid
 bin=${0%/*}
 
-# -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
+# HACK: -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
 poke() { pkill -RTMIN+9 -f '^waybar '; }
 
 # PID file alone is not enough: after a crash the PID may belong to another process by now.
@@ -70,7 +70,7 @@ file=$dir/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4
 rec=''
 interrupted=0
 trap 'interrupted=1; [[ -n $rec ]] && kill -INT "$rec" 2>/dev/null' TERM INT HUP
-# Sway cannot keep a surface out of the capture: notifications hidden (mode, see bin/dnd) instead of recorded.
+# HACK: Sway cannot keep a surface out of the capture: notifications hidden (mode, see bin/dnd) instead of recorded.
 "$bin/dnd" record-on
 wf-recorder "${args[@]}" -f "$file" >/dev/null 2>&1 &
 rec=$!

@@ -96,12 +96,12 @@ LazyLoader {
         HoverHandler { id: hover }
 
         Repeater {
-          // ScriptModel, not the bare array: a new array recreated every card and restarted every timer.
+          // WARN: ScriptModel, not the bare array: a new array recreated every card and restarted every timer.
           model: ScriptModel { values: loader.daemon.popups }
 
           PopupCard {
             daemon: loader.daemon
-            // Not `deck: deck`: inside PopupCard that name is its own (still empty) property.
+            // WARN: Not `deck: deck`: inside PopupCard that name is its own (still empty) property.
             deck: deckItem
           }
         }

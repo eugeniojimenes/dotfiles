@@ -5,8 +5,8 @@ out=$(mktemp)
 trap 'rm -f "$out"' EXIT
 hyprpicker -q -f hex >"$out" 2>/dev/null &
 pick=$!
-# Sway hands a new layer surface the pointer only on the next motion: until the mouse moved, no lens and the old cursor.
-# A 1 px nudge and back, a few times while hyprpicker maps its surface, brings the lens up at once.
+# HACK: Sway hands a new layer surface the pointer only on the next motion: until the mouse moved, no lens and the old
+# cursor. A 1 px nudge and back, a few times while hyprpicker maps its surface, brings the lens up at once.
 for delay in 0.15 0.3 0.6; do
   sleep "$delay"
   kill -0 "$pick" 2>/dev/null || break

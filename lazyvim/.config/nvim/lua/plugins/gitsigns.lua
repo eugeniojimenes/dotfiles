@@ -41,7 +41,7 @@ return {
           if state and not base then
             return Snacks.notify.warn("No base branch found (looked for origin/HEAD, develop, main, master)")
           end
-          -- Toggles go in the callback, and no `gs.refresh()` here. `change_base` is async: it swaps the revision
+          -- WARN: Toggles go in the callback, and no `gs.refresh()` here. `change_base` is async: it swaps the revision
           -- and re-diffs every attached buffer itself. A `refresh()` fired next to it races that, re-diffing buffers
           -- against the old revision, and `manager.update` is throttled per buffer, so the real update gets dropped
           -- and every buffer except the current one keeps showing the index diff.

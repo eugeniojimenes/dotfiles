@@ -57,7 +57,7 @@ pkgs.treefmt.withConfig {
         ];
       };
 
-      # waybar.jsonc: prettier's JSONC default adds trailing commas, which waybar's parser and `jq` refuse.
+      # HACK: waybar.jsonc: prettier's JSONC default adds trailing commas, which waybar's parser and `jq` refuse.
       prettier-jsonc = {
         command = "${pkgs.prettier}/bin/prettier";
         options = [

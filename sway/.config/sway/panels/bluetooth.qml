@@ -14,8 +14,8 @@ ShellRoot {
   PanelShell {
     id: win
 
-    // Quickshell 0.3 qmltypes names the property type BluetoothAdapter, the class qs::bluetooth::BluetoothAdapter: lint
-    // cannot match them. Works at runtime.
+    // HACK: Quickshell 0.3 qmltypes names the property type BluetoothAdapter, the class
+    // qs::bluetooth::BluetoothAdapter: lint cannot match them. Works at runtime.
     readonly property var adapter: Bluetooth.defaultAdapter // qmllint disable unresolved-type
     readonly property bool on: adapter !== null && adapter.enabled
     readonly property var all: adapter ? adapter.devices.values : []

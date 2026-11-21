@@ -15,7 +15,7 @@ case ${1-} in
       setsid -f gammastep -m wayland -O 4000 >/dev/null 2>&1
       now=on
     fi
-    # -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
+    # HACK: -f: NixOS runs waybar as .waybar-wrapped, see bin/dnd.
     pkill -RTMIN+11 -f '^waybar '
     "${0%/*}/osd" switch nightlight "$now"
     ;;

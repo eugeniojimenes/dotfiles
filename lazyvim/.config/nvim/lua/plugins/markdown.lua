@@ -26,8 +26,8 @@ return {
     end,
     opts = {
       ignore = is_big,
-      -- snacks picker preview calls render() itself, bypassing `ignore`, and render-markdown owns the preview window's
-      -- conceallevel even when disabled (falls back to global 2): pin both values to 0 there
+      -- HACK: snacks picker preview calls render() itself, bypassing `ignore`, and render-markdown owns the preview
+      -- window's conceallevel even when disabled (falls back to global 2): pin both values to 0 there
       overrides = {
         filetype = {
           ["markdown.snacks_picker_preview"] = {

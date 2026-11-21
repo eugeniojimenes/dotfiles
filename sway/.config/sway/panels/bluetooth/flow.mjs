@@ -62,7 +62,7 @@ export function showFailure(panel, message) {
   panel.connecting = false;
 }
 
-// The joined device is paired and connected: done. Not on `connected` alone: the link comes up in the middle of a
+// WARN: The joined device is paired and connected: done. Not on `connected` alone: the link comes up in the middle of a
 // pairing, and BlueZ cancels a pairing whose caller left the bus, so closing then killed the pair.
 function finishIfConnected(panel) {
   const device = panel.joining;
@@ -72,7 +72,7 @@ function finishIfConnected(panel) {
   panel.connecting = false;
 }
 
-// Pairing done: trust the device (it reconnects on its own later) and connect its profiles. Not device.connect():
+// HACK: Pairing done: trust the device (it reconnects on its own later) and connect its profiles. Not device.connect():
 // Quickshell refuses it while the pairing link is up ("already connected"), and that link drops a moment later with
 // no audio profile.
 function afterPairing(panel) {

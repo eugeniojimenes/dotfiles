@@ -47,8 +47,8 @@ ShellRoot {
 
     Binding { target: win.device; property: "scannerEnabled"; value: true; when: win.device !== null }
 
-    // Quickshell exposes no "scan finished": a blocking nmcli rescan does. Its output is unused, the list comes from
-    // the scanner. `auto` returns at once when NetworkManager scanned in the last seconds.
+    // HACK: Quickshell exposes no "scan finished": a blocking nmcli rescan does. Its output is unused, the list comes
+    // from the scanner. `auto` returns at once when NetworkManager scanned in the last seconds.
     Process {
       id: scan
       running: Networking.wifiEnabled
@@ -219,12 +219,12 @@ ShellRoot {
           height: Math.min(contentHeight, 420)
           clip: true
           currentIndex: -1
-          // ScriptModel, not the bare array: the scanner rebuilds the array every few seconds, and a new array recreated
-          // every row, so the open password row lost its focus and typed text.
+          // WARN: ScriptModel, not the bare array: the scanner rebuilds the array every few seconds, and a new array
+          // recreated every row, so the open password row lost its focus and typed text.
           model: ScriptModel { values: win.networks }
           spacing: 2
 
-          // FocusScope root: ListView sets focus on the current delegate whenever the current item changes (every
+          // WARN: FocusScope root: ListView sets focus on the current delegate whenever the current item changes (every
           // reorder by signal). A plain root took that focus from the password field inside it.
           delegate: FocusScope {
             id: row

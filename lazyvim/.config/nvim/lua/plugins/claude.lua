@@ -7,7 +7,7 @@ return {
         provider = "external",
         provider_opts = {
           external_terminal_cmd = function(cmd, env)
-            -- `-e` is required: `tmux new-window` inherits the tmux *server* environment, not Neovim's, so
+            -- WARN: `-e` is required: `tmux new-window` inherits the tmux *server* environment, not Neovim's, so
             -- jobstart(env=...) alone would drop the port and Claude would not find this instance's lock file.
             -- `-S` selects an existing window of that name instead of stacking duplicates on every toggle, and the
             -- lookup is per session, not per server. Literal `claude` therefore made every nvim in one tmux session
