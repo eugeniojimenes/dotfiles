@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: en-readme-file-inplace
+expected_outcome: |
+  README.md is edited in place. Prose tells fixed (serves as, robust/seamless triad, not X but Y with em dash,
+  Title Case headings if fixed consistently, bold-label bullets, -ing tails, "delve into", "It's important to note",
+  "In summary" closing line). utm_source=chatgpt.com stripped from the link while the URL otherwise stays the same.
+  The fenced code block is byte-identical (its em dash stays). Inline code (`ledgerline match --window 3d bank.csv
+  ledger.csv`, `ledgerline.log`) unchanged. Facts preserved: OFX, CSV, CAMT.053, Go 1.23+, ledger not modified.
+  Reply gives a short change report and does not paste the whole file.
+context:
+  scaffold_script: place-files.sh

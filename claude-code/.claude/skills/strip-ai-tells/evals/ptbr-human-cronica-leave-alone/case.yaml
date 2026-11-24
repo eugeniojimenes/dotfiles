@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: ptbr-human-cronica-leave-alone
+expected_outcome: |
+  Human-written crônica with almost no AI tells. The skill should say it found few or no tells and return the
+  text unchanged or nearly unchanged. Dialogue travessões (line-initial em dashes) are preserved. "Pix" and the
+  casual register stay. The lone "Além disso" is at most a weak signal; no rewriting of voice, no added fragments,
+  no translation.

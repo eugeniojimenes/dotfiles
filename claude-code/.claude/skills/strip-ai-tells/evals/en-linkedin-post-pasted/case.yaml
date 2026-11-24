@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: en-linkedin-post-pasted
+expected_outcome: |
+  Returns the post rewritten in a fenced block plus a short Changes list. Em dashes, negative parallelism,
+  "testament"/"pivotal moment"/"stands as" inflation, -ing tails, the "In conclusion" ending and the rocket emoji
+  are gone or fixed. All facts survive: Rails monolith to Go, five months, four engineers, 840ms to 190ms p95,
+  zero incidents since March 3 2026, 37% cost drop, names Priya, Marcus, Dana. No invented facts or anecdotes.

@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: ptbr-corporate-email-pasted
+expected_outcome: |
+  Returns the e-mail rewritten in pt-BR (not translated) in a fenced block plus a short change report.
+  Title Case subject fixed to sentence case, em dash removed, "No cenário atual", "Vale ressaltar",
+  "É importante destacar", "não é apenas X, mas sim Y", "desempenha um papel crucial", the gerund tail, the triad,
+  "Em suma" and the stray "Espero ter ajudado!" are fixed or removed. Facts preserved: 1º de dezembro, Conta Fácil,
+  replaces spreadsheet form, 30 days, R$ 500,00 needs manager approval, training 28 de novembro 15h via Teams,
+  signature Fernanda / Financeiro.
